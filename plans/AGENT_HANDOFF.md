@@ -388,6 +388,21 @@ NOT RUN: provider leg and corpus derivation; this round is explicitly provider-f
 required one-cell replay instead of a corpus run. NOT RUN: full suite; it exceeds the 600-second
 Worker command cap, with the accepted 19-failure baseline recorded above.
 
+**M20-S93 FOLLOW-UP VERIFICATION (2026-08-10):** The focused consumer set passes against the
+current tree. The first rerun with a new `.test_tmp_s93` root was an environment setup failure;
+the usable existing `.test_tmp_codex` root produced the result below. The current code has no
+uncommitted implementation diff. The next queued column round remains untouched: existing
+canonical column node ids carry both PART and COLUMN, so its operand wire shape needs an explicit
+contract before implementation.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path;
+.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py
+tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py -q`
+-> **90 passed, 1 warning**. RAN: `.venv\Scripts\python.exe pilot\row_bench.py schedule_2_2025
+--line 1d --mode replay --run-dir C:\tmp\m20_wide\run` -> **exit 0**; the real row is
+rejected with `operand_line_not_canonical`. RAN: `.venv\Scripts\python.exe tools\check_ascii.py`
+-> **ASCII check OK**. RAN: `git diff --check` -> **clean**.
+
 
 ## Queued (ONE LINE each - do not spec ahead)
 
