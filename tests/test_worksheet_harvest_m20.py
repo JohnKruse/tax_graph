@@ -12,6 +12,7 @@ from jsonschema import validate
 from tax_graph.acquire.citation_check import check_citation_integrity
 from tax_graph.ingest.worksheet_harvest import (
     QDCGT_WORKSHEET_TARGET,
+    SOURCE_VERIFIED_WORKSHEET_TARGETS,
     WorksheetTarget,
     harvest_worksheet,
     harvest_worksheet_file,
@@ -52,6 +53,57 @@ def test_qdcgt_canary_discovers_lines_constants_citations_and_form_2555_routes()
     assert 0.15 in values
     assert 0.2 in values
     assert 100000 in values
+
+
+def test_source_verified_worksheets_harvest_from_rendered_text_with_model_end_lines() -> None:
+    expected_counts = {
+        "credit_limit_worksheet_form_2441_2025": 3,
+        "exemption_worksheet_form_6251_2025": 6,
+        "schedule_d_tax_worksheet_2025": 47,
+        "simplified_method_worksheet_2025": 11,
+        "28_percent_rate_gain_worksheet_2025": 7,
+        "social_security_benefits_worksheet_2025": 18,
+    }
+
+    for target in SOURCE_VERIFIED_WORKSHEET_TARGETS:
+        source = ROOT / ".cache" / "raw" / "2025" / f"{target.source_document_id}.txt"
+        result = harvest_worksheet_file(source, target)
+
+        assert result.ok, (target.document_id, result.findings)
+        assert len(result.line_nodes) == expected_counts[target.document_id]
+        assert result.start_anchor == target.start_anchor
+        assert result.worksheet_source_span is not None
+        assert all(node.source_quote for node in result.nodes)
+        assert all(citation.source_quote for citation in result.citations)
+        report = check_citation_integrity(
+            [citation.as_dict() for citation in result.citations],
+            text_dir=ROOT / ".cache" / "raw" / "2025",
+        )
+        assert report.ok
+
+
+def test_model_selected_end_line_does_not_require_form_1040_destination() -> None:
+    source = _worksheet_html(
+        """
+        <tr><td>1.</td><td>Enter an amount.</td></tr>
+        <tr><td>2.</td><td>Finish the worksheet here.</td></tr>
+        """,
+        anchor="model-end",
+        title="Model End Worksheet",
+    )
+    target = WorksheetTarget(
+        document_id="model_end_worksheet",
+        title="Model End Worksheet",
+        start_anchor="model-end",
+        end_line="2",
+        expected_line_count=2,
+    )
+
+    result = harvest_worksheet(source, target)
+
+    assert result.ok
+    assert len(result.line_nodes) == 2
+    assert not any(finding.kind == "terminal_destination_missing" for finding in result.findings)
 
 
 def test_qdcgt_canary_survives_rewritten_publink_ids_and_keeps_citations_verbatim() -> None:

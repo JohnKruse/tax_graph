@@ -292,9 +292,11 @@ def harvest_worksheet_command(
     default_target = QDCGT_WORKSHEET_TARGET
     manifest_entry = None
     if document_id is not None:
-        from tax_graph.acquire.manifest import load_manifest
+        manifest_path = root_path / "config" / "manifest.yaml"
+        if manifest_path.exists():
+            from tax_graph.acquire.manifest import load_manifest
 
-        manifest_entry = load_manifest(root=root_path).by_document_id().get(document_id)
+            manifest_entry = load_manifest(root=root_path).by_document_id().get(document_id)
         if manifest_entry is not None and manifest_entry.is_region:
             if source_document_id and source_document_id != manifest_entry.region_of:
                 print(

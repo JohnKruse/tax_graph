@@ -160,6 +160,34 @@ source-derived prompts were not authorized for external egress in this Worker co
 full suite; it exceeds the 600-second Worker command cap and the accepted known-red baseline
 remains Architect-side.
 
+**M20-S96 WORKER STATUS (2026-08-10):** Took the worksheet-as-documents item through the
+source-harvesting and nomination boundary. The harvester now accepts acquired rendered text as
+well as HTML, discovers worksheet titles in the rendered form, and uses a model-selected
+`end_line` when the extent is not justified by the legacy Form 1040 destination cue. Six
+source-backed 2025 targets are registered with addressable line counts: Credit Limit (3),
+Exemption (6), Schedule D Tax (47 across its continuation), Simplified Method (11), 28% Rate
+Gain (7), and Social Security Benefits (18). Every emitted object and citation keeps a source
+witness, and the existing QDCGT HTML path remains covered unchanged. Nomination acceptance uses
+the sibling rendered `.txt` for these source-backed extents while retaining the acquired parent
+HTML hash in the manifest; no graph, draft, review, or promoted artifact was changed. The CLI
+also permits an explicit ad-hoc harvest without a manifest file, preserving the existing
+manifest-aware region path.
+
+DEVIATION FOR ARCHITECT: the queued prose says the 28% Rate Gain worksheet has 15 lines, but the
+acquired source block headed `28% Rate Gain WorksheetLine 18` contains lines 1 through 7 and the
+harvest verifies 7. The registry follows the source and the mismatch remains open for review.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_m20.py tests\test_nomination_s59.py tests\test_cli.py tests\test_acquire_citation_check.py tests\test_derive_cells_m20.py tests\test_m20_s41.py tests\test_m20_s51.py tests\test_m20_s54.py -q` -> **131 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_doctor_m20.py tests\test_derive_cells_s30.py tests\test_m20_s41.py tests\test_m20_s51.py tests\test_m20_s54.py -q` -> **126 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_nomination_s59.py -q` -> **7 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: provider/corpus re-derivation; it would send source-derived prompts to an external
+provider and was not authorized. NOT RUN: full suite; it exceeds the 600-second Worker command
+cap and the accepted known-red baseline remains Architect-side. The remaining worksheet work is
+promotion/rederivation through the ordinary pipeline; this round only changes its source-backed
+harvesting input and nomination boundary.
+
 
 ## Queued (ONE LINE each - do not spec ahead)
 

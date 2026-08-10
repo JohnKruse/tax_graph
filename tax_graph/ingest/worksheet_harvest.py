@@ -32,13 +32,16 @@ class WorksheetTarget:
 
     ``start_anchor`` is retained as a source observation and compatibility
     input for existing targets.  The harvester never requires that generated
-    HTML id to remain unchanged across tax years.
+    HTML id to remain unchanged across tax years.  ``end_line`` records a
+    model-selected terminal line when the source extent does not use the
+    legacy destination cue.
     """
 
     document_id: str
     title: str
     start_anchor: str
     source_document_id: str | None = None
+    end_line: str | None = None
     expected_line_count: int | None = None
     expected_constant_count: int | None = None
     citation_groups: tuple[tuple[str, ...], ...] | None = None
@@ -65,6 +68,63 @@ QDCGT_WORKSHEET_TARGET = WorksheetTarget(
         ("23", "24", "25"),
         ("24",),
         ("25",),
+    ),
+)
+
+
+# These are source-backed extents measured from the 2025 rendered instructions.
+# ``end_line`` is an input from the extent decision (normally the extraction
+# model), not an identity anchor.  It is deliberately separate from the
+# printed title so a future year can choose a different extent without
+# changing the document identity rule.
+SOURCE_VERIFIED_WORKSHEET_TARGETS = (
+    WorksheetTarget(
+        document_id="credit_limit_worksheet_form_2441_2025",
+        title="Credit Limit Worksheet",
+        start_anchor="en_US_2023_publink1000106356",
+        source_document_id="instructions_form_2441_2025",
+        end_line="3",
+        expected_line_count=3,
+    ),
+    WorksheetTarget(
+        document_id="exemption_worksheet_form_6251_2025",
+        title="Exemption Worksheet",
+        start_anchor="w6427701",
+        source_document_id="instructions_form_6251_2025",
+        end_line="6",
+        expected_line_count=6,
+    ),
+    WorksheetTarget(
+        document_id="schedule_d_tax_worksheet_2025",
+        title="Schedule D Tax Worksheet",
+        start_anchor="en_US_2024_publink100045219",
+        source_document_id="instructions_schedule_d_2025",
+        end_line="47",
+        expected_line_count=47,
+    ),
+    WorksheetTarget(
+        document_id="simplified_method_worksheet_2025",
+        title="Simplified Method Worksheet",
+        start_anchor="en_US_2025_publink1000158351",
+        source_document_id="instructions_form_1040_2025",
+        end_line="11",
+        expected_line_count=11,
+    ),
+    WorksheetTarget(
+        document_id="28_percent_rate_gain_worksheet_2025",
+        title="28% Rate Gain Worksheet",
+        start_anchor="en_US_2024_publink100045221",
+        source_document_id="instructions_schedule_d_2025",
+        end_line="7",
+        expected_line_count=7,
+    ),
+    WorksheetTarget(
+        document_id="social_security_benefits_worksheet_2025",
+        title="Social Security Benefits Worksheet",
+        start_anchor="en_US_2025_publink1000158372",
+        source_document_id="instructions_form_1040_2025",
+        end_line="18",
+        expected_line_count=18,
     ),
 )
 
@@ -282,18 +342,20 @@ def harvest_worksheet(
     source_document_id: str | None = None,
     year: str | int = "2025",
 ) -> WorksheetHarvest:
-    """Harvest one worksheet from acquired HTML without writing any files.
+    """Harvest one worksheet from acquired HTML or rendered text.
 
     The source anchor selects where discovery begins.  The extent is accepted
-    only after the harvester sees contiguous numbered rows, a terminal row
-    that states its destination, and resolvable footnote markers.  A failed
-    check returns findings and no graph objects, so callers cannot accidentally
-    route a partial worksheet into promotion.
+    only after the harvester sees contiguous numbered rows and, for legacy
+    targets, a terminal row that states its destination.  A supplied
+    ``end_line`` is the model-selected extent decision and does not require
+    that legacy destination cue.  A failed check returns findings and no graph
+    objects, so callers cannot accidentally route a partial worksheet into
+    promotion.
     """
     resolved_target = _coerce_target(target)
     year_text = str(year)
     source_id = source_document_id or resolved_target.source_document_id or ""
-    headings = parse_headings(source_text)
+    headings = _source_headings(source_text)
     start_candidates = _find_start_headings(headings, resolved_target)
     if len(start_candidates) != 1:
         finding = _start_heading_finding(resolved_target, source_id, start_candidates)
@@ -305,12 +367,10 @@ def harvest_worksheet(
             observed_start_anchor=resolved_target.start_anchor,
         )
     start_heading = start_candidates[0]
-    observed_start_anchor = start_heading.anchor_id
+    observed_start_anchor = start_heading.anchor_id or resolved_target.start_anchor
 
-    parser = _RowParser(source_text)
-    parser.feed(source_text)
-    parser.close()
-    rows = tuple(row for row in parser.rows if row.start >= start_heading.source_start)
+    parser_rows = _source_rows(source_text)
+    rows = tuple(row for row in parser_rows if row.start >= start_heading.source_start)
     selected, line_rows, terminal_row, findings = _discover_extent(
         rows,
         source_text,
@@ -350,7 +410,10 @@ def harvest_worksheet(
         citation_for_line,
         line_rows,
     )
-    edges = [*parameter_edges, *_build_line_reference_edges(resolved_target, citation_for_line, line_rows)]
+    edges = [
+        *parameter_edges,
+        *_build_line_reference_edges(source_text, resolved_target, citation_for_line, line_rows),
+    ]
     nodes = [*nodes, *parameter_nodes]
     document = _document_object(resolved_target, year_text, source_id, start_heading)
     all_findings = list(_count_findings(resolved_target, line_rows, parameter_nodes))
@@ -387,7 +450,7 @@ def harvest_worksheet_file(
     source_document_id: str | None = None,
     year: str | int = "2025",
 ) -> WorksheetHarvest:
-    """Read an acquired HTML file and delegate to the pure text harvester."""
+    """Read an acquired HTML or rendered-text file and delegate to the harvester."""
     source_path = Path(path)
     return harvest_worksheet(
         source_path.read_text(encoding="ascii"),
@@ -395,6 +458,106 @@ def harvest_worksheet_file(
         source_document_id=source_document_id,
         year=year,
     )
+
+
+def _source_headings(source_text: str) -> tuple[InstructionHeading, ...]:
+    """Parse either acquired HTML headings or rendered-text headings."""
+    if "<" in source_text and ">" in source_text:
+        return parse_headings(source_text)
+    return _parse_text_headings(source_text)
+
+
+def _source_rows(source_text: str) -> tuple[_RawRow, ...]:
+    """Parse either HTML tables or numbered rows from rendered instruction text."""
+    if "<" in source_text and ">" in source_text:
+        parser = _RowParser(source_text)
+        parser.feed(source_text)
+        parser.close()
+        return tuple(parser.rows)
+    return _parse_text_rows(source_text)
+
+
+def _parse_text_headings(source_text: str) -> tuple[InstructionHeading, ...]:
+    """Parse Markdown-style headings from the acquired rendered text."""
+    headings: list[InstructionHeading] = []
+    offset = 0
+    after_page_marker = False
+    for line in source_text.splitlines(keepends=True):
+        raw = line.rstrip("\r\n")
+        stripped = raw.strip()
+        match = re.match(r"^(?P<marks>#{1,6})\s+(?P<title>.+?)\s*$", stripped)
+        if match:
+            headings.append(
+                InstructionHeading(
+                    level=len(match.group("marks")),
+                    anchor_id="",
+                    text=_normalize_text(match.group("title")),
+                    source_start=offset,
+                    source_end=offset + len(raw),
+                )
+            )
+            after_page_marker = stripped.lower().startswith("# page ")
+        elif after_page_marker and "worksheet" in stripped.lower():
+            headings.append(
+                InstructionHeading(
+                    level=2,
+                    anchor_id="",
+                    text=_normalize_text(stripped),
+                    source_start=offset,
+                    source_end=offset + len(raw),
+                )
+            )
+            after_page_marker = False
+        elif stripped:
+            after_page_marker = False
+        offset += len(line)
+    return tuple(headings)
+
+
+def _parse_text_rows(source_text: str) -> tuple[_RawRow, ...]:
+    """Parse numbered worksheet rows from the rendered source text."""
+    rows: list[_RawRow] = []
+    offset = 0
+    for line in source_text.splitlines(keepends=True):
+        raw = line.rstrip("\r\n")
+        stripped = raw.strip()
+        line_match = re.match(
+            r"^\s*(?:\|\s*)?(?P<line>[0-9]+[a-z]?)\s*[.)]\s*(?P<body>.*?)(?:\s*\|\s*)?$",
+            raw,
+            re.IGNORECASE,
+        )
+        if line_match:
+            token = line_match.group("line").lower()
+            body = line_match.group("body").strip()
+            if not body and re.fullmatch(r"\s*[0-9]+\s*", raw):
+                text = ""
+                cells = ("",)
+            else:
+                text = _normalize_text(f"{token}. {body}")
+                cells = (f"{token}.", body)
+        elif re.match(r"^\s*\|?\s*---(?:\s*\|\s*---)+", raw):
+            text = ""
+            cells = ("",)
+        elif re.fullmatch(r"\s*[0-9]+\s*", raw):
+            text = ""
+            cells = ("",)
+        elif stripped:
+            text = _normalize_text(stripped)
+            cells = (stripped,)
+        else:
+            text = ""
+            cells = ("",)
+        rows.append(
+            _RawRow(
+                table_id=1,
+                start=offset,
+                end=offset + len(raw),
+                cells=cells,
+                text=text,
+            )
+        )
+        offset += len(line)
+    return tuple(rows)
 
 
 def write_worksheet_draft(harvest: WorksheetHarvest, draft_dir: str | Path) -> Path:
@@ -450,7 +613,12 @@ def _find_start_headings(
 ) -> tuple[InstructionHeading, ...]:
     """Return headings whose normalized printed title identifies the worksheet."""
     wanted = _normalize_title(target.title)
-    return tuple(heading for heading in headings if _title_matches(heading.text, wanted))
+    return tuple(
+        heading
+        for heading in headings
+        if _title_matches(heading.text, wanted)
+        or _text_heading_matches(heading.text, wanted)
+    )
 
 
 def _find_start_heading(
@@ -479,6 +647,21 @@ def _title_matches(value: str, wanted: str) -> bool:
     if candidate == wanted:
         return True
     without_line_suffix = re.sub(r"\s+line\s+[0-9]+[a-z]?\s*$", "", candidate)
+    return without_line_suffix == wanted
+
+
+def _text_heading_matches(value: str, wanted: str) -> bool:
+    """Match rendered-text headings whose title runs into a line descriptor."""
+    candidate = _normalize_title(value)
+    if candidate == wanted:
+        return True
+    without_line_suffix = re.sub(
+        r"\bworksheet\s*lines?\b.*$",
+        "worksheet",
+        candidate,
+    ).strip()
+    if without_line_suffix == candidate:
+        without_line_suffix = re.split(r"\s+lines?\b", candidate, maxsplit=1)[0].strip()
     return without_line_suffix == wanted
 
 
@@ -525,6 +708,7 @@ def _discover_extent(
     table_id: int | None = None
     terminal: _RawRow | None = None
     after_terminal = False
+    requested_end_line = str(target.end_line or "").strip().lower() or None
     for row in rows:
         line = _row_line(row)
         if table_id is None and line == "1":
@@ -534,12 +718,22 @@ def _discover_extent(
                 break
             continue
         if after_terminal:
+            if not row.text:
+                break
+            if _is_text_extent_boundary(row.text):
+                break
             if line is None:
+                if not row.text:
+                    break
                 selected.append(row)
                 line_rows.setdefault(current_line or "", []).append(row)
                 continue
             break
         if line is None:
+            if not row.text:
+                continue
+            if _is_text_extent_boundary(row.text):
+                continue
             if current_line is not None:
                 selected.append(row)
                 line_rows[current_line].append(row)
@@ -556,10 +750,13 @@ def _discover_extent(
         current_line = line
         line_rows[line] = [row]
         selected.append(row)
-        if target.expected_line_count is not None and expected == target.expected_line_count:
+        if requested_end_line is not None and line == requested_end_line:
             terminal = row
             after_terminal = True
-        elif target.expected_line_count is None and _contains_terminal_destination((row,), source_text):
+        elif target.expected_line_count is not None and expected == target.expected_line_count:
+            terminal = row
+            after_terminal = True
+        elif requested_end_line is None and target.expected_line_count is None and _contains_terminal_destination((row,), source_text):
             terminal = row
             after_terminal = True
         expected += 1
@@ -571,8 +768,10 @@ def _discover_extent(
                 "worksheet start was found but no numbered table rows followed it",
             )
         )
-    terminal_line = str(target.expected_line_count or max((int(line) for line in line_rows), default=0))
-    if target.expected_line_count is None and terminal_line in line_rows:
+    terminal_line = requested_end_line or str(
+        target.expected_line_count or max((int(line) for line in line_rows), default=0)
+    )
+    if requested_end_line is None and target.expected_line_count is None and terminal_line in line_rows:
         candidate = line_rows[terminal_line]
         if _contains_terminal_destination(candidate, source_text):
             terminal = candidate[0]
@@ -584,7 +783,7 @@ def _discover_extent(
                 (f"observed_lines={','.join(line_rows)}",),
             )
         )
-    elif not _contains_terminal_destination(line_rows[terminal_line], source_text):
+    elif requested_end_line is None and not _contains_terminal_destination(line_rows[terminal_line], source_text):
         findings.append(
             WorksheetFinding(
                 "terminal_destination_missing",
@@ -602,7 +801,12 @@ def _discover_extent(
     if terminal is not None:
         footnote_rows = tuple(line_rows.get(terminal_line, ()))
         marker_text = " ".join(row.text for row in selected if row is not terminal or row.text)
-        markers = {"*"} if "*" in marker_text else set()
+        markers = (
+            {"*"}
+            if "<" in source_text
+            and re.search(r"(?<!\*)\*(?!\*)", marker_text)
+            else set()
+        )
         footnotes = {"*" for row in footnote_rows if row.text.lstrip().startswith("*")}
         missing = sorted(markers - footnotes)
         if missing:
@@ -614,6 +818,18 @@ def _discover_extent(
                 )
             )
     return tuple(selected), {key: tuple(value) for key, value in line_rows.items() if key}, terminal, findings
+
+
+def _is_text_extent_boundary(text: str) -> bool:
+    """Return whether rendered text marks the end of a selected worksheet row."""
+    lowered = text.strip().lower()
+    return (
+        lowered.startswith("# page ")
+        or lowered.startswith("## ")
+        or lowered.startswith("### ")
+        or lowered.startswith("keep for your record")
+        or lowered.endswith("worksheetcontinued")
+    )
 
 
 def _contains_terminal_destination(rows: Iterable[_RawRow], source_text: str) -> bool:
@@ -849,6 +1065,7 @@ def _constant_object(
 
 
 def _build_line_reference_edges(
+    source_text: str,
     target: WorksheetTarget,
     citation_for_line: Mapping[str, HarvestObject],
     line_rows: Mapping[str, tuple[_RawRow, ...]],
@@ -876,7 +1093,7 @@ def _build_line_reference_edges(
                         "relationship": "REFERENCES",
                         "citation_refs": [str(citation["citation_id"])],
                     },
-                    source_quote=_visible_text_from_rows(rows),
+                    source_quote=_visible_text(source_text[rows_first.start : rows_last.end]),
                     source_start=rows_first.start,
                     source_end=rows_last.end,
                     source_spans=((rows_first.start, rows_last.end),),
