@@ -152,6 +152,68 @@ def test_external_reference_writes_document_and_line_stubs_with_canonical_join(t
     jsonschema.Draft202012Validator(document_schema).validate(stub_document)
 
 
+def test_column_external_reference_writes_column_stub_with_canonical_join(tmp_path: Path) -> None:
+    root = tmp_path / "repo"
+    run = tmp_path / "run"
+    output = tmp_path / "candidate"
+    root.mkdir()
+    run.mkdir()
+    row = _external_row()
+    row["expression"] = {
+        "op": "COPY",
+        "args": [{
+            "form": "form_4255_2025",
+            "line": "2a",
+            "column": "l",
+        }],
+    }
+    row["validation_warnings"] = [{
+        "kind": "unresolved_external_reference",
+        "message": "cross-form operand names document form_4255_2025 line 2a column l outside the document inventory",
+        "hard": False,
+    }]
+    row["unresolved_external_nodes"] = [{
+        "node_id": "form_4255_2025_root_line_2a_column_l",
+        "document_id": "form_4255_2025",
+        "line": "2a",
+        "column": "l",
+        "label": row["form_face_after"],
+        "node_type": "fact",
+        "value_type": "currency",
+        "required": "required",
+        "status": "unresolved",
+        "citation_refs": ["face_15"],
+    }]
+    _write_report(run, "schedule_a_2025", [row], line_anchor_count=1)
+
+    write_candidate_from_run(
+        run,
+        output,
+        root=root,
+        expected_documents=["schedule_a_2025"],
+    )
+
+    stub_dir = output / "graph" / "2025" / "_drafts" / "form_4255_2025"
+    stub_document = yaml.safe_load((stub_dir / "documents.yaml").read_text(encoding="ascii"))[0]
+    stub_node = yaml.safe_load((stub_dir / "nodes.yaml").read_text(encoding="ascii"))[0]
+    assert stub_node["node_id"] == "form_4255_2025_root_line_2a_column_l"
+    assert stub_node["line"] == "2a"
+    assert stub_node["column"] == "l"
+    assert "line 2a, column (l)" in stub_node["stub_message"]
+    assert "line 2a, column (l)" in stub_document["stub_message"]
+    lifecycle = yaml.safe_load((output / "stub_lifecycle.yaml").read_text(encoding="ascii"))
+    assert lifecycle[0]["node_id"] == "form_4255_2025_root_line_2a_column_l"
+    assert lifecycle[0]["column"] == "l"
+    source_edges = yaml.safe_load(
+        (output / "graph" / "2025" / "_drafts" / "schedule_a_2025" / "edges.yaml").read_text(
+            encoding="ascii"
+        )
+    )
+    assert source_edges[0]["source"] == "form_4255_2025_root_line_2a_column_l"
+    candidate = yaml.safe_load((output / "candidate.yaml").read_text(encoding="ascii"))
+    assert candidate["graph_integrity"]["dangling_node_ids"] == []
+
+
 def test_inducted_document_marks_stub_ingested_and_writes_no_stub(tmp_path: Path) -> None:
     root = tmp_path / "repo"
     run = tmp_path / "run"

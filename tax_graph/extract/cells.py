@@ -890,8 +890,9 @@ def validate_cell_output(
     consult promoted graph artifacts, and the operand-in-quote check is only a
     warning because a concise quote can legitimately omit an operand that the
     instruction still establishes elsewhere in the packet.  Source-backed
-    operands also require a numeric printed-line address; the candidate writer
-    cannot turn a phrase such as ``2a, column (l)`` into a canonical node.
+    operands require a numeric printed-line address; a table column is carried
+    separately so a phrase such as ``2a, column (l)`` becomes line ``2a`` and
+    column ``l`` before graph projection.
     """
     hard: list[CellValidationIssue] = []
     warnings: list[CellValidationIssue] = []
@@ -1333,6 +1334,11 @@ def _format_decimal(value: Decimal) -> str:
 def _operand_line(node: Mapping[str, Any]) -> str:
     """Return an operand's normalized printed line."""
     return str(node.get("line") or "").strip().lower()
+
+
+def _operand_column(node: Mapping[str, Any]) -> str:
+    """Return an operand's normalized table-column token."""
+    return str(node.get("column") or "").strip().lower()
 
 
 def _is_zero_constant(node: Mapping[str, Any]) -> bool:
@@ -2059,13 +2065,25 @@ def _validate_tree_node(
     allow_role: bool = False,
 ) -> None:
     if "form" in node and "line" in node:
-        if set(node) not in ({"form", "line"}, {"form", "line", "role"}) or not str(node["form"]).strip() or not str(node["line"]).strip():
+        if set(node) not in (
+            {"form", "line"},
+            {"form", "line", "role"},
+            {"form", "line", "column"},
+            {"form", "line", "column", "role"},
+        ) or not str(node["form"]).strip() or not str(node["line"]).strip():
             raise ValueError("cross-form operand requires form and line")
+        _validate_operand_column(node)
         _validate_operand_role(node, allow_role=allow_role)
         return
     if "line" in node:
-        if set(node) not in ({"line"}, {"line", "role"}) or not str(node["line"]).strip():
+        if set(node) not in (
+            {"line"},
+            {"line", "role"},
+            {"line", "column"},
+            {"line", "column", "role"},
+        ) or not str(node["line"]).strip():
             raise ValueError("line operand must contain only a non-empty line")
+        _validate_operand_column(node)
         _validate_operand_role(node, allow_role=allow_role)
         return
     if "const" in node:
@@ -2177,6 +2195,15 @@ def _validate_operand_role(node: Mapping[str, Any], *, allow_role: bool) -> None
         raise ValueError("operand role must be a lowercase identifier")
 
 
+def _validate_operand_column(node: Mapping[str, Any]) -> None:
+    """Validate an optional table-column token on a line operand."""
+    if "column" not in node or node["column"] is None:
+        return
+    column = node["column"]
+    if not isinstance(column, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", column):
+        raise ValueError("operand column must be a lowercase identifier")
+
+
 def _is_predicate_expression(value: Any) -> bool:
     """Return whether an expression node produces a boolean predicate."""
     return (
@@ -2224,16 +2251,29 @@ def _expression_node_schema(operations: list[str], depth: int) -> dict[str, Any]
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["line", "role"],
-            "properties": {"line": {"type": "string", "minLength": 1}, "role": role},
+            "required": ["line", "column", "role"],
+            "properties": {
+                "line": {"type": "string", "minLength": 1},
+                "column": {
+                    "type": ["string", "null"],
+                    "pattern": "^[a-z][a-z0-9_]*$",
+                    "description": "Optional table column token, such as l for column (l).",
+                },
+                "role": role,
+            },
         },
         {
             "type": "object",
             "additionalProperties": False,
-            "required": ["form", "line", "role"],
+            "required": ["form", "line", "column", "role"],
             "properties": {
                 "form": {"type": "string", "minLength": 1},
                 "line": {"type": "string", "minLength": 1},
+                "column": {
+                    "type": ["string", "null"],
+                    "pattern": "^[a-z][a-z0-9_]*$",
+                    "description": "Optional table column token, such as l for column (l).",
+                },
                 "role": role,
             },
         },
@@ -2273,9 +2313,11 @@ INFIX = {"SUM": " + ", "SUBTRACT": " - ", "MULTIPLY": " * ", "DIVIDE": " / "}
 def render(node: Mapping[str, Any], in_infix: bool = False) -> str:
     """Render a validated expression tree for review and graph labels."""
     if "form" in node and "line" in node:
-        return f"{node['form']} line {node['line']}"
+        suffix = f", column ({_operand_column(node)})" if _operand_column(node) else ""
+        return f"{node['form']} line {node['line']}{suffix}"
     if "line" in node:
-        return f"line {node['line']}"
+        suffix = f", column ({_operand_column(node)})" if _operand_column(node) else ""
+        return f"line {node['line']}{suffix}"
     if "const" in node:
         value = node["const"]
         return str(int(value)) if float(value).is_integer() else str(value)
@@ -2423,9 +2465,17 @@ class _GraphConverter:
             self.findings.append(f"unrecognised operand: {operand}")
             return f"{self.base}_unresolved"
         if "form" in operand and "line" in operand:
-            return _canonical_line_node_id(str(operand["form"]), str(operand["line"]))
+            return _canonical_line_node_id(
+                str(operand["form"]),
+                str(operand["line"]),
+                _operand_column(operand),
+            )
         if "line" in operand:
-            return f"{self.form}_root_line_{_slug(str(operand['line']))}"
+            return _canonical_line_node_id(
+                self.form,
+                str(operand["line"]),
+                _operand_column(operand),
+            )
         if "const" in operand:
             value = operand["const"]
             suffix = "zero_floor" if float(value) == 0 else f"const_{str(value).replace('.', '_')}"
@@ -2551,6 +2601,7 @@ def _record_external_inputs(
     for operand in _expression_operands(expression):
         operand_form = str(operand.get("form") or "").strip().lower()
         operand_line = str(operand.get("line") or "").strip().lower()
+        operand_column = _operand_column(operand)
         if (
             not operand_form
             or not operand_line
@@ -2560,7 +2611,7 @@ def _record_external_inputs(
             or not re.fullmatch(r"[0-9]+[a-z]?", operand_line, re.IGNORECASE)
         ):
             continue
-        node_id = _canonical_external_operand_id(operand_form, operand_line)
+        node_id = _canonical_external_operand_id(operand_form, operand_line, operand_column)
         if node_id in seen:
             continue
         seen.add(node_id)
@@ -2568,6 +2619,7 @@ def _record_external_inputs(
             "node_id": node_id,
             "document_id": operand_form,
             "line": operand_line,
+            **({"column": operand_column} if operand_column else {}),
             "label": _external_reference_text(row, operand_form, operand_line),
             "node_type": "fact",
             "value_type": "currency",
@@ -2627,7 +2679,7 @@ def _external_reference_text(row: CellRecord, form: str, line: str) -> str:
     return next((source for source in sources if source), "")
 
 
-def _canonical_external_operand_id(form: str, line: str) -> str:
+def _canonical_external_operand_id(form: str, line: str, column: str = "") -> str:
     """Return the canonical line id for an operand's document.
 
     An operand's ``form`` is already a document id by contract, so this must
@@ -2638,7 +2690,7 @@ def _canonical_external_operand_id(form: str, line: str) -> str:
     with no year gained an ``_unknown`` segment.  Both then failed the graph
     writer's canonical-address check.  One builder, shared with ingestion.
     """
-    return _canonical_line_node_id(str(form), str(line))
+    return _canonical_line_node_id(str(form), str(line), str(column))
 
 
 def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
@@ -2705,9 +2757,12 @@ def _slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", str(value).lower()).strip("_") or "item"
 
 
-def _canonical_line_node_id(document_id: str, line: str) -> str:
-    """Return the canonical root-line id used by real and stub ingestion."""
-    return f"{_slug(document_id)}_root_line_{_slug(line)}"
+def _canonical_line_node_id(document_id: str, line: str, column: str = "") -> str:
+    """Return the canonical line or line-column id used by projection and stubs."""
+    node_id = f"{_slug(document_id)}_root_line_{_slug(line)}"
+    if str(column).strip():
+        node_id += f"_column_{_slug(column)}"
+    return node_id
 
 
 def _is_instruction_document_id(document_id: str) -> bool:

@@ -258,6 +258,95 @@ def test_operand_line_must_be_a_canonical_printed_line_address() -> None:
     assert [issue.kind for issue in _warnings] == ["unresolved_external_reference"]
 
 
+def test_column_qualified_operand_keeps_line_and_column_separate() -> None:
+    row = {
+        **_frame()[1],
+        "form_face_text": "Enter the amount from Form 4255, line 2a, column (l).",
+        "instruction_text": "Enter the amount from Form 4255, line 2a, column (l).",
+    }
+    expression = {
+        "op": "COPY",
+        "args": [{
+            "form": "form_4255_2025",
+            "line": "2a",
+            "column": "l",
+        }],
+    }
+    inventory = {
+        "document_ids": ["form_4255_2025"],
+        "printed_lines": {"form_4255_2025": ["2a"]},
+    }
+
+    hard, warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        expression,
+        row["form_face_text"],
+        reference_inventory=inventory,
+    )
+
+    assert hard == ()
+    assert warnings == ()
+    projection = expression_to_graph(
+        form="schedule_2_2025",
+        line="1d",
+        expression=expression,
+        evidence_text=row["form_face_text"],
+    )
+    assert projection.edges[0]["source"] == "form_4255_2025_root_line_2a_column_l"
+    assert render(expression) == "copy(form_4255_2025 line 2a, column (l))"
+
+
+def test_column_qualified_external_operand_is_recorded_for_candidate_stubbing() -> None:
+    face = "Enter the amount from Form 4255, line 2a, column (l)."
+    row = {
+        "form": "schedule_2_2025",
+        "line": "1d",
+        "label": "Recapture of net EPE",
+        "form_face_text": face,
+        "instruction_text": face,
+        "instruction_locator": "face_1d",
+        "metadata": {
+            "printed_lines": ["1d"],
+            "evidence_spans": [{"span_id": "face_1d", "text": face}],
+        },
+    }
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "<<line>>",
+        "secret",
+        client=FakeClient([{
+            "expression": {
+                "op": "COPY",
+                "args": [{
+                    "form": "form_4255_2025",
+                    "line": "2a",
+                    "column": "l",
+                }],
+            },
+            "quote": face,
+        }]),
+        reference_inventory={
+            "document_ids": ["schedule_2_2025"],
+            "printed_lines": {"schedule_2_2025": ["1d"]},
+            "node_ids": [],
+        },
+    )
+
+    assert result.rows[0].status == "derived"
+    assert result.rows[0].metadata["unresolved_external_nodes"] == [{
+        "node_id": "form_4255_2025_root_line_2a_column_l",
+        "document_id": "form_4255_2025",
+        "line": "2a",
+        "column": "l",
+        "label": face,
+        "node_type": "fact",
+        "value_type": "currency",
+        "required": "required",
+        "status": "unresolved",
+        "citation_refs": ["face_1d"],
+    }]
+
+
 def test_same_form_noncanonical_operand_line_is_named_without_repeated_form_evidence() -> None:
     row = {
         **_frame()[1],
@@ -609,9 +698,13 @@ def test_expression_schema_uses_nullable_role_for_ordinary_operands() -> None:
     leaves = [item for item in operands if "role" in item.get("properties", {})]
     assert all("role" in item["required"] for item in leaves)
     assert all(item["properties"]["role"]["type"] == ["string", "null"] for item in leaves)
-    validate_expression_tree({"op": "COPY", "args": [{"line": "11b", "role": None}]})
+    assert all("column" in item["required"] for item in leaves if "line" in item["properties"])
+    validate_expression_tree({"op": "COPY", "args": [{"line": "11b", "column": None, "role": None}]})
+    validate_expression_tree({"op": "COPY", "args": [{"line": "2a", "column": "l", "role": None}]})
+    with pytest.raises(ValueError, match="column must be a lowercase identifier"):
+        validate_expression_tree({"op": "COPY", "args": [{"line": "2a", "column": "(l)", "role": None}]})
     with pytest.raises(ValueError, match="only valid on LOOKUP_TABLE"):
-        validate_expression_tree({"op": "COPY", "args": [{"line": "11b", "role": "source"}]})
+        validate_expression_tree({"op": "COPY", "args": [{"line": "11b", "column": None, "role": "source"}]})
 
 
 def test_quote_span_schema_does_not_expose_source_identity() -> None:

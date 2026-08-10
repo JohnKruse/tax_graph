@@ -758,9 +758,21 @@ def _live_expression(
 def _normalize_candidate_expression(value: Mapping[str, Any], document_id: str) -> dict[str, Any]:
     if "op" not in value:
         if "form" in value and "line" in value:
-            return {"node": _line_node_id(str(value["form"]), str(value["line"]))}
+            return {
+                "node": _line_node_id(
+                    str(value["form"]),
+                    str(value["line"]),
+                    _column_value(value),
+                )
+            }
         if "line" in value:
-            return {"node": _line_node_id(document_id, str(value["line"]))}
+            return {
+                "node": _line_node_id(
+                    document_id,
+                    str(value["line"]),
+                    _column_value(value),
+                )
+            }
         if "const" in value:
             return {"const": value["const"]}
         if "node" in value:
@@ -792,13 +804,17 @@ def _expression_leaf_nodes(
         if "op" in node:
             continue
         if "line" in node and "form" not in node:
-            node_id = _line_node_id(document_id, str(node["line"]))
+            node_id = _line_node_id(
+                document_id,
+                str(node["line"]),
+                _column_value(node),
+            )
             doc = document_id
         elif "form" in node and "line" in node:
             doc = str(node["form"])
             if _slug(doc) != _slug(document_id):
                 continue
-            node_id = _line_node_id(doc, str(node["line"]))
+            node_id = _line_node_id(doc, str(node["line"]), _column_value(node))
         elif "node" in node:
             node_id = str(node["node"])
             doc = node_id.split("_root_line_", 1)[0]
@@ -818,6 +834,9 @@ def _expression_leaf_nodes(
             "required": "optional",
         }
         line = str(node.get("line") or "").strip().lower()
+        column = _column_value(node)
+        if column:
+            item["column"] = column
         role = (control_roles or {}).get(line) if doc == document_id else None
         if role:
             item["control_role"] = role
@@ -932,7 +951,8 @@ def _stub_registry(
                     raise ValueError(
                         f"instructions document {document_id} cannot be emitted as a stub"
                     )
-                node_id = _line_node_id(document_id, line)
+                column = _column_value(raw)
+                node_id = _line_node_id(document_id, line, column)
                 supplied_id = str(raw.get("node_id") or "").strip()
                 if supplied_id and supplied_id != node_id:
                     raise ValueError(
@@ -942,10 +962,14 @@ def _stub_registry(
                 node["node_id"] = node_id
                 node["document_id"] = document_id
                 node["line"] = line
+                if column:
+                    node["column"] = column
+                else:
+                    node.pop("column", None)
                 node.setdefault("status", "unresolved")
                 node.setdefault(
                     "stub_message",
-                    _stub_line_message(document_id, line),
+                    _stub_line_message(document_id, line, column),
                 )
                 records.setdefault(node_id, node)
     for raw in extra_nodes:
@@ -955,13 +979,18 @@ def _stub_registry(
         line = str(raw.get("line") or "").strip().lower()
         if not document_id or not line:
             continue
-        node_id = _line_node_id(document_id, line)
+        column = _column_value(raw)
+        node_id = _line_node_id(document_id, line, column)
         node = dict(raw)
         node["node_id"] = node_id
         node["document_id"] = document_id
         node["line"] = line
+        if column:
+            node["column"] = column
+        else:
+            node.pop("column", None)
         node.setdefault("status", "unresolved")
-        node.setdefault("stub_message", _stub_line_message(document_id, line))
+        node.setdefault("stub_message", _stub_line_message(document_id, line, column))
         records.setdefault(node_id, node)
 
     by_document: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -971,10 +1000,6 @@ def _stub_registry(
     lifecycle: list[dict[str, Any]] = []
     document_stubs: list[dict[str, Any]] = []
     for document_id in sorted(by_document):
-        lines = sorted(
-            {str(item["line"]) for item in by_document[document_id]},
-            key=_line_sort_key,
-        )
         # Decide per LINE, not per document.  A document being in the run does
         # NOT mean it supplied every line: `form_8949_2025` lines 1 and 2 are
         # structural skips and `schedule_d_2025` line 21 errored, so each
@@ -983,26 +1008,10 @@ def _stub_registry(
         # dangling, which the integrity check then rejected.
         emitted = present_node_ids if present_node_ids is not None else set()
         status = "ingested" if document_id in real_document_ids else "unresolved"
-        lifecycle.extend(
-            {
-                "document_id": document_id,
-                "line": line,
-                "node_id": _line_node_id(document_id, line),
-                "status": (
-                    "ingested"
-                    if _line_node_id(document_id, line) in emitted
-                    else status
-                ),
-                "message": (
-                    "canonical node is supplied by the inducted document"
-                    if _line_node_id(document_id, line) in emitted
-                    else _stub_line_message(document_id, line)
-                ),
-            }
-            for line in lines
-        )
+        items = sorted(by_document[document_id], key=_address_sort_key)
+        lifecycle.extend(_lifecycle_item(item, emitted=emitted, status=status) for item in items)
         if status == "unresolved":
-            document_stubs.append(_stub_document(document_id, year, lines))
+            document_stubs.append(_stub_document(document_id, year, items))
 
     return {
         "document_ids": [item["document_id"] for item in document_stubs],
@@ -1013,7 +1022,7 @@ def _stub_registry(
         "nodes": {
             document_id: sorted(
                 [item for item in items if str(item["node_id"]) not in emitted],
-                key=lambda item: _line_sort_key(str(item["line"])),
+                key=_address_sort_key,
             )
             for document_id, items in sorted(by_document.items())
             if document_id not in real_document_ids
@@ -1021,7 +1030,7 @@ def _stub_registry(
         "real_document_nodes": {
             document_id: sorted(
                 [item for item in items if str(item["node_id"]) not in emitted],
-                key=lambda item: _line_sort_key(str(item["line"])),
+                key=_address_sort_key,
             )
             for document_id, items in sorted(by_document.items())
             if document_id in real_document_ids
@@ -1031,9 +1040,16 @@ def _stub_registry(
     }
 
 
-def _stub_document(document_id: str, year: str, lines: Sequence[str]) -> dict[str, Any]:
+def _stub_document(
+    document_id: str,
+    year: str,
+    nodes: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
     title = _stub_title(document_id)
-    line_text = ", ".join(f"line {line}" for line in lines)
+    line_text = ", ".join(
+        _stub_address_text(str(item.get("line") or ""), _column_value(item))
+        for item in nodes
+    )
     return {
         "document_id": document_id,
         "title": title,
@@ -1054,11 +1070,52 @@ def _stub_title(document_id: str) -> str:
     return " ".join(word.upper() if word.isdigit() else word.title() for word in words)
 
 
-def _stub_line_message(document_id: str, line: str) -> str:
+def _stub_line_message(document_id: str, line: str, column: str = "") -> str:
+    address = _stub_address_text(line, column)
     return (
-        f"{_stub_title(document_id)}, line {line} must be ingested or supplied "
+        f"{_stub_title(document_id)}, {address} must be ingested or supplied "
         "by the caller before this value can be computed."
     )
+
+
+def _stub_address_text(line: str, column: str = "") -> str:
+    """Render a canonical source address for a document or node stub."""
+    return f"line {line}, column ({column})" if column else f"line {line}"
+
+
+def _column_value(value: Mapping[str, Any]) -> str:
+    """Return an optional normalized column from a source-backed record."""
+    return str(value.get("column") or "").strip().lower()
+
+
+def _address_sort_key(item: Mapping[str, Any]) -> tuple[tuple[int, str, int, str], str]:
+    """Sort source addresses by printed line and then by table column."""
+    return _line_sort_key(str(item.get("line") or "")), _column_value(item)
+
+
+def _lifecycle_item(
+    item: Mapping[str, Any],
+    *,
+    emitted: set[str],
+    status: str,
+) -> dict[str, Any]:
+    """Build one lifecycle record without adding null columns to legacy rows."""
+    node_id = str(item["node_id"])
+    column = _column_value(item)
+    result = {
+        "document_id": str(item["document_id"]),
+        "line": str(item["line"]),
+        "node_id": node_id,
+        "status": "ingested" if node_id in emitted else status,
+        "message": (
+            "canonical node is supplied by the inducted document"
+            if node_id in emitted
+            else str(item.get("stub_message") or _stub_line_message(str(item["document_id"]), str(item["line"]), column))
+        ),
+    }
+    if column:
+        result["column"] = column
+    return result
 
 
 def _write_stub_documents(registry: Mapping[str, Any], *, destination: Path) -> None:
@@ -1144,13 +1201,18 @@ def _stub_nodes_for_missing_operands(node_ids: Iterable[str]) -> list[dict[str, 
     """Turn missing canonical line endpoints into source-backed line stubs."""
     records: list[dict[str, Any]] = []
     for node_id in sorted(node_ids):
-        match = re.fullmatch(r"(?P<document>[a-z0-9_]+)_root_line_(?P<line>[0-9]+[a-z]?)", node_id)
+        match = re.fullmatch(
+            r"(?P<document>[a-z0-9_]+)_root_line_(?P<line>[0-9]+[a-z]?)"
+            r"(?:_column_(?P<column>[a-z][a-z0-9_]*))?",
+            node_id,
+        )
         if not match:
             raise ValueError(
                 f"candidate graph edge endpoint {node_id} is not a canonical line address"
             )
         document_id = match.group("document")
         line = match.group("line")
+        column = match.group("column") or ""
         if document_id.startswith("instructions_"):
             raise ValueError(
                 f"instructions document {document_id} cannot be emitted as a stub"
@@ -1160,6 +1222,7 @@ def _stub_nodes_for_missing_operands(node_ids: Iterable[str]) -> list[dict[str, 
                 "node_id": node_id,
                 "document_id": document_id,
                 "line": line,
+                **({"column": column} if column else {}),
                 "label": f"Source {node_id}",
                 "node_type": "fact",
                 "value_type": "currency",
@@ -1343,8 +1406,12 @@ def _add_rule(items: list[dict[str, Any]], seen: set[str], item: Mapping[str, An
     items.append(dict(item))
 
 
-def _line_node_id(document_id: str, line: str) -> str:
-    return f"{_slug(document_id)}_root_line_{_slug(line)}"
+def _line_node_id(document_id: str, line: str, column: str = "") -> str:
+    """Return the canonical root-line or root-line-column id for a source address."""
+    node_id = f"{_slug(document_id)}_root_line_{_slug(line)}"
+    if str(column).strip():
+        node_id += f"_column_{_slug(column)}"
+    return node_id
 
 
 def _slug(value: str) -> str:

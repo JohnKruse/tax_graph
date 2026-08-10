@@ -178,8 +178,9 @@ def test_all_prompt_templates_render_with_representative_values() -> None:
         assert "{form}" not in rendered
 
     cell_text = " ".join(rendered_prompts["derive_cells.md"].split())
-    assert 'For a sibling line on this same form, use only {"line": "7"}' in cell_text
-    assert 'Use {"form": "form_XXXX_2025", "line": "7"} only for a line on another form.' in cell_text
+    assert 'For a sibling line on this same form, use only {"line": "7", "column": null}' in cell_text
+    assert 'Use {"form": "form_XXXX_2025", "line": "7", "column": null} only for a line on another form.' in cell_text
+    assert 'For a table value, keep the printed line and column separate' in cell_text
     assert "form_1040_2025: Form 1040" in cell_text
     assert "document inventory (id: title)" in cell_text
     assert 'For a filer fact or other graph input, use {"node": "exact_graph_node_id"}' in cell_text

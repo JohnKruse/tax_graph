@@ -6,9 +6,13 @@ a nested expression. For a filer fact or other graph input, use
 {"node": "exact_graph_node_id"}; the id must already exist in the graph.
 Use only an id from the relevant graph-node inventory below. The inventory is
 intentionally limited to parameter and filer-fact nodes that a formula may use.
-For a sibling line on this same form, use only {"line": "7"}; never put the form
-id or the words "form" and "line" inside that line value. Use
-{"form": "form_XXXX_2025", "line": "7"} only for a line on another form.
+For a sibling line on this same form, use only {"line": "7", "column": null};
+never put the form id or the words "form" and "line" inside that line value.
+For a table value, keep the printed line and column separate, for example
+{"line": "2a", "column": "l"} for line 2a, column (l). Use
+{"form": "form_XXXX_2025", "line": "7", "column": null} only for a line on
+another form. A column token is lowercase and contains only letters, digits, and
+underscores; omit it by returning null when the operand is not in a table.
 Use only a form id from the document inventory below. An id outside that
 inventory is invalid even if the named document happens to exist elsewhere.
 Include the whole rule, including any floor or cap stated by the instructions.

@@ -143,6 +143,23 @@ NOT RUN: provider/corpus re-derivation; it would send source-derived prompts to 
 provider and was not authorized. NOT RUN: full suite; it exceeds the 600-second Worker command
 cap and the accepted known-red baseline remains Architect-side.
 
+**M20-S95 WORKER STATUS (2026-08-10):** Implemented the queued column-qualified operand slice.
+Line operands now carry a separate nullable lowercase `column` token in the provider schema and
+prompt, while the validator remains compatible with legacy reports that omit the field. Graph
+projection, external-input records, candidate normalization, and candidate line stubs preserve
+the column and use `*_root_line_<line>_column_<column>` source-address ids. Existing exact graph
+nodes remain available through the `node` operand; this slice adds the missing source-address
+plumbing and does not hand-author or promote any graph object.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s31.py tests\test_m20_s41.py tests\test_m20_s51.py tests\test_m20_s54.py tests\test_m20_s85_comparator.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_m20_s94.py tests\test_derive_cells_s30.py pilot\test_run_report.py -q` -> **145 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_doctor_m20.py tests\test_prompt_experiment_m20.py tests\test_operation_registry_m20.py -q` -> **34 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: provider/corpus re-derivation; the new wire contract needs a live provider leg, and
+source-derived prompts were not authorized for external egress in this Worker context. NOT RUN:
+full suite; it exceeds the 600-second Worker command cap and the accepted known-red baseline
+remains Architect-side.
+
 
 ## Queued (ONE LINE each - do not spec ahead)
 
