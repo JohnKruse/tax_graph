@@ -21,7 +21,13 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - THE WIDE RUN IS DONE. Run at `C:\tmp\m20_wide\run`, candidate attempt at
+**BALL: WORKER - M20-S93 (a line value that is not a line must fail at derivation). SMALL round,
+spec under Current round. Worksheets are staged as queue item 2, ready to promote after.**
+**JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably. Every queued item is a
+PIPELINE change - none is a per-cell human correction.**
+
+**THE WIDE RUN IS DONE AND IT ANSWERED THE BREADTH QUESTION: 356 of 410 anchors (86.8%) across 11
+documents for $0.2512, with the eight never-derived documents at 79-96%.** Quality generalized.
 `...\cand`.**
 
 **THE ANSWER TO YOUR OVERFITTING QUESTION: QUALITY GENERALIZED. 356 of 410 printed anchors (86.8%)
@@ -322,47 +328,45 @@ resolve now, and whether they resolve to the RIGHT line is unreviewed.
 
 ## Current round
 
-**M20-S92 SPECCED BY ARCHITECT (2026-08-09), JOHN'S DIRECTION. BUILD THE ROW DIAGNOSIS HARNESS.
-PILOT ONLY - NO PRODUCTION CODE CHANGES THIS ROUND.**
+**M20-S93 SPECCED BY ARCHITECT (2026-08-10). A LINE VALUE THAT IS NOT A LINE MUST FAIL AT
+DERIVATION, NOT AT THE GRAPH WRITER.** **REAL-PROJECT ROUND** - full-suite floor applies.
+**SMALL: this is one validator rule and its guards. Do not widen it.**
 
-**JOHN, 2026-08-09, and he is right:** we keep proposing code changes before doing simple
-diagnoses, and reading one failing row cost 15 minutes of manual digging. **Get all the odd rows
-diagnosed in a side effort BEFORE going back into the code.**
+**THE DEFECT: TWO STAGES DISAGREE ABOUT WHAT A LINE IS.** Derivation ACCEPTS an operand whose
+`line` is a phrase; the candidate writer then dies on it:
+`ValueError: candidate graph edge endpoint form_1040_nr_2025_root_line_tax_on_non_effectively_connected_income is not a canonical line address`
+**The wide corpus cannot be written at all today.** The writer's rule is already explicit -
+`candidate.py` requires `(?P<document>[a-z0-9_]+)_root_line_(?P<line>[0-9]+[a-z]?)`.
 
-**WHAT TO BUILD.** `pilot/row_bench.py` - given a document id and one or more line anchors, print
-**the exact prompt, the raw response, and the validation verdict** for that row, on one screen.
-**Standing pilot rules apply: standalone in `pilot/`, its own tests outside `tests/`, no CLI
-wiring.**
+**THE CHANGE.** `validate_cell_output` rejects an operand whose `line` does not match
+`[0-9]+[a-z]?`, as a NAMED hard finding - propose `operand_line_not_canonical`. **Same rule the
+writer already enforces, applied one stage earlier**, so a bad address is a reported row instead of
+a crash. **In-corpus operands keep `operand_not_printed`; that check is unchanged.**
 
-**THE ONE DESIGN CONSTRAINT THAT MATTERS: CALL THE REAL CODE.** Render the prompt through the same
-path `derive_cells` uses and validate through `validate_cell_output`. **A reimplementation proves
-nothing about production** - the whole point is that what you see is what the pipeline sent.
+**THE 11 ROWS IT CATCHES** (23 operand instances, from `C:\tmp\m20_wide\run`; **10 of the 11 are
+un`; **10 of the 11 are
+currently `derived`**):
+1040 `6b` -> `social_security_benefits_worksheet` line "taxable benefits";
+1040 `25c` -> `schedule_k1` line "withholding";
+Sch 2 `1d`/`1e`/`1y`/`19` -> `form_4255` lines "2a, column (l)", "1a, column (n)(1)" and 9 more;
+Sch 2 `17o` -> `form_1040_nr` line "tax on non-effectively connected income";
+Sch 3 `6f` -> `form_8936` line "Part III"; `6i` -> `form_8834` line "qualified electric vehicle
+credit"; `13c` -> `form_3800` line "6, column (j)";
+Sch A `5e` -> `state_and_local_tax_deduction_worksheet` line "amount".
 
-**TWO MODES.**
-- **replay** (default, free): re-validate a payload already recorded in a run's
-  `attempted_payloads` (added at `254877a`). **This is how validator changes get iterated without
-  spending a single call.**
-- **live**: call the provider for one row. **The Worker can now do this itself** - see the scoped
-  escape in AGENTS.md; python and HTTPS both verified working under it.
+**REPORT, DO NOT FIX, THE TWO CAUSES UNDERNEATH.** These rows are **correct answers with nowhere to
+put them** and both causes are queued separately: **column addresses** (the graph has them, the
+operand cannot say them) and **worksheets that are not documents yet**. **Do not add a `column`
+field in this round** - every column node id carries a PART and 8949 line numbers repeat across
+parts, so it needs design.
 
-**OUTPUT DISCIPLINE, John's words: "I don't want to see all the cruft."** Prompt, response,
-verdict. Nothing else unless asked. The response prints as the model returned it.
+**THE FLOOR.** `regenerate-candidate` completes on all 11 documents. The 64 protected rows stay.
+**Coverage WILL DROP by up to 10 rows and that is correct** - they were passing while unwritable.
+**Report the new number honestly; do not chase it back up.**
 
-**THE WORKING SET - 15 errored rows from `C:\tmp\m20_s91b\run`, grouped by the Architect. Confirm the
-grouping with the harness; do not fix anything yet.**
-
-| pattern | rows | what appears to be happening |
-| --- | --- | --- |
-| **validator reads an embedded WORKSHEET's steps as the row's rule** | 1040 `5a`, `5b`, `10`, `27a` | **CONFIRMED for 5a:** its 11,424-char instruction section embeds the Simplified Method Worksheet, whose own steps say "Subtract line 6 from line 2"; `subtract_direction` matches that and rejects `REQUIRE_INPUT(5a)`. **Those line numbers are the worksheet's, not the 1040's.** |
-| complaint does not identify what failed | 1040 `3b`, `35a` | `quote_not_verbatim` against a plain `REQUIRE_INPUT`; repair returns the same payload |
-| grammar cannot express the rule | 2441 `5`, 1040 `12e` | needs a nested op where a leaf is required |
-| document outside the corpus | 1040 `25c`, 6251 `8` | should be stubs; still hard failures |
-| never reached the model | 2441 `8`, 6251 `1a` | `incomplete_evidence` fires pre-call; **zero payloads recorded** |
-| line-format mismatch | 6251 `2h`, 6251 `2` | "column (g)" vs `g`; and `1040 line 1z` rejected as not printed **although `1z` IS in both our inventory and the live graph - UNEXPLAINED** |
-| self reference | 1040 `38` | repair invented `line 38 - line 34` |
-
-**DELIVERABLE: the harness, plus one screen per row for all 15, and a corrected grouping where the
-evidence disagrees with mine.** **No production fix, no prompt edit, no validator edit this round.**
+**TEST IT ONE CELL AT A TIME.** `rederive_cell('schedule_2_2025','1d')` and
+`pilot/row_bench.py --mode replay` reproduce these for cents. **Do not run a corpus derivation to
+check this round** (John, 2026-08-10).
 
 
 ## Queued (ONE LINE each - do not spec ahead)
@@ -374,11 +378,23 @@ evidence disagrees with mine.** **No production fix, no prompt edit, no validato
    (`line "2a, column (l)"` is not a canonical address). The graph ALREADY addresses columns -
    `form_8949_2025_part_i_line_1_column_d`, `form_2441_2025_part_ii_line_3_column_d` - only the
    derivation operand cannot say it. **Plumbing, not new capability.**
-2. **WORKSHEETS AS DOCUMENTS** (John's ruling, AGENTS.md). Clears the **9 rows that misread a
-   worksheet's steps as their own** AND the phrase-line references (1040 `6b`, Sch A `5e`).
-   **The AI finds the extent 6 for 6** (probe: `scratchpad/wsend.py`); the existing harvester is a
-   one-worksheet end-anchored tool that scored 0 for 6. **~20 boxes to harvest**, found by the
-   "Keep for Your Records" telltale. Watch 6251 `5`.
+2. **WORKSHEETS AS DOCUMENTS - NEXT ROUND, spec below is ready to promote** (John's ruling,
+   AGENTS.md). Clears the **9 rows that misread a worksheet's steps as their own** AND the
+   phrase-line references (1040 `6b`, Sch A `5e`).
+   **Shape:** find each box by the printed telltale **"Keep for Your Records"** (23 hits, 2 are
+   "Continued" pages, so ~21 boxes; **it is a FLOOR - the Credit Limit Worksheet lacks it**); hand
+   the AI the text from the title and let it say where the worksheet ENDS. **Do not restore
+   end-anchoring** - that is what made the current harvester a one-worksheet tool, and John already
+   ruled extent is AI-harvested. **The reusable cue the model itself gave: a worksheet's LAST step
+   names where its answer goes** ("Also enter this amount on Form 2441, line 10").
+   **Proven 6 for 6** (`scratchpad/wsend.py`): Credit Limit 3 steps (verified against the source),
+   6251 Exemption 6, Schedule D Tax 47, Simplified Method 11, 28% Rate Gain 15, Social Security
+   Benefits 18. **Only Credit Limit is source-verified - check the rest against the PDFs.**
+   **Floor:** each harvested worksheet is a document with addressable lines; 1040 `6b` resolves to
+   a real worksheet line; the 9 misread rows stop misreading. **Watch 6251 `5`** - the Exemption
+   Worksheet would replace a lookup table that already derives correctly.
+   **Existing pieces: `harvest-worksheet` (title-selected, writes to `_drafts`), and QDCGT already
+   modelled with 39 nodes as the reference shape.**
 3. **STUBS FOR OUT-OF-CORPUS FORMS, and fix the `Form(s) X` alias.** 1040 `25c` hard-fails because
    the evidence says "Form(s) W-2G" and the matcher builds `form w2g`. Same "(s)" quirk that spared
    1040 `1a` from the reference guard.
