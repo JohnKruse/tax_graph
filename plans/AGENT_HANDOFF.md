@@ -363,6 +363,20 @@ rows it legitimately fixed. **Prove it on a real run dir, not a fixture.** Verif
 the stored run carries stub ids minted by the OLD builder. **A broken-only pass over
 `C:\tmp\m20_s93\run` is how we finish S93 for four minutes instead of thirty-five.**
 
+**M20-S93 WORKER VERIFICATION (2026-08-10):** The derivation guard is present at `cb57f8e` and
+the canonical external line-id correction is at `b1cc7b8`. Added regression coverage for both
+same-form noncanonical phrases and source-backed worksheet stub ids. The real S93 candidate
+regeneration still stops on the OLD stored stub id, exactly as the S94 seam predicts; do not
+hand-edit that promoted run artifact. The required next action is the planned broken-only
+re-derivation, then candidate regeneration and `pilot/run_report.py`.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py -q` -> **76 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py -q` -> **92 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+RAN: `.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir C:\tmp\m20_s93\run --output-dir C:\Users\devbox\.codex\visualizations\2026\08\10\019feafa-3685-7523-a9c7-72fa3f22a1ce\m20_s93_candidate --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025 --expected-document schedule_a_2025 --expected-document schedule_1a_2025 --expected-document schedule_1_2025 --expected-document schedule_2_2025 --expected-document schedule_3_2025 --expected-document schedule_b_2025 --expected-document schedule_d_2025 --expected-document form_8949_2025` -> **exit 1**, `ValueError: external stub id form_social_security_benefits_worksheet_2025_root_line_18 does not match canonical id social_security_benefits_worksheet_2025_root_line_18`.
+NOT RUN: full suite and provider/corpus re-derivation; the S93 acceptance seam requires the S94 broken-only implementation and a network-capable provider leg.
+
 
 ## Queued (ONE LINE each - do not spec ahead)
 

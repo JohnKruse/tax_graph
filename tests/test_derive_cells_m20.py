@@ -258,6 +258,32 @@ def test_operand_line_must_be_a_canonical_printed_line_address() -> None:
     assert [issue.kind for issue in _warnings] == ["unresolved_external_reference"]
 
 
+def test_same_form_noncanonical_operand_line_is_named_without_repeated_form_evidence() -> None:
+    row = {
+        **_frame()[1],
+        "form_face_text": "Enter the amount from line 21.",
+        "instruction_text": "Enter the amount from line 21.",
+    }
+
+    hard, _warnings = validate_cell_output(
+        CellFrame.from_rows([row]).rows[0],
+        {
+            "op": "COPY",
+            "args": [{
+                "form": "form_1040_2025",
+                "line": "taxable benefits",
+            }],
+        },
+        row["form_face_text"],
+        reference_inventory={
+            "document_ids": ["form_1040_2025"],
+            "printed_lines": {"form_1040_2025": ["21", "22"]},
+        },
+    )
+
+    assert "operand_line_not_canonical" in {issue.kind for issue in hard}
+
+
 def test_noncanonical_operand_line_is_named_after_repair_still_fails() -> None:
     row = {
         **_frame()[1],
@@ -1148,6 +1174,53 @@ def test_named_unseen_form_reference_mints_unresolved_external_node() -> None:
         "status": "unresolved",
         "citation_refs": ["face_15"],
     }]
+
+
+def test_named_unseen_worksheet_reference_uses_document_id_for_stub() -> None:
+    face = (
+        "Use the Social Security Benefits Worksheet and enter the amount from line 18 "
+        "of that worksheet."
+    )
+    row = {
+        "form": "form_1040_2025",
+        "line": "6b",
+        "label": "Taxable social security benefits",
+        "form_face_text": face,
+        "instruction_text": face,
+        "instruction_locator": "face_6b",
+        "metadata": {
+            "printed_lines": ["6b"],
+            "evidence_spans": [{"span_id": "face_6b", "text": face}],
+        },
+    }
+    client = FakeClient([{
+        "expression": {
+            "op": "COPY",
+            "args": [{
+                "form": "social_security_benefits_worksheet_2025",
+                "line": "18",
+            }],
+        },
+        "quote": face,
+    }])
+
+    result = derive_cells(
+        CellFrame.from_rows([row]),
+        "<<graph_nodes>>",
+        "secret",
+        client=client,
+        reference_inventory={
+            "document_ids": ["form_1040_2025"],
+            "printed_lines": {"form_1040_2025": ["6b"]},
+            "node_ids": [],
+            "graph_nodes": [],
+        },
+    )
+
+    assert result.rows[0].status == "derived"
+    assert result.rows[0].metadata["unresolved_external_nodes"][0]["node_id"] == (
+        "social_security_benefits_worksheet_2025_root_line_18"
+    )
 
 
 def test_cross_form_operands_fail_closed_against_document_and_line_inventory() -> None:
