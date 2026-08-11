@@ -128,8 +128,23 @@ normalized title into ONE harvest in source order; the `continued` marker become
 not the rule.
 **Ambiguity is a finding, not a guess:** if two same-titled tables both start at printed line 1,
 say so and refuse the merge rather than concatenating.
-**WATCH ON 2441:** two tables both titled `Worksheet A.Worksheet for 2024 Expenses Paid in 2025`.
-Confirm they collapse to one document, or print why they should not.
+
+**THE 2441 WATCH ITEM IS ANSWERED, AND IT IS THE BEST FIXTURE IN THE CORPUS (Architect ran the
+live pass 2026-08-11; 4 tables, cached, DO NOT RE-PAY).** Both tables titled
+`Worksheet A.Worksheet for 2024 Expenses Paid in 2025` are **one worksheet split into a caption and
+a body.** Table 3 is 598 bytes and holds only the banner - *"Use this worksheet to figure the credit
+you may claim for 2024 expenses paid in 2025."* - with **no numbered rows at all**. Table 4 is
+15,164 bytes and holds lines 1..N. **They collapse.** The ambiguity guard does not misfire here:
+one table has no numbered rows, so there is no competing line 1.
+**AND 2441 REPRODUCES DEFECTS 4 AND 5 TOGETHER IN MINIATURE.** Measured, verbatim from the run:
+Credit Limit harvests (3 lines, oracle agree), then table 3 is `blocked
+worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025` with `missing_numbered_rows` and
+`missing_terminal_line`, and **the command returns 1 there - table 4 is never attempted and never
+printed.** Note both tables derive the SAME document id, so had table 3 harvested, table 4 would
+have silently overwritten it. **Use 2441 as the working fixture; the 1040 is the scale check.**
+Note also that `missing_numbered_rows` here is not a defect of table 3 - it is the symptom of
+treating a caption as a standalone worksheet, and **the merge makes the finding disappear rather
+than needing to be suppressed.**
 
 **4. EMISSION REQUIRES A PRINTED TITLE, and everything else is INVENTORY.** The classifier called
 21 tables across 7 EIC `Step N` blocks `worksheet`. Some genuinely compute
@@ -151,9 +166,9 @@ it.
 
 **WHO RUNS WHAT. The Worker's floor needs NO network call - the 1040 classifications are already
 paid for and cached.** `.cache/raw/2025/instructions_form_1040_2025.worksheet_tables.yaml` holds
-**92 unique fingerprints** (50 layout / 14 lookup_table / 28 worksheet) and Schedule D's holds 5.
-**DO NOT re-pay for them and do not delete that file.** The classifier leg stays the Architect's;
-2441 is the one booklet not yet cached.
+**92 unique fingerprints** (50 layout / 14 lookup_table / 28 worksheet), Schedule D's holds 5, and
+2441's holds 4. **DO NOT re-pay for them and do not delete those files.** The classifier leg stays
+the Architect's. **Every booklet S98's floor names is now cached, so the whole round is offline.**
 
 **THE FLOOR. Prove it on the acquired corpus, not a fixture. No network call is required.**
 - `harvest-worksheet --source-document-id instructions_form_1040_2025` **attempts every discovered
@@ -161,8 +176,12 @@ paid for and cached.** `.cache/raw/2025/instructions_form_1040_2025.worksheet_ta
   with a reason. **Zero worksheets vanish**; discovered == written + refused, printed as that sum.
 - **The 24 same-titled 1040 tables collapse to 14 worksheets**, Simplified Method among them, and
   **no two emitted worksheets share a document id**.
-- **Schedule D still returns 5 classifications and 4 emitted worksheets**, and Schedule B still
-  returns zero worksheets without error. S97's behaviour does not regress.
+- **2441 returns 4 classifications and TWO emitted worksheets** - Credit Limit at 3 lines, and one
+  merged Worksheet A carrying table 4's numbered lines. `Line 19` stays `layout` and is reported as
+  classified-not-emitted. **Nothing exits early**; today it dies after the first worksheet.
+- **Schedule D still returns 5 classifications and 4 emitted worksheets** with extents
+  13 / 7 / 18 / 47 and `oracle=agree` on every one, and Schedule B still returns zero worksheets
+  without error. S97's behaviour does not regress. Re-verified by the Architect 2026-08-11.
 - **Every classified table appears in exactly one bucket.** The EIC `Step N` blocks appear as
   refusals naming the missing printed title, not as emitted documents and not as silence.
 - The six previously registered extents still reproduce with no registry: 3 / 6 / 47 / 11 / 7 / 18.
