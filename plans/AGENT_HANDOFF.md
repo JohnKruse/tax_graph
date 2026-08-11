@@ -21,50 +21,62 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX - M20-S100 IS SPECCED BELOW. Pick it up. The Worker slice is fully offline;
-only the `derive_cells` pass at the end is the Architect's.**
+**BALL: CODEX - S100 IS A REWORK, AND IT IS SMALL. The work is right and the graph is valid; the
+round changed the graph's shape without updating the five contracts that pin it.**
 
-**S99 ACCEPTED (`26059ef`, Architect, 2026-08-11). Verified by running the corpus, not by reading
-the report.** **The 1040 goes from 5 written to 13** - `discovered=17; written=13; refused=4`, with
-**28 windows observed, not 200**, so the gating correction landed. Both hard cases are fixed:
-**Simplified Method harvests 11 lines** from tables 43-46 with 45 and 46 recorded as parameter
-grids and the oracle agreeing, so `expected line 12, found 300` is gone; **IRA Deduction merges
-tables 184-186 into one worksheet spanning `1a` through `12`**. **Standard Deduction harvests from
-49-50 and does NOT absorb t51**, the clause added after the Architect asserted the opposite.
-2441 stays 2 of 2, Schedule D stays 4 of 4 at 13/7/18/47, Schedule B stays a clean zero, all exit 0.
-**The overlap rule works and is not theoretical:** six `window_claim_overlap` findings on the 1040
-and one on 2441 at table 4, each resolved first-anchor-wins and PRINTED.
-**FULL SUITE: 17 failed, 937 passed, 8 skipped, 1 xfailed - the SAME 17 test ids as the accepted
-baseline, eight more passing, zero new reds.**
+**WHAT IS RIGHT, VERIFIED BY RUNNING IT (Architect, 2026-08-11).**
+- **All 19 region documents load** through `load_document_input` with correct parents - 13 from the
+  1040, 4 from Schedule D, 2 from 2441. **Zero failures.**
+- **`graph/2025/` shows worksheet documents ONLY** - 19 documents, 19 nodes, 19 citations, and **no
+  form or schedule file touched.** The lifted protected-set clause was honoured exactly.
+- **`test_current_2025_graph_validates` PASSES.** The promoted graph is valid. This is the fact that
+  makes the reds below bookkeeping rather than damage.
+- **The dead `qualified_dividends_capital_gain_tax_worksheet` entry is gone**, reconciled to the
+  harvester's id, and `pilot/review_panel.py` went from **0 to 32** mentions of worksheets.
+- **The region ruling held:** `_load_region_document_input` assembles the face from promoted nodes
+  and citations, never re-slices the parent text, and writes no synthetic raw-store artifact.
+- **Self-serve closes:** harvest mints the manifest region entry, `promote-worksheet` promotes, and
+  **no Python edit is needed to add a worksheet.**
 
-**THE ADVISORY-FINDINGS CHANGE IS WHAT MOVED THE NUMBER**, not the segmentation. Six oracle
-disagreements and a footnote marker now ride along on worksheets that harvest instead of refusing
-them. **Only ONE genuine structural failure remains on the 1040**: Foreign Earned Income, whose
-numbering restarts at 1 partway through, which looks like a nested `<table>`.
+**AND THE DERIVATION LEG IS THE BEST RESULT THIS PROJECT HAS PRODUCED (Architect, live, 2026-08-11).
+214 lines across all 19 worksheets, 201 RULED - 94%.** Schedule D Tax Worksheet **47 of 47**,
+Capital Loss Carryover 13 of 13, Worksheet A 17 of 17, Standard Deduction 7 of 7. Simplified Method
+emits `DIVIDE(2,3)`, `MULTIPLY(4,12)`, `MIN(5,7)`, `SUBTRACT(2,10)` - **HTML tables to executable
+rules with no hand authoring anywhere in the chain.**
+**The 13 failures are 4 families and only ONE is new:** `operand_not_printed` 5 (the known
+promoted-node inventory gap - `1z`, `2a`, `7a` on the 1040), `operand_document_not_found` 5,
+`self_reference` 2, `operand_inventory_unavailable` 1.
 
-**THE MEASURED RULING THIS ROUND PRODUCED IS PINNED IN `AGENTS.md`:** classification and extent need
-different context scopes and no single call has both. **The Architect proposed collapsing them twice
-and was wrong twice**; the second attempt was disproved by the very seeding pass that was preparing
-it, and Codex had already built the wrong variant before the correction landed.
+**THE REWORK. FIVE PINNED CONTRACTS THAT THIS ROUND LEGITIMATELY MOVED. Full suite is 22 failed /
+936 passed against the accepted 17-red baseline; the 17 are unchanged.**
+1. `tests/test_acquire_manifest.py::test_manifest_loads_seeded_source_docs` - `len == 24`, now 42.
+2. `tests/test_acquire_manifest.py::test_manifest_loads_form_instruction_relationships` -
+   **`KeyError: 'qualified_dividends_capital_gain_tax_worksheet'`. This test asserts the DEAD id the
+   round correctly deleted**; point it at `qualified_dividends_and_capital_gain_tax_worksheet_2025`.
+3. `tests/test_graph_validator.py::test_current_documents_have_role_axis_classes` - `len == 17`,
+   now 36. **The count assert fires BEFORE the role-axis checks, so those never ran** - confirm the
+   document_class set is still exactly `{return, information_return, instructions, intake}` after
+   fixing the count. Worksheets carry `document_class: return`, so it should hold; prove it.
+4. `tests/test_m20_s41.py::test_reconcile_reports_named_raw_orphans_and_missing_manifest_text` - the
+   expected document-id tuple now includes the worksheets.
+5. `tests/test_address_contract_m15r.py::test_r1_baseline_matches_unmodified_project_graph` -
+   **THIS ONE NEEDS JUDGEMENT, NOT A NUMBER BUMP.** It is an address-contract baseline. Say in the
+   round report whether re-baselining is correct here or whether the contract is meant to be
+   immutable and worksheets should be excluded from it.
 
-**THE GAP THAT NOW MATTERS, AND IT IS WHY THE NEXT ROUND IS NOT THE HARVESTER (Architect, verified
-2026-08-11).** `harvest-worksheet` writes drafts **"without promotion"** - its own docstring - and
-`pilot/review_panel.py` contains **ZERO** mentions of worksheets. **So three rounds have produced 19
-worksheet documents across the corpus that nothing derives cells from and no human can see.**
-Promotion and rederivation were correctly held out of S97, S98, and S99; they are now the binding
-constraint. **RECOMMENDED NEXT: promote the harvested worksheets and derive them**, which is what
-turns this work into coverage. Queue item 3 (mark the core set, acquire Form 1116) is the
-alternative and is John's standing priority; item 4 (a refusal reaching a human) is now partly
-served by the persisted `worksheet-discovery.yaml` but not by the review surface.
-
-**NEW FINDING, BIGGER THAN THIS ROUND: 170 OF 404 PRINTED ANCHORS (42%) DERIVE WITH AN EMPTY
-INSTRUCTION PACKET.** Queued as item 1; ordering is John's call.
+**A RATIONALE THE ARCHITECT COULD NOT SUPPORT, and it is a one-line decision either way.** Edges
+were excluded from promotion on the grounds that promoting them "would make the runtime treat an
+unruled worksheet field as computed". **The harvested edges are `REFERENCES`, and that relationship
+is minted in `worksheet_harvest.py` and read NOWHERE in `tax_graph/`** - the only other matches are
+SQL foreign keys. The exclusion is harmless but its reason does not hold, and the harvested
+structural relationships now exist only in `_drafts`. **Either promote them or stop minting them;
+do not leave a dead relationship being written to disk.**
 
 
 ## Current round
 
 **M20-S100 SPECCED BY ARCHITECT (2026-08-11). THE HARVESTED WORKSHEETS BECOME DERIVABLE DOCUMENTS.**
-**REAL-PROJECT ROUND** - full-suite floor applies. John chose this over queue item 3 on 2026-08-11.
+**REAL-PROJECT ROUND** - full-suite floor applies. John chose this over queue item 4 on 2026-08-11.
 
 **WHY.** S97, S98, and S99 produce **19 worksheet documents** across the corpus - 13 from the 1040,
 4 from Schedule D, 2 from 2441 - and **nothing derives cells from them and no human can see them.**
@@ -78,7 +90,7 @@ nothing until a worksheet produces cells.**
 - **The manifest already has a `region` document shape** (`schemas/manifest.schema.json`): a
   `oneOf` where a document carries EITHER a `url` OR a `region` of
   `{source_document_id, title, parent_sha256}`, and `kind` already includes `worksheet`. **No schema
-  change is required** - this is NOT the `additionalProperties` problem from queue item 3.
+  change is required** - this is NOT the `additionalProperties` problem from queue item 4.
 - **The harvested drafts already carry what derivation needs:** per-line nodes, edges, and
   citations whose `quoted_text` is the verbatim printed row and whose `locator` is
   `source_document=<parent>;worksheet=<title>;lines=<n>`. **The locators are SEMANTIC, not byte
@@ -111,7 +123,7 @@ acquired; minting a synthetic artifact there would make a derived product look l
 4. **The dead `qualified_dividends_capital_gain_tax_worksheet` entry is reconciled**, not left
    beside its harvested twin.
 5. **The review surface knows what a worksheet is** - a promoted worksheet and a refused one both
-   reach `pilot/review_panel.py`. This is queue item 4 and it is in scope here.
+   reach `pilot/review_panel.py`. This is queue item 5 and it is in scope here.
 
 **THE PROTECTED SET MOVES THIS ROUND, AND THAT IS DELIBERATE.** Every floor since S95 has required
 `graph/2025/{nodes,edges,rules}/` and `field_maps/` to be byte-identical. **Promotion writes there
@@ -140,8 +152,8 @@ explicitly in the round report** so the change is reviewable rather than inciden
 - **A refused worksheet appears in the review surface with its reason.**
 
 **OUT OF SCOPE.**
-- **The untitled EIC computations.** Still queue item 2; still refused with a reason.
-- **The two S99 reporting nits** (empty-oracle label, t183 counted as a refusal). Queue item 12.
+- **The untitled EIC computations.** Still queue item 3; still refused with a reason.
+- **The two S99 reporting nits** (empty-oracle label, t183 counted as a refusal). Queue item 13.
 - **Foreign Earned Income's nested-table restart.** The one real structural harvest failure left;
   it does not block promoting the 13 that work.
 
@@ -178,7 +190,19 @@ NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architec
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
 
-1. **170 OF 404 PRINTED ANCHORS (42%) DERIVE WITH AN EMPTY INSTRUCTION PACKET** (Architect,
+1. **PRIOR-YEAR DOCUMENTS ARE A CATEGORY THE GRAPH HAS NO CONCEPT OF** (Architect, measured
+   2026-08-11 on the live derivation of the promoted worksheets). Simplified Method lines 2 and 6
+   fail with `operand_document_not_found: simplified_method_worksheet_2024` because the printed row
+   says *"enter the amount from line 4 of last year's worksheet"* - **the model read it correctly
+   and the graph has nowhere to put it.** This recurs anywhere a worksheet carries a balance
+   forward. **It is NOT the out-of-corpus stub case** (item 6): the document exists, it is just a
+   different tax year. Decide whether a prior-year reference is an input the filer supplies, a
+   distinct document, or an edge to the same document in another year.
+   **The same run named four genuinely missing documents:** `schedule_se_2025` and `form_6252_2025`
+   are real IRS forms absent from the manifest (the Form 1116 case in item 4); `form_w2_2025` and
+   `form_1099_g_2025` are information returns and belong to the stub work.
+
+2. **170 OF 404 PRINTED ANCHORS (42%) DERIVE WITH AN EMPTY INSTRUCTION PACKET** (Architect,
    measured 2026-08-11 on the production path, `for_line` at `cells.py:291`). Per form empty:
    6251 61%, schedule_d 54%, 2441 45%, schedule_a 32%, 1040 29%, schedule_3 23%, schedule_2 16%,
    schedule_1 13% - and **schedule_1a and schedule_b are 100%, all 56 anchors, zero sections**.
@@ -197,7 +221,7 @@ NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architec
    `require_input`. The form face is "Alternative minimum tax foreign tax credit", which comes from
    an AMT Form 1116. Arm A failed HONESTLY with `operand_document_not_found: form_1116_2025`;
    arm B went green by declaring the value filer-supplied and **dropping the cross-form rule**. That
-   is the wrong-but-passing shape AGENTS.md already warns about. Its real fix is queue item 3.
+   is the wrong-but-passing shape AGENTS.md already warns about. Its real fix is queue item 4.
    **ONE ARM INVALID:** `schedule_b_2025` `5` arm B died on `missing_instruction_locator` - my
    injected text carried no locator, so that row measured my harness, not the question.
    **THREE FAIL FOR REASONS INSTRUCTIONS CANNOT TOUCH:** `form_6251_2025` `1a` and
@@ -208,7 +232,7 @@ NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architec
    **CAVEAT, stated so nobody over-reads it:** n=6, one arm invalidated, one sample per arm and no
    repeat runs. Indicative, not conclusive. **It is enough to keep this behind the worksheet line,
    not enough to close the item** - 170 anchors still derive blind and that remains a real defect.
-2. **UNTITLED COMPUTATIONS THAT CARRY WORKSHEET WEIGHT** (Architect, 2026-08-11). The EIC
+3. **UNTITLED COMPUTATIONS THAT CARRY WORKSHEET WEIGHT** (Architect, 2026-08-11). The EIC
    `## Step N` blocks compute real quantities - `Step 2 Investment Income` sums 1040 `2a`+`2b`+`3b`
    +`7a` with a floor rule and an $11,950 threshold - but have no title and no local line numbers,
    and `Step 5 Earned Income` contains an **untitled worksheet** whose lines 1-5 interleave with the
@@ -217,7 +241,7 @@ NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architec
    **Proposed rule: a printed address decides.** Titled and line-numbered becomes a document;
    untitled becomes an intermediate node owned by the line it feeds. **The false-positive fixture is
    Schedule D `Wash Sales`**, a numbered list 1-4 that is conditions, not arithmetic.
-3. **MARK THE CORE SET IN THE MANIFEST, AND ACQUIRE FORM 1116** (John, 2026-08-11).
+4. **MARK THE CORE SET IN THE MANIFEST, AND ACQUIRE FORM 1116** (John, 2026-08-11).
    **JOHN'S RULING:** core is Tier 1 + Tier 2 of `docs/tax_graph_requirements.md` section 9,
    **PLUS Schedule A, Schedule 1-A, and Form 6251**. **Form 2441 is NOT core** - review-cycle tier.
    **ACQUIRE Form 1116 and its instructions:** documented first-phase in Tier 4, never added to the
@@ -225,7 +249,7 @@ NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architec
    dying on `operand_document_not_found: form_1116_2025`. **That is a missing CORE document, not an
    out-of-corpus form; do not stub it.**
    **THE GATE THE MARKING BUYS: core means ZERO UNREPORTED refusals.** Non-core may refuse, but the
-   refusal must surface for review (item 4). John, 2026-08-11: *"a few extra is not a problem. I
+   refusal must surface for review (item 5). John, 2026-08-11: *"a few extra is not a problem. I
    just didn't want to become the maintainer of everything."* **So the field should express
    OWNERSHIP, not only priority** - project-maintained, review-cycle, or community-contributed.
    **HEADS-UP, verified 2026-08-11:** `schemas/manifest.schema.json` `$defs.document` sets
@@ -233,34 +257,34 @@ NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architec
    **The tier list and the manifest have already drifted** - Schedule A, Schedule 1-A, 2441, and
    6251 are in the run and in no tier; 1116 and Pub 514 are in a tier and not in the manifest.
    **Fix the drift in the same round or it recurs.**
-4. **A REFUSED WORKSHEET CANNOT REACH A HUMAN TODAY** (Architect, verified 2026-08-11). The
+5. **A REFUSED WORKSHEET CANNOT REACH A HUMAN TODAY** (Architect, verified 2026-08-11). The
    harvester builds a `WorksheetFinding` with the reason and **the reason dies on the console**.
    `_copy_worksheet_drafts` only tracks documents ALREADY in the manifest, so a worksheet that was
    never built is not even reported missing - it is absent from the universe. `pilot/review_panel.py`
    has **zero** mentions of worksheets. **This is the alerting John asked for and it does not
    exist.** Needs: refusal reasons carried into the candidate, surfaced in the review UI, and a
    clear confirmation when a later run fixes one.
-5. **STUBS FOR OUT-OF-CORPUS FORMS, and fix the `Form(s) X` alias.** 1040 `25c` hard-fails because
+6. **STUBS FOR OUT-OF-CORPUS FORMS, and fix the `Form(s) X` alias.** 1040 `25c` hard-fails because
    the evidence says "Form(s) W-2G" and the matcher builds `form w2g`. Same "(s)" quirk that spared
    1040 `1a` from the reference guard.
-6. **A LEAF MEANING "SUPPLIED HERE".** The only genuinely NEW vocabulary; needs the enum gate.
+7. **A LEAF MEANING "SUPPLIED HERE".** The only genuinely NEW vocabulary; needs the enum gate.
    Blocks 2441 `5`, where `REQUIRE_INPUT` is legal as a whole rule but not as a lookup branch.
-7. **SKIP HUMAN-VERIFIED CELLS ON RERUN** - the step S94 deliberately left out. It must read the
+8. **SKIP HUMAN-VERIFIED CELLS ON RERUN** - the step S94 deliberately left out. It must read the
    review ledger, **not a prior run's status**, because re-deriving an approved cell could silently
    replace an approved answer.
-8. **Repair calls that return an unchanged payload** must be detected and not spent (2441 `5`).
-9. **`CASE` / alternation** - still HELD; revisit with the wide-run evidence.
-10. **"Report issue" from a reviewer corrective** (John, 2026-08-10) - optional and **never hidden**;
+9. **Repair calls that return an unchanged payload** must be detected and not spent (2441 `5`).
+10. **`CASE` / alternation** - still HELD; revisit with the wide-run evidence.
+11. **"Report issue" from a reviewer corrective** (John, 2026-08-10) - optional and **never hidden**;
    emit a ready-to-paste GitHub body, no network and no auth to maintain. **Cluster by failure kind
    and answer shape, not by form**, so 50 reports of one cause collapse into one issue. Derivation
    runs on BLANK forms so the payload carries no filer data; **the reviewer's own comment is the one
    field needing a preview before sending.** Product work - after the core set is reliable.
-11. **SHAREABLE FORM PACKAGES + THE FORM DIRECTORY** (John, 2026-08-11). Design PINNED in
+12. **SHAREABLE FORM PACKAGES + THE FORM DIRECTORY** (John, 2026-08-11). Design PINNED in
     `docs/distribution.md`; **do not redesign it here.** Two build items only: an `install` verb
     that consumes another publisher's package, and a machine-readable index the README page is
     GENERATED from. **Product work - explicitly after the core set is reliable**, since a directory
     advertises a capability that a booklet silently dropping 26 of 28 worksheets cannot back.
-12. **TWO S99 REPORTING NITS, neither changes what gets written** (Architect, measured 2026-08-11).
+13. **TWO S99 REPORTING NITS, neither changes what gets written** (Architect, measured 2026-08-11).
    **(a) An empty oracle result is still labelled `disagree`.** `worksheet_harvest.py:200` treats
    only `None` as `unavailable`, so a title found in the Markdown with zero numbered rows reads as
    a disagreement. **Four 1040 worksheets carry a bogus disagreement** (Qualified Tips, Multiple
@@ -270,7 +294,7 @@ NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architec
    from table 182's window, so `refused=4` reads as four missing worksheets when two are the
    out-of-scope EIC blocks and one is this duplicate. **The overlap check should run BEFORE the
    validity check** - t183 was already owned, so it should have been a `window_claim_overlap`.
-13. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
+14. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
    run-together instruction headings (`**Line 2dDepletion**`) - **now explained: a PDF-render
    artifact, the HTML separates them cleanly (`28% Rate Gain Worksheet-Line 18`), so S97's division
    of authority may retire this**; artifact-pinned test counts measured
