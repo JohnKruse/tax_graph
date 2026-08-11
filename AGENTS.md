@@ -365,6 +365,17 @@ file is never pruned, the handoff is live state, git is history.
   Origin: three mechanisms were tried for "where does this worksheet end" - a hardcoded phrase, an
   asserted destination cue, and a table of six frozen answers - and **all three were the same
   mistake**, guessing at printed prose to recover a boundary the HTML already states as `</table>`.
+- **CLASSIFICATION AND EXTENT NEED DIFFERENT CONTEXT SCOPES, AND NO SINGLE CALL HAS BOTH
+  (Architect, MEASURED on the real 1040, 2026-08-11).** *Is this a worksheet* needs the whole
+  document; *where does this worksheet end* needs its immediate neighbours. Measured both ways:
+  a whole-document call over all 200 tables classifies correctly but **fuses tables 35 apart into
+  one bogus worksheet**; a local window groups correctly - separating parameter grids from extent
+  rows and absorbing continuations - but claims **87 worksheet starts against the classifier's 28,
+  64 of them prose and lookup tables.** **The two mechanisms are complementary, not substitutes.**
+  The Architect twice proposed collapsing them into one call and was wrong twice; the second attempt
+  was disproved by the very pass that was seeding it. **Do not collapse them again without new
+  measurement.** The general form: before replacing two stages with one, check whether they answer
+  questions that need different amounts of context.
 - **A FAILURE THAT REPORTS ITSELF IS ACCEPTABLE; A FAILURE THAT HIDES IS NOT (John, 2026-08-11).**
   *"We will never get 100% out of these documents."* The pipeline is graded at ~98% with a human
   directing the rest, so **every item the pipeline saw must leave the run in exactly one bucket** -
