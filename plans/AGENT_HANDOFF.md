@@ -21,8 +21,10 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - S100 IS ACCEPTED AND THE WORKSHEET PIPELINE IS COMPLETE END TO END. Pick the next
-item; the Architect's reading of the queue is below.**
+**BALL: CODEX for the offline slice; JOHN for one command. M20-S101 is specced below.**
+**Codex can start now** - the schema, the ownership field, the drift guard, and the refusal report
+are all deterministic. **John must supply `MISTRAL_API_KEY`** so the Architect can finish acquiring
+Form 1116's instructions; the PDFs are already downloaded and the form itself already renders.
 
 **S100 ACCEPTED (`c7a338b`, Architect, 2026-08-11). Verified by running the corpus and the suite,
 not by reading the report.**
@@ -69,8 +71,96 @@ is the newest and blocks carryforward worksheets.** Item 6 (out-of-corpus stubs)
 
 ## Current round
 
-**NONE. S100 closed the worksheet pipeline and no round is specced. One spec at a time - the next
-round is specced when it is picked up.**
+**M20-S101 SPECCED BY ARCHITECT (2026-08-11). THE MANIFEST SAYS WHAT WE MAINTAIN, AND FORM 1116
+EXISTS.** **REAL-PROJECT ROUND** - full-suite floor applies. John chose this on 2026-08-11.
+
+**WHY.** John, 2026-08-11: *"a few extra is not a problem. I just didn't want to become the
+maintainer of everything."* Today **nothing in the repo records which documents we stand behind**,
+so "are the core documents reliable" is not a question the project can answer. And Form 1116 is
+documented first-phase in Tier 4, **has never been acquired, and is already causing failures** -
+`form_6251_2025` line 8 dies on `operand_document_not_found: form_1116_2025`.
+
+**MEASURED STATE, 2026-08-11, so the round starts from facts and not from the tier list.**
+- **Tier 1 (9 documents) and Tier 2 (5) are ALREADY in the manifest, all 14 of them.** The core set
+  is largely acquired; **what is missing is the MARKING, not the documents.**
+- **In the run and in no tier:** `schedule_a`, `schedule_1a`, `form_6251`, `form_2441`,
+  `form_13614_c`, and the `schedule_a`/`6251`/`2441` instruction booklets.
+- **In a tier and not in the manifest:** Form 1116, Form 1116 Instructions, Publication 514.
+- **All three URLs verified live 2026-08-11:** `f1116--2025.pdf` 120,869 bytes,
+  `i1116--2025.pdf` 364,870, `p514--2025.pdf` 1,601,250. **The schema's URL pattern already admits
+  `f`, `i`, and `p` prefixes, so no pattern change is needed.**
+- **`schemas/manifest.schema.json` `$defs.document` has 7 properties and
+  `additionalProperties: false`, so the new field IS a schema change**, exactly as queued.
+
+**JOHN'S RULING ON THE SET.** Core is **Tier 1 + Tier 2, PLUS Schedule A, Schedule 1-A, and Form
+6251** (and their instruction booklets). **Form 2441 is NOT core** - review-cycle. **Form 1116 and
+its instructions ARE core**: John called it *"a missing CORE document, not an out-of-corpus form;
+do not stub it."* **Note the tension and resolve it in the round report:** 1116 sits in Tier 4,
+which his tier-based definition does not include, so the set is defined by his explicit list plus
+1116, not by the tiers alone. **Publication 514 is named by no ruling** - acquire it as
+review-cycle or record explicitly why it is excluded, but **do not leave it drifting a third time.**
+
+**THE FIELD EXPRESSES OWNERSHIP, NOT PRIORITY** (John, 2026-08-11). Three values -
+**project-maintained, review-cycle, community-contributed.**
+**DO NOT COLLAPSE IT INTO `gate`, AND DO NOT LET THE TWO DRIFT.** `gate` already exists on graph
+objects (`schemas/document.schema.json`, enum `project|user`, all 36 documents currently `project`)
+and answers **"who stood at the promotion gate"** - a provenance fact about the past. The new field
+answers **"what do we commit to maintaining"** - a forward commitment. A community contribution is
+`gate: user` AND community-maintained; a project-promoted document may still be review-cycle.
+**Two axes, stated once each. Say in the round report how they relate so a later round does not
+merge them by accident.**
+
+**WHAT THE MARKING BUYS, and it is a REPORTING rule, not a green-build rule.** **Core means ZERO
+UNREPORTED refusals.** Non-core may refuse; the refusal must surface. **This is deliberately not
+"core must be green"** - there are 13 open derivation failures today and a gate that fails on day
+one teaches nobody anything. **A refusal that names itself is acceptable; a refusal that hides is
+not** (`AGENTS.md`). The deliverable is a report that partitions every refusal by the owning
+document's marking and **fails only when a CORE document refuses something it did not report.**
+
+**THE TARGET STATE.**
+1. **Every non-region manifest document carries the ownership field**, and the schema enforces it.
+2. **Region documents INHERIT from their parent booklet** and do not carry their own value - a
+   worksheet is maintained exactly as well as the booklet it was harvested from.
+3. **Form 1116, its instructions, and (subject to the ruling above) Publication 514 are acquired**,
+   with `expected_sha256` recorded from the real download.
+4. **The tier list and the manifest agree**, in both directions, and a test proves it. **This is the
+   drift that has already recurred twice; the round is not done until a guard prevents a third.**
+5. **`form_6251_2025` line 8 no longer fails with `operand_document_not_found: form_1116_2025`.**
+
+**WHO RUNS WHAT.**
+- **WORKER, offline:** the schema change, the field on every entry, the region-inherits rule, the
+  drift guard, and the refusal-partitioning report. **All of it is deterministic.**
+- **ARCHITECT, live:** the acquisition of 1116, its instructions, and Pub 514, plus recording their
+  `expected_sha256`. **Codex cannot reach irs.gov.**
+  **ATTEMPTED AND BLOCKED, 2026-08-11, AND THIS IS THE ONE THING JOHN MUST SUPPLY.** Both PDFs
+  download cleanly and **the FORM renders fully** - `form_1116_2025.pdf` (120,869 bytes), its
+  `.txt` (7,221) and a 42,966-byte `.fields.json` are already in `.cache/raw/2025/`, along with
+  `instructions_form_1116_2025.pdf` and its 364,246-byte `.html`. **The INSTRUCTIONS booklet cannot
+  be rendered to text:** `RendererUnavailable: Mistral OCR requires an API key`, from
+  `render_ocr.py:116`, reading `ocr.api_key_env` = **`MISTRAL_API_KEY`**.
+  **Neither document loads until that runs** - the form itself fails with `missing related rendered
+  text`, because it declares the instructions as its related document. **The manifest entries were
+  written and then REVERTED**, deliberately: committing entries whose documents cannot render would
+  leave `acquire --check` unmeetable and break the manifest-count guards mid-round.
+  **John supplies `MISTRAL_API_KEY`; the rerun is cheap because the PDFs are already downloaded.**
+
+**THE FLOOR.**
+- **`acquire --check` passes for every manifest document**, including the newly acquired ones.
+- **The ownership field is present on all 23 non-region entries**, and absent on all 19 regions.
+- **A test fails if a document is in a tier and not the manifest, or in the manifest and no tier.**
+  Run it against the four documents that are drifting TODAY and show it catching them before the
+  fix.
+- **The refusal report names every refusal with its owning document's marking**, and distinguishes
+  reported from unreported.
+- **`derive_cells` on `form_6251_2025` line 8 resolves the 1116 operand** - Architect's leg, live.
+- **The protected set stays byte-identical** apart from anything 1116's acquisition legitimately
+  adds. **State the diff explicitly.**
+
+**OUT OF SCOPE.**
+- **Deriving Form 1116 itself.** Acquiring it and clearing the 6251 operand is this round; modelling
+  1116's own lines is a later one.
+- **Prior-year documents** (queue item 1) and **out-of-corpus stubs** (item 6). Different families.
+- **Publication 514's CONTENT.** Acquiring it is bookkeeping; mining a publication is not this round.
 
 
 ## Open for Architect
