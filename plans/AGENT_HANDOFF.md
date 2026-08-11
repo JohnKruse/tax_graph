@@ -21,8 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - S98 IS ACCEPTED AND S99 IS SPECCED. The round needs ONE live seeding pass from the
-Architect before Codex can start offline; John authorizes that command.**
+**BALL: JOHN - S98 IS ACCEPTED, S99 IS SPECCED, AND ITS SEEDING PASS IS DONE. Start Codex.**
 
 **S98 ACCEPTED (`ac1c560`, Architect, 2026-08-11). Verified by running the corpus, not by reading
 the report.** The accounting closes on every document: 2441 is `discovered=2; written=2; refused=0`
@@ -148,17 +147,42 @@ fuzzy match to fail. The S97 objection was to *sourcing content* from a second r
   makes the per-table cache survive re-acquisition, and the same per-item isolation S98 built.
 
 **THE MECHANISM.**
-1. **Anchor on EVERY table, in printed order. No prefilter of any kind.** Each window is the
-   candidate table plus the next N (default 4; the largest real group observed is 4 tables, so 4
-   carries margin). The call answers `starts_a_worksheet` itself, which is what lets it **replace
-   `classify_worksheet_tables` outright** - one mechanism instead of two answering overlapping
-   questions. **Report when a group runs to the window edge**; that is the signature of a worksheet
-   that needed a longer lookahead, and it must not be silent.
+1. **Anchor ONLY on tables the classifier called `worksheet`. The classifier STAYS.** Each window is
+   the anchor table plus the next N (default 4; the largest real group observed is 4 tables, so 4
+   carries margin). **Report when a group runs to the window edge**; that is the signature of a
+   worksheet that needed a longer lookahead, and it must not be silent.
+   **THE ARCHITECT SPECCED THE OPPOSITE AND THE SEEDING PASS DISPROVED IT THE SAME DAY. Measured on
+   the 1040, all 200 windows, 2026-08-11.** Anchoring on every table and letting each window answer
+   `starts_a_worksheet` for itself yields **87 claimed starts against the classifier's 28** - **64
+   false positives, 62 of them `layout` and 2 `lookup_table`.** Shown five tables under a heading
+   like `Definitions and Special Rules`, the model calls prose a worksheet, and `Tax Table` claims
+   to start one. **A window has no document context, so it cannot gate.**
+   **THE CONVERSE IS ALSO MEASURED, and it is why the window is still the right mechanism for
+   extent:** the only 5 classifier-worksheet tables the window declines to start are 44, 45, 46, 99,
+   and 186 - Simplified Method's continuation and its two parameter grids, Step 5's continuation,
+   and IRA's continuation. **Every one is correctly absorbed into a preceding group.**
+   **THE TWO ARE COMPLEMENTARY, NOT SUBSTITUTES: the classifier gates and cannot group; the window
+   groups and cannot gate.** Classification needs whole-document context, extent needs local
+   context, and no single call has both. **Do not try to collapse them again without new evidence.**
 2. **The response is ids only:** `starts_a_worksheet`, `title`, `table_ids`, `parameter_table_ids`,
    `serves_lines`. `parameter_table_ids` is what fixes Simplified Method - those tables belong to
    the worksheet but contribute constants, NOT extent rows.
 3. **Overlapping windows will both claim a table. FIRST ANCHOR IN PRINTED ORDER WINS, and a later
    window claiming an already-claimed table is a PRINTED DISAGREEMENT, never a silent overwrite.**
+   **THIS IS NOT HYPOTHETICAL - 2441 PRODUCED IT ON THE FIRST SEEDING RUN.** t3's window correctly
+   returns `[3,4]`, merging the caption with its body, and **t4's own window also returns
+   `starts_a_worksheet`** for the body table alone. First-anchor-wins gives the right answer (t3's
+   group), and t4's claim is reported. Schedule D shows the clean case for contrast: t4 returns
+   `[4,5]` and t5 correctly does NOT start a worksheet.
+
+**THE CACHE CONTRACT, and Codex must reproduce it byte-for-byte to read the seeded file.** Windows
+live at `.cache/raw/<year>/<source_document_id>.worksheet_windows.yaml` with `schema_version: 1`,
+the `lookahead` used, and a `windows` map. **The key is `sha256("<lookahead>\\n" + the acquired
+source bytes of the anchor table and its lookahead, joined by a newline in printed order)`** - the
+lookahead is inside the hash so a different window size cannot collide with a seeded entry. The
+reference implementation is `window_fingerprint` in `pilot/segment_tables.py`. **The seeding pass
+persists after EVERY window and records a failed window rather than aborting**, which is S98's
+isolation rule applied to the pass that replaces the classifier.
 4. **The numbering and the Markdown walk are demoted to CHECKS.** `7` following `6a` confirms the
    IRA merge for free; a descending run like `300, 260, 240` contradicts an extent claim. **They
    report; they do not decide and they do not gate.**
@@ -169,10 +193,11 @@ attach the finding.** Reserve refusal for what genuinely prevents building a doc
 corrections come with it: an EMPTY oracle result is `unavailable`, NOT `disagree`; and
 `unresolved_footnote_marker` is advisory. **This alone should take the 1040 from 5 of 14 to ~12.**
 
-**WHO RUNS WHAT. The seeding pass is the Architect's and needs JOHN'S AUTHORIZATION ONCE.**
-- **ARCHITECT, live, BEFORE Codex starts:** run the window pass over the 1040, Schedule D, and 2441
-  and seed the cache. ~200 windows for the 1040 at roughly 5K characters each. **Codex cannot make
-  this call and must not be asked to.**
+**WHO RUNS WHAT. THE SEEDING PASS IS DONE - THE ROUND IS FULLY OFFLINE FOR CODEX.**
+- **ARCHITECT, live, COMPLETE 2026-08-11 (John authorized):** windows are seeded for the 1040 (all
+  200 anchors, a superset of the 28 the round needs), Schedule D (5), and 2441 (4), with **zero
+  failures**. The over-broad 1040 pass is what disproved the no-prefilter variant above, so its cost
+  bought the answer. **Codex re-pays for nothing and must not open new windows.**
 - **WORKER, offline, against the seeded cache:** the window mechanism behind the existing provider
   interface with a RECORDED-FIXTURE test, the claim-resolution rule, the advisory-findings change,
   the classifier removal, and the CLI reporting. Every floor clause below is deterministic.
@@ -189,7 +214,10 @@ corrections come with it: an EMPTY oracle result is `unavailable`, NOT `disagree
   and this clause exists so that error is not re-introduced.
 - **2441 and Schedule D do not regress:** 2 and 4 worksheets, extents 3/17 and 13/7/18/47.
 - **Schedule B still returns zero worksheets without error.**
-- **`classify_worksheet_tables` does not exist.** No table is classified in isolation.
+- **`classify_worksheet_tables` SURVIVES and keeps its cache.** The 92 seeded 1040 fingerprints, and
+  Schedule D's 5 and 2441's 4, are still the gate. **Nothing is re-paid.**
+- **No window is opened on a table the classifier did not call `worksheet`.** A run that opens 200
+  windows on the 1040 has rebuilt the disproved variant; the correct count is 28.
 
 **OUT OF SCOPE - do not fold any of these in.**
 - **The untitled EIC computations.** Both arms of the measurement handled them badly and the window
@@ -201,9 +229,9 @@ corrections come with it: an EMPTY oracle result is `unavailable`, NOT `disagree
 
 ## Open for Architect
 
-Nothing. S98 is accepted, the full-suite floor is met at the 17-red baseline, and S99 is specced
-above. **The ball is JOHN'S for one thing only: authorize the Architect's live window-seeding pass
-so Codex's floor stays offline.**
+Nothing. S98 is accepted, the full-suite floor is met at the 17-red baseline, S99 is specced above,
+and **the live seeding pass is DONE with zero failures**. The round is fully offline.
+**The ball is JOHN'S: start Codex on S99.**
 
 ## Queued (ONE LINE each - do not spec ahead)
 

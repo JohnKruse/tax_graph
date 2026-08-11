@@ -17,10 +17,13 @@ Add --dry-run to print the payload size and the prompt without calling out.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
 from typing import Any, Mapping
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -214,6 +217,91 @@ def call_window(
     return client.structured_completion(**request), len(prompt)
 
 
+def window_fingerprint(source_text: str, tables: tuple[Any, ...], index: int, lookahead: int) -> str:
+    """Key a window by the bytes of the tables it contains.
+
+    Codex must reproduce this exactly to read the seeded cache: sha256 over the
+    acquired source bytes of the anchor table and its lookahead, concatenated in
+    printed order with a newline between tables, plus the lookahead size so a
+    different window size cannot collide with this one.
+    """
+    chunk = tables[index : index + 1 + lookahead]
+    joined = "\n".join(source_text[table.start : table.end] for table in chunk)
+    return hashlib.sha256(f"{lookahead}\n{joined}".encode("ascii")).hexdigest()
+
+
+def _load_window_cache(path: Path | None) -> dict[str, dict[str, Any]]:
+    if path is None or not path.exists():
+        return {}
+    payload = yaml.safe_load(path.read_text(encoding="ascii")) or {}
+    windows = payload.get("windows", {})
+    if not isinstance(windows, dict):
+        raise ValueError(f"invalid window cache: {path}")
+    return {str(k): dict(v) for k, v in windows.items() if isinstance(v, dict)}
+
+
+def _write_window_cache(path: Path, entries: Mapping[str, Mapping[str, Any]], lookahead: int) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        yaml.safe_dump(
+            {"schema_version": 1, "lookahead": lookahead, "windows": dict(entries)},
+            sort_keys=True,
+            allow_unicode=False,
+        ),
+        encoding="ascii",
+        newline="\n",
+    )
+
+
+def seed_windows(
+    source_text: str,
+    tables: tuple[Any, ...],
+    lookahead: int,
+    config: Mapping[str, Any],
+    max_tokens: int,
+    cache_path: Path,
+) -> int:
+    """Call one window per table, persisting after each so a failure costs one call.
+
+    Per-item isolation, the same rule S98 put everywhere else: a window that
+    fails is recorded and the pass carries on.
+    """
+    cached = _load_window_cache(cache_path)
+    updated = dict(cached)
+    starts = 0
+    failures = 0
+    reused = 0
+    for index, table in enumerate(tables):
+        fingerprint = window_fingerprint(source_text, tables, index, lookahead)
+        if fingerprint in cached:
+            reused += 1
+            if cached[fingerprint].get("starts_a_worksheet"):
+                starts += 1
+            continue
+        try:
+            payload, _ = call_window(tables, index, lookahead, config, max_tokens)
+            record = dict(payload)
+            record["anchor_table_id"] = table.table_id
+        except Exception as exc:  # noqa: BLE001 - one window must not kill the pass
+            failures += 1
+            record = {
+                "anchor_table_id": table.table_id,
+                "error": f"{type(exc).__name__}: {exc}"[:300],
+            }
+            print(f"  t{table.table_id}: FAILED {type(exc).__name__}")
+        updated[fingerprint] = record
+        _write_window_cache(cache_path, updated, lookahead)
+        if record.get("starts_a_worksheet"):
+            starts += 1
+            ids = record.get("table_ids") or []
+            print(f"  t{table.table_id:<4d} -> {str(record.get('title'))[:52]:52s} {ids}")
+    print(
+        f"\nwindows={len(tables)}; reused={reused}; worksheet_starts={starts}; failures={failures}"
+    )
+    print(f"cache: {cache_path}")
+    return 1 if failures else 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("source_document_id")
@@ -234,6 +322,11 @@ def main() -> int:
         default=[],
         help="Candidate table id to open a window on. Repeatable.",
     )
+    parser.add_argument(
+        "--seed-cache",
+        action="store_true",
+        help="Window EVERY table and persist to the acquisition cache.",
+    )
     args = parser.parse_args()
 
     path = ROOT / ".cache" / "raw" / args.year / f"{args.source_document_id}.html"
@@ -253,6 +346,19 @@ def main() -> int:
         return 0
 
     config = load_config(root=ROOT)
+
+    if args.seed_cache:
+        lookahead = args.window if args.window is not None else 4
+        cache_path = (
+            ROOT
+            / ".cache"
+            / "raw"
+            / args.year
+            / f"{args.source_document_id}.worksheet_windows.yaml"
+        )
+        return seed_windows(
+            source_text, tables, lookahead, config, args.max_tokens, cache_path
+        )
 
     if args.window is not None:
         by_id = {table.table_id: index for index, table in enumerate(tables)}
