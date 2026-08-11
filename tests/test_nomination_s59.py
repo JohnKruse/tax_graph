@@ -170,7 +170,7 @@ def test_accept_region_pins_parent_and_is_fetch_skipped(tmp_path: Path) -> None:
 
     assert result["status"] == "accepted"
     manifest = load_manifest(root=root)
-    region = manifest.by_document_id()["qualified_dividends_capital_gain_tax_worksheet"]
+    region = manifest.by_document_id()["qualified_dividends_and_capital_gain_tax_worksheet_2025"]
     assert region.is_region
     assert region.url is None
     assert region.region_of == PARENT_ID

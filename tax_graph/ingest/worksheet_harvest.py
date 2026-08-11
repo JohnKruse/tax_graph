@@ -25,7 +25,7 @@ from tax_graph.acquire.instruction_html import InstructionHeading, parse_heading
 from tax_graph.documents import document_class_for
 
 
-QDCGT_TARGET = "qualified_dividends_capital_gain_tax_worksheet"
+QDCGT_TARGET = "qualified_dividends_and_capital_gain_tax_worksheet_2025"
 
 
 @dataclass(frozen=True)

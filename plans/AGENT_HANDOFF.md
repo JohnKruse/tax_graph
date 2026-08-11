@@ -159,29 +159,29 @@ explicitly in the round report** so the change is reviewable rather than inciden
 
 ## Worker status - S100
 
-Implemented the offline S100 slice. Document-wide harvest now mints manifest-backed region entries
-and reconciles stale same-title parent aliases. `promote-worksheet` is an explicit gate; it promotes
-worksheet documents, line nodes, and citations, while harvest reference edges remain drafts until
-reviewed cell rules exist. Region loading uses those promoted graph objects, preserves the parent in
-`source_document_id`, and never creates a synthetic raw-store text file. Candidate copying and the
-review panel now carry promoted and refused worksheet outcomes with findings. The live manifest has
-19 region entries and the promoted set is exactly those 19 worksheet documents; no form or schedule
-graph paths changed.
+Implemented and verified the offline S100 contract rework. Manifest guards now enumerate all 42
+source and worksheet entries and use the canonical
+`qualified_dividends_and_capital_gain_tax_worksheet_2025` id. Reconciliation derives the complete
+region set instead of naming one worksheet. The M15R baseline remains immutable and filters only
+worksheet-owned graph objects, because promoted worksheets have no address bindings. The legacy
+QDCGT nomination/default target now produces the canonical id too. The promoted set remains exactly
+the 19 worksheet documents; no form or schedule graph paths changed.
 
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_worksheet_promotion_s100.py -q` -> 4 passed, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_cli.py tests/test_worksheet_promotion_s100.py tests/test_worksheet_harvest_m20.py tests/test_worksheet_harvest_s97.py tests/test_worksheet_harvest_s98.py tests/test_worksheet_harvest_s99.py tests/test_nomination_s59.py -q` -> 48 passed, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest pilot/test_review_panel.py pilot/test_review_panel_m20_s85.py tests/test_candidate_regeneration_m20.py tests/test_derive_cells_m20.py tests/test_cell_caption_m20.py tests/test_extract_m4.py tests/test_m20_s91.py -q` -> 134 passed, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_acquire_manifest.py -q` -> 2 failed, 6 passed, 2 warnings. The two failures are the stale guard expectations for the retired 24-document manifest and `qualified_dividends_capital_gain_tax_worksheet`; the guard-test rule requires Architect approval before changing them.
-RAN: `.venv\Scripts\python.exe tools/check_ascii.py; git diff --check` -> ASCII check OK; diff check OK.
+RAN: `New-Item -ItemType Directory -Force .test_tmp_s100_verify2`; `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s100_verify2).Path`; `.venv\Scripts\python.exe -m pytest tests\test_acquire_manifest.py tests\test_m20_s41.py tests\test_address_contract_m15r.py tests\test_nomination_s59.py tests\test_worksheet_promotion_s100.py -q` -> 32 passed, 1 warning.
+RAN: `New-Item -ItemType Directory -Force .test_tmp_s100_verify3`; `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s100_verify3).Path`; `.venv\Scripts\python.exe -m pytest tests\test_cli.py tests\test_worksheet_harvest_m20.py tests\test_worksheet_harvest_s97.py tests\test_worksheet_harvest_s98.py tests\test_worksheet_harvest_s99.py -q` -> 38 passed, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q -k "current_2025_graph_validates or current_documents_have_role_axis_classes"` -> 2 passed, 12 deselected, 1 warning.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py; git diff --check` -> ASCII check OK; diff check clean.
 RAN: region loader diagnostic -> `REGIONS=19 LOADED=19`.
 RAN: protected graph diagnostic -> `NON_WORKSHEET_GRAPH_CHANGES=0`.
-NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architect-owned provider leg per S100; offline fixture derives all 11 Simplified Method rows.
+NOT RUN: full `tests\test_graph_validator.py` -> its tmp-backed tests copy ACL-protected
+`graph\2025\_drafts\` and fail with `WinError 5` before validator assertions; the two changed
+assertions were run directly above.
+NOT RUN: live `derive_cells` provider pass and `pilot\run_report.py` -> Architect-owned provider
+leg per S100; offline fixture derives all 11 Simplified Method rows.
 
 
 ## Open for Architect
 
-- Approve the two S100 manifest guard-test expectation updates, or apply them on the Architect side;
-  the implementation intentionally retires the dead alias and adds the 19 harvested regions.
 - Run the live `derive_cells` pass over the promoted worksheets and report per-worksheet coverage.
 
 

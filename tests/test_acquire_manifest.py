@@ -16,7 +16,7 @@ def test_manifest_loads_seeded_source_docs():
     manifest = load_manifest(root=ROOT)
 
     assert manifest.tax_year == 2025
-    assert len(manifest.documents) == 24
+    assert len(manifest.documents) == 42
     assert set(manifest.by_document_id()) == {
         "form_8949_2025",
         "instructions_form_8949_2025",
@@ -41,7 +41,25 @@ def test_manifest_loads_seeded_source_docs():
         "form_13614_c_2025",
         "form_2441_2025",
         "instructions_form_2441_2025",
-        "qualified_dividends_capital_gain_tax_worksheet",
+        "simplified_method_worksheet_2025",
+        "social_security_benefits_worksheet_2025",
+        "standard_deduction_worksheet_for_dependents_2025",
+        "qualified_dividends_and_capital_gain_tax_worksheet_2025",
+        "state_and_local_income_tax_refund_worksheet_2025",
+        "self_employed_health_insurance_deduction_worksheet_2025",
+        "ira_deduction_worksheet_2025",
+        "student_loan_interest_deduction_worksheet_2025",
+        "qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025",
+        "multiple_trades_or_businesses_worksheet_keep_for_your_records_2025",
+        "qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025",
+        "qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025",
+        "negative_form_8978_adjustment_worksheet_schedule_2_2025",
+        "capital_loss_carryover_worksheet_2025",
+        "28_rate_gain_worksheet_2025",
+        "unrecaptured_section_1250_gain_worksheet_2025",
+        "schedule_d_tax_worksheet_2025",
+        "credit_limit_worksheet_2025",
+        "worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025",
     }
 
 
@@ -87,7 +105,7 @@ def test_manifest_loads_form_instruction_relationships():
     assert entries["instructions_form_2441_2025"].expected_sha256 == (
         "86f0669e78b1dc00bfb99e956673d4fccee9e40d6c44d53623dd08e62567fd39"
     )
-    region = entries["qualified_dividends_capital_gain_tax_worksheet"]
+    region = entries["qualified_dividends_and_capital_gain_tax_worksheet_2025"]
     assert region.is_region
     assert region.url is None
     assert region.region_of == "instructions_form_1040_2025"

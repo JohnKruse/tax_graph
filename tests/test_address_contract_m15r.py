@@ -64,7 +64,22 @@ def test_binding_and_reference_schemas_are_strict() -> None:
 def test_r1_baseline_matches_unmodified_project_graph() -> None:
     baseline = json.loads((FIXTURE / "baseline.json").read_text(encoding="utf-8"))
     graph = load_graph(2025, ROOT, include_extensions=False)
-    assert graph.counts() == baseline["graph_counts"]
+    # R1 freezes the pre-worksheet address graph. S100 intentionally promotes
+    # worksheet-owned objects, which have no address bindings, so keep them
+    # out of this historical contract instead of changing its baseline.
+    worksheet_document_ids = {
+        item["document_id"]
+        for item in graph.items("documents")
+        if item.get("document_type") == "worksheet"
+    }
+    graph_counts = {
+        kind: sum(
+            item.get("document_id") not in worksheet_document_ids
+            for item in items
+        )
+        for kind, items in graph.objects.items()
+    }
+    assert graph_counts == baseline["graph_counts"]
     counts = {}
     for path in sorted((ROOT / "graph" / "2025" / "field_inventories").glob("*.json")):
         payload = json.loads(path.read_text(encoding="utf-8"))

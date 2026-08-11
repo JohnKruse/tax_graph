@@ -80,9 +80,14 @@ def test_reconcile_reports_named_raw_orphans_and_missing_manifest_text(
     assert report.difference("raw_not_in_manifest").document_ids == ("orphan_2025",)
     # Region documents are backed by the parent HTML and therefore do not need
     # a child .txt artifact in the form-row reconciliation inventory.
+    region_ids = {
+        entry.document_id
+        for entry in load_manifest(root=ROOT).documents
+        if entry.is_region
+    }
     assert report.difference("manifest_not_in_raw").document_ids == tuple(sorted(
         entry for entry in report.manifest_documents
-        if entry not in {"form_1040_2025", "qualified_dividends_capital_gain_tax_worksheet"}
+        if entry not in {"form_1040_2025"} | region_ids
     ))
 
 

@@ -48,7 +48,7 @@ def test_current_documents_have_role_axis_classes():
     graph = load_graph("2025", root=ROOT, include_extensions=False)
     documents = {item["document_id"]: item for item in graph.items("documents")}
 
-    assert len(documents) == 17
+    assert len(documents) == 36
     assert {item["document_class"] for item in documents.values()} == {
         "return",
         "information_return",
