@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - S99 IS ACCEPTED. THE WORKSHEET LINE IS DONE AND THE NEXT ROUND IS NOT THE
-HARVESTER. Pick the next item; the Architect's recommendation is below.**
+**BALL: CODEX - M20-S100 IS SPECCED BELOW. Pick it up. The Worker slice is fully offline;
+only the `derive_cells` pass at the end is the Architect's.**
 
 **S99 ACCEPTED (`26059ef`, Architect, 2026-08-11). Verified by running the corpus, not by reading
 the report.** **The 1040 goes from 5 written to 13** - `discovered=17; written=13; refused=4`, with
@@ -63,14 +63,92 @@ INSTRUCTION PACKET.** Queued as item 1; ordering is John's call.
 
 ## Current round
 
-**NONE. The worksheet line closed at S99 and no round is specced. One spec at a time - the next
-round is specced when it is picked up.**
+**M20-S100 SPECCED BY ARCHITECT (2026-08-11). THE HARVESTED WORKSHEETS BECOME DERIVABLE DOCUMENTS.**
+**REAL-PROJECT ROUND** - full-suite floor applies. John chose this over queue item 3 on 2026-08-11.
+
+**WHY.** S97, S98, and S99 produce **19 worksheet documents** across the corpus - 13 from the 1040,
+4 from Schedule D, 2 from 2441 - and **nothing derives cells from them and no human can see them.**
+`harvest-worksheet` writes drafts *"without promotion"* by its own docstring, and
+`pilot/review_panel.py` contains zero mentions of worksheets. **Three rounds of structure are worth
+nothing until a worksheet produces cells.**
+
+**MOST OF THIS IS ALREADY BUILT. DO NOT REBUILD IT - the Architect checked each one.**
+- **`promote_draft_document` (`tax_graph/promote.py:24`) already copies** a draft's
+  `documents/nodes/edges/rules/citations` into the live graph. It needs no new writer.
+- **The manifest already has a `region` document shape** (`schemas/manifest.schema.json`): a
+  `oneOf` where a document carries EITHER a `url` OR a `region` of
+  `{source_document_id, title, parent_sha256}`, and `kind` already includes `worksheet`. **No schema
+  change is required** - this is NOT the `additionalProperties` problem from queue item 3.
+- **The harvested drafts already carry what derivation needs:** per-line nodes, edges, and
+  citations whose `quoted_text` is the verbatim printed row and whose `locator` is
+  `source_document=<parent>;worksheet=<title>;lines=<n>`. **The locators are SEMANTIC, not byte
+  offsets**, so nothing about provenance is fragile here.
+
+**THE ONE REAL BLOCKER, VERIFIED IN CODE.** `load_document_input` (`tax_graph/extract/inputs.py:19`)
+**requires a manifest entry AND a rendered `<document_id>.txt`**, unconditionally, with no region
+branch. A worksheet has neither. **The single existing region entry in `config/manifest.yaml`,
+`qualified_dividends_capital_gain_tax_worksheet`, is DEAD SCAFFOLDING** - it is declared, it has no
+`.txt` in the raw store, and it cannot be loaded today. **It also disagrees with the id the
+harvester mints** (`qualified_dividends_and_capital_gain_tax_worksheet_2025`), so the round must
+reconcile the two rather than leave both.
+
+**THE RULING THAT KEEPS THIS FROM BECOMING A FIFTH EXTENT MECHANISM. Read it twice.**
+**A region document's face is its HARVESTED DRAFT, not a re-slice of the parent's rendered text.**
+The extent question was answered by the `<table>` boundary and the segmentation window; **re-deriving
+it from the `.txt` would be the fifth mechanism for the question that has already eaten four
+rounds.** The draft IS the extraction. `load_document_input` learns to serve a region document from
+its promoted nodes and citations - **it must never re-find the worksheet in the parent text.**
+**And do NOT fabricate a `<worksheet>.txt` in `.cache/raw`.** That store holds what was actually
+acquired; minting a synthetic artifact there would make a derived product look like a download.
+
+**THE TARGET STATE.**
+1. **`harvest-worksheet` can mint a manifest region entry** for a worksheet it harvested, carrying
+   `source_document_id`, the printed `title`, and the parent's `parent_sha256`. **Self-serve: adding
+   a worksheet must not require a Python edit** (John, `AGENTS.md`).
+2. **`load_document_input` serves a region document** from its promoted graph objects, with
+   `source_document_id` pointing at the parent booklet. No `.txt` lookup for regions.
+3. **`derive_cells` runs on a worksheet document** and emits rules against its line nodes.
+4. **The dead `qualified_dividends_capital_gain_tax_worksheet` entry is reconciled**, not left
+   beside its harvested twin.
+5. **The review surface knows what a worksheet is** - a promoted worksheet and a refused one both
+   reach `pilot/review_panel.py`. This is queue item 4 and it is in scope here.
+
+**THE PROTECTED SET MOVES THIS ROUND, AND THAT IS DELIBERATE.** Every floor since S95 has required
+`graph/2025/{nodes,edges,rules}/` and `field_maps/` to be byte-identical. **Promotion writes there
+by design, so that clause is LIFTED for worksheet documents only.** Forms and schedules stay
+byte-identical; a diff touching any non-worksheet document is a defect. **State the promoted set
+explicitly in the round report** so the change is reviewable rather than incidental.
+
+**WHO RUNS WHAT.**
+- **WORKER, offline:** the region entry minting, the `load_document_input` region branch, the
+  reconciliation, the review-surface work, and fixture tests for all of it. **Promotion itself is
+  deterministic and needs no model.**
+- **ARCHITECT, live:** the `derive_cells` pass over the promoted worksheets. **Codex cannot make
+  that call.** Report coverage per worksheet with `pilot/run_report.py`.
+
+**THE FLOOR.**
+- **All 19 harvested worksheets promote and load.** `load_document_input` returns a usable input for
+  every one, with `source_document_id` naming the parent booklet.
+- **A worksheet is added end to end with NO Python edit** - harvest, mint the region entry, promote,
+  load. That is the self-serve rule and it is the real test of this round.
+- **`derive_cells` produces rules for the Simplified Method Worksheet's 11 lines**, whose printed
+  rows are unambiguous arithmetic. **Report the count derived, not the count attempted** - lead with
+  the unflattering number.
+- **Schedule D's four worksheets and 2441's two are promoted and loadable**, not just the 1040's.
+- **`git diff --stat graph/2025/` shows worksheet documents ONLY.** Any form or schedule touched is
+  a defect.
+- **A refused worksheet appears in the review surface with its reason.**
+
+**OUT OF SCOPE.**
+- **The untitled EIC computations.** Still queue item 2; still refused with a reason.
+- **The two S99 reporting nits** (empty-oracle label, t183 counted as a refusal). Queue item 12.
+- **Foreign Earned Income's nested-table restart.** The one real structural harvest failure left;
+  it does not block promoting the 13 that work.
 
 
 ## Open for Architect
 
-Nothing. S99 is accepted, the full-suite floor is met at the 17-red baseline, and no round is in
-flight. **The ball is JOHN'S: pick the next item.**
+Nothing. S99 is accepted and S100 is specced above; the ball is Codex's.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
