@@ -145,10 +145,32 @@ explicitly in the round report** so the change is reviewable rather than inciden
 - **Foreign Earned Income's nested-table restart.** The one real structural harvest failure left;
   it does not block promoting the 13 that work.
 
+## Worker status - S100
+
+Implemented the offline S100 slice. Document-wide harvest now mints manifest-backed region entries
+and reconciles stale same-title parent aliases. `promote-worksheet` is an explicit gate; it promotes
+worksheet documents, line nodes, and citations, while harvest reference edges remain drafts until
+reviewed cell rules exist. Region loading uses those promoted graph objects, preserves the parent in
+`source_document_id`, and never creates a synthetic raw-store text file. Candidate copying and the
+review panel now carry promoted and refused worksheet outcomes with findings. The live manifest has
+19 region entries and the promoted set is exactly those 19 worksheet documents; no form or schedule
+graph paths changed.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_worksheet_promotion_s100.py -q` -> 4 passed, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_cli.py tests/test_worksheet_promotion_s100.py tests/test_worksheet_harvest_m20.py tests/test_worksheet_harvest_s97.py tests/test_worksheet_harvest_s98.py tests/test_worksheet_harvest_s99.py tests/test_nomination_s59.py -q` -> 48 passed, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest pilot/test_review_panel.py pilot/test_review_panel_m20_s85.py tests/test_candidate_regeneration_m20.py tests/test_derive_cells_m20.py tests/test_cell_caption_m20.py tests/test_extract_m4.py tests/test_m20_s91.py -q` -> 134 passed, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_acquire_manifest.py -q` -> 2 failed, 6 passed, 2 warnings. The two failures are the stale guard expectations for the retired 24-document manifest and `qualified_dividends_capital_gain_tax_worksheet`; the guard-test rule requires Architect approval before changing them.
+RAN: `.venv\Scripts\python.exe tools/check_ascii.py; git diff --check` -> ASCII check OK; diff check OK.
+RAN: region loader diagnostic -> `REGIONS=19 LOADED=19`.
+RAN: protected graph diagnostic -> `NON_WORKSHEET_GRAPH_CHANGES=0`.
+NOT RUN: live `derive_cells` provider pass and `pilot/run_report.py` -> Architect-owned provider leg per S100; offline fixture derives all 11 Simplified Method rows.
+
 
 ## Open for Architect
 
-Nothing. S99 is accepted and S100 is specced above; the ball is Codex's.
+- Approve the two S100 manifest guard-test expectation updates, or apply them on the Architect side;
+  the implementation intentionally retires the dead alias and adds the 19 harvested regions.
+- Run the live `derive_cells` pass over the promoted worksheets and report per-worksheet coverage.
 
 
 ## Queued (ONE LINE each - do not spec ahead)

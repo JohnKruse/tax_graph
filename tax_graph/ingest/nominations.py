@@ -169,13 +169,76 @@ def accept_nomination(
             f"cannot accept {title!r}: no citing row or frontier evidence was found"
         )
 
+    source_path = (
+        Path(html_path)
+        if html_path is not None
+        else root_path / ".cache" / "raw" / str(year) / f"{source_document_id}.html"
+    )
+    if not source_path.exists():
+        raise FileNotFoundError(f"missing acquired parent HTML: {source_path}")
+    source_bytes = source_path.read_bytes()
+    try:
+        source_text = source_bytes.decode("ascii")
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"region parent HTML is not ASCII: {source_path}") from exc
+
+    # Preserve the title actually observed in the report.  The normalized key
+    # is identity; the printed spelling is the evidence-facing display value.
+    title = evidence.title
+    resolved_document_id = document_id or _document_id_for_title(title, year=year)
+    target = _target_for_title(
+        document_id=resolved_document_id,
+        title=title,
+        source_document_id=source_document_id,
+    )
+    harvest = harvest_worksheet_file(source_path, target, year=year)
+    if not harvest.ok:
+        detail = "; ".join(f"{item.kind}: {item.message}" for item in harvest.findings)
+        raise ValueError(f"region title/extent did not verify: {detail}")
+    manifest_result = mint_region_manifest_entry(
+        title=title,
+        source_document_id=source_document_id,
+        document_id=resolved_document_id,
+        year=year,
+        root=root_path,
+        kind=kind,
+        html_path=source_path,
+    )
+    return {
+        "document_id": resolved_document_id,
+        "status": "accepted",
+        "evidence": evidence,
+        "parent_sha256": manifest_result["parent_sha256"],
+        "draft_ready": True,
+        "harvest": harvest,
+    }
+
+
+def mint_region_manifest_entry(
+    *,
+    title: str,
+    source_document_id: str,
+    year: str | int = "2025",
+    root: str | Path | None = None,
+    document_id: str | None = None,
+    kind: str = "worksheet",
+    html_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Mint one source-backed region entry and reconcile title aliases.
+
+    The harvested title and the parent HTML hash are the only identity inputs.
+    If an older manifest entry has the same normalized title and parent, it is
+    removed as a stale alias in the same write.  This keeps the manifest from
+    carrying two identities for one source region across pipeline reruns.
+    """
+    root_path = Path(root).resolve() if root is not None else project_root()
     manifest_path = root_path / "config" / "manifest.yaml"
     manifest_data = load_yaml(manifest_path) or {}
-    entries = manifest_data.get("documents") or []
-    by_id = {str(entry["document_id"]): entry for entry in entries}
-    if source_document_id not in by_id:
+    entries = list(manifest_data.get("documents") or [])
+    by_id = {str(entry.get("document_id")): entry for entry in entries}
+    parent = by_id.get(source_document_id)
+    if parent is None:
         raise ValueError(f"unknown region parent document: {source_document_id}")
-    parent = by_id[source_document_id]
     if parent.get("region"):
         raise ValueError(f"region parent cannot itself be a region: {source_document_id}")
     if not parent.get("url"):
@@ -188,67 +251,63 @@ def accept_nomination(
     )
     if not source_path.exists():
         raise FileNotFoundError(f"missing acquired parent HTML: {source_path}")
-    source_bytes = source_path.read_bytes()
-    source_hash = hashlib.sha256(source_bytes).hexdigest()
-    try:
-        source_text = source_bytes.decode("ascii")
-    except UnicodeDecodeError as exc:
-        raise ValueError(f"region parent HTML is not ASCII: {source_path}") from exc
-
-    # Preserve the title actually observed in the report.  The normalized key
-    # is identity; the printed spelling is the evidence-facing display value.
-    title = evidence.title
+    parent_hash = hashlib.sha256(source_path.read_bytes()).hexdigest()
     resolved_document_id = document_id or _document_id_for_title(title, year=year)
-    if resolved_document_id in by_id:
-        existing = by_id[resolved_document_id]
-        existing_title = existing.get("region", {}).get("title", "")
-        if normalize_printed_title(existing_title) == wanted:
-            if existing.get("region", {}).get("parent_sha256") != source_hash:
-                raise ValueError(
-                    f"region parent changed for existing document: {resolved_document_id}"
-                )
-            return {
-                "document_id": resolved_document_id,
-                "status": "already_present",
-                "evidence": evidence,
-                "parent_sha256": source_hash,
-            }
+    wanted = normalize_printed_title(title)
+    existing = by_id.get(resolved_document_id)
+    if existing is not None and not existing.get("region"):
         raise ValueError(f"manifest document id already exists: {resolved_document_id}")
+    if existing is not None:
+        existing_region = existing.get("region") or {}
+        if (
+            normalize_printed_title(str(existing_region.get("title") or "")) != wanted
+            or existing_region.get("source_document_id") != source_document_id
+            or existing_region.get("parent_sha256") != parent_hash
+        ):
+            raise ValueError(f"manifest region identity changed: {resolved_document_id}")
 
-    target = _target_for_title(
-        document_id=resolved_document_id,
-        title=title,
-        source_document_id=source_document_id,
-    )
-    harvest = harvest_worksheet_file(source_path, target, year=year)
-    if not harvest.ok:
-        detail = "; ".join(f"{item.kind}: {item.message}" for item in harvest.findings)
-        raise ValueError(f"region title/extent did not verify: {detail}")
-
-    entry = {
-        "document_id": resolved_document_id,
-        "kind": kind,
-        "region": {
-            "source_document_id": source_document_id,
-            "title": title,
-            "parent_sha256": source_hash,
-        },
-    }
-    entries.append(entry)
+    removed: list[str] = []
+    kept: list[dict[str, Any]] = []
+    for entry in entries:
+        entry_id = str(entry.get("document_id") or "")
+        region = entry.get("region") or {}
+        same_region = (
+            bool(region)
+            and normalize_printed_title(str(region.get("title") or "")) == wanted
+            and region.get("source_document_id") == source_document_id
+        )
+        if same_region and entry_id != resolved_document_id:
+            removed.append(entry_id)
+            continue
+        if entry_id == resolved_document_id:
+            continue
+        kept.append(entry)
+    if existing is None:
+        kept.append(
+            {
+                "document_id": resolved_document_id,
+                "kind": kind,
+                "region": {
+                    "source_document_id": source_document_id,
+                    "title": title,
+                    "parent_sha256": parent_hash,
+                },
+            }
+        )
+    else:
+        kept.append(existing)
+    manifest_data["documents"] = kept
     manifest_path.write_text(
         yaml.safe_dump(manifest_data, sort_keys=False, allow_unicode=False),
         encoding="ascii",
         newline="\n",
     )
-    # Reload through the schema and semantic validator before reporting success.
     load_manifest(root=root_path)
     return {
         "document_id": resolved_document_id,
-        "status": "accepted",
-        "evidence": evidence,
-        "parent_sha256": source_hash,
-        "draft_ready": True,
-        "harvest": harvest,
+        "status": "already_present" if existing is not None and not removed else "minted",
+        "parent_sha256": parent_hash,
+        "removed_document_ids": removed,
     }
 
 

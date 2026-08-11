@@ -1,0 +1,329 @@
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_1
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_1
+  description: Source text contains a conditional Form 2555 route; see harvest.yaml.
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_2
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_2
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_3
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_4
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_4
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_5
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_5
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_6
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_6
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_7
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_7
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_8
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 8
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_8
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_9
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_9
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_10
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 10
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_10
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_11
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 11
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_11
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_12
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 12
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_12
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_13
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 13
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_13
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_14
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 14
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_14
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_15
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 15
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_15
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_16
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 16
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_16
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_17
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 17
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_17
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_18
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 18
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_18
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_19
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 19
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_19
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_20
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 20
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_20
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_21
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 21
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_21
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_22
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 22
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_22
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_23
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 23
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_23
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_24
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 24
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_24
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_line_25
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet line 25
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_25
+  description: Source text contains a conditional Form 2555 route; see harvest.yaml.
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_rate_15
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 15 percent rate
+  node_type: parameter
+  value_type: percentage
+  required: optional
+  constant_value: 0.15
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_18
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_rate_20
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 20 percent rate
+  node_type: parameter
+  value_type: percentage
+  required: optional
+  constant_value: 0.2
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_21
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_0_single
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 0 percent breakpoint,
+    Single
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 48350
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_6
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_0_mfs
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 0 percent breakpoint,
+    Married filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 48350
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_6
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_0_mfj
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 0 percent breakpoint,
+    Married filing jointly
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 96700
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_6
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_0_qss
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 0 percent breakpoint,
+    Qualifying surviving spouse
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 96700
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_6
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_0_hoh
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 0 percent breakpoint,
+    Head of household
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 64750
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_6
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_15_single
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 15 percent breakpoint,
+    Single
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 533400
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_13
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_15_mfs
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 15 percent breakpoint,
+    Married filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 300000
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_13
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_15_mfj
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 15 percent breakpoint,
+    Married filing jointly
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 600050
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_13
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_15_qss
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 15 percent breakpoint,
+    Qualifying surviving spouse
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 600050
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_13
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_breakpoint_15_hoh
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet 15 percent breakpoint,
+    Head of household
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 566700
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_13
+- node_id: qualified_dividends_and_capital_gain_tax_worksheet_2025_tax_table_threshold
+  document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  label: Qualified Dividends and Capital Gain Tax Worksheet tax table threshold
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 100000
+  citation_refs:
+  - cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_22

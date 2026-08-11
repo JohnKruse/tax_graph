@@ -1648,12 +1648,15 @@ def write_worksheet_discovery_report(discovery: WorksheetDiscovery, draft_dir: s
     if "_drafts" not in {part.lower() for part in output.parts}:
         raise ValueError(f"worksheet discovery reports must be beneath a _drafts directory: {output}")
     output.mkdir(parents=True, exist_ok=True)
+    payload = yaml.safe_dump(discovery.as_dict(), sort_keys=False, allow_unicode=False)
     report_path = output / "worksheet-discovery.yaml"
-    report_path.write_text(
-        yaml.safe_dump(discovery.as_dict(), sort_keys=False, allow_unicode=False),
-        encoding="ascii",
-        newline="\n",
-    )
+    report_path.write_text(payload, encoding="ascii", newline="\n")
+    # Keep a per-parent copy so a later source-document harvest cannot erase
+    # the refusal accounting from an earlier parent.  The canonical filename
+    # remains for existing callers and single-document runs.
+    source_report = output / f"worksheet-discovery-{_slug(discovery.source_document_id)}.yaml"
+    if source_report != report_path:
+        source_report.write_text(payload, encoding="ascii", newline="\n")
     return report_path
 
 
@@ -1943,7 +1946,9 @@ def _build_citations(
             kind="citation",
             data={
                 "citation_id": citation_id,
-                "document_id": source_document_id,
+                # The citation belongs to the promoted worksheet object while
+                # source_document_id preserves the acquired HTML authority.
+                "document_id": target.document_id,
                 "source_document_id": source_document_id,
                 "locator": (
                     f"source_document={source_document_id};"

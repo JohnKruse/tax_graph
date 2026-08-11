@@ -1,0 +1,24 @@
+- node_id: credit_limit_worksheet_2025_line_1
+  document_id: credit_limit_worksheet_2025
+  label: Credit Limit Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_credit_limit_worksheet_2025_lines_1
+- node_id: credit_limit_worksheet_2025_line_2
+  document_id: credit_limit_worksheet_2025
+  label: Credit Limit Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_credit_limit_worksheet_2025_lines_2
+- node_id: credit_limit_worksheet_2025_line_3
+  document_id: credit_limit_worksheet_2025
+  label: Credit Limit Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_credit_limit_worksheet_2025_lines_3

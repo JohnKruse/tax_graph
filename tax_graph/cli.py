@@ -291,6 +291,7 @@ def harvest_worksheet_command(
         write_worksheet_discovery_report,
         write_worksheet_draft,
     )
+    from tax_graph.ingest.nominations import mint_region_manifest_entry
 
     root_path = Path(root).resolve() if root is not None else project_root()
     default_target = QDCGT_WORKSHEET_TARGET
@@ -431,6 +432,22 @@ def harvest_worksheet_command(
         output = output_root / result.target.document_id
         try:
             write_worksheet_draft(result, output)
+            manifest_path = root_path / "config" / "manifest.yaml"
+            if manifest_path.exists():
+                manifest_result = mint_region_manifest_entry(
+                    title=result.target.title,
+                    source_document_id=source_id,
+                    document_id=result.target.document_id,
+                    year=year,
+                    root=root_path,
+                    html_path=source_path,
+                )
+                removed = manifest_result.get("removed_document_ids") or []
+                if removed:
+                    print(
+                        f"  reconciled manifest aliases for {result.target.document_id}: "
+                        f"{', '.join(removed)}"
+                    )
         except Exception as exc:
             refused += 1
             print(f"  refused {result.target.document_id}: draft write failed: {exc}")
@@ -461,6 +478,68 @@ def harvest_worksheet_command(
         print(f"discovery report: {report_path}")
     discovered = written + refused
     print(f"worksheet attempts: discovered={discovered}; written={written}; refused={refused}; sum={written + refused}")
+    return 0 if refused == 0 else 1
+
+
+def promote_worksheet_command(
+    *,
+    year: str = "2025",
+    root: str | Path | None = None,
+    document_id: str | None = None,
+) -> int:
+    """Promote ready, manifest-backed worksheet drafts into the live graph.
+
+    Promotion is explicit and deterministic.  The harvest command remains a
+    draft producer; this command is the separate promotion gate for regions.
+    """
+    from tax_graph.acquire.manifest import load_manifest
+    from tax_graph.promote import promote_draft_document
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    manifest = load_manifest(root=root_path)
+    regions = [entry for entry in manifest.documents if entry.is_region]
+    if document_id is not None:
+        regions = [entry for entry in regions if entry.document_id == document_id]
+        if not regions:
+            print(f"worksheet promotion blocked: unknown region {document_id}")
+            return 1
+    if not regions:
+        print("worksheet promotion: no manifest regions")
+        return 0
+
+    promoted = 0
+    refused = 0
+    for entry in regions:
+        draft_dir = root_path / "graph" / str(year) / "_drafts" / entry.document_id
+        harvest_path = draft_dir / "harvest.yaml"
+        if not harvest_path.exists():
+            refused += 1
+            print(f"  refused {entry.document_id}: worksheet draft is missing")
+            continue
+        harvest = load_yaml(harvest_path) or {}
+        if harvest.get("status") != "ready":
+            refused += 1
+            print(f"  refused {entry.document_id}: harvest witness is not ready")
+            continue
+        try:
+            # Harvest edges are source-reference hints, not computation edges.
+            # Promoting them would make the runtime treat an unruled worksheet
+            # field as computed. Cell derivation supplies CALCULATES edges only
+            # after a rule has been derived and reviewed.
+            result = promote_draft_document(
+                entry.document_id,
+                year=year,
+                root=root_path,
+                kinds=("documents", "nodes", "citations"),
+            )
+        except (OSError, ValueError) as exc:
+            refused += 1
+            print(f"  refused {entry.document_id}: {type(exc).__name__}: {exc}")
+            continue
+        promoted += 1
+        paths = ", ".join(str(path.relative_to(root_path)) for path in result.paths.values())
+        print(f"  promoted {entry.document_id}: {paths}")
+    print(f"worksheet promotion: promoted={promoted}; refused={refused}; total={promoted + refused}")
     return 0 if refused == 0 else 1
 
 
@@ -1779,6 +1858,17 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("promote-worksheet")
+    def promote_worksheet_cli(
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to promote."),
+        document_id: str | None = typer.Option(None, "--document-id", help="Promote one worksheet region."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Promote ready worksheet drafts into the live graph."""
+        raise_code = promote_worksheet_command(year=year, root=root, document_id=document_id)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     nomination_cli = typer.Typer(help="Evidence-backed source-document nominations.")
 
     @nomination_cli.command("list")
@@ -2569,6 +2659,11 @@ def _fallback_app() -> int:
     harvest_worksheet_parser.add_argument("--draft-dir", default=None)
     harvest_worksheet_parser.add_argument("--root", default=None)
 
+    promote_worksheet_parser = subparsers.add_parser("promote-worksheet")
+    promote_worksheet_parser.add_argument("--year", "-y", default="2025")
+    promote_worksheet_parser.add_argument("--document-id", default=None)
+    promote_worksheet_parser.add_argument("--root", default=None)
+
     nomination_parser = subparsers.add_parser("nomination")
     nomination_subparsers = nomination_parser.add_subparsers(dest="nomination_command", required=True)
     nomination_list_parser = nomination_subparsers.add_parser("list")
@@ -2790,6 +2885,12 @@ def _fallback_app() -> int:
             title=args.title,
             start_anchor=args.start_anchor,
             draft_dir=args.draft_dir,
+        )
+    if args.command == "promote-worksheet":
+        return promote_worksheet_command(
+            year=args.year,
+            root=args.root,
+            document_id=args.document_id,
         )
     if args.command == "nomination" and args.nomination_command == "list":
         return nomination_list_command(

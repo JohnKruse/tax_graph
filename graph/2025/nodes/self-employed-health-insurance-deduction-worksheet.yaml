@@ -1,0 +1,24 @@
+- node_id: self_employed_health_insurance_deduction_worksheet_2025_line_1
+  document_id: self_employed_health_insurance_deduction_worksheet_2025
+  label: Self-Employed Health Insurance Deduction Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_self_employed_health_insurance_deduction_worksheet_2025_lines_1
+- node_id: self_employed_health_insurance_deduction_worksheet_2025_line_2
+  document_id: self_employed_health_insurance_deduction_worksheet_2025
+  label: Self-Employed Health Insurance Deduction Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_self_employed_health_insurance_deduction_worksheet_2025_lines_2
+- node_id: self_employed_health_insurance_deduction_worksheet_2025_line_3
+  document_id: self_employed_health_insurance_deduction_worksheet_2025
+  label: Self-Employed Health Insurance Deduction Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_self_employed_health_insurance_deduction_worksheet_2025_lines_3

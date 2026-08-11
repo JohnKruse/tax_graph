@@ -1,0 +1,144 @@
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_1
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_1
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_2
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_2
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_3
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_3
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_4
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_4
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_5
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_5
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_6
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_6
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_7
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_7
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_8
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 8
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_8
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_9
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_9
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_10
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 10
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_10
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_11
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 11
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_11
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_12
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 12
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_12
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_13
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 13
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_13
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_14
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 14
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_14
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_15
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 15
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_15
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_16
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 16
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_16
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_17
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 17
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_17
+- node_id: unrecaptured_section_1250_gain_worksheet_2025_line_18
+  document_id: unrecaptured_section_1250_gain_worksheet_2025
+  label: Unrecaptured Section 1250 Gain Worksheet line 18
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_unrecaptured_section_1250_gain_worksheet_2025_lines_18

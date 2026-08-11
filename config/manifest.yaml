@@ -1,132 +1,218 @@
-# Acquisition manifest for the 2025 IRS source corpus.
 tax_year: 2025
 documents:
-  - document_id: form_8949_2025
-    kind: tax_form
-    url: https://www.irs.gov/pub/irs-prior/f8949--2025.pdf
-    instructions_document_id: instructions_form_8949_2025
-    expected_sha256: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
-
-  - document_id: instructions_form_8949_2025
-    kind: instructions
-    url: https://www.irs.gov/pub/irs-prior/i8949--2025.pdf
-    instruction_url: https://www.irs.gov/instructions/i8949
-    expected_sha256: f077991c83b086810c46cbad3755e0f126cb8dfd88cf8bf8ab2d5605d6e7ab45
-
-  - document_id: schedule_d_2025
-    kind: schedule
-    url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
-    instructions_document_id: instructions_schedule_d_2025
-    expected_sha256: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
-
-  - document_id: instructions_schedule_d_2025
-    kind: instructions
-    url: https://www.irs.gov/pub/irs-prior/i1040sd--2025.pdf
-    instruction_url: https://www.irs.gov/instructions/i1040sd
-    expected_sha256: 650643a686378b7573e4f4476ee4e7c9f9bab1384314dca32dc336f7b2276002
-
-  - document_id: form_1040_2025
-    kind: tax_form
-    url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
-    instructions_document_id: instructions_form_1040_2025
-    expected_sha256: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
-
-  - document_id: instructions_form_1040_2025
-    kind: instructions
-    url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
-    instruction_url: https://www.irs.gov/instructions/i1040gi
-    expected_sha256: 482e9c487c608f1bbeaceef35bc3c0933e8b35443cfff447e4279d590468364a
-
-  - document_id: schedule_1_2025
-    kind: schedule
-    url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
-    instructions_document_id: instructions_form_1040_2025
-
-  - document_id: schedule_1a_2025
-    kind: schedule
-    url: https://www.irs.gov/pub/irs-prior/f1040s1a--2025.pdf
-    instructions_document_id: instructions_form_1040_2025
-
-  - document_id: schedule_2_2025
-    kind: schedule
-    url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
-    instructions_document_id: instructions_form_1040_2025
-
-  - document_id: schedule_3_2025
-    kind: schedule
-    url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
-    instructions_document_id: instructions_form_1040_2025
-
-  - document_id: schedule_a_2025
-    kind: schedule
-    url: https://www.irs.gov/pub/irs-prior/f1040sa--2025.pdf
-    instructions_document_id: instructions_schedule_a_2025
-
-  - document_id: instructions_schedule_a_2025
-    kind: instructions
-    url: https://www.irs.gov/pub/irs-prior/i1040sca--2025.pdf
-    instruction_url: https://www.irs.gov/instructions/i1040sca
-
-  - document_id: schedule_b_2025
-    kind: schedule
-    url: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
-    instructions_document_id: instructions_schedule_b_2025
-
-  - document_id: instructions_schedule_b_2025
-    kind: instructions
-    url: https://www.irs.gov/pub/irs-prior/i1040sb--2025.pdf
-    instruction_url: https://www.irs.gov/instructions/i1040sb
-
-  - document_id: form_6251_2025
-    kind: tax_form
-    url: https://www.irs.gov/pub/irs-prior/f6251--2025.pdf
-    instructions_document_id: instructions_form_6251_2025
-
-  - document_id: instructions_form_6251_2025
-    kind: instructions
-    url: https://www.irs.gov/pub/irs-prior/i6251--2025.pdf
-    instruction_url: https://www.irs.gov/instructions/i6251
-
-  - document_id: form_1099b_2025
-    kind: source_document
-    url: https://www.irs.gov/pub/irs-prior/f1099b--2025.pdf
-    expected_sha256: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
-
-  - document_id: form_w2_2025
-    kind: source_document
-    url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-    expected_sha256: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
-
-  - document_id: form_1099_int_2025
-    kind: source_document
-    url: https://www.irs.gov/pub/irs-pdf/f1099int.pdf
-    expected_sha256: ee7697c9b29374596fd9645b157b7312d121ae3c2f76bebf68908c3fc2b739e6
-
-  - document_id: form_1099_div_2025
-    kind: source_document
-    url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
-    expected_sha256: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
-
-  - document_id: form_13614_c_2025
-    kind: source_document
-    url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
-    expected_sha256: 160507ac6daa8cc5e3126ad51ba5c2050c786337048f434f8336b48d92992c9d
-
-  - document_id: form_2441_2025
-    kind: tax_form
-    url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-    instructions_document_id: instructions_form_2441_2025
-    expected_sha256: 6c3c2d19163fa4c4de829abf9a89b43f08b4f4f3cb169740fc7da43e914269ce
-
-  - document_id: instructions_form_2441_2025
-    kind: instructions
-    url: https://www.irs.gov/pub/irs-prior/i2441--2025.pdf
-    instruction_url: https://www.irs.gov/instructions/i2441
-    expected_sha256: 86f0669e78b1dc00bfb99e956673d4fccee9e40d6c44d53623dd08e62567fd39
-
-  - document_id: qualified_dividends_capital_gain_tax_worksheet
-    kind: worksheet
-    region:
-      source_document_id: instructions_form_1040_2025
-      title: Qualified Dividends and Capital Gain Tax Worksheet
-      parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: form_8949_2025
+  kind: tax_form
+  url: https://www.irs.gov/pub/irs-prior/f8949--2025.pdf
+  instructions_document_id: instructions_form_8949_2025
+  expected_sha256: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
+- document_id: instructions_form_8949_2025
+  kind: instructions
+  url: https://www.irs.gov/pub/irs-prior/i8949--2025.pdf
+  instruction_url: https://www.irs.gov/instructions/i8949
+  expected_sha256: f077991c83b086810c46cbad3755e0f126cb8dfd88cf8bf8ab2d5605d6e7ab45
+- document_id: schedule_d_2025
+  kind: schedule
+  url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  instructions_document_id: instructions_schedule_d_2025
+  expected_sha256: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
+- document_id: instructions_schedule_d_2025
+  kind: instructions
+  url: https://www.irs.gov/pub/irs-prior/i1040sd--2025.pdf
+  instruction_url: https://www.irs.gov/instructions/i1040sd
+  expected_sha256: 650643a686378b7573e4f4476ee4e7c9f9bab1384314dca32dc336f7b2276002
+- document_id: form_1040_2025
+  kind: tax_form
+  url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  instructions_document_id: instructions_form_1040_2025
+  expected_sha256: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
+- document_id: instructions_form_1040_2025
+  kind: instructions
+  url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
+  instruction_url: https://www.irs.gov/instructions/i1040gi
+  expected_sha256: 482e9c487c608f1bbeaceef35bc3c0933e8b35443cfff447e4279d590468364a
+- document_id: schedule_1_2025
+  kind: schedule
+  url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  instructions_document_id: instructions_form_1040_2025
+- document_id: schedule_1a_2025
+  kind: schedule
+  url: https://www.irs.gov/pub/irs-prior/f1040s1a--2025.pdf
+  instructions_document_id: instructions_form_1040_2025
+- document_id: schedule_2_2025
+  kind: schedule
+  url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
+  instructions_document_id: instructions_form_1040_2025
+- document_id: schedule_3_2025
+  kind: schedule
+  url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
+  instructions_document_id: instructions_form_1040_2025
+- document_id: schedule_a_2025
+  kind: schedule
+  url: https://www.irs.gov/pub/irs-prior/f1040sa--2025.pdf
+  instructions_document_id: instructions_schedule_a_2025
+- document_id: instructions_schedule_a_2025
+  kind: instructions
+  url: https://www.irs.gov/pub/irs-prior/i1040sca--2025.pdf
+  instruction_url: https://www.irs.gov/instructions/i1040sca
+- document_id: schedule_b_2025
+  kind: schedule
+  url: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
+  instructions_document_id: instructions_schedule_b_2025
+- document_id: instructions_schedule_b_2025
+  kind: instructions
+  url: https://www.irs.gov/pub/irs-prior/i1040sb--2025.pdf
+  instruction_url: https://www.irs.gov/instructions/i1040sb
+- document_id: form_6251_2025
+  kind: tax_form
+  url: https://www.irs.gov/pub/irs-prior/f6251--2025.pdf
+  instructions_document_id: instructions_form_6251_2025
+- document_id: instructions_form_6251_2025
+  kind: instructions
+  url: https://www.irs.gov/pub/irs-prior/i6251--2025.pdf
+  instruction_url: https://www.irs.gov/instructions/i6251
+- document_id: form_1099b_2025
+  kind: source_document
+  url: https://www.irs.gov/pub/irs-prior/f1099b--2025.pdf
+  expected_sha256: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
+- document_id: form_w2_2025
+  kind: source_document
+  url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
+  expected_sha256: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
+- document_id: form_1099_int_2025
+  kind: source_document
+  url: https://www.irs.gov/pub/irs-pdf/f1099int.pdf
+  expected_sha256: ee7697c9b29374596fd9645b157b7312d121ae3c2f76bebf68908c3fc2b739e6
+- document_id: form_1099_div_2025
+  kind: source_document
+  url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
+  expected_sha256: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
+- document_id: form_13614_c_2025
+  kind: source_document
+  url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  expected_sha256: 160507ac6daa8cc5e3126ad51ba5c2050c786337048f434f8336b48d92992c9d
+- document_id: form_2441_2025
+  kind: tax_form
+  url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  instructions_document_id: instructions_form_2441_2025
+  expected_sha256: 6c3c2d19163fa4c4de829abf9a89b43f08b4f4f3cb169740fc7da43e914269ce
+- document_id: instructions_form_2441_2025
+  kind: instructions
+  url: https://www.irs.gov/pub/irs-prior/i2441--2025.pdf
+  instruction_url: https://www.irs.gov/instructions/i2441
+  expected_sha256: 86f0669e78b1dc00bfb99e956673d4fccee9e40d6c44d53623dd08e62567fd39
+- document_id: simplified_method_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Simplified Method Worksheet
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: social_security_benefits_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Social Security Benefits Worksheet
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: standard_deduction_worksheet_for_dependents_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Standard Deduction Worksheet for Dependents
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Qualified Dividends and Capital Gain Tax Worksheet
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: state_and_local_income_tax_refund_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: State and Local Income Tax Refund Worksheet
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: self_employed_health_insurance_deduction_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Self-Employed Health Insurance Deduction Worksheet
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: ira_deduction_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: IRA Deduction Worksheet
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: student_loan_interest_deduction_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Student Loan Interest Deduction Worksheet
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Qualified Tips From More Than One Employer Worksheet - Keep for Your Records
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: multiple_trades_or_businesses_worksheet_keep_for_your_records_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Multiple Trades or Businesses Worksheet - Keep for Your Records
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Qualified Overtime Compensation From More Than One Employer Worksheet -
+      Keep for Your Records
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: Qualified Overtime Compensation From More Than One Payor Worksheet - Keep
+      for Your Records
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: negative_form_8978_adjustment_worksheet_schedule_2_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_1040_2025
+    title: "Negative Form 8978 Adjustment Worksheet\u2014Schedule 2 ("
+    parent_sha256: 0a1a74db99d1f481b49c6d59a928dbfc16f10c640e1dd502c72f3ac816e21ec7
+- document_id: capital_loss_carryover_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_schedule_d_2025
+    title: Capital Loss Carryover Worksheet
+    parent_sha256: 4b69463fe928feeaa0033180d85e43bdabe5c3e5f85e9fd40d4d6edc18725fdb
+- document_id: 28_rate_gain_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_schedule_d_2025
+    title: 28% Rate Gain Worksheet
+    parent_sha256: 4b69463fe928feeaa0033180d85e43bdabe5c3e5f85e9fd40d4d6edc18725fdb
+- document_id: unrecaptured_section_1250_gain_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_schedule_d_2025
+    title: Unrecaptured Section 1250 Gain Worksheet
+    parent_sha256: 4b69463fe928feeaa0033180d85e43bdabe5c3e5f85e9fd40d4d6edc18725fdb
+- document_id: schedule_d_tax_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_schedule_d_2025
+    title: Schedule D Tax Worksheet
+    parent_sha256: 4b69463fe928feeaa0033180d85e43bdabe5c3e5f85e9fd40d4d6edc18725fdb
+- document_id: credit_limit_worksheet_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_2441_2025
+    title: Credit Limit Worksheet
+    parent_sha256: 2ff6720c15aad0408349ece9fbde4aba0b206a1fc842275eb9306eb134355ca8
+- document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+  kind: worksheet
+  region:
+    source_document_id: instructions_form_2441_2025
+    title: Worksheet A.Worksheet for 2024 Expenses Paid in 2025
+    parent_sha256: 2ff6720c15aad0408349ece9fbde4aba0b206a1fc842275eb9306eb134355ca8

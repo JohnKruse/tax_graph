@@ -896,6 +896,8 @@ def _copy_worksheet_drafts(root: Path, *, year: str, destination: Path) -> dict[
         return {"required": [], "copied": [], "missing": []}
     copied: list[str] = []
     missing: list[dict[str, str]] = []
+    promoted: list[str] = []
+    refused: list[dict[str, Any]] = []
     for entry in manifest.documents:
         if not entry.is_region:
             continue
@@ -907,6 +909,9 @@ def _copy_worksheet_drafts(root: Path, *, year: str, destination: Path) -> dict[
                 continue
             shutil.copytree(source, target)
             copied.append(entry.document_id)
+            document_stem = re.sub(r"_20[0-9]{2}$", "", entry.document_id).replace("_", "-")
+            if (root / "graph" / year / "documents" / f"{document_stem}.yaml").is_file():
+                promoted.append(entry.document_id)
         except OSError as exc:
             missing.append(
                 {
@@ -914,10 +919,46 @@ def _copy_worksheet_drafts(root: Path, *, year: str, destination: Path) -> dict[
                     "reason": f"{type(exc).__name__}: {exc}",
                 }
             )
+    discovery_paths = sorted(
+        (root / "graph" / year / "_drafts").glob("worksheet-discovery*.yaml")
+    )
+    discovery_files: list[str] = []
+    for path in discovery_paths:
+        target_path = destination / path.name
+        shutil.copy2(path, target_path)
+        discovery_files.append(path.name)
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for item in payload.get("worksheets", []) if isinstance(payload, Mapping) else []:
+            if not isinstance(item, Mapping):
+                continue
+            if str(item.get("status") or "") == "ready":
+                continue
+            refused.append({
+                "document_id": str(item.get("document_id") or ""),
+                "title": str(item.get("worksheet_title") or ""),
+                "status": "refused",
+                "findings": list(item.get("findings") or []),
+                "source_document_id": str(payload.get("source_document_id") or ""),
+            })
+        for item in payload.get("findings", []) if isinstance(payload, Mapping) else []:
+            if not isinstance(item, Mapping):
+                continue
+            if str(item.get("kind") or "") in {"html_markdown_extent_disagreement", "unresolved_footnote_marker", "worksheet_window_reached_edge", "window_claim_overlap"}:
+                continue
+            refused.append({
+                "document_id": "",
+                "title": "",
+                "status": "refused",
+                "findings": [dict(item)],
+                "source_document_id": str(payload.get("source_document_id") or ""),
+            })
     return {
         "required": sorted(entry.document_id for entry in manifest.documents if entry.is_region),
         "copied": sorted(copied),
+        "promoted": sorted(promoted),
         "missing": sorted(missing, key=lambda item: item["document_id"]),
+        "discovery_files": discovery_files,
+        "refused": refused,
     }
 
 

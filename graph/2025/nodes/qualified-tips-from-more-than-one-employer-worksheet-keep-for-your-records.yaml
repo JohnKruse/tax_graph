@@ -1,0 +1,18 @@
+- node_id: qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025_line_1
+  document_id: qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025
+  label: Qualified Tips From More Than One Employer Worksheet - Keep for Your Records
+    line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_1
+- node_id: qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025_line_2
+  document_id: qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025
+  label: Qualified Tips From More Than One Employer Worksheet - Keep for Your Records
+    line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2

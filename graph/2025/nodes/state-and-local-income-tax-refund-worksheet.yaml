@@ -1,0 +1,101 @@
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_1
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_1
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_2
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_2
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_3
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_3
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_4
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_4
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_5
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_5
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_6
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_6
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_7
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_7
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_8
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 8
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_8
+- node_id: state_and_local_income_tax_refund_worksheet_2025_line_9
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_9
+- node_id: state_and_local_income_tax_refund_worksheet_2025_breakpoint_0_single
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet 0 percent breakpoint, Single
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 1950
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_6
+- node_id: state_and_local_income_tax_refund_worksheet_2025_breakpoint_0_mfs
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet 0 percent breakpoint, Married
+    filing separately
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 1950
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_6
+- node_id: state_and_local_income_tax_refund_worksheet_2025_breakpoint_0_hoh
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  label: State and Local Income Tax Refund Worksheet 0 percent breakpoint, Head of
+    household
+  node_type: parameter
+  value_type: currency
+  required: optional
+  constant_value: 1950
+  citation_refs:
+  - cite_state_and_local_income_tax_refund_worksheet_2025_lines_6

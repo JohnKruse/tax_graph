@@ -243,6 +243,75 @@ def _load_graph(candidate_root: Path, year: Any, document_id: str) -> dict[str, 
     }
 
 
+def _worksheet_review(candidate_root: Path, manifest: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Collect promoted and refused worksheet outcomes for the review surface."""
+    worksheet_drafts = manifest.get("worksheet_drafts")
+    worksheet_drafts = worksheet_drafts if isinstance(worksheet_drafts, Mapping) else {}
+    copied = {str(item) for item in worksheet_drafts.get("copied", []) or []}
+    promoted = {str(item) for item in worksheet_drafts.get("promoted", []) or []}
+    records: list[dict[str, Any]] = []
+    for path in sorted(candidate_root.glob("worksheet-discovery*.yaml")):
+        payload = _load_yaml(path, default={})
+        if not isinstance(payload, Mapping):
+            continue
+        source_document_id = _text(payload.get("source_document_id"))
+        for item in payload.get("worksheets", []) or []:
+            if not isinstance(item, Mapping):
+                continue
+            document_id = _text(item.get("document_id"))
+            status = "promoted" if document_id in promoted else (
+                "harvested" if document_id in copied and item.get("status") == "ready" else "refused"
+            )
+            records.append({
+                "document_id": document_id,
+                "title": _text(item.get("worksheet_title")),
+                "source_document_id": source_document_id,
+                "status": status,
+                "findings": list(item.get("findings") or []),
+            })
+        for finding in payload.get("findings", []) or []:
+            if not isinstance(finding, Mapping):
+                continue
+            kind = _text(finding.get("kind"))
+            if kind in {"html_markdown_extent_disagreement", "unresolved_footnote_marker", "worksheet_window_reached_edge", "window_claim_overlap"}:
+                continue
+            records.append({
+                "document_id": "",
+                "title": "Worksheet discovery",
+                "source_document_id": source_document_id,
+                "status": "refused",
+                "findings": [dict(finding)],
+            })
+    for item in worksheet_drafts.get("missing", []) or []:
+        if isinstance(item, Mapping):
+            records.append({
+                "document_id": _text(item.get("document_id")),
+                "title": "",
+                "source_document_id": "",
+                "status": "refused",
+                "findings": [{"kind": "worksheet_draft_missing", "message": _text(item.get("reason"))}],
+            })
+
+    unique: dict[tuple[str, str, str, str], dict[str, Any]] = {}
+    for item in records:
+        finding_text = "|".join(_finding_text(value) for value in item.get("findings", []))
+        key = (
+            _text(item.get("document_id")),
+            _text(item.get("title")),
+            _text(item.get("source_document_id")),
+            finding_text,
+        )
+        unique[key] = item
+    return sorted(
+        unique.values(),
+        key=lambda item: (
+            _text(item.get("status")) != "refused",
+            _text(item.get("document_id")),
+            _text(item.get("title")),
+        ),
+    )
+
+
 def _graph_jargon_nodes(document_id: str, graph: Mapping[str, Any]) -> list[dict[str, str]]:
     """Report graph node ids and labels containing the banned human-facing term."""
 
@@ -502,6 +571,7 @@ def build_panel(candidate_root: str | Path, *, top: int | None = None) -> dict[s
     if not documents:
         raise ValueError("candidate manifest has no documents")
     year = _text(manifest.get("year") or "2025")
+    worksheet_review = _worksheet_review(root, manifest)
     panels: list[dict[str, Any]] = []
     graph_jargon_nodes: list[dict[str, str]] = []
     instruction_by_document: dict[str, dict[str, Any]] = {}
@@ -571,6 +641,7 @@ def build_panel(candidate_root: str | Path, *, top: int | None = None) -> dict[s
         "source_candidate": str(root),
         "year": year,
         "documents": documents,
+        "worksheets": worksheet_review,
         "denominator": len(full_panels),
         "visible_denominator": len(visible_panels),
         "top": top,
@@ -842,6 +913,27 @@ def _panel_html(row: Mapping[str, Any]) -> str:
     )
 
 
+def _worksheet_review_html(items: Iterable[Mapping[str, Any]]) -> str:
+    """Render worksheet promotion/refusal outcomes as explicit review cards."""
+    records = list(items)
+    if not records:
+        return ""
+    rows = []
+    for item in records:
+        findings = "; ".join(_finding_text(value) for value in item.get("findings", []) if _finding_text(value))
+        title = _text(item.get("title")) or "Untitled worksheet candidate"
+        document_id = _text(item.get("document_id")) or "no document id"
+        source = _text(item.get("source_document_id"))
+        source_text = f" from {escape(source)}" if source else ""
+        reason = f"<p><strong>Reason:</strong> {escape(findings)}</p>" if findings else ""
+        rows.append(
+            f'<article class="worksheet-card" data-worksheet-status="{escape(_text(item.get("status")), quote=True)}">'
+            f'<h3>{escape(title)}</h3><span class="worksheet-status">{escape(_text(item.get("status")))}</span>'
+            f'<code>{escape(document_id)}{source_text}</code>{reason}</article>'
+        )
+    return '<section class="worksheet-review"><h2>Worksheet pipeline review</h2>' + "".join(rows) + "</section>"
+
+
 def _operation_distribution_text(distribution: Mapping[Any, Any]) -> str:
     """Format the operation-count distribution for a human-readable summary."""
 
@@ -897,6 +989,7 @@ def render_html(panel: Mapping[str, Any]) -> str:
         )
         jargon_html = '<details class="jargon-note"><summary>Graph terminology to report (not changed)</summary>' f"<ul>{items}</ul></details>"
     panels = "\n".join(_panel_html(row) for row in panel.get("panels", []))
+    worksheet_html = _worksheet_review_html(panel.get("worksheets", []))
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -911,6 +1004,16 @@ main {{ max-width: 1900px; margin: 0 auto; }}
 .summary h1 {{ margin: 0 0 6px; font-size: 1.25rem; }}
 .summary p {{ margin: 5px 0; }}
 .review-panel {{ margin: 0 0 18px; background: white; border: 1px solid #cbd3dc; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px #0001; }}
+.worksheet-review {{ margin: 0 0 18px; padding: 14px 18px; background: white; border: 1px solid #cbd3dc; border-radius: 8px; }}
+.worksheet-review h2 {{ margin: 0 0 10px; font-size: 1rem; }}
+.worksheet-card {{ position: relative; margin: 8px 0; padding: 9px 130px 9px 10px; border-left: 3px solid #6584a3; background: #f7f9fb; }}
+.worksheet-card h3 {{ margin: 0 0 4px; font-size: .9rem; }}
+.worksheet-card code {{ display: block; }}
+.worksheet-card p {{ margin: 5px 0 0; }}
+.worksheet-status {{ position: absolute; top: 9px; right: 10px; padding: 3px 8px; border: 1px solid #8795a5; border-radius: 12px; font-size: .78rem; }}
+.worksheet-card[data-worksheet-status="refused"] {{ border-left-color: #c13c3c; background: #fff1f1; }}
+.worksheet-card[data-worksheet-status="refused"] .worksheet-status {{ background: #ffdede; }}
+.worksheet-card[data-worksheet-status="promoted"] .worksheet-status {{ background: #e5f5e9; }}
 .panel-header {{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 11px 16px; background: #e8edf2; border-bottom: 1px solid #cbd3dc; }}
 .panel-header h2 {{ margin: 0; font-size: 1rem; }}
 .panel-header code {{ margin-left: auto; color: #44515f; }}
@@ -971,6 +1074,7 @@ li {{ margin: 4px 0; overflow-wrap: anywhere; }}
 <p>Tree and Math are two lossless projections of the promoted expression. The Tree shows containment and informative edge roles; Math flattens the same stored tree.</p>
 {jargon_html}
 </section>
+{worksheet_html}
 {panels}
 </main></body>
 </html>

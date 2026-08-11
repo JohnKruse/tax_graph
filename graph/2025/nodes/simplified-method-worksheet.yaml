@@ -1,0 +1,88 @@
+- node_id: simplified_method_worksheet_2025_line_1
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_1
+- node_id: simplified_method_worksheet_2025_line_2
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_2
+- node_id: simplified_method_worksheet_2025_line_3
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_3
+- node_id: simplified_method_worksheet_2025_line_4
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_4
+- node_id: simplified_method_worksheet_2025_line_5
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_5
+- node_id: simplified_method_worksheet_2025_line_6
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_6
+- node_id: simplified_method_worksheet_2025_line_7
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_7
+- node_id: simplified_method_worksheet_2025_line_8
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 8
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_8
+- node_id: simplified_method_worksheet_2025_line_9
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_9
+- node_id: simplified_method_worksheet_2025_line_10
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 10
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_10
+- node_id: simplified_method_worksheet_2025_line_11
+  document_id: simplified_method_worksheet_2025
+  label: Simplified Method Worksheet line 11
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_simplified_method_worksheet_2025_lines_11

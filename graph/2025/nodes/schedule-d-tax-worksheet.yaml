@@ -1,0 +1,377 @@
+- node_id: schedule_d_tax_worksheet_2025_line_1
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_1
+  description: Source text contains a conditional Form 2555 route; see harvest.yaml.
+- node_id: schedule_d_tax_worksheet_2025_line_2
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_2
+- node_id: schedule_d_tax_worksheet_2025_line_3
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_3
+- node_id: schedule_d_tax_worksheet_2025_line_4
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_4
+- node_id: schedule_d_tax_worksheet_2025_line_5
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_5
+- node_id: schedule_d_tax_worksheet_2025_line_6
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_6
+- node_id: schedule_d_tax_worksheet_2025_line_7
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_7
+- node_id: schedule_d_tax_worksheet_2025_line_8
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 8
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_8
+- node_id: schedule_d_tax_worksheet_2025_line_9
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_9
+- node_id: schedule_d_tax_worksheet_2025_line_10
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 10
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_10
+- node_id: schedule_d_tax_worksheet_2025_line_11
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 11
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_11
+- node_id: schedule_d_tax_worksheet_2025_line_12
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 12
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_12
+- node_id: schedule_d_tax_worksheet_2025_line_13
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 13
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_13
+- node_id: schedule_d_tax_worksheet_2025_line_14
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 14
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_14
+- node_id: schedule_d_tax_worksheet_2025_line_15
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 15
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_15
+- node_id: schedule_d_tax_worksheet_2025_line_16
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 16
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_16
+- node_id: schedule_d_tax_worksheet_2025_line_17
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 17
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_17
+- node_id: schedule_d_tax_worksheet_2025_line_18
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 18
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_18
+- node_id: schedule_d_tax_worksheet_2025_line_19
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 19
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_19
+- node_id: schedule_d_tax_worksheet_2025_line_20
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 20
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_20
+- node_id: schedule_d_tax_worksheet_2025_line_21
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 21
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_21
+- node_id: schedule_d_tax_worksheet_2025_line_22
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 22
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_22
+- node_id: schedule_d_tax_worksheet_2025_line_23
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 23
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_23
+- node_id: schedule_d_tax_worksheet_2025_line_24
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 24
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_24
+- node_id: schedule_d_tax_worksheet_2025_line_25
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 25
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_25
+- node_id: schedule_d_tax_worksheet_2025_line_26
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 26
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_26
+- node_id: schedule_d_tax_worksheet_2025_line_27
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 27
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_27
+- node_id: schedule_d_tax_worksheet_2025_line_28
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 28
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_28
+- node_id: schedule_d_tax_worksheet_2025_line_29
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 29
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_29
+- node_id: schedule_d_tax_worksheet_2025_line_30
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 30
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_30
+- node_id: schedule_d_tax_worksheet_2025_line_31
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 31
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_31
+- node_id: schedule_d_tax_worksheet_2025_line_32
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 32
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_32
+- node_id: schedule_d_tax_worksheet_2025_line_33
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 33
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_33
+- node_id: schedule_d_tax_worksheet_2025_line_34
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 34
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_34
+- node_id: schedule_d_tax_worksheet_2025_line_35
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 35
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_35
+- node_id: schedule_d_tax_worksheet_2025_line_36
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 36
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_36
+- node_id: schedule_d_tax_worksheet_2025_line_37
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 37
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_37
+- node_id: schedule_d_tax_worksheet_2025_line_38
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 38
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_38
+- node_id: schedule_d_tax_worksheet_2025_line_39
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 39
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_39
+- node_id: schedule_d_tax_worksheet_2025_line_40
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 40
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_40
+- node_id: schedule_d_tax_worksheet_2025_line_41
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 41
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_41
+- node_id: schedule_d_tax_worksheet_2025_line_42
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 42
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_42
+- node_id: schedule_d_tax_worksheet_2025_line_43
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 43
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_43
+- node_id: schedule_d_tax_worksheet_2025_line_44
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 44
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_44
+- node_id: schedule_d_tax_worksheet_2025_line_45
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 45
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_45
+- node_id: schedule_d_tax_worksheet_2025_line_46
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 46
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_46
+- node_id: schedule_d_tax_worksheet_2025_line_47
+  document_id: schedule_d_tax_worksheet_2025
+  label: Schedule D Tax Worksheet line 47
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_schedule_d_tax_worksheet_2025_lines_47

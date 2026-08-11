@@ -49,6 +49,7 @@ class SourceDocumentInput:
     links_path: Path | None = None
     related_sources: list[RelatedSourceInput] = field(default_factory=list)
     not_modeled_fields: list[dict[str, Any]] = field(default_factory=list)
+    source_document_id: str | None = None
 
 
 @dataclass

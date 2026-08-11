@@ -1,0 +1,72 @@
+- node_id: student_loan_interest_deduction_worksheet_2025_line_1
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 1
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_1
+- node_id: student_loan_interest_deduction_worksheet_2025_line_2
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 2
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_2
+- node_id: student_loan_interest_deduction_worksheet_2025_line_3
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 3
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_3
+- node_id: student_loan_interest_deduction_worksheet_2025_line_4
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 4
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_4
+- node_id: student_loan_interest_deduction_worksheet_2025_line_5
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 5
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_5
+- node_id: student_loan_interest_deduction_worksheet_2025_line_6
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 6
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_6
+- node_id: student_loan_interest_deduction_worksheet_2025_line_7
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 7
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_7
+- node_id: student_loan_interest_deduction_worksheet_2025_line_8
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 8
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_8
+- node_id: student_loan_interest_deduction_worksheet_2025_line_9
+  document_id: student_loan_interest_deduction_worksheet_2025
+  label: Student Loan Interest Deduction Worksheet line 9
+  node_type: worksheet_field
+  value_type: currency
+  required: optional
+  citation_refs:
+  - cite_student_loan_interest_deduction_worksheet_2025_lines_9
