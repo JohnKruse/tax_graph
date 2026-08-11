@@ -13,6 +13,7 @@ from tax_graph.ingest.worksheet_harvest import (
     classify_worksheet_tables,
     harvest_worksheet,
     harvest_worksheet_file,
+    harvest_worksheets,
     harvest_worksheets_file,
 )
 
@@ -45,6 +46,7 @@ def test_schedule_d_discovery_uses_all_five_html_tables_and_oracle() -> None:
     )
 
     assert len(result.classifications) == 5
+    assert len(result.windows) == 5
     assert len(result.worksheets) == 4
     assert [len(item.line_nodes) for item in result.worksheets] == [13, 7, 18, 47]
     assert all(item.ok for item in result.worksheets), result.as_dict()
@@ -56,6 +58,13 @@ def test_schedule_d_discovery_uses_all_five_html_tables_and_oracle() -> None:
     assert result.classifications[2].lines == ("19",)
     assert result.classifications[3].lines == ()
     assert result.classifications[4].lines == ()
+    assert result.windows[0].title.startswith("Capital Loss Carryover Worksheet")
+    assert result.windows[0].anchor_table_id == 1
+    assert result.windows[0].table_ids == (1,)
+    assert result.windows[1].serves_lines == ("Schedule D, line 18",)
+    assert result.windows[2].serves_lines == ()
+    assert result.windows[3].starts_a_worksheet
+    assert not result.windows[4].starts_a_worksheet
 
 
 def test_title_filter_returns_one_logical_worksheet_across_continuation() -> None:
@@ -78,6 +87,7 @@ def test_schedule_b_zero_tables_is_a_valid_empty_answer() -> None:
     )
 
     assert result.classifications == ()
+    assert result.windows == ()
     assert result.worksheets == ()
     assert result.findings == ()
 
@@ -119,6 +129,16 @@ def test_html_table_boundary_replaces_destination_phrase() -> None:
     assert result.ok
     assert len(result.line_nodes) == 2
     assert not any(item.kind == "terminal_destination_missing" for item in result.findings)
+
+
+def test_window_cache_is_used_without_a_per_table_classifier() -> None:
+    result = harvest_worksheets_file(
+        RAW / "instructions_schedule_d_2025.html",
+        source_document_id="instructions_schedule_d_2025",
+    )
+
+    assert len(result.windows) == 5
+    assert all(window.finding is None for window in result.windows)
 
 
 def test_classification_cache_is_keyed_by_table_bytes(tmp_path: Path) -> None:
@@ -164,6 +184,48 @@ def test_provider_classifier_receives_every_table_with_strict_schema() -> None:
     assert request["purpose"] == "tax_graph_worksheet_table_classifier"
     assert request["schema"]["type"] == "object"
     assert set(request["schema"]["required"]) == {"kind"}
+
+
+def test_provider_window_receives_every_anchor_with_strict_schema() -> None:
+    class FakeClient:
+        def __init__(self):
+            self.calls = []
+
+        def structured_completion(self, **kwargs):
+            self.calls.append(kwargs)
+            return {
+                "starts_a_worksheet": False,
+                "title": "",
+                "table_ids": [],
+                "parameter_table_ids": [],
+                "serves_lines": [],
+            }
+
+    source = """
+    <h3><a name="one"></a>One</h3><table><tr><td>1.</td></tr></table>
+    <h3><a name="two"></a>Two</h3><table><tr><td>2.</td></tr></table>
+    """
+    client = FakeClient()
+    result = harvest_worksheets(
+        source,
+        source_document_id="instructions_toy_2025",
+        classifier=lambda table, source_text: {"kind": "worksheet"},
+        window_classifier=client,
+        config={"llm": {"model": "test/model"}},
+    )
+
+    assert len(result.windows) == 2
+    assert len(client.calls) == 2
+    request = client.calls[0]
+    assert request["purpose"] == "tax_graph_worksheet_window"
+    assert request["schema"]["type"] == "object"
+    assert set(request["schema"]["required"]) == {
+        "starts_a_worksheet",
+        "title",
+        "table_ids",
+        "parameter_table_ids",
+        "serves_lines",
+    }
 
 
 def test_qdcgt_canary_still_has_its_source_derived_constant_projection() -> None:

@@ -148,13 +148,23 @@ class WorksheetHarvest:
     worksheet_source_span: tuple[int, int] | None = None
     markdown_lines: tuple[str, ...] | None = None
     html_lines: tuple[str, ...] = ()
-    classification: TableClassification | None = None
+    window: WorksheetWindow | None = None
+    advisories_enabled: bool = False
     source_table_ids: tuple[int, ...] = ()
 
     @property
     def ok(self) -> bool:
-        """Whether the harvest passed all fail-closed checks."""
-        return not self.findings and self.document is not None
+        """Whether the harvest has a usable document and no fatal finding.
+
+        Window-edge, oracle, overlap, and unresolved-footnote observations are
+        advisory.  They stay attached to the draft for review, but they do not
+        suppress deterministic source-backed output.
+        """
+        return self.document is not None and (
+            not _has_fatal_findings(self.findings)
+            if self.advisories_enabled
+            else not self.findings
+        )
 
     @property
     def line_nodes(self) -> tuple[HarvestObject, ...]:
@@ -195,7 +205,7 @@ class WorksheetHarvest:
                 "markdown_lines": list(self.markdown_lines or ()),
                 "html_lines": list(self.html_lines),
             },
-            "classification": self.classification.as_dict() if self.classification is not None else None,
+            "window": self.window.as_dict() if self.window is not None else None,
             "conditions": [condition.as_dict() for condition in self.conditions],
             "findings": [finding.as_dict() for finding in self.findings],
             "counts": {
@@ -233,32 +243,47 @@ class _RawTable:
 
 
 @dataclass(frozen=True)
-class TableClassification:
-    """The model's classification of one acquired table."""
+class WorksheetWindow:
+    """One cache-backed model answer over a table and its lookahead."""
 
-    table_id: int
-    heading: str
-    anchor_id: str
-    kind: str
-    lines: tuple[str, ...]
+    anchor_table_id: int
+    starts_a_worksheet: bool
+    title: str
+    table_ids: tuple[int, ...]
+    parameter_table_ids: tuple[int, ...]
+    serves_lines: tuple[str, ...]
     source_start: int
     source_end: int
     finding: WorksheetFinding | None = None
 
     def as_dict(self) -> dict[str, Any]:
-        """Return the review-facing classification record."""
+        """Return the review-facing window record."""
         record = {
-            "table_id": self.table_id,
-            "heading": self.heading,
-            "anchor_id": self.anchor_id,
-            "kind": self.kind,
-            "lines": list(self.lines),
+            "anchor_table_id": self.anchor_table_id,
+            "starts_a_worksheet": self.starts_a_worksheet,
+            "title": self.title,
+            "table_ids": list(self.table_ids),
+            "parameter_table_ids": list(self.parameter_table_ids),
+            "serves_lines": list(self.serves_lines),
             "source_start": self.source_start,
             "source_end": self.source_end,
         }
         if self.finding is not None:
             record["finding"] = self.finding.as_dict()
         return record
+
+
+class WindowClassifier(Protocol):
+    """Provider seam for one candidate-table window."""
+
+    def __call__(
+        self,
+        table: _RawTable,
+        source_text: str,
+        lookahead: int,
+        following_tables: tuple[_RawTable, ...],
+    ) -> Mapping[str, Any]:
+        """Decide whether the candidate starts a worksheet and return table ids."""
 
 
 class TableClassifier(Protocol):
@@ -270,7 +295,7 @@ class TableClassifier(Protocol):
 
 @dataclass(frozen=True)
 class WorksheetDiscovery:
-    """Document-wide table classifications and harvested worksheet drafts."""
+    """Document-wide window observations and harvested worksheet drafts."""
 
     source_document_id: str
     year: str
@@ -278,6 +303,7 @@ class WorksheetDiscovery:
     worksheets: tuple[WorksheetHarvest, ...]
     findings: tuple[WorksheetFinding, ...] = ()
     inventory: tuple[WorksheetFinding, ...] = ()
+    windows: tuple[WorksheetWindow, ...] = ()
 
     def as_dict(self) -> dict[str, Any]:
         """Return a stable discovery report without source payloads."""
@@ -286,6 +312,7 @@ class WorksheetDiscovery:
             "source_document_id": self.source_document_id,
             "year": self.year,
             "classifications": [item.as_dict() for item in self.classifications],
+            "windows": [item.as_dict() for item in self.windows],
             "worksheets": [item.as_dict() for item in self.worksheets],
             "findings": [item.as_dict() for item in self.findings],
             "inventory": [item.as_dict() for item in self.inventory],
@@ -390,8 +417,48 @@ class _RowParser(HTMLParser):
             self._cell_parts.append(data)
 
 
+WINDOW_LOOKAHEAD = 4
+ADVISORY_FINDING_KINDS = frozenset(
+    {
+        "html_markdown_extent_disagreement",
+        "unresolved_footnote_marker",
+        "worksheet_window_reached_edge",
+        "window_claim_overlap",
+    }
+)
+
+
+@dataclass(frozen=True)
+class TableClassification:
+    """The cached per-table candidate gate used before opening a window."""
+
+    table_id: int
+    heading: str
+    anchor_id: str
+    kind: str
+    lines: tuple[str, ...]
+    source_start: int
+    source_end: int
+    finding: WorksheetFinding | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return the review-facing classification record."""
+        record = {
+            "table_id": self.table_id,
+            "heading": self.heading,
+            "anchor_id": self.anchor_id,
+            "kind": self.kind,
+            "lines": list(self.lines),
+            "source_start": self.source_start,
+            "source_end": self.source_end,
+        }
+        if self.finding is not None:
+            record["finding"] = self.finding.as_dict()
+        return record
+
+
 def worksheet_table_schema() -> dict[str, Any]:
-    """Return the strict schema for one table-classification call."""
+    """Return the strict schema for the candidate worksheet gate."""
     return {
         "type": "object",
         "additionalProperties": False,
@@ -412,13 +479,10 @@ def classify_worksheet_tables(
     config: Mapping[str, Any] | None = None,
     cache_path: str | Path | None = None,
 ) -> tuple[TableClassification, ...]:
-    """Classify every acquired HTML table, using a cache keyed by table bytes.
+    """Classify every acquired table and retain the incremental cache.
 
-    The classifier receives every table, including lookup tables and layouts.
-    No prefilter is applied because a prefilter would make the missing-table
-    case silent.  ``classifier`` may be a test callable, an object exposing
-    ``classify_table``, or the provider-agnostic structured-completion client.
-    When it is omitted, the configured LLM client is built lazily.
+    This is the cheap candidate gate.  Only tables classified as ``worksheet``
+    are sent through the more expensive sliding-window segmentation pass.
     """
     if not _is_html_source(source_text):
         raise ValueError("worksheet table classification requires acquired HTML")
@@ -437,13 +501,14 @@ def classify_worksheet_tables(
             if isinstance(cached_payload, dict):
                 payload = cached_payload
                 parsed = _classification_from_payload(table, payload)
+            elif classifier is not None:
+                payload = _call_table_classifier(table, source_text, classifier=classifier, config=settings)
+                updated_cache[fingerprint] = dict(payload)
+                parsed = _classification_from_payload(table, payload)
+                if cache_file is not None:
+                    _write_classification_cache(cache_file, updated_cache)
             else:
-                payload = _call_table_classifier(
-                    table,
-                    source_text,
-                    classifier=classifier,
-                    config=settings,
-                )
+                payload = _call_table_classifier(table, source_text, classifier=None, config=settings)
                 updated_cache[fingerprint] = dict(payload)
                 parsed = _classification_from_payload(table, payload)
                 if cache_file is not None:
@@ -458,7 +523,7 @@ def _call_table_classifier(
     table: _RawTable,
     source_text: str,
     *,
-    classifier: Any | None,
+    classifier: Any,
     config: Mapping[str, Any],
 ) -> Mapping[str, Any]:
     if classifier is not None:
@@ -502,9 +567,7 @@ def _model_classify_table(
         "presentation structure without a computation. "
         "Do not infer line numbers from row prose. The pipeline reads "
         "printed line numbers from the table's own heading.\n\n"
-        f"heading: {heading}\n"
-        f"anchor: {anchor}\n"
-        f"table_text:\n{visible}\n"
+        f"heading: {heading}\nanchor: {anchor}\ntable_text:\n{visible}\n"
     )
     request: dict[str, Any] = {
         "prompt": prompt,
@@ -517,7 +580,10 @@ def _model_classify_table(
     seed = resolve_llm_seed(config)
     if seed is not None:
         request["seed"] = seed
-    return client.structured_completion(**request)
+    response = client.structured_completion(**request)
+    if not isinstance(response, Mapping):
+        raise ValueError("worksheet table classifier returned a non-object")
+    return response
 
 
 def _classification_from_payload(table: _RawTable, payload: Mapping[str, Any]) -> TableClassification:
@@ -537,7 +603,6 @@ def _classification_from_payload(table: _RawTable, payload: Mapping[str, Any]) -
 
 
 def _classification_failure(table: _RawTable, exc: Exception) -> TableClassification:
-    """Represent one table failure without losing the rest of the batch."""
     finding = WorksheetFinding(
         "table_classification_failed",
         f"table {table.table_id} classification failed: {exc}",
@@ -578,6 +643,240 @@ def _write_classification_cache(path: Path, entries: Mapping[str, Mapping[str, A
         yaml.safe_dump({"schema_version": 1, "tables": dict(entries)}, sort_keys=True, allow_unicode=False),
         encoding="ascii",
         newline="\n",
+    )
+
+
+def _has_fatal_findings(findings: Iterable[WorksheetFinding]) -> bool:
+    """Return whether a finding prevents emitting source-backed draft objects."""
+    return any(finding.kind not in ADVISORY_FINDING_KINDS for finding in findings)
+
+
+def window_schema() -> dict[str, Any]:
+    """Return the strict schema for one sliding-window segmentation call."""
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "starts_a_worksheet",
+            "title",
+            "table_ids",
+            "parameter_table_ids",
+            "serves_lines",
+        ],
+        "properties": {
+            "starts_a_worksheet": {"type": "boolean"},
+            "title": {"type": "string"},
+            "table_ids": {"type": "array", "items": {"type": "integer"}},
+            "parameter_table_ids": {"type": "array", "items": {"type": "integer"}},
+            "serves_lines": {"type": "array", "items": {"type": "string"}},
+        },
+    }
+
+
+def _table_window_text(table: _RawTable) -> str:
+    """Render a table window without introducing a second text authority."""
+    heading = table.heading.text.strip() if table.heading is not None else "(no heading)"
+    lines = [line for line in (_row_line(row) for row in table.rows) if line]
+    parts = [
+        f"### table {table.table_id}",
+        f"heading: {heading}",
+        f"printed_line_tokens:{','.join(lines) if lines else '(none)'}",
+    ]
+    body = [f"| {row.text.strip()}" for row in table.rows if row.text.strip()]
+    parts.append("\n".join(body) if body else "(no rows)")
+    return "\n".join(parts)
+
+
+def window_fingerprint(
+    source_text: str,
+    tables: tuple[_RawTable, ...],
+    index: int,
+    lookahead: int = WINDOW_LOOKAHEAD,
+) -> str:
+    """Return the cache key used by the seeding pass, byte for byte."""
+    chunk = tables[index : index + 1 + lookahead]
+    joined = "\n".join(source_text[table.start : table.end] for table in chunk)
+    return hashlib.sha256(f"{lookahead}\n{joined}".encode("ascii")).hexdigest()
+
+
+def _load_window_cache(path: Path | None) -> tuple[int, dict[str, dict[str, Any]]]:
+    if path is None or not path.exists():
+        return WINDOW_LOOKAHEAD, {}
+    payload = yaml.safe_load(path.read_text(encoding="ascii")) or {}
+    if not isinstance(payload, dict) or payload.get("schema_version") != 1:
+        raise ValueError(f"invalid worksheet window cache schema: {path}")
+    lookahead = payload.get("lookahead")
+    windows = payload.get("windows")
+    if not isinstance(lookahead, int) or lookahead < 1 or not isinstance(windows, dict):
+        raise ValueError(f"invalid worksheet window cache: {path}")
+    return lookahead, {
+        str(key): dict(value)
+        for key, value in windows.items()
+        if isinstance(value, dict)
+    }
+
+
+def _model_window(
+    client: Any,
+    tables: tuple[_RawTable, ...],
+    index: int,
+    lookahead: int,
+    config: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
+
+    chunk = tables[index : index + 1 + lookahead]
+    prompt = (
+        "Decide where ONE worksheet ends in an IRS instruction booklet.\n\n"
+        "You are given a CANDIDATE table and the tables that FOLLOW it in printed order. "
+        "Decide whether the candidate starts a worksheet, and if it does, which following "
+        "tables belong to the SAME worksheet. A worksheet may contain a caption table, a "
+        "numbered body, a continuation, and parameter grids. A standalone lookup chart is "
+        "not part of the worksheet even when adjacent. Return table ids only; do not "
+        "transcribe row text.\n\n"
+        f"candidate table id: {tables[index].table_id}\n\n"
+        + "\n\n".join(_table_window_text(table) for table in chunk)
+        + "\n"
+    )
+    request: dict[str, Any] = {
+        "prompt": prompt,
+        "schema": window_schema(),
+        "model": resolve_llm_model(config, "micro"),
+        "max_tokens": int(get_config_value(dict(config), "extraction.worksheet_window_max_tokens", 6000)),
+        "temperature": get_config_value(dict(config), "llm.temperature"),
+        "purpose": "tax_graph_worksheet_window",
+    }
+    seed = resolve_llm_seed(config)
+    if seed is not None:
+        request["seed"] = seed
+    response = client.structured_completion(**request)
+    if not isinstance(response, Mapping):
+        raise ValueError("worksheet window provider returned a non-object")
+    return response
+
+
+def _call_window_provider(
+    tables: tuple[_RawTable, ...],
+    source_text: str,
+    index: int,
+    lookahead: int,
+    *,
+    classifier: Any,
+    config: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    table = tables[index]
+    chunk = tables[index : index + 1 + lookahead]
+    if hasattr(classifier, "segment_window"):
+        response = classifier.segment_window(table, source_text, lookahead, chunk)
+    elif hasattr(classifier, "structured_completion"):
+        response = _model_window(classifier, tables, index, lookahead, config)
+    elif callable(classifier):
+        try:
+            response = classifier(table, source_text, lookahead, chunk)
+        except TypeError:
+            response = classifier(table, source_text)
+    else:
+        raise ValueError("worksheet window provider returned no result")
+    if not isinstance(response, Mapping):
+        raise ValueError("worksheet window provider returned a non-object")
+    return response
+
+
+def _window_observation(
+    source_text: str,
+    tables: tuple[_RawTable, ...],
+    index: int,
+    lookahead: int,
+    payload: Mapping[str, Any] | None,
+) -> WorksheetWindow:
+    """Validate one cached/provider response and retain a source span."""
+    table = tables[index]
+    source_end = tables[min(len(tables) - 1, index + lookahead)].end
+    evidence_prefix = (
+        f"anchor_table_id={table.table_id}",
+        f"source_span={table.start}:{source_end}",
+    )
+    if payload is None:
+        finding = WorksheetFinding(
+            "window_cache_missing",
+            f"no seeded worksheet window exists for table {table.table_id}",
+            evidence_prefix,
+        )
+        return WorksheetWindow(table.table_id, False, "", (), (), (), table.start, source_end, finding)
+    if payload.get("error"):
+        finding = WorksheetFinding(
+            "window_provider_failed",
+            f"worksheet window for table {table.table_id} failed: {payload['error']}",
+            evidence_prefix,
+        )
+        return WorksheetWindow(table.table_id, False, "", (), (), (), table.start, source_end, finding)
+    if payload.get("anchor_table_id") is not None and payload.get("anchor_table_id") != table.table_id:
+        finding = WorksheetFinding(
+            "window_cache_entry_misaligned",
+            f"worksheet window cache entry is keyed to table {payload.get('anchor_table_id')}, not table {table.table_id}",
+            evidence_prefix,
+        )
+        return WorksheetWindow(table.table_id, False, "", (), (), (), table.start, source_end, finding)
+    starts = payload.get("starts_a_worksheet")
+    title = str(payload.get("title") or "").strip()
+    raw_ids = payload.get("table_ids") or []
+    raw_parameter_ids = payload.get("parameter_table_ids") or []
+    raw_serves_lines = payload.get("serves_lines") or []
+    if not isinstance(starts, bool) or not isinstance(raw_ids, list) or not isinstance(raw_parameter_ids, list) or not isinstance(raw_serves_lines, list):
+        finding = WorksheetFinding(
+            "window_response_invalid",
+            f"worksheet window for table {table.table_id} has the wrong response shape",
+            evidence_prefix,
+        )
+        return WorksheetWindow(table.table_id, False, title, (), (), (), table.start, source_end, finding)
+    try:
+        table_ids = tuple(int(value) for value in raw_ids)
+        parameter_ids = tuple(int(value) for value in raw_parameter_ids)
+        serves_lines = tuple(str(value) for value in raw_serves_lines)
+    except (TypeError, ValueError) as exc:
+        finding = WorksheetFinding(
+            "window_response_invalid",
+            f"worksheet window for table {table.table_id} contains non-typed ids: {exc}",
+            evidence_prefix,
+        )
+        return WorksheetWindow(table.table_id, False, title, (), (), (), table.start, source_end, finding)
+    if not starts:
+        return WorksheetWindow(table.table_id, False, title, (), (), serves_lines, table.start, source_end)
+    by_id = {candidate.table_id: candidate for candidate in tables[index : index + 1 + lookahead]}
+    expected_order = [candidate.table_id for candidate in tables[index : index + 1 + lookahead]]
+    invalid_ids = [table_id for table_id in table_ids if table_id not in by_id]
+    duplicate_ids = len(set(table_ids)) != len(table_ids)
+    out_of_order = [table_id for table_id in table_ids if table_id in by_id]
+    invalid_parameters = [table_id for table_id in parameter_ids if table_id not in table_ids]
+    if (
+        not title
+        or table.table_id not in table_ids
+        or not table_ids
+        or invalid_ids
+        or duplicate_ids
+        or out_of_order != [table_id for table_id in expected_order if table_id in table_ids]
+        or invalid_parameters
+    ):
+        details = list(evidence_prefix)
+        if invalid_ids:
+            details.append(f"invalid_table_ids={','.join(str(value) for value in invalid_ids)}")
+        if invalid_parameters:
+            details.append(f"invalid_parameter_table_ids={','.join(str(value) for value in invalid_parameters)}")
+        finding = WorksheetFinding(
+            "window_response_invalid",
+            f"worksheet window for table {table.table_id} contains an invalid worksheet claim",
+            tuple(details),
+        )
+        return WorksheetWindow(table.table_id, False, title, table_ids, parameter_ids, serves_lines, table.start, source_end, finding)
+    return WorksheetWindow(
+        table.table_id,
+        True,
+        title,
+        table_ids,
+        parameter_ids,
+        serves_lines,
+        table.start,
+        source_end,
     )
 
 
@@ -635,6 +934,10 @@ def harvest_worksheet(
     oracle_source_text: str | None = None,
     oracle_heading_text: str | None = None,
     _tables: tuple[_RawTable, ...] | None = None,
+    _parameter_table_ids: tuple[int, ...] = (),
+    _initial_findings: tuple[WorksheetFinding, ...] = (),
+    _window: WorksheetWindow | None = None,
+    _advisories_enabled: bool = False,
     _allow_same_title_group: bool = False,
 ) -> WorksheetHarvest:
     """Harvest one worksheet using HTML structure and an optional text oracle.
@@ -681,10 +984,18 @@ def harvest_worksheet(
                 observed_start_anchor=resolved_target.start_anchor,
             )
         start_heading = tables[0].heading
+        parameter_ids = set(_parameter_table_ids)
         rows = tuple(
             replace(row, table_id=1)
-            for table in tables
-            for row in table.rows
+            for row in sorted(
+                (
+                    row
+                    for table in tables
+                    if table.table_id not in parameter_ids
+                    for row in table.rows
+                ),
+                key=lambda candidate: candidate.start,
+            )
         )
     else:
         headings = _source_headings(source_text)
@@ -707,7 +1018,7 @@ def harvest_worksheet(
         source_text,
         target=resolved_target,
     )
-    if findings:
+    if _has_fatal_findings(findings):
         return _blocked_harvest(
             resolved_target,
             year_text,
@@ -747,7 +1058,8 @@ def harvest_worksheet(
     ]
     nodes = [*nodes, *parameter_nodes]
     document = _document_object(resolved_target, year_text, source_id, start_heading)
-    all_findings = list(_count_findings(resolved_target, line_rows, parameter_nodes))
+    all_findings = [*_initial_findings, *findings]
+    all_findings.extend(_count_findings(resolved_target, line_rows, parameter_nodes))
     all_objects = [document, *nodes, *edges, *citations]
     all_findings.extend(_verify_harvest_objects(source_text, all_objects))
     markdown_lines: tuple[str, ...] | None = None
@@ -774,7 +1086,7 @@ def harvest_worksheet(
             html_lines = tuple(sorted(line_rows, key=_line_sort_key))
     else:
         html_lines = tuple(sorted(line_rows, key=_line_sort_key))
-    if all_findings:
+    if _has_fatal_findings(all_findings):
         return _blocked_harvest(
             resolved_target,
             year_text,
@@ -795,10 +1107,12 @@ def harvest_worksheet(
         edges=tuple(edges),
         citations=tuple(citations),
         conditions=tuple(conditions),
-        findings=tuple(),
+        findings=tuple(_dedupe_findings(all_findings)),
         worksheet_source_span=(start_heading.source_start, terminal_row.end),
         markdown_lines=markdown_lines,
         html_lines=html_lines,
+        window=_window,
+        advisories_enabled=_advisories_enabled,
     )
 
 
@@ -832,102 +1146,179 @@ def harvest_worksheets(
     year: str | int = "2025",
     title: str | None = None,
     classifier: Any | None = None,
+    window_classifier: Any | None = None,
     config: Mapping[str, Any] | None = None,
     cache_path: str | Path | None = None,
+    window_cache_path: str | Path | None = None,
+    lookahead: int = WINDOW_LOOKAHEAD,
     oracle_source_text: str | None = None,
 ) -> WorksheetDiscovery:
     """Discover and harvest every worksheet table in one instruction document.
 
-    A title narrows the already-classified document; it never changes the
-    structural extent rule.  Document-wide discovery groups worksheet tables
-    by normalized printed title in source order.  A repeated title is merged
-    only when at most one table starts at printed line 1; an ambiguous merge
-    is reported and refused.  Non-worksheet classifications remain visible in
-    ``inventory`` instead of disappearing from the run.
+    The cached per-table classifier is the candidate gate.  Only its
+    ``worksheet`` tables open a sliding window.  The window model returns
+    table ids, never row text.  First anchor in printed order wins when
+    overlapping windows claim the same table; the later claim is retained as a
+    printed-disagreement finding.  ``window_classifier`` exists for recorded
+    fixtures and provider-contract tests; the normal pipeline reads its seeded
+    window cache.
     """
     year_text = str(year)
     tables = _source_tables(source_text) if _is_html_source(source_text) else ()
     if not tables:
         return WorksheetDiscovery(source_document_id, year_text, (), ())
+    settings = dict(config or {})
+    classification_cache = Path(cache_path) if cache_path is not None else None
     classifications = classify_worksheet_tables(
         source_text,
         classifier=classifier,
-        config=config,
-        cache_path=cache_path,
+        config=settings,
+        cache_path=classification_cache,
     )
-    wanted = normalize_printed_title(title) if title else None
-    worksheets: list[WorksheetHarvest] = []
+    cache_file = Path(window_cache_path) if window_cache_path is not None else None
+    if cache_file is None and cache_path is not None and Path(cache_path).name.endswith(".worksheet_windows.yaml"):
+        cache_file = Path(cache_path)
+    cached_lookahead, cached = _load_window_cache(cache_file)
+    active_lookahead = cached_lookahead if cache_file is not None and cache_file.exists() else lookahead
+    if active_lookahead < 1:
+        raise ValueError("worksheet window lookahead must be positive")
+    table_by_id = {table.table_id: table for table in tables}
+    table_index = {table.table_id: index for index, table in enumerate(tables)}
+    windows: list[WorksheetWindow] = []
+    window_position: dict[int, int] = {}
     findings: list[WorksheetFinding] = []
     inventory: list[WorksheetFinding] = []
-    grouped: dict[str, list[tuple[_RawTable, TableClassification, str]]] = {}
-    for table, classification in zip(tables, classifications):
+    candidate_indices: list[int] = []
+    for index, (table, classification) in enumerate(zip(tables, classifications)):
         if classification.finding is not None:
             findings.append(classification.finding)
             continue
         if classification.kind != "worksheet":
-            if wanted is None:
+            inventory.append(
+                WorksheetFinding(
+                    "classified_not_emitted",
+                    f"table {table.table_id} classified as {classification.kind} and was not emitted",
+                    (
+                        f"table_id={table.table_id}",
+                        f"heading={classification.heading or '(none)'}",
+                        f"kind={classification.kind}",
+                    ),
+                )
+            )
+            continue
+        candidate_indices.append(index)
+    for index in candidate_indices:
+        table = tables[index]
+        fingerprint = window_fingerprint(source_text, tables, index, active_lookahead)
+        payload = cached.get(fingerprint)
+        if payload is None and window_classifier is not None:
+            try:
+                payload = dict(
+                    _call_window_provider(
+                        tables,
+                        source_text,
+                        index,
+                        active_lookahead,
+                        classifier=window_classifier,
+                        config=settings,
+                    )
+                )
+            except Exception as exc:  # noqa: BLE001 - one window must not kill the batch
+                payload = {"error": f"{type(exc).__name__}: {exc}"[:300]}
+        observation = _window_observation(
+            source_text,
+            tables,
+            index,
+            active_lookahead,
+            payload,
+        )
+        windows.append(observation)
+        window_position[observation.anchor_table_id] = len(windows) - 1
+        if observation.finding is not None:
+            findings.append(observation.finding)
+
+    wanted = normalize_printed_title(title) if title else None
+    worksheets: list[WorksheetHarvest] = []
+    claimed: dict[int, int] = {}
+    claims: list[tuple[WorksheetWindow, tuple[_RawTable, ...], tuple[WorksheetFinding, ...]]] = []
+    for observation in windows:
+        if observation.finding is not None or not observation.starts_a_worksheet:
+            if observation.finding is None:
                 inventory.append(
                     WorksheetFinding(
-                        "classified_not_emitted",
-                        f"table {table.table_id} classified as {classification.kind} and was not emitted",
-                        (
-                            f"table_id={table.table_id}",
-                            f"heading={table.heading.text if table.heading is not None else '(none)'}",
-                            f"kind={classification.kind}",
-                        ),
+                        "table_not_worksheet",
+                        f"table {observation.anchor_table_id} did not start a worksheet in its window",
+                        (f"table_id={observation.anchor_table_id}", "reason=window_no_start"),
                     )
                 )
             continue
-        if table.heading is None or not table.heading.text.strip():
-            findings.append(
+        overlap = tuple(table_id for table_id in observation.table_ids if table_id in claimed)
+        if overlap:
+            finding = WorksheetFinding(
+                "window_claim_overlap",
+                f"window anchored at table {observation.anchor_table_id} claimed already-owned table ids; first anchor wins",
+                tuple(
+                    [f"anchor_table_id={observation.anchor_table_id}"]
+                    + [f"overlap_table_id={table_id}" for table_id in overlap]
+                ),
+            )
+            findings.append(finding)
+            windows[window_position[observation.anchor_table_id]] = replace(observation, finding=finding)
+            continue
+        selected_tables = tuple(table_by_id[table_id] for table_id in observation.table_ids)
+        for table_id in observation.table_ids:
+            claimed[table_id] = observation.anchor_table_id
+        edge_findings: list[WorksheetFinding] = []
+        anchor_index = table_index[observation.anchor_table_id]
+        window_end_index = min(len(tables) - 1, anchor_index + active_lookahead)
+        if (
+            observation.table_ids
+            and anchor_index + active_lookahead < len(tables)
+            and table_index[observation.table_ids[-1]] == window_end_index
+        ):
+            edge_findings.append(
                 WorksheetFinding(
-                    "worksheet_table_missing_heading",
-                    f"worksheet table {table.table_id} has no printed title",
-                    (f"table_id={table.table_id}",),
+                    "worksheet_window_reached_edge",
+                    f"worksheet claim from table {observation.anchor_table_id} reaches the lookahead edge",
+                    (
+                        f"anchor_table_id={observation.anchor_table_id}",
+                        f"lookahead={active_lookahead}",
+                        f"table_ids={','.join(str(table_id) for table_id in observation.table_ids)}",
+                    ),
                 )
             )
-            continue
-        semantic_title = _semantic_worksheet_title(table.heading.text)
-        if wanted and not _title_matches(semantic_title, wanted):
-            continue
-        key = normalize_printed_title(semantic_title)
-        grouped.setdefault(key, []).append((table, classification, semantic_title))
+        claims.append((observation, selected_tables, tuple(edge_findings)))
 
-    for entries in grouped.values():
-        first_table, first_classification, semantic_title = entries[0]
-        if not _has_printed_worksheet_title(first_table.heading.text if first_table.heading else ""):
-            table_ids = tuple(table.table_id for table, _, _ in entries)
+    for observation, selected_tables, edge_findings in claims:
+        title_text = _semantic_worksheet_title(observation.title)
+        first_table = selected_tables[0]
+        if wanted and not _title_matches(title_text, wanted):
+            continue
+        if not _has_printed_worksheet_title(title_text):
             findings.append(
                 WorksheetFinding(
                     "worksheet_title_missing",
-                    f"classified worksheet tables {','.join(str(table_id) for table_id in table_ids)} have no printed worksheet title",
+                    f"window at table {observation.anchor_table_id} has no printed worksheet title",
                     tuple(
-                        [f"table_id={table_id}" for table_id in table_ids]
-                        + [f"heading={first_table.heading.text if first_table.heading is not None else '(none)'}"]
+                        [f"table_id={table.table_id}" for table in selected_tables]
+                        + [f"title={observation.title or '(empty)'}"]
                     ),
                 )
             )
-            continue
-
-        selected_tables = tuple(table for table, _, _ in entries)
-        line_one_tables = tuple(table for table in selected_tables if _first_table_line(table) == "1")
-        if len(line_one_tables) > 1:
-            findings.append(
-                WorksheetFinding(
-                    "ambiguous_same_title_merge",
-                    f"worksheet title {semantic_title!r} has multiple tables starting at printed line 1; merge refused",
-                    tuple(
-                        [f"table_id={table.table_id}" for table in line_one_tables]
-                        + [f"normalized_title={normalize_printed_title(semantic_title)}"]
-                    ),
+            for table in selected_tables[1:]:
+                inventory.append(
+                    WorksheetFinding(
+                        "table_merged",
+                        f"table {table.table_id} merged into refused untitled window at table {observation.anchor_table_id}",
+                        (f"table_id={table.table_id}", f"anchor_table_id={observation.anchor_table_id}"),
+                    )
                 )
-            )
             continue
-
         target = WorksheetTarget(
-            document_id=_discovered_document_id(semantic_title, year_text),
-            title=semantic_title,
-            start_anchor=first_classification.anchor_id or f"table-{first_table.table_id}",
+            document_id=_discovered_document_id(title_text, year_text),
+            title=title_text,
+            start_anchor=(first_table.heading.anchor_id if first_table.heading is not None else "")
+            or f"table-{first_table.table_id}",
             source_document_id=source_document_id,
         )
         oracle_heading = first_table.heading.text if len(selected_tables) == 1 else None
@@ -940,6 +1331,10 @@ def harvest_worksheets(
                 oracle_source_text=oracle_source_text,
                 oracle_heading_text=oracle_heading,
                 _tables=selected_tables,
+                _parameter_table_ids=observation.parameter_table_ids,
+                _initial_findings=edge_findings,
+                _window=observation,
+                _advisories_enabled=True,
                 _allow_same_title_group=True,
             )
         except Exception as exc:
@@ -955,13 +1350,7 @@ def harvest_worksheets(
                     ),
                 ),
             )
-        worksheets.append(
-            replace(
-                harvest,
-                classification=first_classification,
-                source_table_ids=tuple(table.table_id for table in selected_tables),
-            )
-        )
+        worksheets.append(replace(harvest, window=observation, source_table_ids=observation.table_ids))
         for table in selected_tables[1:]:
             inventory.append(
                 WorksheetFinding(
@@ -970,7 +1359,7 @@ def harvest_worksheets(
                     (
                         f"table_id={table.table_id}",
                         f"document_id={target.document_id}",
-                        f"normalized_title={normalize_printed_title(semantic_title)}",
+                        f"normalized_title={normalize_printed_title(title_text)}",
                     ),
                 )
             )
@@ -978,6 +1367,7 @@ def harvest_worksheets(
         source_document_id=source_document_id,
         year=year_text,
         classifications=classifications,
+        windows=tuple(windows),
         worksheets=tuple(worksheets),
         findings=tuple(findings),
         inventory=tuple(inventory),
@@ -991,22 +1381,38 @@ def harvest_worksheets_file(
     year: str | int = "2025",
     title: str | None = None,
     classifier: Any | None = None,
+    window_classifier: Any | None = None,
     config: Mapping[str, Any] | None = None,
     cache_path: str | Path | None = None,
+    window_cache_path: str | Path | None = None,
+    lookahead: int = WINDOW_LOOKAHEAD,
 ) -> WorksheetDiscovery:
     """Discover worksheets from HTML and pair it with sibling Markdown text."""
     source_path = Path(path)
     source_text = source_path.read_text(encoding="ascii")
     rendered_path = source_path.with_suffix(".txt")
     oracle_text = rendered_path.read_text(encoding="ascii") if rendered_path.exists() else None
+    resolved_classification_cache = cache_path
+    if resolved_classification_cache is None or Path(resolved_classification_cache).name.endswith(".worksheet_windows.yaml"):
+        resolved_classification_cache = source_path.with_suffix(".worksheet_tables.yaml")
+    resolved_window_cache = window_cache_path
+    if resolved_window_cache is None:
+        resolved_window_cache = (
+            cache_path
+            if cache_path is not None and Path(cache_path).name.endswith(".worksheet_windows.yaml")
+            else source_path.with_suffix(".worksheet_windows.yaml")
+        )
     return harvest_worksheets(
         source_text,
         source_document_id=source_document_id,
         year=year,
         title=title,
         classifier=classifier,
+        window_classifier=window_classifier,
         config=config,
-        cache_path=cache_path,
+        cache_path=resolved_classification_cache,
+        window_cache_path=resolved_window_cache,
+        lookahead=lookahead,
         oracle_source_text=oracle_text,
     )
 

@@ -280,6 +280,7 @@ def harvest_worksheet_command(
     start_anchor: str | None = None,
     draft_dir: str | Path | None = None,
     classifier: Any | None = None,
+    window_classifier: Any | None = None,
 ) -> int:
     """Harvest one title or every worksheet table into drafts without promotion."""
     from tax_graph.ingest.worksheet_harvest import (
@@ -383,7 +384,8 @@ def harvest_worksheet_command(
         return 0
 
     settings = load_config(root=root_path)
-    cache_path = root_path / ".cache" / "raw" / str(year) / f"{source_id}.worksheet_tables.yaml"
+    classification_cache_path = root_path / ".cache" / "raw" / str(year) / f"{source_id}.worksheet_tables.yaml"
+    window_cache_path = root_path / ".cache" / "raw" / str(year) / f"{source_id}.worksheet_windows.yaml"
     try:
         discovery = harvest_worksheets_file(
             source_path,
@@ -391,13 +393,15 @@ def harvest_worksheet_command(
             year=year,
             title=title,
             classifier=classifier,
+            window_classifier=window_classifier,
             config=settings,
-            cache_path=cache_path,
+            cache_path=classification_cache_path,
+            window_cache_path=window_cache_path,
         )
     except (OSError, ValueError, RuntimeError) as exc:
         print(f"worksheet discovery blocked: {exc}")
         return 1
-    print(f"worksheet tables classified: {len(discovery.classifications)}")
+    print(f"worksheet windows observed: {len(discovery.windows)}")
     print(f"worksheets discovered: {len(discovery.worksheets)}")
     if not discovery.classifications:
         print("  no HTML tables; zero worksheets is a valid result")
@@ -409,7 +413,9 @@ def harvest_worksheet_command(
             f"heading={item.heading or '(none)'}; lines={','.join(item.lines) or '(none)'}"
         )
     written = 0
-    refused = len(discovery.findings)
+    from tax_graph.ingest.worksheet_harvest import ADVISORY_FINDING_KINDS
+
+    refused = sum(item.kind not in ADVISORY_FINDING_KINDS for item in discovery.findings)
     output_root = (
         Path(draft_dir)
         if draft_dir is not None
@@ -443,7 +449,8 @@ def harvest_worksheet_command(
         else:
             print(f"  inventory {item.kind}: {item.message}")
     for finding in discovery.findings:
-        print(f"  refused {finding.kind}: {finding.message}")
+        label = "advisory" if finding.kind in ADVISORY_FINDING_KINDS else "refused"
+        print(f"  {label} {finding.kind}: {finding.message}")
     try:
         report_path = write_worksheet_discovery_report(discovery, output_root)
     except Exception as exc:

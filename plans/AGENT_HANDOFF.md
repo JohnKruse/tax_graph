@@ -229,9 +229,25 @@ corrections come with it: an EMPTY oracle result is `unavailable`, NOT `disagree
 
 ## Open for Architect
 
-Nothing. S98 is accepted, the full-suite floor is met at the 17-red baseline, S99 is specced above,
-and **the live seeding pass is DONE with zero failures**. The round is fully offline.
-**The ball is JOHN'S: start Codex on S99.**
+**CODEX S99 STATUS (2026-08-11).** Restored `classify_worksheet_tables` and its incremental cache
+from `ac1c560`; only classifier-positive tables open a seeded sliding window. The production path
+now reports 28 1040 windows, 3 2441 windows, and 5 Schedule D windows. Parameter tables are kept
+in the claimed group and excluded from extent rows; first-anchor-wins overlaps are retained as
+advisory findings; direct legacy harvest remains fail-closed while S99 discovery carries advisory
+findings on emitted drafts.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s99b).Path; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\\Scripts\\python.exe -m pytest tests\\test_worksheet_harvest_m20.py tests\\test_worksheet_harvest_s97.py tests\\test_worksheet_harvest_s98.py tests\\test_worksheet_harvest_s99.py -q` -> **31 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s99b).Path; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\\Scripts\\python.exe -m pytest tests\\test_cli.py -q` -> **7 passed, 1 warning**.
+RAN: `.venv\\Scripts\\python.exe -B tools\\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli harvest-worksheet --source-document-id instructions_form_1040_2025 --draft-dir .test_tmp_s99b\\m1040_final\\_drafts` -> **exit 1; discovered=17; written=13; refused=4; sum=17**. Refusals are one malformed seeded response at table 183 (`starts_a_worksheet: true` with empty `table_ids`), one real line-sequence gap at table 52, and two untitled Step blocks.
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli harvest-worksheet --source-document-id instructions_form_2441_2025 --draft-dir .test_tmp_s99b\\m2441_final\\_drafts` -> **exit 0; discovered=2; written=2; refused=0; sum=2**.
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli harvest-worksheet --source-document-id instructions_schedule_d_2025 --draft-dir .test_tmp_s99b\\msched_d_final\\_drafts` -> **exit 0; discovered=4; written=4; refused=0; sum=4**.
+NOT RUN: full suite; the accepted baseline records it beyond the 600-second Worker command cap.
+
+**OPEN FOR ARCHITECT:** Is the table 183 seeded window response an artifact to reseed in the
+Architect leg, or should S99 retain the visible fail-closed refusal? The Worker made no provider
+call and did not edit the ignored cache.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
