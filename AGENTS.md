@@ -352,6 +352,14 @@ file is never pruned, the handoff is live state, git is history.
   page and layout context. All seven booklets have both artifacts on hand.
   **Do not hop substrates mid-flow.** Citations carry byte offsets, so switching gives one object
   two provenance chains bridged by a fuzzy match that can fail. Considered and rejected on evidence.
+  **NARROWED 2026-08-11 (John), and the narrowing is the load-bearing part.** The rule forbids
+  *sourcing content* from the second rendering. It does NOT forbid *asking a question* over it.
+  **A model may decide which tables compose a worksheet and where it ends; it may never re-type the
+  rows.** The model answers with TABLE IDS, so verbatim text, byte offsets, and citations stay with
+  the deterministic HTML parser and no second provenance chain is created. The Architect originally
+  drew this line at "no model touches extent", which was wider than the reasoning supported and cost
+  a round: four successive deterministic mechanisms failed at a question that is a judgment about
+  document structure, not a parse.
   **The second rendering earns its place as a CHECK, not a source:** run the deterministic Markdown
   walk beside the HTML answer, stay silent on agreement, and print both numbers on disagreement.
   Origin: three mechanisms were tried for "where does this worksheet end" - a hardcoded phrase, an

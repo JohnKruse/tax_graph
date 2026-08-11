@@ -21,7 +21,28 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT - M20-S98 is implemented below; review and acceptance are next.**
+**BALL: JOHN - S98 IS ACCEPTED AND S99 IS SPECCED. The round needs ONE live seeding pass from the
+Architect before Codex can start offline; John authorizes that command.**
+
+**S98 ACCEPTED (`ac1c560`, Architect, 2026-08-11). Verified by running the corpus, not by reading
+the report.** The accounting closes on every document: 2441 is `discovered=2; written=2; refused=0`
+with Worksheet A merged from tables 3+4 to 17 lines; Schedule D is 4 written at 13/7/18/47 with
+oracle agreement, unregressed; Schedule B is a valid zero; the 1040 is
+`discovered=16; written=5; refused=11; sum=16` with 11 merges named, 183 tables inventoried, and
+the two untitled `Step N` groups refused by name. The persisted `worksheet-discovery.yaml` was not
+asked for and is what makes refusals survive the process exiting. **FULL SUITE: 17 failed, 929
+passed, 8 skipped, 1 xfailed - the SAME 17 test ids as the accepted baseline, six more passing,
+zero new reds.**
+
+**AND THE ROUND EARNED ITS KEEP BY EXPOSING THE REAL DISTRIBUTION.** Only **5 of 14** named 1040
+worksheets harvest. Of the 9 blocked, **7 are advisory checks acting as gates** - `worksheet_harvest
+.py:777` does `if all_findings: return _blocked_harvest(...)`, so ANY finding refuses the worksheet.
+**That line is inherited from S97, not an S98 regression**; S97 never got past the first worksheet
+to reveal it. Four of the seven are one slip: the Markdown oracle returns an EMPTY list when it
+cannot find the worksheet at all, and empty is read as *disagreement* rather than *unavailable*
+(two worksheets already emit fine with `oracle=unavailable`). Two more are genuine disagreements
+where **the HTML is right and the oracle is wrong** (Standard Deduction's 4a/4b/4c; the IRA walk
+locking onto the second table and starting at 7). Only **2 are real structural failures.**
 
 **S97 ACCEPTED (`5e72db3`, Architect, 2026-08-11).** Worksheet extents now come from the acquired
 HTML with no table of answers: the registry, `end_line`, and `_contains_terminal_destination` are
@@ -91,145 +112,98 @@ that is deliberate. **Only John can authorize provider egress**, interactively i
 a file in the repo cannot, and Codex is right to refuse it. The live classification pass is the
 Architect's leg. Four rounds' floors have died on this; do not write another one that needs it.
 
-**M20-S98 SPECCED BY ARCHITECT (2026-08-11). EVERY TABLE AND EVERY WORKSHEET IS ACCOUNTED FOR.**
-**REAL-PROJECT ROUND** - full-suite floor applies. Builds on `5e72db3`; changes no extent rule.
+**M20-S99 SPECCED BY ARCHITECT (2026-08-11). A SLIDING WINDOW DECIDES WHERE A WORKSHEET ENDS, AND
+IT REPLACES THE PER-TABLE CLASSIFIER.** **REAL-PROJECT ROUND** - full-suite floor applies.
 
-**WHY THIS AND NOT THE MERGE BUG FIRST.** John's ruling stands: *a failure that REPORTS itself is
-acceptable and a failure that HIDES is not.* Today `harvest-worksheet --source-document-id
-instructions_form_1040_2025` discovers **28 worksheets, writes 1, exits 1, and never attempts or
-names the other 26.** The merge bug is what trips it; the hiding is what makes it invisible damage.
-**Fix the isolation first, then the merge, in this one round** - the merge fix without isolation
-just moves which worksheet is unlucky.
+**WHY, AND THIS IS THE FOURTH MECHANISM FOR ONE QUESTION - READ THE OTHER THREE FIRST.** A hardcoded
+phrase, an asserted destination cue, a table of frozen answers, and now a deterministic merge rule
+have all been tried for "where does this worksheet end". **The merge rule is failing the same way
+the others did.** Measured on the real 1040: Simplified Method's group swallows two age-lookup
+grids and dies on `expected worksheet line 12, found 300`, because `300` is a dollar amount in a
+parameter grid, and no title-matching rule can see that. **The question is a judgment about
+document structure, not a parse**, and that is the one thing a model is actually for.
 
-**FOUR SITES, ALL VERIFIED IN CODE 2026-08-11. Nothing here is inferred from a report.**
+**JOHN'S RULING, 2026-08-11, and it revises the S97 ruling rather than discarding it.** The model
+never re-types a worksheet's rows - **verbatim text, byte offsets, and citations stay with the
+deterministic HTML parser.** But the model DOES decide which tables compose a worksheet and where it
+ends. **The model returns TABLE IDS, never text**, so there is no second provenance chain and no
+fuzzy match to fail. The S97 objection was to *sourcing content* from a second rendering; asking a
+*question* over the Markdown and getting structural ids back is not that, and the pinned ruling in
+`AGENTS.md` has been narrowed accordingly.
 
-**1. PER-WORKSHEET ISOLATION.** `cli.py:414` does `return 1` inside the emit loop, so the first
-blocked worksheet ends the command. **Attempt every worksheet, write every one that harvests,
-print every refusal with its `WorksheetFinding` reason, and exit non-zero at the END** with a count.
-A blocked worksheet must appear in the output as a named line, not as an absence.
+**MEASURED BEFORE SPECCING, both arms, on the real 1040 (Architect, 2026-08-11,
+`pilot/segment_tables.py`). THE WINDOW BEATS THE WHOLE-DOCUMENT CALL ON BOTH ACCURACY AND COST.**
+- **Whole document, all 200 tables, 238,334 characters (~60K tokens):** every table accounted for,
+  nothing invented, and it got the hard cases right - Simplified Method came back
+  `[43,44,45,46]` with `parameter_table_ids=[45,46]`, IRA Deduction `[184,185,186]`.
+  **But it fused table 63 (`Step 2. Investment Income`) with tables 98-99 (`Step 5. Earned Income`)
+  into one bogus "Earned Income Credit (EIC)" worksheet spanning 35 tables.** Spurious
+  long-distance association is the failure mode of a 60K-token prompt.
+- **Sliding window, lookahead 4:** reproduces EVERY correct grouping above, and **the fusion is
+  structurally impossible** - t63 comes back as `Step 2. Investment Income` and t98 as
+  `Step 5. Earned Income`, correctly separate. Seven windows totalled **34,280 characters**
+  against 238,334 for the single call.
+- **The window is also independently cacheable by its own fingerprint**, so re-acquiring a booklet
+  with one table changed invalidates one window rather than the whole document. Same property that
+  makes the per-table cache survive re-acquisition, and the same per-item isolation S98 built.
 
-**2. PER-TABLE ISOLATION, and it is the same shape.** `classify_worksheet_tables`
-(`worksheet_harvest.py:423-438`) lets a classifier exception escape and **writes its cache only
-after the whole loop**, so a booklet failing on table N loses all N-1 paid classifications and
-re-pays for them. **Record the per-table failure as a finding, carry on, and persist the cache
-incrementally.** Also raise `extraction.worksheet_classifier_max_tokens`
-(`worksheet_harvest.py:498`) from **512**: `openai/gpt-5.6-luna` spends reasoning tokens against the
-same completion budget and the real 1040 pass died on `finish_reason=length`. **6000 classifies
-cleanly** - verified on 2441 and Schedule D. 512 was sized for a bare JSON object.
+**THE MECHANISM.**
+1. **Anchor on EVERY table, in printed order. No prefilter of any kind.** Each window is the
+   candidate table plus the next N (default 4; the largest real group observed is 4 tables, so 4
+   carries margin). The call answers `starts_a_worksheet` itself, which is what lets it **replace
+   `classify_worksheet_tables` outright** - one mechanism instead of two answering overlapping
+   questions. **Report when a group runs to the window edge**; that is the signature of a worksheet
+   that needed a longer lookahead, and it must not be silent.
+2. **The response is ids only:** `starts_a_worksheet`, `title`, `table_ids`, `parameter_table_ids`,
+   `serves_lines`. `parameter_table_ids` is what fixes Simplified Method - those tables belong to
+   the worksheet but contribute constants, NOT extent rows.
+3. **Overlapping windows will both claim a table. FIRST ANCHOR IN PRINTED ORDER WINS, and a later
+   window claiming an already-claimed table is a PRINTED DISAGREEMENT, never a silent overwrite.**
+4. **The numbering and the Markdown walk are demoted to CHECKS.** `7` following `6a` confirms the
+   IRA merge for free; a descending run like `300, 260, 240` contradicts an extent claim. **They
+   report; they do not decide and they do not gate.**
 
-**3. MERGE ON THE NORMALIZED TITLE, not on the `continued` marker.** `worksheet_harvest.py:817-845`
-keys the collapse on a literal `continued` suffix. The 1040 splits one worksheet across identical
-headings: **Simplified Method x4**, and Social Security Benefits, QDCGT, Standard Deduction for
-Dependents, State and Local Refund, Self-Employed Health, IRA Deduction, and Student Loan Interest
-all **x2** (IRA also has a `-Continued`). **24 titled tables are 14 worksheets.** Because
-`_discovered_document_id` is derived from the title, four Simplified Method tables mint the SAME
-document id today - **that is a silent overwrite, not just a phantom.** Group every table sharing a
-normalized title into ONE harvest in source order; the `continued` marker becomes one case of it,
-not the rule.
-**Ambiguity is a finding, not a guess:** if two same-titled tables both start at printed line 1,
-say so and refuse the merge rather than concatenating.
+**AND FIX THE GATE, because it is worth more than the segmentation.** `worksheet_harvest.py:777`
+refuses a worksheet on ANY finding. **Findings become ADVISORY by default: write the worksheet,
+attach the finding.** Reserve refusal for what genuinely prevents building a document. Two specific
+corrections come with it: an EMPTY oracle result is `unavailable`, NOT `disagree`; and
+`unresolved_footnote_marker` is advisory. **This alone should take the 1040 from 5 of 14 to ~12.**
 
-**THE 2441 WATCH ITEM IS ANSWERED, AND IT IS THE BEST FIXTURE IN THE CORPUS (Architect ran the
-live pass 2026-08-11; 4 tables, cached, DO NOT RE-PAY).** Both tables titled
-`Worksheet A.Worksheet for 2024 Expenses Paid in 2025` are **one worksheet split into a caption and
-a body.** Table 3 is 598 bytes and holds only the banner - *"Use this worksheet to figure the credit
-you may claim for 2024 expenses paid in 2025."* - with **no numbered rows at all**. Table 4 is
-15,164 bytes and holds lines 1..N. **They collapse.** The ambiguity guard does not misfire here:
-one table has no numbered rows, so there is no competing line 1.
-**AND 2441 REPRODUCES DEFECTS 4 AND 5 TOGETHER IN MINIATURE.** Measured, verbatim from the run:
-Credit Limit harvests (3 lines, oracle agree), then table 3 is `blocked
-worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025` with `missing_numbered_rows` and
-`missing_terminal_line`, and **the command returns 1 there - table 4 is never attempted and never
-printed.** Note both tables derive the SAME document id, so had table 3 harvested, table 4 would
-have silently overwritten it. **Use 2441 as the working fixture; the 1040 is the scale check.**
-Note also that `missing_numbered_rows` here is not a defect of table 3 - it is the symptom of
-treating a caption as a standalone worksheet, and **the merge makes the finding disappear rather
-than needing to be suppressed.**
+**WHO RUNS WHAT. The seeding pass is the Architect's and needs JOHN'S AUTHORIZATION ONCE.**
+- **ARCHITECT, live, BEFORE Codex starts:** run the window pass over the 1040, Schedule D, and 2441
+  and seed the cache. ~200 windows for the 1040 at roughly 5K characters each. **Codex cannot make
+  this call and must not be asked to.**
+- **WORKER, offline, against the seeded cache:** the window mechanism behind the existing provider
+  interface with a RECORDED-FIXTURE test, the claim-resolution rule, the advisory-findings change,
+  the classifier removal, and the CLI reporting. Every floor clause below is deterministic.
 
-**4. EMISSION REQUIRES A PRINTED TITLE, and everything else is INVENTORY.** The classifier called
-21 tables across 7 EIC `Step N` blocks `worksheet`. Some genuinely compute
-(`Step 2. Investment Income`); `Step 3. Does Your Qualifying Child Qualify You for the Child Tax
-Credit` is a pure decision tree and is a **false positive**. **The ruling is the one already given:
-a PRINTED ADDRESS decides.** Classification may call them what they are; **emission as a document
-requires a worksheet title.** Today `worksheet_harvest.py:804-816` drops non-worksheet kinds and
-title-narrowed tables with a bare `continue` and **no record at all**. Every classified table must
-leave the run in exactly one bucket: **harvested, merged into another, or refused with a reason.**
-The refused list IS the inventory for queue item 2 and is worth more than the Architect hand-listing
-it.
+**THE FLOOR. Prove it on the acquired corpus, not a fixture.**
+- **The 1040 writes at least 12 of its named worksheets**, up from 5, and `discovered == written +
+  refused` still prints and still balances.
+- **Simplified Method harvests 11 lines** with tables 45 and 46 recorded as parameter tables, NOT as
+  extent rows. The `expected line 12, found 300` failure is gone.
+- **IRA Deduction harvests as one worksheet, `1a` through `12`**, from tables 184-186.
+- **Standard Deduction for Dependents harvests and does NOT absorb table 51.** t51 is the
+  born-before-1961 chart, a standalone lookup whose own text says not to use it for dependents.
+  **The Architect asserted the opposite on 2026-08-11 and was wrong** - it is a separate document,
+  and this clause exists so that error is not re-introduced.
+- **2441 and Schedule D do not regress:** 2 and 4 worksheets, extents 3/17 and 13/7/18/47.
+- **Schedule B still returns zero worksheets without error.**
+- **`classify_worksheet_tables` does not exist.** No table is classified in isolation.
 
 **OUT OF SCOPE - do not fold any of these in.**
-- **Changing any extent rule.** The `<table>` boundary and the Markdown oracle are settled by S97.
-- **Modelling the untitled EIC blocks.** This round only makes them VISIBLE as refusals.
-- **The 170 empty instruction packets**, promotion, and rederivation. Separate queued rounds.
+- **The untitled EIC computations.** Both arms of the measurement handled them badly and the window
+  only partially helps: it titles them correctly but the owning-line addressing is unsettled. **They
+  stay queue item 2.** Refuse them with a reason, as S98 already does.
+- **Promotion and rederivation.** This round changes harvesting only.
 - **The protected set stays byte-identical.** `git diff --stat` on `graph/2025/{nodes,edges,rules}/`
   and `graph/2025/field_maps/` must be EMPTY.
 
-**WHO RUNS WHAT. The Worker's floor needs NO network call - the 1040 classifications are already
-paid for and cached.** `.cache/raw/2025/instructions_form_1040_2025.worksheet_tables.yaml` holds
-**92 unique fingerprints** (50 layout / 14 lookup_table / 28 worksheet), Schedule D's holds 5, and
-2441's holds 4. **DO NOT re-pay for them and do not delete those files.** The classifier leg stays
-the Architect's. **Every booklet S98's floor names is now cached, so the whole round is offline.**
-
-**THE FLOOR. Prove it on the acquired corpus, not a fixture. No network call is required.**
-- `harvest-worksheet --source-document-id instructions_form_1040_2025` **attempts every discovered
-  worksheet and reports every one**, writing the ones that harvest and naming the ones that do not
-  with a reason. **Zero worksheets vanish**; discovered == written + refused, printed as that sum.
-- **The 24 same-titled 1040 tables collapse to 14 worksheets**, Simplified Method among them, and
-  **no two emitted worksheets share a document id**.
-- **2441 returns 4 classifications and TWO emitted worksheets** - Credit Limit at 3 lines, and one
-  merged Worksheet A carrying table 4's numbered lines. `Line 19` stays `layout` and is reported as
-  classified-not-emitted. **Nothing exits early**; today it dies after the first worksheet.
-- **Schedule D still returns 5 classifications and 4 emitted worksheets** with extents
-  13 / 7 / 18 / 47 and `oracle=agree` on every one, and Schedule B still returns zero worksheets
-  without error. S97's behaviour does not regress. Re-verified by the Architect 2026-08-11.
-- **Every classified table appears in exactly one bucket.** The EIC `Step N` blocks appear as
-  refusals naming the missing printed title, not as emitted documents and not as silence.
-- The six previously registered extents still reproduce with no registry: 3 / 6 / 47 / 11 / 7 / 18.
-
-**HOW TO A/B A SUSPECTED REGRESSION, since this round needed it and the recipe kept being
-rediscovered.** A bare parity checkout SKIPS the artifact-dependent tests, so a green baseline there
-proves nothing. Junction the real artifacts in:
-
-```
-git worktree add C:\tgw <baseline-sha>
-cmd /c mklink /J C:\tgw\.cache C:\Users\devbox\projects\tax_graph\.cache
-cmd /c mklink /J C:\tgw\build C:\Users\devbox\projects\tax_graph\build
-cmd /c mklink /J C:\tgw\graph_ext C:\Users\devbox\projects\tax_graph\graph_ext
-cmd /c mklink /J C:\tgw\graph\2025\_drafts C:\Users\devbox\projects\tax_graph\graph\2025\_drafts
-```
-
-Then run the suspect files with `--rootdir=C:\tgw` and compare test IDs, not counts. **Without
-`graph_ext` the scope-migration test skips rather than runs**, which is exactly how it stayed
-mislabelled UNCOMPARABLE for a week.
-
 ## Open for Architect
 
-**M20-S98 [WORKER COMPLETE, 2026-08-11].** Implemented the provider-free S98 pipeline slice in
-`tax_graph/ingest/worksheet_harvest.py` and `tax_graph/cli.py`, with guards in
-`tests/test_worksheet_harvest_s98.py`. Classification failures are isolated per table and the
-cache is persisted after each successful table; the classifier default budget is 6000 tokens.
-Document-wide discovery now groups every worksheet table by normalized printed title in source
-order, refuses same-title groups with multiple line-1 starts, and records classified-not-emitted
-and merged-table inventory. Untitled `Step N` blocks are explicit refusals. The CLI attempts every
-logical worksheet, writes all successes, reports every refusal, and prints
-`discovered = written + refused` at the end. The extent walker now preserves lettered printed
-sub-lines such as 14a/14b, which is required for the merged Form 2441 Worksheet A.
-The complete discovery accounting is also persisted as `worksheet-discovery.yaml` beneath the
-draft directory, so refusals and inventory do not vanish when the command exits.
-
-REAL CORPUS: 2441 is 4 classifications -> 2 emitted worksheets (tables 3+4 merge, 17 lines);
-Schedule D is 5 -> 4 emitted worksheets with extents 13/7/18/47 and oracle agreement; Schedule B
-is a valid zero-table result; 1040 is 200 classifications -> 14 logical worksheet groups, with
-all 172 non-worksheet tables inventoried, 11 merges reported, and 2 untitled Step groups refused.
-No provider call was made; all classifier results came from the cached acquisition artifacts.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s98).Path; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_s98.py tests\test_worksheet_harvest_s97.py tests\test_worksheet_harvest_m20.py tests\test_cli.py -q` -> **30 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: full suite; it exceeds the 600-second Worker command cap and the accepted 17-failure
-baseline is already recorded in BALL. NOT RUN: provider leg; S98 is explicitly offline and uses
-the cached classifier witness set.
-
+Nothing. S98 is accepted, the full-suite floor is met at the 17-red baseline, and S99 is specced
+above. **The ball is JOHN'S for one thing only: authorize the Architect's live window-seeding pass
+so Codex's floor stays offline.**
 
 ## Queued (ONE LINE each - do not spec ahead)
 
