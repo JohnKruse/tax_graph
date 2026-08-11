@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX - S97 IS ACCEPTED AND S98 IS SPECCED BELOW. Pick it up.**
+**BALL: ARCHITECT - M20-S98 is implemented below; review and acceptance are next.**
 
 **S97 ACCEPTED (`5e72db3`, Architect, 2026-08-11).** Worksheet extents now come from the acquired
 HTML with no table of answers: the registry, `end_line`, and `_contains_terminal_destination` are
@@ -204,8 +204,31 @@ mislabelled UNCOMPARABLE for a week.
 
 ## Open for Architect
 
-Nothing. S97 is accepted and the full-suite floor is met; S98 is specced above and the ball is
-Codex's.
+**M20-S98 [WORKER COMPLETE, 2026-08-11].** Implemented the provider-free S98 pipeline slice in
+`tax_graph/ingest/worksheet_harvest.py` and `tax_graph/cli.py`, with guards in
+`tests/test_worksheet_harvest_s98.py`. Classification failures are isolated per table and the
+cache is persisted after each successful table; the classifier default budget is 6000 tokens.
+Document-wide discovery now groups every worksheet table by normalized printed title in source
+order, refuses same-title groups with multiple line-1 starts, and records classified-not-emitted
+and merged-table inventory. Untitled `Step N` blocks are explicit refusals. The CLI attempts every
+logical worksheet, writes all successes, reports every refusal, and prints
+`discovered = written + refused` at the end. The extent walker now preserves lettered printed
+sub-lines such as 14a/14b, which is required for the merged Form 2441 Worksheet A.
+The complete discovery accounting is also persisted as `worksheet-discovery.yaml` beneath the
+draft directory, so refusals and inventory do not vanish when the command exits.
+
+REAL CORPUS: 2441 is 4 classifications -> 2 emitted worksheets (tables 3+4 merge, 17 lines);
+Schedule D is 5 -> 4 emitted worksheets with extents 13/7/18/47 and oracle agreement; Schedule B
+is a valid zero-table result; 1040 is 200 classifications -> 14 logical worksheet groups, with
+all 172 non-worksheet tables inventoried, 11 merges reported, and 2 untitled Step groups refused.
+No provider call was made; all classifier results came from the cached acquisition artifacts.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s98).Path; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_s98.py tests\test_worksheet_harvest_s97.py tests\test_worksheet_harvest_m20.py tests\test_cli.py -q` -> **30 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: full suite; it exceeds the 600-second Worker command cap and the accepted 17-failure
+baseline is already recorded in BALL. NOT RUN: provider leg; S98 is explicitly offline and uses
+the cached classifier witness set.
 
 
 ## Queued (ONE LINE each - do not spec ahead)

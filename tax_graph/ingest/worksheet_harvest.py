@@ -149,6 +149,7 @@ class WorksheetHarvest:
     markdown_lines: tuple[str, ...] | None = None
     html_lines: tuple[str, ...] = ()
     classification: TableClassification | None = None
+    source_table_ids: tuple[int, ...] = ()
 
     @property
     def ok(self) -> bool:
@@ -172,7 +173,7 @@ class WorksheetHarvest:
 
     def as_dict(self) -> dict[str, Any]:
         """Return a draft report without changing the graph schema."""
-        return {
+        report = {
             "schema_version": 1,
             "status": "ready" if self.ok else "blocked",
             "document_id": self.target.document_id,
@@ -204,6 +205,9 @@ class WorksheetHarvest:
                 "citations": len(self.citations),
             },
         }
+        if self.source_table_ids:
+            report["source_table_ids"] = list(self.source_table_ids)
+        return report
 
 
 @dataclass(frozen=True)
@@ -239,10 +243,11 @@ class TableClassification:
     lines: tuple[str, ...]
     source_start: int
     source_end: int
+    finding: WorksheetFinding | None = None
 
     def as_dict(self) -> dict[str, Any]:
         """Return the review-facing classification record."""
-        return {
+        record = {
             "table_id": self.table_id,
             "heading": self.heading,
             "anchor_id": self.anchor_id,
@@ -251,6 +256,9 @@ class TableClassification:
             "source_start": self.source_start,
             "source_end": self.source_end,
         }
+        if self.finding is not None:
+            record["finding"] = self.finding.as_dict()
+        return record
 
 
 class TableClassifier(Protocol):
@@ -269,6 +277,7 @@ class WorksheetDiscovery:
     classifications: tuple[TableClassification, ...]
     worksheets: tuple[WorksheetHarvest, ...]
     findings: tuple[WorksheetFinding, ...] = ()
+    inventory: tuple[WorksheetFinding, ...] = ()
 
     def as_dict(self) -> dict[str, Any]:
         """Return a stable discovery report without source payloads."""
@@ -279,6 +288,7 @@ class WorksheetDiscovery:
             "classifications": [item.as_dict() for item in self.classifications],
             "worksheets": [item.as_dict() for item in self.worksheets],
             "findings": [item.as_dict() for item in self.findings],
+            "inventory": [item.as_dict() for item in self.inventory],
         }
 
 
@@ -423,19 +433,24 @@ def classify_worksheet_tables(
     for table in tables:
         fingerprint = hashlib.sha256(source_text[table.start : table.end].encode("ascii")).hexdigest()
         cached_payload = cached.get(fingerprint)
-        if isinstance(cached_payload, dict):
-            payload = cached_payload
-        else:
-            payload = _call_table_classifier(
-                table,
-                source_text,
-                classifier=classifier,
-                config=settings,
-            )
-            updated_cache[fingerprint] = dict(payload)
-        classifications.append(_classification_from_payload(table, payload))
-    if cache_file is not None and updated_cache != cached:
-        _write_classification_cache(cache_file, updated_cache)
+        try:
+            if isinstance(cached_payload, dict):
+                payload = cached_payload
+                parsed = _classification_from_payload(table, payload)
+            else:
+                payload = _call_table_classifier(
+                    table,
+                    source_text,
+                    classifier=classifier,
+                    config=settings,
+                )
+                updated_cache[fingerprint] = dict(payload)
+                parsed = _classification_from_payload(table, payload)
+                if cache_file is not None:
+                    _write_classification_cache(cache_file, updated_cache)
+            classifications.append(parsed)
+        except Exception as exc:
+            classifications.append(_classification_failure(table, exc))
     return tuple(classifications)
 
 
@@ -495,7 +510,7 @@ def _model_classify_table(
         "prompt": prompt,
         "schema": worksheet_table_schema(),
         "model": resolve_llm_model(config, "micro"),
-        "max_tokens": int(get_config_value(dict(config), "extraction.worksheet_classifier_max_tokens", 512)),
+        "max_tokens": int(get_config_value(dict(config), "extraction.worksheet_classifier_max_tokens", 6000)),
         "temperature": get_config_value(dict(config), "llm.temperature"),
         "purpose": "tax_graph_worksheet_table_classifier",
     }
@@ -518,6 +533,29 @@ def _classification_from_payload(table: _RawTable, payload: Mapping[str, Any]) -
         lines=_heading_lines(heading.text if heading is not None else ""),
         source_start=table.start,
         source_end=table.end,
+    )
+
+
+def _classification_failure(table: _RawTable, exc: Exception) -> TableClassification:
+    """Represent one table failure without losing the rest of the batch."""
+    finding = WorksheetFinding(
+        "table_classification_failed",
+        f"table {table.table_id} classification failed: {exc}",
+        (
+            f"table_id={table.table_id}",
+            f"heading={table.heading.text if table.heading is not None else '(none)'}",
+            f"source_span={table.start}:{table.end}",
+        ),
+    )
+    return TableClassification(
+        table_id=table.table_id,
+        heading=table.heading.text if table.heading is not None else "",
+        anchor_id=table.heading.anchor_id if table.heading is not None else "",
+        kind="classification_error",
+        lines=_heading_lines(table.heading.text if table.heading is not None else ""),
+        source_start=table.start,
+        source_end=table.end,
+        finding=finding,
     )
 
 
@@ -568,6 +606,12 @@ def _source_tables(source_text: str) -> tuple[_RawTable, ...]:
 def _semantic_worksheet_title(value: str) -> str:
     """Remove source navigation suffixes while retaining the printed title."""
     title = re.sub(r"\s*[- ]*continued\s*$", "", value, flags=re.IGNORECASE)
+    title = re.sub(
+        r"\s*[- ]*schedule\s+[0-9]+[a-z]?\s*,?\s+lines?\s+.+$",
+        "",
+        title,
+        flags=re.IGNORECASE,
+    )
     title = re.sub(r"\s*[- ]*lines?\s+.+$", "", title, flags=re.IGNORECASE)
     title = re.sub(r"\s+lines?\s+.+$", "", title, flags=re.IGNORECASE)
     return title.strip(" -:") or value.strip()
@@ -591,8 +635,15 @@ def harvest_worksheet(
     oracle_source_text: str | None = None,
     oracle_heading_text: str | None = None,
     _tables: tuple[_RawTable, ...] | None = None,
+    _allow_same_title_group: bool = False,
 ) -> WorksheetHarvest:
-    """Harvest one worksheet using HTML structure and an optional text oracle."""
+    """Harvest one worksheet using HTML structure and an optional text oracle.
+
+    ``_allow_same_title_group`` is an internal seam for document-wide discovery:
+    repeated source tables with one normalized title have already passed the
+    merge ambiguity check and may be harvested as one logical worksheet.  A
+    direct title-targeted call keeps the stricter single-heading behavior.
+    """
     resolved_target = _coerce_target(target)
     year_text = str(year)
     source_id = source_document_id or resolved_target.source_document_id or ""
@@ -601,7 +652,12 @@ def harvest_worksheet(
     if _is_html_source(source_text):
         headings = _source_headings(source_text)
         start_candidates = _find_start_headings(headings, resolved_target)
-        if len(start_candidates) > 1 and not _is_one_logical_heading(start_candidates):
+        same_title_group = (
+            _allow_same_title_group
+            and bool(start_candidates)
+            and len({_semantic_worksheet_title(candidate.text) for candidate in start_candidates}) == 1
+        )
+        if len(start_candidates) > 1 and not _is_one_logical_heading(start_candidates) and not same_title_group:
             finding = _start_heading_finding(resolved_target, source_id, start_candidates)
             return _blocked_harvest(
                 resolved_target,
@@ -783,9 +839,11 @@ def harvest_worksheets(
     """Discover and harvest every worksheet table in one instruction document.
 
     A title narrows the already-classified document; it never changes the
-    structural extent rule.  The five Schedule D source tables therefore
-    remain five classifications, while the base and explicitly continued
-    table become one logical worksheet draft.
+    structural extent rule.  Document-wide discovery groups worksheet tables
+    by normalized printed title in source order.  A repeated title is merged
+    only when at most one table starts at printed line 1; an ambiguous merge
+    is reported and refused.  Non-worksheet classifications remain visible in
+    ``inventory`` instead of disappearing from the run.
     """
     year_text = str(year)
     tables = _source_tables(source_text) if _is_html_source(source_text) else ()
@@ -800,66 +858,129 @@ def harvest_worksheets(
     wanted = normalize_printed_title(title) if title else None
     worksheets: list[WorksheetHarvest] = []
     findings: list[WorksheetFinding] = []
+    inventory: list[WorksheetFinding] = []
+    grouped: dict[str, list[tuple[_RawTable, TableClassification, str]]] = {}
     for table, classification in zip(tables, classifications):
+        if classification.finding is not None:
+            findings.append(classification.finding)
+            continue
         if classification.kind != "worksheet":
+            if wanted is None:
+                inventory.append(
+                    WorksheetFinding(
+                        "classified_not_emitted",
+                        f"table {table.table_id} classified as {classification.kind} and was not emitted",
+                        (
+                            f"table_id={table.table_id}",
+                            f"heading={table.heading.text if table.heading is not None else '(none)'}",
+                            f"kind={classification.kind}",
+                        ),
+                    )
+                )
             continue
         if table.heading is None or not table.heading.text.strip():
             findings.append(
                 WorksheetFinding(
                     "worksheet_table_missing_heading",
-                    f"worksheet table {table.table_id} has no associated heading",
+                    f"worksheet table {table.table_id} has no printed title",
+                    (f"table_id={table.table_id}",),
                 )
             )
             continue
         semantic_title = _semantic_worksheet_title(table.heading.text)
         if wanted and not _title_matches(semantic_title, wanted):
             continue
-        is_continuation = bool(re.search(r"continued\s*$", table.heading.text, re.IGNORECASE))
-        has_base_table = any(
-            other is not table
-            and other.heading is not None
-            and _semantic_worksheet_title(other.heading.text) == semantic_title
-            and not re.search(r"continued\s*$", other.heading.text, re.IGNORECASE)
-            for other in tables
-        )
-        if is_continuation and has_base_table:
+        key = normalize_printed_title(semantic_title)
+        grouped.setdefault(key, []).append((table, classification, semantic_title))
+
+    for entries in grouped.values():
+        first_table, first_classification, semantic_title = entries[0]
+        if not _has_printed_worksheet_title(first_table.heading.text if first_table.heading else ""):
+            table_ids = tuple(table.table_id for table, _, _ in entries)
+            findings.append(
+                WorksheetFinding(
+                    "worksheet_title_missing",
+                    f"classified worksheet tables {','.join(str(table_id) for table_id in table_ids)} have no printed worksheet title",
+                    tuple(
+                        [f"table_id={table_id}" for table_id in table_ids]
+                        + [f"heading={first_table.heading.text if first_table.heading is not None else '(none)'}"]
+                    ),
+                )
+            )
             continue
+
+        selected_tables = tuple(table for table, _, _ in entries)
+        line_one_tables = tuple(table for table in selected_tables if _first_table_line(table) == "1")
+        if len(line_one_tables) > 1:
+            findings.append(
+                WorksheetFinding(
+                    "ambiguous_same_title_merge",
+                    f"worksheet title {semantic_title!r} has multiple tables starting at printed line 1; merge refused",
+                    tuple(
+                        [f"table_id={table.table_id}" for table in line_one_tables]
+                        + [f"normalized_title={normalize_printed_title(semantic_title)}"]
+                    ),
+                )
+            )
+            continue
+
         target = WorksheetTarget(
             document_id=_discovered_document_id(semantic_title, year_text),
             title=semantic_title,
-            start_anchor=classification.anchor_id or f"table-{table.table_id}",
+            start_anchor=first_classification.anchor_id or f"table-{first_table.table_id}",
             source_document_id=source_document_id,
         )
-        selected_tables = (table,)
-        oracle_heading = table.heading.text
-        if not is_continuation:
-            continued_tables = tuple(
-                other
-                for other in tables
-                if other is not table
-                and other.heading is not None
-                and _semantic_worksheet_title(other.heading.text) == semantic_title
-                and re.search(r"continued\s*$", other.heading.text, re.IGNORECASE)
+        oracle_heading = first_table.heading.text if len(selected_tables) == 1 else None
+        try:
+            harvest = harvest_worksheet(
+                source_text,
+                target,
+                source_document_id=source_document_id,
+                year=year_text,
+                oracle_source_text=oracle_source_text,
+                oracle_heading_text=oracle_heading,
+                _tables=selected_tables,
+                _allow_same_title_group=True,
             )
-            if continued_tables:
-                selected_tables = (table, *continued_tables)
-                oracle_heading = None
-        harvest = harvest_worksheet(
-            source_text,
-            target,
-            source_document_id=source_document_id,
-            year=year_text,
-            oracle_source_text=oracle_source_text,
-            oracle_heading_text=oracle_heading,
-            _tables=selected_tables,
+        except Exception as exc:
+            harvest = _blocked_harvest(
+                target,
+                year_text,
+                source_document_id,
+                (
+                    WorksheetFinding(
+                        "worksheet_harvest_failed",
+                        f"worksheet {target.document_id} harvest failed: {exc}",
+                        tuple(f"table_id={table.table_id}" for table in selected_tables),
+                    ),
+                ),
+            )
+        worksheets.append(
+            replace(
+                harvest,
+                classification=first_classification,
+                source_table_ids=tuple(table.table_id for table in selected_tables),
+            )
         )
-        worksheets.append(replace(harvest, classification=classification))
+        for table in selected_tables[1:]:
+            inventory.append(
+                WorksheetFinding(
+                    "table_merged",
+                    f"table {table.table_id} merged into {target.document_id}",
+                    (
+                        f"table_id={table.table_id}",
+                        f"document_id={target.document_id}",
+                        f"normalized_title={normalize_printed_title(semantic_title)}",
+                    ),
+                )
+            )
     return WorksheetDiscovery(
         source_document_id=source_document_id,
         year=year_text,
         classifications=classifications,
         worksheets=tuple(worksheets),
         findings=tuple(findings),
+        inventory=tuple(inventory),
     )
 
 
@@ -1110,6 +1231,26 @@ def write_worksheet_draft(harvest: WorksheetHarvest, draft_dir: str | Path) -> P
     return output
 
 
+def write_worksheet_discovery_report(discovery: WorksheetDiscovery, draft_dir: str | Path) -> Path:
+    """Persist the complete discovery accounting beside worksheet drafts.
+
+    The report is a run artifact, not promoted graph state.  It keeps
+    classified-not-emitted tables, merges, and refusals available after the
+    command exits, including worksheets that were not safe to draft.
+    """
+    output = Path(draft_dir).resolve()
+    if "_drafts" not in {part.lower() for part in output.parts}:
+        raise ValueError(f"worksheet discovery reports must be beneath a _drafts directory: {output}")
+    output.mkdir(parents=True, exist_ok=True)
+    report_path = output / "worksheet-discovery.yaml"
+    report_path.write_text(
+        yaml.safe_dump(discovery.as_dict(), sort_keys=False, allow_unicode=False),
+        encoding="ascii",
+        newline="\n",
+    )
+    return report_path
+
+
 def _coerce_target(target: WorksheetTarget | Mapping[str, Any]) -> WorksheetTarget:
     if isinstance(target, WorksheetTarget):
         return target
@@ -1194,6 +1335,18 @@ def _text_heading_matches(value: str, wanted: str) -> bool:
     return _title_matches(value, wanted)
 
 
+def _has_printed_worksheet_title(value: str) -> bool:
+    """Return whether a classified table has a document title worth emitting.
+
+    ``Step N`` blocks can contain arithmetic or a local worksheet, but the
+    printed form has not given that block an independent document identity.
+    Keep those tables visible as refusals until the intermediate-node design
+    is implemented instead of minting a guessed worksheet document.
+    """
+    title = _semantic_worksheet_title(value).strip()
+    return bool(title) and not re.match(r"^step\s+[0-9]+\b", title, re.IGNORECASE)
+
+
 def _start_heading_finding(
     target: WorksheetTarget,
     source_document_id: str,
@@ -1257,6 +1410,15 @@ def _discover_extent(
         elif line == current_line:
             selected.append(row)
             line_rows[line].append(row)
+            terminal = row
+            continue
+        elif current_line is not None and _line_number(line) == _line_number(current_line):
+            # Printed sub-lines such as 14a/14b and 1a/1b belong to
+            # the same numeric sequence position.  Keep each printed
+            # address distinct while preserving the next integer expected.
+            selected.append(row)
+            line_rows.setdefault(line, []).append(row)
+            current_line = line
             terminal = row
             continue
         elif _line_number(line) != expected:

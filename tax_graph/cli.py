@@ -287,6 +287,7 @@ def harvest_worksheet_command(
         WorksheetTarget,
         harvest_worksheets_file,
         harvest_worksheet_file,
+        write_worksheet_discovery_report,
         write_worksheet_draft,
     )
 
@@ -400,32 +401,60 @@ def harvest_worksheet_command(
     print(f"worksheets discovered: {len(discovery.worksheets)}")
     if not discovery.classifications:
         print("  no HTML tables; zero worksheets is a valid result")
+        print("worksheet attempts: discovered=0; written=0; refused=0; sum=0")
         return 0
     for item in discovery.classifications:
         print(
             f"  table {item.table_id}: {item.kind}; "
             f"heading={item.heading or '(none)'}; lines={','.join(item.lines) or '(none)'}"
         )
+    written = 0
+    refused = len(discovery.findings)
+    output_root = (
+        Path(draft_dir)
+        if draft_dir is not None
+        else root_path / "graph" / str(year) / "_drafts"
+    )
     for result in discovery.worksheets:
         if not result.ok:
-            print(f"  blocked {result.target.document_id}")
+            refused += 1
+            print(f"  refused {result.target.document_id}")
             for finding in result.findings:
                 print(f"    {finding.kind}: {finding.message}")
-            return 1
-        output_root = (
-            Path(draft_dir)
-            if draft_dir is not None
-            else root_path / "graph" / str(year) / "_drafts"
-        )
+            continue
         output = output_root / result.target.document_id
-        write_worksheet_draft(result, output)
+        try:
+            write_worksheet_draft(result, output)
+        except Exception as exc:
+            refused += 1
+            print(f"  refused {result.target.document_id}: draft write failed: {exc}")
+            continue
+        written += 1
         print(
             f"  harvested {result.target.document_id}: "
+            f"tables={','.join(str(table_id) for table_id in result.source_table_ids)}; "
             f"lines={len(result.line_nodes)}; oracle={result.as_dict()['oracle']['status']}"
         )
+    for item in discovery.inventory:
+        if item.kind == "classified_not_emitted":
+            print(f"  classified-not-emitted: {item.message}")
+        elif item.kind == "table_merged":
+            print(f"  merged: {item.message}")
+        else:
+            print(f"  inventory {item.kind}: {item.message}")
     for finding in discovery.findings:
-        print(f"  finding {finding.kind}: {finding.message}")
-    return 0 if not discovery.findings else 1
+        print(f"  refused {finding.kind}: {finding.message}")
+    try:
+        report_path = write_worksheet_discovery_report(discovery, output_root)
+    except Exception as exc:
+        refused += 1
+        print(f"  refused discovery-report: {exc}")
+        report_path = None
+    if report_path is not None:
+        print(f"discovery report: {report_path}")
+    discovered = written + refused
+    print(f"worksheet attempts: discovered={discovered}; written={written}; refused={refused}; sum={written + refused}")
+    return 0 if refused == 0 else 1
 
 
 def nomination_list_command(
