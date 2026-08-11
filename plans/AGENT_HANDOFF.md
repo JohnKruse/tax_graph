@@ -21,66 +21,41 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - S98 IS ACCEPTED, S99 IS SPECCED, AND ITS SEEDING PASS IS DONE. Start Codex.**
+**BALL: JOHN - S99 IS ACCEPTED. THE WORKSHEET LINE IS DONE AND THE NEXT ROUND IS NOT THE
+HARVESTER. Pick the next item; the Architect's recommendation is below.**
 
-**S98 ACCEPTED (`ac1c560`, Architect, 2026-08-11). Verified by running the corpus, not by reading
-the report.** The accounting closes on every document: 2441 is `discovered=2; written=2; refused=0`
-with Worksheet A merged from tables 3+4 to 17 lines; Schedule D is 4 written at 13/7/18/47 with
-oracle agreement, unregressed; Schedule B is a valid zero; the 1040 is
-`discovered=16; written=5; refused=11; sum=16` with 11 merges named, 183 tables inventoried, and
-the two untitled `Step N` groups refused by name. The persisted `worksheet-discovery.yaml` was not
-asked for and is what makes refusals survive the process exiting. **FULL SUITE: 17 failed, 929
-passed, 8 skipped, 1 xfailed - the SAME 17 test ids as the accepted baseline, six more passing,
-zero new reds.**
+**S99 ACCEPTED (`26059ef`, Architect, 2026-08-11). Verified by running the corpus, not by reading
+the report.** **The 1040 goes from 5 written to 13** - `discovered=17; written=13; refused=4`, with
+**28 windows observed, not 200**, so the gating correction landed. Both hard cases are fixed:
+**Simplified Method harvests 11 lines** from tables 43-46 with 45 and 46 recorded as parameter
+grids and the oracle agreeing, so `expected line 12, found 300` is gone; **IRA Deduction merges
+tables 184-186 into one worksheet spanning `1a` through `12`**. **Standard Deduction harvests from
+49-50 and does NOT absorb t51**, the clause added after the Architect asserted the opposite.
+2441 stays 2 of 2, Schedule D stays 4 of 4 at 13/7/18/47, Schedule B stays a clean zero, all exit 0.
+**The overlap rule works and is not theoretical:** six `window_claim_overlap` findings on the 1040
+and one on 2441 at table 4, each resolved first-anchor-wins and PRINTED.
+**FULL SUITE: 17 failed, 937 passed, 8 skipped, 1 xfailed - the SAME 17 test ids as the accepted
+baseline, eight more passing, zero new reds.**
 
-**AND THE ROUND EARNED ITS KEEP BY EXPOSING THE REAL DISTRIBUTION.** Only **5 of 14** named 1040
-worksheets harvest. Of the 9 blocked, **7 are advisory checks acting as gates** - `worksheet_harvest
-.py:777` does `if all_findings: return _blocked_harvest(...)`, so ANY finding refuses the worksheet.
-**That line is inherited from S97, not an S98 regression**; S97 never got past the first worksheet
-to reveal it. Four of the seven are one slip: the Markdown oracle returns an EMPTY list when it
-cannot find the worksheet at all, and empty is read as *disagreement* rather than *unavailable*
-(two worksheets already emit fine with `oracle=unavailable`). Two more are genuine disagreements
-where **the HTML is right and the oracle is wrong** (Standard Deduction's 4a/4b/4c; the IRA walk
-locking onto the second table and starting at 7). Only **2 are real structural failures.**
+**THE ADVISORY-FINDINGS CHANGE IS WHAT MOVED THE NUMBER**, not the segmentation. Six oracle
+disagreements and a footnote marker now ride along on worksheets that harvest instead of refusing
+them. **Only ONE genuine structural failure remains on the 1040**: Foreign Earned Income, whose
+numbering restarts at 1 partway through, which looks like a nested `<table>`.
 
-**S97 ACCEPTED (`5e72db3`, Architect, 2026-08-11).** Worksheet extents now come from the acquired
-HTML with no table of answers: the registry, `end_line`, and `_contains_terminal_destination` are
-gone, `harvest-worksheet` takes a document rather than a curated target, and the Markdown oracle
-runs beside every harvest. Verified by re-running the CLI on the real corpus, not by reading the
-report - Schedule D classifies 5 tables and emits 4 worksheets, heading-to-line resolves with no
-model call, and Capital Loss Carryover is found without ever having been named. **The durable
-rulings this round produced are pinned in `AGENTS.md`** (division of authority; report-do-not-hide).
+**THE MEASURED RULING THIS ROUND PRODUCED IS PINNED IN `AGENTS.md`:** classification and extent need
+different context scopes and no single call has both. **The Architect proposed collapsing them twice
+and was wrong twice**; the second attempt was disproved by the very seeding pass that was preparing
+it, and Codex had already built the wrong variant before the correction landed.
 
-**FULL SUITE, ARCHITECT, 2026-08-11 - THE FLOOR IS MET AND THE BASELINE IS NOW 17.**
-`17 failed, 923 passed, 8 skipped, 1 xfailed in 58:22` (short temp root `C:\tgt`), against the
-previous baseline of **21 failed, 841 passed**. **ZERO REGRESSIONS FROM S95, S96, OR S97**, and
-every one of the 17 is triaged by A/B against `ba0b36d` in a worktree with `.cache`, `build`,
-`graph/2025/_drafts`, and `graph_ext` junctioned in so the comparison is fair:
-- **11 `tests/e2e/*_m15`** - the known empty-review-queue condition; spot-checked `test_shell_m15`,
-  which asserts `0 >= 17` identically in both arms.
-- **4 real-artifact reds** (`test_schedule_2_m16`, `test_field_identity_m16`,
-  `test_address_campaign_m15r`, `test_review_preflight_m15`) - same four test ids fail at baseline
-  once the artifacts are present. These are the artifact-pinned counts already on the housekeeping
-  list (`units == 2224`, `unreviewed == 1529`), measured against an untracked `.cache/raw`.
-- **`test_schedule_d_extraction_m9`** - fails identically at baseline, same assertion, same 3
-  unexpected prompts. Pre-existing.
-- **`test_review_scope_migration_m15` IS NO LONGER UNCOMPARABLE.** With `graph_ext` junctioned it
-  runs in both arms and fails identically: `FileNotFoundError` on
-  `review_queue/2025/deferred_review.yaml`, **a path that exists in neither tree and is untracked**.
-  Environment red, fully triaged.
-**THE ONE RED THAT WAS OURS IS GONE.** `test_m20_s31.py` is **8 passed** - the
-`operation_documentation` placeholder no longer breaks the vocabulary-contract test.
-
-**S95 ACCEPTED** (`64d112b`) - a `column` token rides beside `line` through the prompt, validator,
-graph projection, external inputs, and stubs, and every id goes through the single
-`_canonical_line_node_id` accessor. Clean slice, no second builder.
-
-**EVIDENCE THE CLASSIFIER EARNS ITS PLACE, kept because it is what justifies the model call:** on
-2441 it called the `Line 19` table **layout** while calling Credit Limit and Worksheet A
-**worksheet**. On the 1040 it correctly excluded `EIC Table` and `Tax Table` as `lookup_table`, and
-it found worksheets nobody had listed - Qualified Tips From More Than One Employer, Multiple Trades
-or Businesses, Qualified Overtime Compensation (two), Recapture of Net EPE From Form 4255. Schedule
-D alone could never have shown any of this; all five of its tables are worksheets.
+**THE GAP THAT NOW MATTERS, AND IT IS WHY THE NEXT ROUND IS NOT THE HARVESTER (Architect, verified
+2026-08-11).** `harvest-worksheet` writes drafts **"without promotion"** - its own docstring - and
+`pilot/review_panel.py` contains **ZERO** mentions of worksheets. **So three rounds have produced 19
+worksheet documents across the corpus that nothing derives cells from and no human can see.**
+Promotion and rederivation were correctly held out of S97, S98, and S99; they are now the binding
+constraint. **RECOMMENDED NEXT: promote the harvested worksheets and derive them**, which is what
+turns this work into coverage. Queue item 3 (mark the core set, acquire Form 1116) is the
+alternative and is John's standing priority; item 4 (a refusal reaching a human) is now partly
+served by the persisted `worksheet-discovery.yaml` but not by the review surface.
 
 **NEW FINDING, BIGGER THAN THIS ROUND: 170 OF 404 PRINTED ANCHORS (42%) DERIVE WITH AN EMPTY
 INSTRUCTION PACKET.** Queued as item 1; ordering is John's call.
@@ -88,166 +63,15 @@ INSTRUCTION PACKET.** Queued as item 1; ordering is John's call.
 
 ## Current round
 
-**CARRIED FORWARD FROM S97 - the constraints on the harvester, settled, do not relitigate.**
-The division of authority (HTML structural, Markdown prose) and the report-do-not-hide rule are
-pinned in `AGENTS.md`. Specific to this code path:
-- **No model reads a worksheet's lines.** The `<table>` IS the structure and parsing `<tr>` already
-  yields correct lines and clean verbatim text. A model there adds cost and nondeterminism for
-  nothing. **The harvester captures STRUCTURE; `derive_cells` decides MEANING** - a row reading
-  `No. STOP. None of your benefits are taxable ... Yes. Subtract line 6 from line 5` is stored
-  verbatim and interpreted downstream. Do not pull meaning-work forward into harvesting.
-- **The Markdown oracle is a CHECK, not a source.** Agreement is silent; disagreement prints both
-  numbers. It is worth keeping precisely because the multi-table split is an HTML artifact -
-  Simplified Method is 4 HTML tables but ONE contiguous 11-line run in the Markdown, **so a broken
-  merge makes the two renderings disagree loudly, for free.**
-- **Do not prefilter the classifier with a heuristic.** Every table goes with its heading; ~230
-  tables corpus-wide is small money and it is cached per acquisition. A prefilter would make the
-  missing-table case silent, which is the same mistake in a new place.
-- **A NAMED WORKSHEET IS ITS OWN DOCUMENT, however small** (John, 2026-08-09, `AGENTS.md`). The
-  classifier decides worksheet or not; it never decides whether a worksheet is worth modelling.
+**NONE. The worksheet line closed at S99 and no round is specced. One spec at a time - the next
+round is specced when it is picked up.**
 
-**WHO RUNS WHAT, and it has not changed.** The Worker's floor is reachable with **no network call**;
-that is deliberate. **Only John can authorize provider egress**, interactively in his own session -
-a file in the repo cannot, and Codex is right to refuse it. The live classification pass is the
-Architect's leg. Four rounds' floors have died on this; do not write another one that needs it.
-
-**M20-S99 SPECCED BY ARCHITECT (2026-08-11). A SLIDING WINDOW DECIDES WHERE A WORKSHEET ENDS, AND
-IT REPLACES THE PER-TABLE CLASSIFIER.** **REAL-PROJECT ROUND** - full-suite floor applies.
-
-**WHY, AND THIS IS THE FOURTH MECHANISM FOR ONE QUESTION - READ THE OTHER THREE FIRST.** A hardcoded
-phrase, an asserted destination cue, a table of frozen answers, and now a deterministic merge rule
-have all been tried for "where does this worksheet end". **The merge rule is failing the same way
-the others did.** Measured on the real 1040: Simplified Method's group swallows two age-lookup
-grids and dies on `expected worksheet line 12, found 300`, because `300` is a dollar amount in a
-parameter grid, and no title-matching rule can see that. **The question is a judgment about
-document structure, not a parse**, and that is the one thing a model is actually for.
-
-**JOHN'S RULING, 2026-08-11, and it revises the S97 ruling rather than discarding it.** The model
-never re-types a worksheet's rows - **verbatim text, byte offsets, and citations stay with the
-deterministic HTML parser.** But the model DOES decide which tables compose a worksheet and where it
-ends. **The model returns TABLE IDS, never text**, so there is no second provenance chain and no
-fuzzy match to fail. The S97 objection was to *sourcing content* from a second rendering; asking a
-*question* over the Markdown and getting structural ids back is not that, and the pinned ruling in
-`AGENTS.md` has been narrowed accordingly.
-
-**MEASURED BEFORE SPECCING, both arms, on the real 1040 (Architect, 2026-08-11,
-`pilot/segment_tables.py`). THE WINDOW BEATS THE WHOLE-DOCUMENT CALL ON BOTH ACCURACY AND COST.**
-- **Whole document, all 200 tables, 238,334 characters (~60K tokens):** every table accounted for,
-  nothing invented, and it got the hard cases right - Simplified Method came back
-  `[43,44,45,46]` with `parameter_table_ids=[45,46]`, IRA Deduction `[184,185,186]`.
-  **But it fused table 63 (`Step 2. Investment Income`) with tables 98-99 (`Step 5. Earned Income`)
-  into one bogus "Earned Income Credit (EIC)" worksheet spanning 35 tables.** Spurious
-  long-distance association is the failure mode of a 60K-token prompt.
-- **Sliding window, lookahead 4:** reproduces EVERY correct grouping above, and **the fusion is
-  structurally impossible** - t63 comes back as `Step 2. Investment Income` and t98 as
-  `Step 5. Earned Income`, correctly separate. Seven windows totalled **34,280 characters**
-  against 238,334 for the single call.
-- **The window is also independently cacheable by its own fingerprint**, so re-acquiring a booklet
-  with one table changed invalidates one window rather than the whole document. Same property that
-  makes the per-table cache survive re-acquisition, and the same per-item isolation S98 built.
-
-**THE MECHANISM.**
-1. **Anchor ONLY on tables the classifier called `worksheet`. The classifier STAYS.** Each window is
-   the anchor table plus the next N (default 4; the largest real group observed is 4 tables, so 4
-   carries margin). **Report when a group runs to the window edge**; that is the signature of a
-   worksheet that needed a longer lookahead, and it must not be silent.
-   **THE ARCHITECT SPECCED THE OPPOSITE AND THE SEEDING PASS DISPROVED IT THE SAME DAY. Measured on
-   the 1040, all 200 windows, 2026-08-11.** Anchoring on every table and letting each window answer
-   `starts_a_worksheet` for itself yields **87 claimed starts against the classifier's 28** - **64
-   false positives, 62 of them `layout` and 2 `lookup_table`.** Shown five tables under a heading
-   like `Definitions and Special Rules`, the model calls prose a worksheet, and `Tax Table` claims
-   to start one. **A window has no document context, so it cannot gate.**
-   **THE CONVERSE IS ALSO MEASURED, and it is why the window is still the right mechanism for
-   extent:** the only 5 classifier-worksheet tables the window declines to start are 44, 45, 46, 99,
-   and 186 - Simplified Method's continuation and its two parameter grids, Step 5's continuation,
-   and IRA's continuation. **Every one is correctly absorbed into a preceding group.**
-   **THE TWO ARE COMPLEMENTARY, NOT SUBSTITUTES: the classifier gates and cannot group; the window
-   groups and cannot gate.** Classification needs whole-document context, extent needs local
-   context, and no single call has both. **Do not try to collapse them again without new evidence.**
-2. **The response is ids only:** `starts_a_worksheet`, `title`, `table_ids`, `parameter_table_ids`,
-   `serves_lines`. `parameter_table_ids` is what fixes Simplified Method - those tables belong to
-   the worksheet but contribute constants, NOT extent rows.
-3. **Overlapping windows will both claim a table. FIRST ANCHOR IN PRINTED ORDER WINS, and a later
-   window claiming an already-claimed table is a PRINTED DISAGREEMENT, never a silent overwrite.**
-   **THIS IS NOT HYPOTHETICAL - 2441 PRODUCED IT ON THE FIRST SEEDING RUN.** t3's window correctly
-   returns `[3,4]`, merging the caption with its body, and **t4's own window also returns
-   `starts_a_worksheet`** for the body table alone. First-anchor-wins gives the right answer (t3's
-   group), and t4's claim is reported. Schedule D shows the clean case for contrast: t4 returns
-   `[4,5]` and t5 correctly does NOT start a worksheet.
-
-**THE CACHE CONTRACT, and Codex must reproduce it byte-for-byte to read the seeded file.** Windows
-live at `.cache/raw/<year>/<source_document_id>.worksheet_windows.yaml` with `schema_version: 1`,
-the `lookahead` used, and a `windows` map. **The key is `sha256("<lookahead>\\n" + the acquired
-source bytes of the anchor table and its lookahead, joined by a newline in printed order)`** - the
-lookahead is inside the hash so a different window size cannot collide with a seeded entry. The
-reference implementation is `window_fingerprint` in `pilot/segment_tables.py`. **The seeding pass
-persists after EVERY window and records a failed window rather than aborting**, which is S98's
-isolation rule applied to the pass that replaces the classifier.
-4. **The numbering and the Markdown walk are demoted to CHECKS.** `7` following `6a` confirms the
-   IRA merge for free; a descending run like `300, 260, 240` contradicts an extent claim. **They
-   report; they do not decide and they do not gate.**
-
-**AND FIX THE GATE, because it is worth more than the segmentation.** `worksheet_harvest.py:777`
-refuses a worksheet on ANY finding. **Findings become ADVISORY by default: write the worksheet,
-attach the finding.** Reserve refusal for what genuinely prevents building a document. Two specific
-corrections come with it: an EMPTY oracle result is `unavailable`, NOT `disagree`; and
-`unresolved_footnote_marker` is advisory. **This alone should take the 1040 from 5 of 14 to ~12.**
-
-**WHO RUNS WHAT. THE SEEDING PASS IS DONE - THE ROUND IS FULLY OFFLINE FOR CODEX.**
-- **ARCHITECT, live, COMPLETE 2026-08-11 (John authorized):** windows are seeded for the 1040 (all
-  200 anchors, a superset of the 28 the round needs), Schedule D (5), and 2441 (4), with **zero
-  failures**. The over-broad 1040 pass is what disproved the no-prefilter variant above, so its cost
-  bought the answer. **Codex re-pays for nothing and must not open new windows.**
-- **WORKER, offline, against the seeded cache:** the window mechanism behind the existing provider
-  interface with a RECORDED-FIXTURE test, the claim-resolution rule, the advisory-findings change,
-  the classifier removal, and the CLI reporting. Every floor clause below is deterministic.
-
-**THE FLOOR. Prove it on the acquired corpus, not a fixture.**
-- **The 1040 writes at least 12 of its named worksheets**, up from 5, and `discovered == written +
-  refused` still prints and still balances.
-- **Simplified Method harvests 11 lines** with tables 45 and 46 recorded as parameter tables, NOT as
-  extent rows. The `expected line 12, found 300` failure is gone.
-- **IRA Deduction harvests as one worksheet, `1a` through `12`**, from tables 184-186.
-- **Standard Deduction for Dependents harvests and does NOT absorb table 51.** t51 is the
-  born-before-1961 chart, a standalone lookup whose own text says not to use it for dependents.
-  **The Architect asserted the opposite on 2026-08-11 and was wrong** - it is a separate document,
-  and this clause exists so that error is not re-introduced.
-- **2441 and Schedule D do not regress:** 2 and 4 worksheets, extents 3/17 and 13/7/18/47.
-- **Schedule B still returns zero worksheets without error.**
-- **`classify_worksheet_tables` SURVIVES and keeps its cache.** The 92 seeded 1040 fingerprints, and
-  Schedule D's 5 and 2441's 4, are still the gate. **Nothing is re-paid.**
-- **No window is opened on a table the classifier did not call `worksheet`.** A run that opens 200
-  windows on the 1040 has rebuilt the disproved variant; the correct count is 28.
-
-**OUT OF SCOPE - do not fold any of these in.**
-- **The untitled EIC computations.** Both arms of the measurement handled them badly and the window
-  only partially helps: it titles them correctly but the owning-line addressing is unsettled. **They
-  stay queue item 2.** Refuse them with a reason, as S98 already does.
-- **Promotion and rederivation.** This round changes harvesting only.
-- **The protected set stays byte-identical.** `git diff --stat` on `graph/2025/{nodes,edges,rules}/`
-  and `graph/2025/field_maps/` must be EMPTY.
 
 ## Open for Architect
 
-**CODEX S99 STATUS (2026-08-11).** Restored `classify_worksheet_tables` and its incremental cache
-from `ac1c560`; only classifier-positive tables open a seeded sliding window. The production path
-now reports 28 1040 windows, 3 2441 windows, and 5 Schedule D windows. Parameter tables are kept
-in the claimed group and excluded from extent rows; first-anchor-wins overlaps are retained as
-advisory findings; direct legacy harvest remains fail-closed while S99 discovery carries advisory
-findings on emitted drafts.
+Nothing. S99 is accepted, the full-suite floor is met at the 17-red baseline, and no round is in
+flight. **The ball is JOHN'S: pick the next item.**
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s99b).Path; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\\Scripts\\python.exe -m pytest tests\\test_worksheet_harvest_m20.py tests\\test_worksheet_harvest_s97.py tests\\test_worksheet_harvest_s98.py tests\\test_worksheet_harvest_s99.py -q` -> **31 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s99b).Path; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\\Scripts\\python.exe -m pytest tests\\test_cli.py -q` -> **7 passed, 1 warning**.
-RAN: `.venv\\Scripts\\python.exe -B tools\\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli harvest-worksheet --source-document-id instructions_form_1040_2025 --draft-dir .test_tmp_s99b\\m1040_final\\_drafts` -> **exit 1; discovered=17; written=13; refused=4; sum=17**. Refusals are one malformed seeded response at table 183 (`starts_a_worksheet: true` with empty `table_ids`), one real line-sequence gap at table 52, and two untitled Step blocks.
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli harvest-worksheet --source-document-id instructions_form_2441_2025 --draft-dir .test_tmp_s99b\\m2441_final\\_drafts` -> **exit 0; discovered=2; written=2; refused=0; sum=2**.
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli harvest-worksheet --source-document-id instructions_schedule_d_2025 --draft-dir .test_tmp_s99b\\msched_d_final\\_drafts` -> **exit 0; discovered=4; written=4; refused=0; sum=4**.
-NOT RUN: full suite; the accepted baseline records it beyond the 600-second Worker command cap.
-
-**OPEN FOR ARCHITECT:** Is the table 183 seeded window response an artifact to reseed in the
-Architect leg, or should S99 retain the visible fail-closed refusal? The Worker made no provider
-call and did not edit the ignored cache.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
@@ -336,7 +160,17 @@ call and did not edit the ignored cache.
     that consumes another publisher's package, and a machine-readable index the README page is
     GENERATED from. **Product work - explicitly after the core set is reliable**, since a directory
     advertises a capability that a booklet silently dropping 26 of 28 worksheets cannot back.
-12. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
+12. **TWO S99 REPORTING NITS, neither changes what gets written** (Architect, measured 2026-08-11).
+   **(a) An empty oracle result is still labelled `disagree`.** `worksheet_harvest.py:200` treats
+   only `None` as `unavailable`, so a title found in the Markdown with zero numbered rows reads as
+   a disagreement. **Four 1040 worksheets carry a bogus disagreement** (Qualified Tips, Multiple
+   Trades, both Overtime), all with `markdown_lines=[]`. Cosmetic now that findings are advisory,
+   but it dilutes a review queue that is meant to be a ranked worklist.
+   **(b) Table 183's malformed claim counts as a refusal** even though its worksheet WAS harvested
+   from table 182's window, so `refused=4` reads as four missing worksheets when two are the
+   out-of-scope EIC blocks and one is this duplicate. **The overlap check should run BEFORE the
+   validity check** - t183 was already owned, so it should have been a `window_claim_overlap`.
+13. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
    run-together instruction headings (`**Line 2dDepletion**`) - **now explained: a PDF-render
    artifact, the HTML separates them cleanly (`28% Rate Gain Worksheet-Line 18`), so S97's division
    of authority may retire this**; artifact-pinned test counts measured
