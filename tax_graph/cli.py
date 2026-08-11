@@ -279,11 +279,13 @@ def harvest_worksheet_command(
     title: str | None = None,
     start_anchor: str | None = None,
     draft_dir: str | Path | None = None,
+    classifier: Any | None = None,
 ) -> int:
-    """Harvest one title-identified worksheet into a draft without promoting it."""
+    """Harvest one title or every worksheet table into drafts without promotion."""
     from tax_graph.ingest.worksheet_harvest import (
         QDCGT_WORKSHEET_TARGET,
         WorksheetTarget,
+        harvest_worksheets_file,
         harvest_worksheet_file,
         write_worksheet_draft,
     )
@@ -323,7 +325,7 @@ def harvest_worksheet_command(
                 f"(expected {manifest_entry.region_parent_sha256}, got {actual_parent_hash})"
             )
             return 1
-    if any(value is not None for value in (document_id, title, start_anchor)):
+    if any(value is not None for value in (document_id, start_anchor)):
         if manifest_entry is not None and manifest_entry.is_region:
             target = WorksheetTarget(
                 document_id=document_id or default_target.document_id,
@@ -344,33 +346,86 @@ def harvest_worksheet_command(
                 title=title or default_target.title,
                 start_anchor=start_anchor or default_target.start_anchor,
                 source_document_id=source_id,
+                expected_line_count=default_target.expected_line_count
+                if (title or default_target.title) == default_target.title
+                else None,
+                expected_constant_count=default_target.expected_constant_count
+                if (title or default_target.title) == default_target.title
+                else None,
+                citation_groups=default_target.citation_groups
+                if (title or default_target.title) == default_target.title
+                else None,
             )
-    else:
-        target = default_target
-    result = harvest_worksheet_file(
-        source_path,
-        target,
-        source_document_id=source_id,
-        year=year,
-    )
-    if not result.ok:
-        print(f"worksheet harvest blocked: {target.document_id}")
-        for finding in result.findings:
-            print(f"  {finding.kind}: {finding.message}")
+        result = harvest_worksheet_file(
+            source_path,
+            target,
+            source_document_id=source_id,
+            year=year,
+        )
+        if not result.ok:
+            print(f"worksheet harvest blocked: {target.document_id}")
+            for finding in result.findings:
+                print(f"  {finding.kind}: {finding.message}")
+            return 1
+        output = (
+            Path(draft_dir)
+            if draft_dir is not None
+            else root_path / "graph" / str(year) / "_drafts" / target.document_id
+        )
+        write_worksheet_draft(result, output)
+        print(f"harvested worksheet draft: {target.document_id}")
+        print(f"  draft_dir: {output.resolve()}")
+        print(f"  lines: {len(result.line_nodes)}")
+        print(f"  constants: {len(result.parameter_nodes)}")
+        print(f"  citations: {len(result.citations)}")
+        print("  promoted: no")
+        return 0
+
+    settings = load_config(root=root_path)
+    cache_path = root_path / ".cache" / "raw" / str(year) / f"{source_id}.worksheet_tables.yaml"
+    try:
+        discovery = harvest_worksheets_file(
+            source_path,
+            source_document_id=source_id,
+            year=year,
+            title=title,
+            classifier=classifier,
+            config=settings,
+            cache_path=cache_path,
+        )
+    except (OSError, ValueError, RuntimeError) as exc:
+        print(f"worksheet discovery blocked: {exc}")
         return 1
-    output = (
-        Path(draft_dir)
-        if draft_dir is not None
-        else root_path / "graph" / str(year) / "_drafts" / target.document_id
-    )
-    write_worksheet_draft(result, output)
-    print(f"harvested worksheet draft: {target.document_id}")
-    print(f"  draft_dir: {output.resolve()}")
-    print(f"  lines: {len(result.line_nodes)}")
-    print(f"  constants: {len(result.parameter_nodes)}")
-    print(f"  citations: {len(result.citations)}")
-    print("  promoted: no")
-    return 0
+    print(f"worksheet tables classified: {len(discovery.classifications)}")
+    print(f"worksheets discovered: {len(discovery.worksheets)}")
+    if not discovery.classifications:
+        print("  no HTML tables; zero worksheets is a valid result")
+        return 0
+    for item in discovery.classifications:
+        print(
+            f"  table {item.table_id}: {item.kind}; "
+            f"heading={item.heading or '(none)'}; lines={','.join(item.lines) or '(none)'}"
+        )
+    for result in discovery.worksheets:
+        if not result.ok:
+            print(f"  blocked {result.target.document_id}")
+            for finding in result.findings:
+                print(f"    {finding.kind}: {finding.message}")
+            return 1
+        output_root = (
+            Path(draft_dir)
+            if draft_dir is not None
+            else root_path / "graph" / str(year) / "_drafts"
+        )
+        output = output_root / result.target.document_id
+        write_worksheet_draft(result, output)
+        print(
+            f"  harvested {result.target.document_id}: "
+            f"lines={len(result.line_nodes)}; oracle={result.as_dict()['oracle']['status']}"
+        )
+    for finding in discovery.findings:
+        print(f"  finding {finding.kind}: {finding.message}")
+    return 0 if not discovery.findings else 1
 
 
 def nomination_list_command(
@@ -1674,7 +1729,7 @@ def _build_typer_app():
         draft_dir: Path | None = typer.Option(None, "--draft-dir", help="Explicit _drafts output directory."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
     ) -> None:
-        """Harvest an anchored worksheet into _drafts without promotion."""
+        """Discover HTML worksheet tables into _drafts without promotion."""
         raise_code = harvest_worksheet_command(
             year=year,
             root=root,

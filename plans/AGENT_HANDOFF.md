@@ -21,172 +21,158 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN - S93 AND S94 BOTH ACCEPTED. THE WIDE CORPUS IS WRITABLE FOR THE FIRST TIME.
-Worksheets are next and their spec is staged as queue item 2.**
+**BALL: CODEX - S95 ACCEPTED, S96 SPLIT. Its rendered-text parsing is kept; its table of six
+frozen worksheet extents is REJECTED and S97 replaces it with the HTML structure that was there
+all along.**
 
-**S93 ACCEPTED** (`cb57f8e`, `079525a`) - a line value that is not a line now fails at derivation
-instead of crashing the graph writer. **S94 ACCEPTED** (`c97d01c`, `010785f`) - `--process
-broken|all`, default `all`.
-**Architect fixes alongside them:** `b1cc7b8` one canonical line-id builder, `c6d4e4e` a stub
-survives per LINE not per document, `4a09e9b` per-pass accounting.
+**S95 ACCEPTED** (`64d112b`) - a `column` token rides beside `line` through the prompt, validator,
+graph projection, external inputs, and stubs, and every id goes through the single
+`_canonical_line_node_id` accessor. Clean slice, no second builder.
 
-**FULL PASS, 11 documents:** **351 of 410 printed anchors (85.6%)**, cost **$0.2505**,
-**1 regression** against the 64 protected rows - `form_2441_2025` line 19, the known-unstable row.
-Coverage fell from 356 because `operand_line_not_canonical` fired **35 times**; **those rows were
-passing while unwritable, so this is the round working.**
+**S96 SPLIT** (`c9ee783`). **KEPT:** rendered-text harvesting, run-together heading titles, page
+and continuation boundaries. **REJECTED:** `SOURCE_VERIFIED_WORKSHEET_TARGETS`, six worksheets with
+hardcoded `end_line` and `expected_line_count`. **It is a table of answers where the pipeline
+belongs** - a seventh worksheet needs a Python edit, which is the self-serve rule and the prime
+directive both. Its docstring calls `end_line` a model decision; **no model is called anywhere on
+that path**, there is no CLI flag and no config field.
 
-**THE CANDIDATE BUILDS FROM A FRESH RUN: 588 nodes, 846 edges, 581 operands, ZERO dangling ids**,
-11 source documents, 61 stub documents, lifecycle 89 unresolved / 4 ingested. **Every operand
-resolves to something real or stubbed, and each stub already carries the address its real version
-will occupy.**
+**CODEX'S DEVIATION IS CORRECT AND THE ARCHITECT'S QUEUE WAS WRONG.** The 28% Rate Gain Worksheet
+has **7** lines, not the 15 the queue claimed; verified at `instructions_schedule_d_2025.txt:718`.
+Following the source over the spec and flagging it is exactly right.
 
-**FULL SUITE 2026-08-10: 18 failed, 910 passed, 8 skipped, 1 xfailed in 0:58:36** - the documented
-pre-existing families, **zero new failures**, passes 894 -> 910, and
-`test_m20_s71::test_real_candidate_node_labels_use_clean_text` **now passes** after failing the
-last three suites.
+**THE ARCHITECT'S CUE WAS ALSO WRONG, and that is why S96 took the shape it did.** "A worksheet's
+last step names where its answer goes" fails on the Social Security Benefits Worksheet, where the
+cue sits on **line 1** as well as line 18, so a first-match rule ends the worksheet after one line.
+The pilot that proved the model could do this (`scratchpad/wsend.py`) no longer exists, so Codex
+had the answers without the mechanism.
 
-**A BROKEN PASS CANNOT SEE A CHANGE THAT AFFECTS PASSING ROWS, and we proved it the hard way.** The
-id fix changed stub minting for SUCCESSFUL rows, so a broken-only pass carried the stale ids forward
-and the candidate still failed. **Codex was right and the Architect was wrong to call that stale.**
-**This is exactly why the default is `all`.**
+**MEASURED 2026-08-11 - THE STRUCTURE ALONE GETS ALL SIX**, no table, no cue, no `end_line`:
+walk from the title, take numbered rows, stop at the next heading. 18 / 11 / 7 / 47 / 3 / 6, which
+are the same six numbers the registry hardcodes. **The helper already exists and is already
+called** - `_is_text_extent_boundary` recognises `### Line 19` today, and
+`worksheet_harvest.py:733` does `continue` instead of `break`, stepping over it.
 
-**PER-PASS ACCOUNTING NOW EXISTS** - `pass_rows_sent`, `pass_rows_attempted`, `pass_cost`,
-`pass_row_status_counts`, beside the merged totals. A full pass reads **410 rows / $0.2505**;
-without these a broken pass and a full pass were indistinguishable except by the mode flag.
+**AND THE HTML MAKES IT DETERMINISTIC.** Schedule D's HTML holds exactly **5 `<table>` elements and
+every one is a worksheet**, each under a heading naming both worksheet and line
+(`28% Rate Gain Worksheet-Line 18`). **The extent is a `</table>`.** The PDF-to-Markdown render
+destroys that boundary, which is the whole reason this problem exists. The HTML also surfaces a
+seventh worksheet the registry never had: **Capital Loss Carryover, Lines 6 and 14.**
+
+**NEW FINDING, BIGGER THAN THIS ROUND: 170 OF 404 PRINTED ANCHORS (42%) DERIVE WITH AN EMPTY
+INSTRUCTION PACKET.** Queued as item 1; ordering is John's call.
 
 
 ## Current round
 
-**M20-S94 SPECCED BY ARCHITECT (2026-08-10), JOHN'S IDEA. RERUN ONLY THE BROKEN ROWS.**
-**REAL-PROJECT ROUND** - full-suite floor applies.
+**M20-S97 SPECCED BY ARCHITECT (2026-08-11). WORKSHEET EXTENTS COME FROM THE HTML, NOT FROM A
+TABLE OF ANSWERS.** **REAL-PROJECT ROUND** - full-suite floor applies. Reworks `c9ee783`.
 
-**WHY, and the second reason matters more than the first.** The wide run is 410 anchors, $0.2574,
-~35 minutes, and only ~54 rows fail - so a broken-only pass is about **$0.03 and 4 minutes**.
-**The bigger win is stability: re-asking rows that already work is what makes the report drift.**
-`form_2441_2025` `19`/`21`/`25` have flipped in both directions across six runs and **the Architect
-misread that churn as signal twice.** Leave healthy rows alone and a changed number MEANS something.
+**WHY.** Three mechanisms have now been tried for one question, "where does this worksheet end":
+a hardcoded phrase from one worksheet (`_contains_terminal_destination`), a destination cue the
+Architect asserted and that does not hold, and a table of six frozen answers. **All three are the
+same mistake** - guessing at printed prose to recover a boundary the source already states. The
+acquired HTML states it: `</table>`.
 
-**THE INTERFACE.** `--process all|broken`, **DEFAULT `all`** (John). With `broken`, take the prior
-run directory and re-derive only rows whose recorded status is NOT `derived` or `repaired`.
+**THE DIVISION OF AUTHORITY (John, 2026-08-11). This is the durable ruling of this round.**
+**HTML is the STRUCTURAL authority** - table boundaries, the heading-to-line association, and the
+stable `publink` anchors. **PDF-rendered Markdown is the PROSE authority** - reading text, page and
+layout context. Neither is a substitute for the other and the harvester must stop treating them as
+interchangeable. **All seven instruction booklets have both artifacts on hand today.**
 
-**THE TWO THINGS IT MUST GET RIGHT.**
-1. **MERGE, do not report the subset.** Carry the prior run's successful rows into the new report so
-   coverage stays against **all 410 printed anchors**. A report of "40 of 54" is a false alarm.
-   `pilot/run_report.py` must read a merged run unchanged.
-2. **The default stays `all`, and S93 is exactly why.** That round changed a VALIDATOR, so rows that
-   passed the day before now fail. **A broken-only pass would never have looked at them.**
-   **Broken-only is for iterating on a fix; process-all is what a round is accepted on.**
+**MEASURED EVIDENCE, 2026-08-11, so this is not a guess.** Visible-text volume matches across the
+two renderings (ratio 0.88 to 1.16 over six booklets), so nothing material is hidden in the HTML or
+lost from it - **the difference is structure, not content**. Schedule D's HTML holds exactly
+**5 `<table>` elements and all 5 are worksheets**: Capital Loss Carryover (19 `<tr>`), 28% Rate Gain
+(8), Unrecaptured Section 1250 Gain (21), Schedule D Tax (38), Schedule D Tax Continued (23).
 
-**RECORD WHICH MODE PRODUCED THE REPORT** in the run output, so nobody compares a merged run against
-a full one without knowing.
+**THE TARGET STATE. Name it by what is GONE, because that is the check.**
+1. **`SOURCE_VERIFIED_WORKSHEET_TARGETS` does not exist.** No worksheet's extent, line count, or
+   constant count is written in Python.
+2. **`WorksheetTarget.end_line` does not exist.**
+3. **`_contains_terminal_destination` does not exist.** It encodes one worksheet's printed phrase.
+4. **`harvest-worksheet` takes a document, not a curated target.** Given an instruction document id
+   it returns EVERY worksheet in it. A title argument narrows the result; it is not required.
+5. **`worksheet_harvest.py:733` breaks at a boundary instead of stepping over it.**
 
-**OUT OF SCOPE: skipping human-VERIFIED cells.** That is stronger and separate - it must read the
-review ledger, not a prior run's status, because re-deriving an approved cell could silently replace
-an approved answer. **Queue it; do not fold it in here.**
+**THE MECHANISM, and the model earns its place here.** Extent comes from the `<table>` boundary -
+deterministic, no call. **A model classifies each table**: worksheet, lookup table, or layout, plus
+the printed line(s) it serves, read from its own heading. This is needed because Schedule D's 5
+tables are all worksheets but **the 1040 has 200 tables** and most are EIC and tax lookups. **Do not
+prefilter with a heuristic.** Send every table with its heading; roughly 230 tables corpus-wide is
+small money on `openai/gpt-5.6-luna` and it is cached per acquisition. **A heuristic prefilter is
+the same mistake in a new place.**
 
-**THE FLOOR.** A `broken` pass over the S93 run reproduces the same totals as a full run, minus the
-rows it legitimately fixed. **Prove it on a real run dir, not a fixture.** Verify with
-`pilot/run_report.py`.
+**THE ORACLE, and it costs nothing.** The deterministic PDF-Markdown walk - from the title, take
+numbered rows, stop at the next heading - runs on every harvest and is REPORTED beside the HTML
+answer. **Agreement is silent; disagreement is the review queue.** Verified 2026-08-11 to reproduce
+all six extents (18 / 11 / 7 / 47 / 3 / 6) with no registry.
 
-**IMMEDIATE USE, so this pays for itself the day it lands:** S93's floor is still unproven because
-the stored run carries stub ids minted by the OLD builder. **A broken-only pass over
-`C:\tmp\m20_s93\run` is how we finish S93 for four minutes instead of thirty-five.**
+**A NAMED WORKSHEET IS ITS OWN DOCUMENT, however small** (John, 2026-08-09, AGENTS.md). The
+classifier decides worksheet or not; **it never decides whether a worksheet is worth modelling.**
 
-**M20-S93 WORKER VERIFICATION (2026-08-10):** The derivation guard is present at `cb57f8e` and
-the canonical external line-id correction is at `b1cc7b8`. Added regression coverage for both
-same-form noncanonical phrases and source-backed worksheet stub ids. The real S93 candidate
-regeneration still stops on the OLD stored stub id, exactly as the S94 seam predicts; do not
-hand-edit that promoted run artifact. The required next action is the planned broken-only
-re-derivation, then candidate regeneration and `pilot/run_report.py`.
+**WHO RUNS WHAT. The Worker's floor is reachable with NO network call - that is deliberate.**
+- **WORKER, offline, and this is the whole round for Codex:** the `<table>` extent, the registry
+  deletion, the `break` fix, the document-scoped CLI, the Markdown oracle, and the classifier built
+  **behind the existing provider interface with a RECORDED-FIXTURE test**. Every floor clause below
+  is deterministic and needs no live model.
+- **ARCHITECT, live:** the one classification pass over the 1040's 200 tables. **Do not ask the
+  Worker to run it.** Four rounds' floors have died on this: a file in the repo cannot authorize
+  egress to an external provider, and Codex is right to refuse it - **only John can approve that in
+  his own session.** If a round truly needs the Worker to make the call, John authorizes that one
+  command interactively; it is never assumed.
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py -q` -> **76 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py -q` -> **92 passed, 1 warning**.
+**THE FLOOR. Prove it on the acquired corpus, not a fixture. No network call is required for any
+clause here.**
+- All six previously registered worksheets reproduce their extents **with the registry deleted**:
+  Credit Limit 3, Exemption 6, Schedule D Tax 47, Simplified Method 11, 28% Rate Gain 7, Social
+  Security Benefits 18.
+- **Capital Loss Carryover (Lines 6 and 14) is found without being named.** The registry never had
+  it; if the round cannot find it, the round has rebuilt the registry.
+- **The CLI command that fails today succeeds**, with no `--start-anchor` and no title:
+  `harvest-worksheet --source-document-id instructions_schedule_d_2025` returns 5 worksheets.
+- **Schedule B returns zero worksheets and does not error.** Its HTML has 0 tables. An empty result
+  is a correct answer, not a failure.
+- The HTML and Markdown oracle agree on every extent, or each disagreement is printed with both
+  numbers.
+
+**OUT OF SCOPE - do not fold any of these in.**
+- **Untitled computations** (the EIC `## Step N` blocks, and the untitled worksheet nested inside
+  `Step 5 Earned Income`). Real, and they need the owning-line addressing settled first.
+- **The 170 empty instruction packets.** Queue item 1, separate round.
+- **Promotion and rederivation.** This round changes harvesting only. The 9 misread rows and 1040
+  `6b` are cleared by the round AFTER this one.
+- **The protected set stays byte-identical.** `git diff --stat` on `graph/2025/{nodes,edges,rules}/`
+  and `graph/2025/field_maps/` must be EMPTY.
+
+**M20-S97 WORKER STATUS (2026-08-11):** Implemented HTML table discovery in
+`tax_graph/ingest/worksheet_harvest.py`. Table boundaries are the extent witness; every table
+passes through the provider-agnostic classifier seam and its byte-hash cache; rendered Markdown
+is walked as an extent oracle. The document-only CLI now discovers every worksheet table, accepts a
+title as a narrowing filter, and treats zero HTML tables as a valid empty result. Nomination
+acceptance now harvests the acquired HTML and title-derived ids; no source-verified target table
+remains in production code. Added `docs/worksheet-harvesting.md` and the S97 test file.
+
+REAL-CORPUS FLOOR:
+- Six old worksheet extents, with no registry, returned 3 / 6 / 47 / 11 / 7 / 18 lines and
+  HTML/Markdown oracle agreement for Credit Limit, Exemption, Schedule D Tax, Simplified Method,
+  28% Rate Gain, and Social Security Benefits.
+- Schedule D HTML discovery classified all 5 tables; the base Schedule D Tax result combines its
+  continuation to 47 lines, and the continuation table remains visible as its own structural
+  classification at 17 lines. Capital Loss Carryover is discovered from its heading and anchor.
+- Schedule B returned zero tables and zero worksheets without a classifier call.
+
+TEST EVIDENCE:
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_s97.py -q` -> **8 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_nomination_s59.py tests\test_cli.py -q` -> **13 passed, 1 failed**; the sole failure is the old S96 guard assertion `target.end_line == "47"`, which is the contract this round removes.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_cli.py -q` -> **7 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_m20.py -q` -> **NOT GREEN: collection ImportError** because the old S96 guard imports the removed `SOURCE_VERIFIED_WORKSHEET_TARGETS`.
 RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir C:\tmp\m20_s93\run --output-dir C:\Users\devbox\.codex\visualizations\2026\08\10\019feafa-3685-7523-a9c7-72fa3f22a1ce\m20_s93_candidate --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025 --expected-document schedule_a_2025 --expected-document schedule_1a_2025 --expected-document schedule_1_2025 --expected-document schedule_2_2025 --expected-document schedule_3_2025 --expected-document schedule_b_2025 --expected-document schedule_d_2025 --expected-document form_8949_2025` -> **exit 1**, `ValueError: external stub id form_social_security_benefits_worksheet_2025_root_line_18 does not match canonical id social_security_benefits_worksheet_2025_root_line_18`.
-NOT RUN: full suite and provider/corpus re-derivation; the S93 acceptance seam requires the S94 broken-only implementation and a network-capable provider leg.
+RAN: no-bytecode compile of the three changed Python modules -> **compile ok**.
+NOT RUN: provider classification leg; it would send acquired source-derived prompts to the external provider and was not authorized. NOT RUN: full suite; the focused S96 guard file cannot collect until its contract migration is authorized.
 
-**M20-S94 WORKER STATUS (2026-08-10):** Implemented `--process all|broken` in
-`experiments/derive_cells_s25.py`, with `all` as the default. Broken mode reads the prior
-document report, sends only rows whose recorded status is not `derived` or `repaired`, and
-merges untouched successful rows back into the complete current report. The report records
-`process_mode`; `pilot/run_report.py` displays it. Missing or malformed prior reports fail closed.
-Repeated printed lines are rederived as one flow group because their occurrence is the only stable
-local disambiguator available in the report format. No graph, draft, review, or promoted artifact
-was changed.
+## Open for Architect
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s94.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_derive_cells_s30.py tests\test_m20_s31.py tests\test_m20_s41.py pilot\test_run_report.py -q` -> **120 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: provider/corpus re-derivation command against `C:\tmp\m20_s93\run`; the scoped
-provider/network action was rejected by the safety review because it would send source-derived
-prompts and payloads to an external destination without explicit egress approval. NOT RUN: full
-suite; it exceeds the 600-second Worker command cap and the accepted known-red baseline remains
-Architect-side.
-
-**M20-S94 REWORK (2026-08-10):** The real S93 seam exposed two correctness gaps in the first
-implementation. `form_8949_2025` contains repeated printed lines 1 and 2, so rejecting duplicate
-prior lines prevented the immediate broken-only run. Repeated lines are now treated as one flow
-group and all occurrences are rederived together. Successful rows are reusable only when their
-source packet matches; legacy reports are checked by their source fields, and new reports carry a
-SHA-256 source fingerprint. A missing current result, unexpected result line, malformed prior row,
-or source mismatch fails closed rather than silently dropping or reusing a row.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s94_rework).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s94.py -q` -> **11 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s94_rework).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s94.py tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_derive_cells_s30.py tests\test_m20_s31.py tests\test_m20_s41.py pilot\test_run_report.py -q` -> **124 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-RAN: real S93 local seam against `C:\tmp\m20_s93\run` with no provider calls -> **11 reports,
-62 rows selected, merged output complete at 410 rows; form_8949 duplicate lines 1 and 2 handled
-as one flow group**.
-NOT RUN: provider/corpus re-derivation; it would send source-derived prompts to an external
-provider and was not authorized. NOT RUN: full suite; it exceeds the 600-second Worker command
-cap and the accepted known-red baseline remains Architect-side.
-
-**M20-S95 WORKER STATUS (2026-08-10):** Implemented the queued column-qualified operand slice.
-Line operands now carry a separate nullable lowercase `column` token in the provider schema and
-prompt, while the validator remains compatible with legacy reports that omit the field. Graph
-projection, external-input records, candidate normalization, and candidate line stubs preserve
-the column and use `*_root_line_<line>_column_<column>` source-address ids. Existing exact graph
-nodes remain available through the `node` operand; this slice adds the missing source-address
-plumbing and does not hand-author or promote any graph object.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s31.py tests\test_m20_s41.py tests\test_m20_s51.py tests\test_m20_s54.py tests\test_m20_s85_comparator.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_m20_s94.py tests\test_derive_cells_s30.py pilot\test_run_report.py -q` -> **145 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_doctor_m20.py tests\test_prompt_experiment_m20.py tests\test_operation_registry_m20.py -q` -> **34 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: provider/corpus re-derivation; the new wire contract needs a live provider leg, and
-source-derived prompts were not authorized for external egress in this Worker context. NOT RUN:
-full suite; it exceeds the 600-second Worker command cap and the accepted known-red baseline
-remains Architect-side.
-
-**M20-S96 WORKER STATUS (2026-08-10):** Took the worksheet-as-documents item through the
-source-harvesting and nomination boundary. The harvester now accepts acquired rendered text as
-well as HTML, discovers worksheet titles in the rendered form, and uses a model-selected
-`end_line` when the extent is not justified by the legacy Form 1040 destination cue. Six
-source-backed 2025 targets are registered with addressable line counts: Credit Limit (3),
-Exemption (6), Schedule D Tax (47 across its continuation), Simplified Method (11), 28% Rate
-Gain (7), and Social Security Benefits (18). Every emitted object and citation keeps a source
-witness, and the existing QDCGT HTML path remains covered unchanged. Nomination acceptance uses
-the sibling rendered `.txt` for these source-backed extents while retaining the acquired parent
-HTML hash in the manifest; no graph, draft, review, or promoted artifact was changed. The CLI
-also permits an explicit ad-hoc harvest without a manifest file, preserving the existing
-manifest-aware region path.
-
-DEVIATION FOR ARCHITECT: the queued prose says the 28% Rate Gain worksheet has 15 lines, but the
-acquired source block headed `28% Rate Gain WorksheetLine 18` contains lines 1 through 7 and the
-harvest verifies 7. The registry follows the source and the mismatch remains open for review.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_m20.py tests\test_nomination_s59.py tests\test_cli.py tests\test_acquire_citation_check.py tests\test_derive_cells_m20.py tests\test_m20_s41.py tests\test_m20_s51.py tests\test_m20_s54.py -q` -> **131 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_candidate_regeneration_m20.py tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_doctor_m20.py tests\test_derive_cells_s30.py tests\test_m20_s41.py tests\test_m20_s51.py tests\test_m20_s54.py -q` -> **126 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest tests\test_nomination_s59.py -q` -> **7 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: provider/corpus re-derivation; it would send source-derived prompts to an external
-provider and was not authorized. NOT RUN: full suite; it exceeds the 600-second Worker command
-cap and the accepted known-red baseline remains Architect-side. The remaining worksheet work is
-promotion/rederivation through the ordinary pipeline; this round only changes its source-backed
-harvesting input and nomination boundary.
+**S97 TEST CONTRACT MIGRATION:** The active S97 spec explicitly removes `SOURCE_VERIFIED_WORKSHEET_TARGETS` and `WorksheetTarget.end_line`, but the existing S96 guard files still import/assert those symbols. The Worker has not edited those guards under the standing rule against rewriting a guard to agree with new code. Please authorize the S97 contract migration (or direct a compatibility test shape) before the round can report the focused suite green.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
@@ -194,44 +180,35 @@ harvesting input and nomination boundary.
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
 
-1. **`column` ON AN OPERAND.** **BLOCKS the candidate writer on the wide corpus today**
-   (`line "2a, column (l)"` is not a canonical address). The graph ALREADY addresses columns -
-   `form_8949_2025_part_i_line_1_column_d`, `form_2441_2025_part_ii_line_3_column_d` - only the
-   derivation operand cannot say it. **Plumbing, not new capability.**
-2. **WORKSHEETS AS DOCUMENTS - NEXT ROUND, spec below is ready to promote** (John's ruling,
-   AGENTS.md). Clears the **9 rows that misread a worksheet's steps as their own** AND the
-   phrase-line references (1040 `6b`, Sch A `5e`).
-   **Shape:** find each box by the printed telltale **"Keep for Your Records"** (23 hits, 2 are
-   "Continued" pages, so ~21 boxes; **it is a FLOOR - the Credit Limit Worksheet lacks it**); hand
-   the AI the text from the title and let it say where the worksheet ENDS. **Do not restore
-   end-anchoring** - that is what made the current harvester a one-worksheet tool, and John already
-   ruled extent is AI-harvested. **The reusable cue the model itself gave: a worksheet's LAST step
-   names where its answer goes** ("Also enter this amount on Form 2441, line 10").
-   **Proven 6 for 6** (`scratchpad/wsend.py`): Credit Limit 3 steps (verified against the source),
-   6251 Exemption 6, Schedule D Tax 47, Simplified Method 11, 28% Rate Gain 15, Social Security
-   Benefits 18. **Only Credit Limit is source-verified - check the rest against the PDFs.**
-   **Floor:** each harvested worksheet is a document with addressable lines; 1040 `6b` resolves to
-   a real worksheet line; the 9 misread rows stop misreading. **Watch 6251 `5`** - the Exemption
-   Worksheet would replace a lookup table that already derives correctly.
-   **Existing pieces: `harvest-worksheet` (title-selected, writes to `_drafts`), and QDCGT already
-   modelled with 39 nodes as the reference shape.**
+1. **170 OF 404 PRINTED ANCHORS (42%) DERIVE WITH AN EMPTY INSTRUCTION PACKET** (Architect,
+   measured 2026-08-11 on the production path, `for_line` at `cells.py:291`). Per form empty:
+   6251 61%, schedule_d 54%, 2441 45%, schedule_a 32%, 1040 29%, schedule_3 23%, schedule_2 16%,
+   schedule_1 13% - and **schedule_1a and schedule_b are 100%, all 56 anchors, zero sections**.
+   **Not a parser bug: `instruction_sections` creates a slice only under a heading that NAMES a
+   form line**, and Schedule B and Schedule 1-A organise their booklets by Part and topic
+   (`Part I. Interest`, `No Tax on Tips`), naming no lines. **HTML does not fix it** - the same
+   headings appear there, so this is the IRS's organisation, not our rendering. Same defect family
+   as S97: keying on a printed cue and silently dropping everything the cue misses.
+   **NOT YET SHOWN: that filling these packets raises `derived`.** A row can derive off the form
+   face alone. **Test it with a live A/B on a handful of rows, not replay** - replay reuses the
+   recorded prompt. **Ordering against S97 is John's call.**
+2. **UNTITLED COMPUTATIONS THAT CARRY WORKSHEET WEIGHT** (Architect, 2026-08-11). The EIC
+   `## Step N` blocks compute real quantities - `Step 2 Investment Income` sums 1040 `2a`+`2b`+`3b`
+   +`7a` with a floor rule and an $11,950 threshold - but have no title and no local line numbers,
+   and `Step 5 Earned Income` contains an **untitled worksheet** whose lines 1-5 interleave with the
+   surrounding question numbering. **This is the other half of the 4-row validator-scope cluster**
+   (1040 `5a`, `5b`, `27a`, 2441 `10`): unharvested because there is no title to key on.
+   **Proposed rule: a printed address decides.** Titled and line-numbered becomes a document;
+   untitled becomes an intermediate node owned by the line it feeds. **The false-positive fixture is
+   Schedule D `Wash Sales`**, a numbered list 1-4 that is conditions, not arithmetic.
 3. **STUBS FOR OUT-OF-CORPUS FORMS, and fix the `Form(s) X` alias.** 1040 `25c` hard-fails because
    the evidence says "Form(s) W-2G" and the matcher builds `form w2g`. Same "(s)" quirk that spared
    1040 `1a` from the reference guard.
 4. **A LEAF MEANING "SUPPLIED HERE".** The only genuinely NEW vocabulary; needs the enum gate.
    Blocks 2441 `5`, where `REQUIRE_INPUT` is legal as a whole rule but not as a lookup branch.
-5. **RERUN ONLY THE BROKEN ROWS** (John, 2026-08-10). `--process broken|all`, **default `all`**.
-   **~10x win, measured:** the wide run is 410 anchors, $0.2512, ~35 min; only ~54 rows fail, so a
-   broken-only pass is roughly $0.03 and 4 minutes. **The bigger benefit is stability** - re-running
-   healthy rows is what produces the 2441 `19`/`21`/`25` churn the Architect has twice misread as
-   signal; leave them alone and a changed number MEANS something.
-   **MUST MERGE with the prior run, not report the subset** - otherwise coverage reads 40 of 54 and
-   looks catastrophic; totals stay against all 410 printed anchors.
-   **John's default is right and S93 is why:** a round that changes a VALIDATOR makes yesterday's
-   passing rows fail, and broken-only would hide exactly that. **Broken-only is for iterating on a
-   fix; process-all is what a round is accepted on.**
-   **"Skip VERIFIED" is a separate, later step** - re-deriving a human-approved cell could silently
-   replace an approved answer, so it must read the review ledger, not a prior run's status.
+5. **SKIP HUMAN-VERIFIED CELLS ON RERUN** - the step S94 deliberately left out. It must read the
+   review ledger, **not a prior run's status**, because re-deriving an approved cell could silently
+   replace an approved answer.
 6. **Repair calls that return an unchanged payload** must be detected and not spent (2441 `5`).
 7. **`CASE` / alternation** - still HELD; revisit with the wide-run evidence.
 8. **"Report issue" from a reviewer corrective** (John, 2026-08-10) - optional and **never hidden**;
@@ -240,7 +217,9 @@ harvesting input and nomination boundary.
    runs on BLANK forms so the payload carries no filer data; **the reviewer's own comment is the one
    field needing a preview before sending.** Product work - after the core set is reliable.
 9. **Housekeeping:** `pilot/context_arms.py` still scores `REQUIRE_INPUT` as a recovered formula;
-   run-together instruction headings (`**Line 2dDepletion**`); artifact-pinned test counts measured
+   run-together instruction headings (`**Line 2dDepletion**`) - **now explained: a PDF-render
+   artifact, the HTML separates them cleanly (`28% Rate Gain Worksheet-Line 18`), so S97's division
+   of authority may retire this**; artifact-pinned test counts measured
    against untracked `.cache/raw`; `form_8949_2025` needs table-form treatment (4 anchors, 0
    admitted); 2441 `19`/`21`/`25` are a KNOWN-UNSTABLE set - do not read them as signal.
 

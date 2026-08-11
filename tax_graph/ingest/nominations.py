@@ -20,7 +20,6 @@ from tax_graph.config import project_root
 from tax_graph.ingest.worksheet_harvest import (
     QDCGT_TARGET,
     QDCGT_WORKSHEET_TARGET,
-    SOURCE_VERIFIED_WORKSHEET_TARGETS,
     WorksheetTarget,
     harvest_worksheet,
     harvest_worksheet_file,
@@ -30,10 +29,6 @@ from tax_graph.io.loader import load_yaml
 
 
 _QDCGT_KEY = normalize_printed_title(QDCGT_WORKSHEET_TARGET.title)
-_SOURCE_VERIFIED_TARGETS_BY_TITLE = {
-    normalize_printed_title(target.title): target
-    for target in SOURCE_VERIFIED_WORKSHEET_TARGETS
-}
 _TITLE_STOP_WORDS = {
     "a",
     "amount",
@@ -203,7 +198,7 @@ def accept_nomination(
     # Preserve the title actually observed in the report.  The normalized key
     # is identity; the printed spelling is the evidence-facing display value.
     title = evidence.title
-    resolved_document_id = document_id or _document_id_for_title(title)
+    resolved_document_id = document_id or _document_id_for_title(title, year=year)
     if resolved_document_id in by_id:
         existing = by_id[resolved_document_id]
         existing_title = existing.get("region", {}).get("title", "")
@@ -225,15 +220,7 @@ def accept_nomination(
         title=title,
         source_document_id=source_document_id,
     )
-    harvest_path = source_path
-    source_target = _SOURCE_VERIFIED_TARGETS_BY_TITLE.get(normalize_printed_title(title))
-    rendered_text_path = source_path.with_suffix(".txt")
-    if html_path is None and source_target is not None and rendered_text_path.exists():
-        harvest_path = rendered_text_path
-    if harvest_path != source_path:
-        harvest = harvest_worksheet_file(harvest_path, target, year=year)
-    else:
-        harvest = harvest_worksheet(source_text, target, year=year)
+    harvest = harvest_worksheet_file(source_path, target, year=year)
     if not harvest.ok:
         detail = "; ".join(f"{item.kind}: {item.message}" for item in harvest.findings)
         raise ValueError(f"region title/extent did not verify: {detail}")
@@ -406,14 +393,11 @@ def _frontier_citing_row(item: dict[str, Any]) -> str:
     return f"{document_id} line {line}" if line else str(document_id)
 
 
-def _document_id_for_title(title: str) -> str:
+def _document_id_for_title(title: str, *, year: str | int = "2025") -> str:
     if normalize_printed_title(title) == _QDCGT_KEY:
         return QDCGT_TARGET
-    source_target = _SOURCE_VERIFIED_TARGETS_BY_TITLE.get(normalize_printed_title(title))
-    if source_target is not None:
-        return source_target.document_id
     slug = re.sub(r"[^a-z0-9]+", "_", title.casefold()).strip("_")
-    return slug or "region_document"
+    return f"{slug}_{year}" if slug else "region_document"
 
 
 def _target_for_title(*, document_id: str, title: str, source_document_id: str) -> WorksheetTarget:
@@ -426,18 +410,6 @@ def _target_for_title(*, document_id: str, title: str, source_document_id: str) 
             expected_line_count=QDCGT_WORKSHEET_TARGET.expected_line_count,
             expected_constant_count=QDCGT_WORKSHEET_TARGET.expected_constant_count,
             citation_groups=QDCGT_WORKSHEET_TARGET.citation_groups,
-        )
-    source_target = _SOURCE_VERIFIED_TARGETS_BY_TITLE.get(normalize_printed_title(title))
-    if source_target is not None:
-        return WorksheetTarget(
-            document_id=document_id,
-            title=source_target.title,
-            start_anchor=source_target.start_anchor,
-            source_document_id=source_document_id,
-            end_line=source_target.end_line,
-            expected_line_count=source_target.expected_line_count,
-            expected_constant_count=source_target.expected_constant_count,
-            citation_groups=source_target.citation_groups,
         )
     return WorksheetTarget(
         document_id=document_id,
