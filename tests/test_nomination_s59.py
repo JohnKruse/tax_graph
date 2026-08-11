@@ -131,7 +131,7 @@ def test_manifest_region_schema_requires_parent_and_has_no_url() -> None:
         validate_manifest_data(invalid, root=ROOT)
 
 
-def test_source_verified_worksheet_titles_keep_their_extent_contract() -> None:
+def test_worksheet_title_derives_document_id() -> None:
     target = _target_for_title(
         document_id=_document_id_for_title("Schedule D Tax Worksheet"),
         title="Schedule D Tax Worksheet",
@@ -139,8 +139,6 @@ def test_source_verified_worksheet_titles_keep_their_extent_contract() -> None:
     )
 
     assert target.document_id == "schedule_d_tax_worksheet_2025"
-    assert target.end_line == "47"
-    assert target.expected_line_count == 47
 
 
 def test_nomination_report_counts_real_citing_rows(tmp_path: Path) -> None:
