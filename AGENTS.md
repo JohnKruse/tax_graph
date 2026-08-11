@@ -345,6 +345,26 @@ file is never pruned, the handoff is live state, git is history.
 
 ## Binding rulings (John's, still in force - DO NOT DELETE ON PRUNE)
 
+- **THE DIVISION OF AUTHORITY BETWEEN THE TWO ACQUIRED ARTIFACTS (John, 2026-08-11).** Every
+  instruction booklet is held twice, and the two renderings are NOT interchangeable.
+  **Acquired HTML is the STRUCTURAL authority** - table boundaries, the heading-to-line association,
+  and the stable `publink` anchors. **PDF-rendered Markdown is the PROSE authority** - reading text,
+  page and layout context. All seven booklets have both artifacts on hand.
+  **Do not hop substrates mid-flow.** Citations carry byte offsets, so switching gives one object
+  two provenance chains bridged by a fuzzy match that can fail. Considered and rejected on evidence.
+  **The second rendering earns its place as a CHECK, not a source:** run the deterministic Markdown
+  walk beside the HTML answer, stay silent on agreement, and print both numbers on disagreement.
+  Origin: three mechanisms were tried for "where does this worksheet end" - a hardcoded phrase, an
+  asserted destination cue, and a table of six frozen answers - and **all three were the same
+  mistake**, guessing at printed prose to recover a boundary the HTML already states as `</table>`.
+- **A FAILURE THAT REPORTS ITSELF IS ACCEPTABLE; A FAILURE THAT HIDES IS NOT (John, 2026-08-11).**
+  *"We will never get 100% out of these documents."* The pipeline is graded at ~98% with a human
+  directing the rest, so **every item the pipeline saw must leave the run in exactly one bucket** -
+  produced, merged into another, or explicitly refused with a reason. **This RANKS the defects:** a
+  broken merge that names the worksheets it could not build is a ranked worklist for the human; the
+  same bug that swallows them is invisible damage. **Fix the hiding before the cause.**
+  Corollary, and it applies to every loop that spends money or emits documents: **one bad item must
+  not kill the batch.** Isolate per item, record the failure, carry on, and persist incrementally.
 - **APPROVAL IS THE GATE ON COMPUTATION (John, 2026-08-04). This SUPERSEDES the three-option
   question S48 raised, and the Architect's own lean; both were the wrong frame.** Verbatim: *"in my
   mind, this thing should only compute if every cell is approved."* An approved cell is valid for
