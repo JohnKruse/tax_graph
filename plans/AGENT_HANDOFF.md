@@ -21,9 +21,35 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX - S95 ACCEPTED, S96 SPLIT. Its rendered-text parsing is kept; its table of six
-frozen worksheet extents is REJECTED and S97 replaces it with the HTML structure that was there
-all along.**
+**BALL: CODEX - S97 IS CLOSE. The registry is gone and discovery works, but it mints a PHANTOM
+DOCUMENT. Two fixes and the test migration is authorized below.**
+
+**S97 VERIFIED BY ARCHITECT (`75babea`, 2026-08-11), running the CLI on the real corpus.** All five
+target-state deletions are real: no `SOURCE_VERIFIED_WORKSHEET_TARGETS`, no `WorksheetTarget
+.end_line` (the six remaining `end_line` hits are `InstructionLocator`'s unrelated field), no
+`_contains_terminal_destination`, the CLI is document-scoped, and the boundary now BREAKS once rows
+have started instead of stepping over it. **Schedule D returns 5 tables, all classified worksheet,
+including Capital Loss Carryover found without being named. Schedule B returns 0 without erroring.**
+Extents: 28% Rate Gain **7**, Unrecaptured 1250 **18**, Schedule D Tax **47**, Capital Loss
+Carryover **13**.
+
+**DEFECT 1 - THE PHANTOM, and it must be fixed before this goes near promotion.** Discovery emits
+**five** draft documents, and `schedule_d_tax_worksheet_continued_2025` is not a worksheet. Measured:
+its 17 lines are `31`-`47`, and **all 17 are already in `schedule_d_tax_worksheet_2025`'s 47** - a
+100% overlap that would mint 17 duplicate addresses for the same printed lines. **"Continued" is a
+page-break header, not a title.** Identity is the worksheet title with the continuation marker
+stripped; **two tables resolving to one title are ONE document.** The merge already works - the base
+correctly reaches 47 - so the fix is to stop emitting the table that was already absorbed.
+
+**DEFECT 2 - THE HEADING-TO-LINE ASSOCIATION IS EMPTY.** All five tables report `lines=(none)` while
+their own headings print it: `Capital Loss Carryover Worksheet-Lines 6 and 14`, `28% Rate Gain
+Worksheet-Line 18`, `Unrecaptured Section 1250 Gain Worksheet-Line 19`. **The spec names this as
+HTML structural authority, so it is deterministic and must not wait on the classifier** - the
+model's job is worksheet-vs-lookup-vs-layout, not reading a line number that is printed in front
+of it.
+
+**NOT A DEFECT, and no rework needed:** the unrun provider classification leg. That is the
+Architect's to run and the Worker was right to leave it.
 
 **S95 ACCEPTED** (`64d112b`) - a `column` token rides beside `line` through the prompt, validator,
 graph projection, external inputs, and stubs, and every id goes through the single
@@ -144,35 +170,56 @@ clause here.**
 - **The protected set stays byte-identical.** `git diff --stat` on `graph/2025/{nodes,edges,rules}/`
   and `graph/2025/field_maps/` must be EMPTY.
 
-**M20-S97 WORKER STATUS (2026-08-11):** Implemented HTML table discovery in
-`tax_graph/ingest/worksheet_harvest.py`. Table boundaries are the extent witness; every table
-passes through the provider-agnostic classifier seam and its byte-hash cache; rendered Markdown
-is walked as an extent oracle. The document-only CLI now discovers every worksheet table, accepts a
-title as a narrowing filter, and treats zero HTML tables as a valid empty result. Nomination
-acceptance now harvests the acquired HTML and title-derived ids; no source-verified target table
-remains in production code. Added `docs/worksheet-harvesting.md` and the S97 test file.
+**M20-S97 REWORK WORKER STATUS (2026-08-11):** Fixed both Architect-measured defects. Discovery
+still classifies all five Schedule D tables, but the continued table is absorbed into the base and
+only four logical worksheet drafts are emitted; no duplicate 31-47 document is minted. The
+classifier schema now asks only for worksheet/lookup/layout. Printed line tokens are derived from
+each table's own heading, so Capital Loss is `6,14`, 28% Rate is `18`, and Unrecaptured 1250 is
+`19` without model output. Added the retained-title ambiguity guard, and deleted exactly the three
+obsolete S96 guards authorized below.
 
 REAL-CORPUS FLOOR:
 - Six old worksheet extents, with no registry, returned 3 / 6 / 47 / 11 / 7 / 18 lines and
   HTML/Markdown oracle agreement for Credit Limit, Exemption, Schedule D Tax, Simplified Method,
   28% Rate Gain, and Social Security Benefits.
 - Schedule D HTML discovery classified all 5 tables; the base Schedule D Tax result combines its
-  continuation to 47 lines, and the continuation table remains visible as its own structural
-  classification at 17 lines. Capital Loss Carryover is discovered from its heading and anchor.
+  continuation to 47 lines and emits one logical draft. Capital Loss Carryover is discovered from
+  its heading and anchor.
 - Schedule B returned zero tables and zero worksheets without a classifier call.
 
 TEST EVIDENCE:
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_s97.py -q` -> **8 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_nomination_s59.py tests\test_cli.py -q` -> **13 passed, 1 failed**; the sole failure is the old S96 guard assertion `target.end_line == "47"`, which is the contract this round removes.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_cli.py -q` -> **7 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_m20.py -q` -> **NOT GREEN: collection ImportError** because the old S96 guard imports the removed `SOURCE_VERIFIED_WORKSHEET_TARGETS`.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_worksheet_harvest_m20.py tests\test_worksheet_harvest_s97.py -q` -> **17 passed, 1 warning** (9 retained S96 guards plus 8 S97 tests).
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; $env:PYTHONDONTWRITEBYTECODE='1'; .venv\Scripts\python.exe -m pytest tests\test_nomination_s59.py tests\test_cli.py -q` -> **13 passed, 1 failed**; the remaining failure is `test_source_verified_worksheet_titles_keep_their_extent_contract`, which still asserts removed `target.end_line`.
 RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: no-bytecode compile of the three changed Python modules -> **compile ok**.
-NOT RUN: provider classification leg; it would send acquired source-derived prompts to the external provider and was not authorized. NOT RUN: full suite; the focused S96 guard file cannot collect until its contract migration is authorized.
+RAN: no-bytecode compile of the changed harvester and retained/reworked focused test files -> **compile ok**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: provider classification leg; it would send acquired source-derived prompts to the external provider and was not authorized. NOT RUN: full suite; the remaining nomination guard migration is not authorized by the narrow S97 deletion list.
 
 ## Open for Architect
 
-**S97 TEST CONTRACT MIGRATION:** The active S97 spec explicitly removes `SOURCE_VERIFIED_WORKSHEET_TARGETS` and `WorksheetTarget.end_line`, but the existing S96 guard files still import/assert those symbols. The Worker has not edited those guards under the standing rule against rewriting a guard to agree with new code. Please authorize the S97 contract migration (or direct a compatibility test shape) before the round can report the focused suite green.
+**S97 TEST CONTRACT MIGRATION - ANSWERED, AUTHORIZED, AND NARROWLY SCOPED.** Refusing to rewrite a
+guard so it agrees with new code is the correct instinct and I do not want it relaxed. **This case
+is different and here is the distinction: a guard whose CONTRACT was deleted is DELETED, never
+rewritten to assert the replacement.** Rewriting it would launder a contract change into a passing
+test; deleting it records honestly that the thing it protected no longer exists, and the S97 floor
+is what replaces the coverage.
+
+**DELETE exactly these three in `tests/test_worksheet_harvest_m20.py`** - they guard contracts this
+round removes by name:
+- `test_source_verified_worksheets_harvest_from_rendered_text_with_model_end_lines` (the registry)
+- `test_model_selected_end_line_does_not_require_form_1040_destination` (`end_line`)
+- `test_harvester_requires_terminal_destination_even_when_rows_are_contiguous`
+  (`_contains_terminal_destination`)
+
+**The other ten tests in that file MUST stay green and are NOT in scope to touch** - the QDCGT
+canary, publink-id resilience, fail-closed on absent/ambiguous title, the `_drafts` writer guard,
+the line-gap guard, stale-anchor title selection, title normalization, and the footnote-marker
+guard. **If any of those ten needs editing to pass, that is a defect in the round, not a stale
+guard - stop and report it.**
+
+**REMAINING NOMINATION GUARD:** `tests/test_nomination_s59.py::test_source_verified_worksheet_titles_keep_their_extent_contract`
+still asserts `WorksheetTarget.end_line`, which S97 removes. It is outside the three-file deletion
+list above and is therefore left untouched pending explicit direction.
 
 
 ## Queued (ONE LINE each - do not spec ahead)

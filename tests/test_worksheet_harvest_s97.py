@@ -45,12 +45,17 @@ def test_schedule_d_discovery_uses_all_five_html_tables_and_oracle() -> None:
     )
 
     assert len(result.classifications) == 5
-    assert len(result.worksheets) == 5
-    assert [len(item.line_nodes) for item in result.worksheets] == [13, 7, 18, 47, 17]
+    assert len(result.worksheets) == 4
+    assert [len(item.line_nodes) for item in result.worksheets] == [13, 7, 18, 47]
     assert all(item.ok for item in result.worksheets), result.as_dict()
     assert all(item.as_dict()["oracle"]["status"] == "agree" for item in result.worksheets)
     assert result.classifications[0].heading.startswith("Capital Loss Carryover Worksheet")
     assert result.classifications[0].anchor_id == "en_US_2024_publink1000291473"
+    assert result.classifications[0].lines == ("6", "14")
+    assert result.classifications[1].lines == ("18",)
+    assert result.classifications[2].lines == ("19",)
+    assert result.classifications[3].lines == ()
+    assert result.classifications[4].lines == ()
 
 
 def test_title_filter_returns_one_logical_worksheet_across_continuation() -> None:
@@ -140,7 +145,7 @@ def test_provider_classifier_receives_every_table_with_strict_schema() -> None:
 
         def structured_completion(self, **kwargs):
             self.calls.append(kwargs)
-            return {"kind": "layout", "lines": []}
+            return {"kind": "layout"}
 
     source = """
     <h3><a name="one"></a>One</h3><table><tr><td>1.</td></tr></table>
@@ -158,7 +163,7 @@ def test_provider_classifier_receives_every_table_with_strict_schema() -> None:
     request = client.calls[0]
     assert request["purpose"] == "tax_graph_worksheet_table_classifier"
     assert request["schema"]["type"] == "object"
-    assert set(request["schema"]["required"]) == {"kind", "lines"}
+    assert set(request["schema"]["required"]) == {"kind"}
 
 
 def test_qdcgt_canary_still_has_its_source_derived_constant_projection() -> None:

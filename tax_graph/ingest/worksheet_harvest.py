@@ -385,15 +385,11 @@ def worksheet_table_schema() -> dict[str, Any]:
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["kind", "lines"],
+        "required": ["kind"],
         "properties": {
             "kind": {
                 "type": "string",
                 "enum": ["worksheet", "lookup_table", "layout"],
-            },
-            "lines": {
-                "type": "array",
-                "items": {"type": "string", "minLength": 1},
             },
         },
     }
@@ -489,8 +485,8 @@ def _model_classify_table(
         "A worksheet is a named computation document a filer completes. "
         "A lookup_table is reference bands or rates, and a layout is "
         "presentation structure without a computation. "
-        "Report only printed form line numbers that the table serves. "
-        "Use the table's own heading, not a neighboring heading or row prose.\n\n"
+        "Do not infer line numbers from row prose. The pipeline reads "
+        "printed line numbers from the table's own heading.\n\n"
         f"heading: {heading}\n"
         f"anchor: {anchor}\n"
         f"table_text:\n{visible}\n"
@@ -513,19 +509,13 @@ def _classification_from_payload(table: _RawTable, payload: Mapping[str, Any]) -
     kind = str(payload.get("kind") or "").strip()
     if kind not in {"worksheet", "lookup_table", "layout"}:
         raise ValueError(f"unsupported worksheet table kind: {kind!r}")
-    raw_lines = payload.get("lines")
-    if not isinstance(raw_lines, (list, tuple)):
-        raise ValueError("worksheet table classification lines must be an array")
-    lines = tuple(str(line).strip().lower() for line in raw_lines if str(line).strip())
-    if any(not re.fullmatch(r"[0-9]+[a-z]?", line) for line in lines):
-        raise ValueError("worksheet table classification lines must be printed line tokens")
     heading = table.heading
     return TableClassification(
         table_id=table.table_id,
         heading=heading.text if heading is not None else "",
         anchor_id=heading.anchor_id if heading is not None else "",
         kind=kind,
-        lines=tuple(dict.fromkeys(lines)),
+        lines=_heading_lines(heading.text if heading is not None else ""),
         source_start=table.start,
         source_end=table.end,
     )
@@ -583,6 +573,15 @@ def _semantic_worksheet_title(value: str) -> str:
     return title.strip(" -:") or value.strip()
 
 
+def _heading_lines(value: str) -> tuple[str, ...]:
+    """Read printed line tokens from the table's own heading."""
+    match = re.search(r"\blines?\b(?P<tail>.*)$", value, re.IGNORECASE)
+    if match is None:
+        return ()
+    tokens = re.findall(r"\b[0-9]+[a-z]?\b", match.group("tail"), re.IGNORECASE)
+    return tuple(dict.fromkeys(token.lower() for token in tokens))
+
+
 def harvest_worksheet(
     source_text: str,
     target: WorksheetTarget | Mapping[str, Any],
@@ -600,9 +599,19 @@ def harvest_worksheet(
     tables = _tables
     start_heading: InstructionHeading | None = None
     if _is_html_source(source_text):
+        headings = _source_headings(source_text)
+        start_candidates = _find_start_headings(headings, resolved_target)
+        if len(start_candidates) > 1 and not _is_one_logical_heading(start_candidates):
+            finding = _start_heading_finding(resolved_target, source_id, start_candidates)
+            return _blocked_harvest(
+                resolved_target,
+                year_text,
+                source_id,
+                (finding,),
+                observed_start_anchor=resolved_target.start_anchor,
+            )
         tables = tables or _tables_for_target(source_text, resolved_target)
         if not tables:
-            headings = _source_headings(source_text)
             finding = _start_heading_finding(
                 resolved_target,
                 source_id,
@@ -775,8 +784,8 @@ def harvest_worksheets(
 
     A title narrows the already-classified document; it never changes the
     structural extent rule.  The five Schedule D source tables therefore
-    remain five classifications, while a title-targeted harvest can combine a
-    base worksheet with its explicitly continued table.
+    remain five classifications, while the base and explicitly continued
+    table become one logical worksheet draft.
     """
     year_text = str(year)
     tables = _source_tables(source_text) if _is_html_source(source_text) else ()
@@ -806,19 +815,17 @@ def harvest_worksheets(
         if wanted and not _title_matches(semantic_title, wanted):
             continue
         is_continuation = bool(re.search(r"continued\s*$", table.heading.text, re.IGNORECASE))
-        if wanted and is_continuation and any(
+        has_base_table = any(
             other is not table
             and other.heading is not None
             and _semantic_worksheet_title(other.heading.text) == semantic_title
             and not re.search(r"continued\s*$", other.heading.text, re.IGNORECASE)
             for other in tables
-        ):
+        )
+        if is_continuation and has_base_table:
             continue
-        identity_title = semantic_title
-        if is_continuation:
-            identity_title = f"{semantic_title} Continued"
         target = WorksheetTarget(
-            document_id=_discovered_document_id(identity_title, year_text),
+            document_id=_discovered_document_id(semantic_title, year_text),
             title=semantic_title,
             start_anchor=classification.anchor_id or f"table-{table.table_id}",
             source_document_id=source_document_id,
@@ -1144,6 +1151,16 @@ def _find_start_heading(
     """Return a title match only when the source has exactly one candidate."""
     candidates = _find_start_headings(headings, target)
     return candidates[0] if len(candidates) == 1 else None
+
+
+def _is_one_logical_heading(headings: tuple[InstructionHeading, ...]) -> bool:
+    """Allow only one base heading plus its explicit continuation heading."""
+    semantic_titles = {_semantic_worksheet_title(heading.text) for heading in headings}
+    base_count = sum(
+        not re.search(r"continued\s*$", heading.text, re.IGNORECASE)
+        for heading in headings
+    )
+    return len(semantic_titles) == 1 and base_count <= 1
 
 
 def _normalize_title(value: str) -> str:
