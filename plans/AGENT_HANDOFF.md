@@ -157,9 +157,53 @@ documents (item 1). Out-of-corpus stubs (item 6). Publication 514's content. **A
 API-key diagnostics, which John queued on 2026-08-12 - do not fold it in here.**
 
 
+**S101 WORKER STATUS (2026-08-12; three commits: `da90dbe`, `29d0362`, `1feafef`).** The three
+rework items are implemented. The refusal report now reads `structural_skip_reason`; the real
+`C:\tmp\m20_full\run` report is **59 refusals, 59 reported, 0 unreported, 0 core unreported,
+result OK**. The requirements projection now has T1=9 and T2=5 in source-table order; John's six
+additional core documents are in `core_plus_documents`, not mislabelled as a priority tier. The
+live reconcile is 26 inventory / 26 manifest with no directional differences. A four-document
+replay names both directions: tier-only `form_1116_2025`, `instructions_form_1116_2025`; manifest-
+only `form_6251_2025`, `schedule_a_2025`. Form 1116 is a promoted document-only `planned` artifact
+with a stub message and no nodes, edges, or rules. Status-aware AcroForm validation skips planned,
+unsupported, and unresolved documents while still failing a partial modelled document with widget
+inventory drift. `python -m tax_graph.cli validate 2025` exits 0 and reports graph integrity OK.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
+.venv\Scripts\python.exe -m pytest tests\test_m20_s101.py -q` -> **11 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item2';
+.venv\Scripts\python.exe -m pytest tests\test_m20_s101.py tests\test_acquire_manifest.py -q`
+-> **17 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
+.venv\Scripts\python.exe -m pytest tests\test_m20_s101.py tests\test_field_maps_m12.py
+tests\test_field_dispositions_m15.py tests\test_graph_validator.py -q -k "not validator_rejects
+and not validator_catches and not validator_flags and not validator_allows"` -> **38 passed, 11
+deselected, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
+.venv\Scripts\python.exe -m pytest tests\test_cli.py -q` -> **7 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
+.venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q -k
+"current_2025_graph_validates or current_documents_have_role_axis_classes"` -> **2 passed, 12
+deselected, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
+.venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q` -> **3 passed, 11 failed,
+2 warnings**. All 11 failures are the known `WinError 5` while copying protected
+`graph/2025/_drafts`; no assertion failure remains in that file.
+RAN: `.venv\Scripts\python.exe pilot\maintenance_report.py C:\tmp\m20_full\run --root . |
+Select-String -Pattern 'refusals:|reported:|unreported:|core unreported:|result:'` -> **59 / 59,
+0 / 0, result OK**.
+RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> **exit 0**, graph integrity OK.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: full suite, per the S101 instruction that the Worker must not rerun it; the accepted
+baseline remains the Architect's 17-red environment/artifact baseline. No provider leg was needed.
+
+
 ## Open for Architect
 
-Nothing. The S101 rework is specced above and the ball is CODEX'S.
+**CODEX DONE; BALL IS ARCHITECT'S FOR ACCEPTANCE.** The implementation is provider-free and the
+headline refusal gate plus `validate 2025` are green. The only ungreen declared consumer is the
+known protected-drafts ACL family above; rerun it in the normal verification context if needed.
 **The one thing NOT yet measured is the full suite against the 17-red baseline** - the Architect's
 run was still in flight when the rework was specced, and it is recorded in the acceptance when it
 lands. Codex should not re-run it; the Worker command cap cannot hold it.
