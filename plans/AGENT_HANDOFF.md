@@ -21,11 +21,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN, for ONE scope call. M20-S102 is implemented and NOT ACCEPTED.**
-**The round's own named failure condition is live: Simplified Method line 2 goes green as a
-prior-year reference, and line 4 - the row that actually owns the reference - hard-fails.** The
-predicate and the stub-year fix are good and stay. **John picks (a) narrow or (b) upstream extent
-fix** in the Architect verification below, and Codex reworks from there.
+**BALL: CODEX. The M20-S102 REWORK is specced below and is entirely offline and deterministic.**
+**John approved the sequencing on 2026-08-12: fix the face extent, then turn the prior-year admit
+path on in the same round.** The S102 predicate, stub-year fix, refusal partition and target report
+are verified good and do NOT move. **One decision may come back to the Architect mid-round:** if the
+224-row face diff shows a material truncated class, the round STOPS and reports instead of shipping.
 
 **S101 ACCEPTED (`acb14bd`, Architect, 2026-08-12). Verified by running the corpus, the live
 provider leg, and the full suite - not by reading the report.**
@@ -282,6 +282,85 @@ line 6 is correct. **Two ways to draw it, and John should pick the scope:**
 (`C:\tmp\m20_s102_fullsuite.log`, against the 17-red / 953-passed baseline at `acb14bd`); it was
 NOT run to completion by anyone before this line was written. **The live `row_bench.py` leg is
 deliberately NOT spent yet** - it would measure the rows the rework is about to change.
+
+**M20-S102 REWORK, SPECCED BY ARCHITECT (2026-08-12). FIX THE FACE, NOT THE GATE.**
+**John approved the sequencing on 2026-08-12: one round - repair the extent, then turn the
+prior-year admit path on inside the same round.** **REAL-PROJECT ROUND** - full-suite floor applies.
+
+**THE REJECTED OPTION, recorded so it is not revived.** A redirect rule in the validator ("the
+prior-year clause must not send the value to another line") **would work on all three known bad
+rows, and that is exactly why it is wrong.** It is not a rule about how tax documents reference a
+prior year; it is a rule about the shape of the text currently leaking into the face. John,
+2026-08-12: *"why do A at all if we then do B later?"* **Do not build it.**
+
+**THE DEFECT, MEASURED ON THE PRODUCTION PATH 2026-08-12 (no provider, `build_cell_frame_from_document`).**
+An unnumbered printed block between two numbered rows is absorbed into the PRECEDING row's face.
+`_clean_form_face_text_fallback` takes the text from the row's anchor **to the end of the passed
+text and never truncates at the next anchor**, so a `Note.` block or a standalone routing sentence
+lands in the wrong row. **19 rows across 11 documents carry an absorbed block, including
+`form_6251_2025` and `schedule_d_2025`** - it is not a worksheet-only quirk.
+
+**AND THE FIX IS MOSTLY ALREADY BUILT, WHICH IS THE POINT.** S91 computes a printed bracket that
+ends at the next printed anchor. Of 696 rows, **591 have a bracket available.** For the Capital Loss
+Carryover Worksheet the bracket is **exactly right and is being discarded**:
+- line 4 fallback: `Enter the smaller of line 2 or line 3 4. _____ If line 7 of your 2024 Schedule D
+  is a loss, go to line 5; otherwise...` / bracket: `Enter the smaller of line 2 or line 3`
+- line 8 fallback carries `If line 15 of your 2024 Schedule D is a loss...`; the bracket stops at
+  `...also enter this amount on Schedule D, line 6`
+**All six inspected rows recorded `method='fallback'`, `disagreement='fallback_longer'`,
+`bracket_available=True`.** `clean_form_face_text_with_extent` prefers the bracket only when the
+fallback is WEAK or is a strict substring of it. **The mirror case - the bracket being a strict
+substring of the fallback, i.e. the fallback running past the bracket's end - keeps the fallback,
+and that is the bug.**
+
+**TWO PIECES, AND BOTH ARE REQUIRED TO MEET THE FLOOR. DO NOT SHIP ONE AND CLAIM THE ROUND.**
+1. **THE SELECTION RULE IS ASYMMETRIC. Make it symmetric.** Prefer a non-degenerate bracket when the
+   kept fallback strictly extends past it. **This fixes Capital Loss Carryover 4 and 8 with no new
+   extraction.** S91's recorded worry was the bracket OVER-capturing; this trigger fires only when
+   the bracket is SHORTER, so it cannot reintroduce that.
+   **THE RISK, MEASURED, AND IT IS THE REASON THIS ROUND IS NOT AS SMALL AS I FIRST TOLD JOHN:
+   224 of 696 rows have a usable bracket that is shorter than the fallback currently kept.** The
+   change is therefore in scope for 224 rows, not 19. **Two good examples do not license flipping
+   224 faces.** Comparing faces is deterministic and free, so **the round must produce the full
+   before/after face diff for all 696 rows, classify every one of the 224 changes as improved,
+   neutral, or truncated, and report the counts.** **If the truncated class is material, STOP and
+   report rather than shipping** - a narrower trigger is then the answer, and it is a decision for
+   the Architect, not a judgement call inside the round.
+2. **THE SIMPLIFIED METHOD WORKSHEET'S BRACKET IS DEGENERATE and piece 1 cannot help it.** Its
+   bracket face is `: "` - **12 rows corpus-wide are degenerate and 10 of them are this one
+   document** (the other two are one row each in the IRA Deduction and Worksheet A documents), so
+   this is a bounded, near-single-document defect in the bracket BUILDER, not a corpus-wide one.
+   **Lines 2 and 6 - the rows this whole round is named after - are fixed only by this piece.**
+   The row shape is a quoted face carrying a trailing `field` token; diagnose it against the real
+   document before changing anything.
+
+**ONLY AFTER BOTH PIECES: turn the prior-year admit path on.** The S102 predicate, the stub-year
+fix, the refusal partition, and the target report are **verified good and stay as they are** - see
+the Architect verification above. **Nothing in `_prior_year_document_match`, `_external_form_is_named`
+or `_external_form_stem_is_named` should move.**
+
+**THE PROCESS RULE THAT WOULD HAVE CAUGHT THIS, and it now binds every guard test in this round.**
+**A guard fixture for a real printed row MUST be built from the real document via
+`build_cell_frame_from_document`, never hand-written.** S102's line 2 guard passed a hand-written
+face with the instruction stripped, so it proved a condition that does not occur and missed the one
+that does. **A hand-authored fixture asserting a claim about a real row is not evidence about that
+row.**
+
+**THE FLOOR.**
+- **Simplified Method line 2's REAL face no longer contains the `Note.` block**, and a year-shifted
+  operand on line 2 is REFUSED. **Fixture built from the real document.**
+- **Simplified Method line 4 - which the note actually addresses - carries the prior-year cue**, and
+  line 6 keeps it. **The inversion is gone in both directions, proven on real rows.**
+- **Capital Loss Carryover lines 4 and 8 lose the absorbed routing sentence**; lines 1, 2, 5, 6, 9,
+  10 keep their genuine prior-year cues, and 3 and 7 stay clean.
+- **The 696-row before/after face diff exists**, with the 224 changes classified and counted, and
+  the truncated class reported honestly whatever it is.
+- **The 19 absorbed-block rows are re-measured after the fix** and the residual is named.
+- **Full suite** against the accepted 17-red / 953-passed baseline at `acb14bd`, on a quiet tree.
+- **`tools/check_ascii.py` OK**, `git diff --check` clean.
+
+**OUT OF SCOPE.** The redirect heuristic (rejected above). The empty instruction packets (item 2).
+Rewiring the Return Record (still deferred). **Any change to the prior-year predicate itself.**
 
 **WHO RUNS WHAT.**
 - **WORKER, offline, all of it.** The predicate, the cue gate, the stub year fix, the refusal
