@@ -21,10 +21,24 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX for the offline slice; JOHN for one command. M20-S101 is specced below.**
-**Codex can start now** - the schema, the ownership field, the drift guard, and the refusal report
-are all deterministic. **John must supply `MISTRAL_API_KEY`** so the Architect can finish acquiring
-Form 1116's instructions; the PDFs are already downloaded and the form itself already renders.
+**BALL: CODEX. M20-S101 REWORK is specced below - three items, all deterministic, no egress.**
+
+**S101's OFFLINE SLICE LANDED (`40b4db3`) AND THE ACQUISITION LEG IS DONE (Architect, 2026-08-12).**
+The `ownership` field is on all 26 non-region entries and absent from all 19 regions; regions resolve
+through their parent booklet. The tier guard is REAL - `test_tier_guard_names_both_directions`
+asserts both directions against a synthetic fixture, and `validate 2025` now prints a tier reconcile
+section. **Form 1116, its instructions, and Publication 514 are acquired**, hashes pinned from the
+real downloads, all three loading through `load_document_input`. **`acquire --check` reports 26
+documents unchanged and `changed: -` empty**, so the protected set did not move. **6251 line 8 no
+longer fails with `operand_document_not_found`** - it now emits `COPY(form_1116_2025, line 17)`,
+which is the right answer, and stops at `operand_inventory_unavailable` because 1116's own lines are
+deliberately unmodelled. **The 42 `acquire --check` citation reds are PRE-EXISTING** - they are
+against renders the same run certifies as unchanged, and the one form-sourced case,
+`cite_schedule_d_line20_gate`, is a hand-authored quote that stitches across a printed branch it
+skips. Not this round's.
+
+**THE BLOCKER TO ACCEPTANCE IS THAT THE ROUND'S HEADLINE GATE FAILS FOR A FALSE REASON.** Item 1
+below. Everything else in the slice verifies.
 
 **S100 ACCEPTED (`c7a338b`, Architect, 2026-08-11). Verified by running the corpus and the suite,
 not by reading the report.**
@@ -71,127 +85,84 @@ is the newest and blocks carryforward worksheets.** Item 6 (out-of-corpus stubs)
 
 ## Current round
 
-**M20-S101 SPECCED BY ARCHITECT (2026-08-11). THE MANIFEST SAYS WHAT WE MAINTAIN, AND FORM 1116
-EXISTS.** **REAL-PROJECT ROUND** - full-suite floor applies. John chose this on 2026-08-11.
+**M20-S101 REWORK SPECCED BY ARCHITECT (2026-08-12). THE GATE MUST FAIL FOR TRUE REASONS, THE TIER
+FILE MUST SAY WHAT ITS SOURCE SAYS, AND AN ACQUIRED-BUT-UNMODELLED FORM MUST BE SAYABLE.**
+**REAL-PROJECT ROUND** - full-suite floor applies. The S101 spec is in `git show c479d70`; the
+offline slice is `40b4db3`. **All three items are deterministic and need no network.**
 
-**WHY.** John, 2026-08-11: *"a few extra is not a problem. I just didn't want to become the
-maintainer of everything."* Today **nothing in the repo records which documents we stand behind**,
-so "are the core documents reliable" is not a question the project can answer. And Form 1116 is
-documented first-phase in Tier 4, **has never been acquired, and is already causing failures** -
-`form_6251_2025` line 8 dies on `operand_document_not_found: form_1116_2025`.
+**1. THE REFUSAL GATE FAILS ON DAY ONE BECAUSE THE REPORT DOES NOT READ THE FIELD THE REASON IS
+STORED IN.** Measured 2026-08-12 against `C:\tmp\m20_full\run`: **59 refusals, 42 reported, 17
+unreported, 14 of them core**, so `ok` is False. **All 17 unreported rows DO record their reason** -
+`structural_skip_reason`, with values `structure_duplicate_anchor` 8, `structure_non_cell_anchor` 7,
+`structure_header_anchor` 2. **`_reasons()` at `pilot/maintenance_report.py:141` scans only `error`,
+`review_gap`, `validation_failures`, `validation_warnings`, and `findings`**, so every structurally
+skipped row prints `(no reason recorded)` and counts as a hidden refusal.
+**This is the round's headline deliverable failing for a reason that is not true.** The spec said in
+so many words that a gate failing on day one teaches nobody anything, and this one fails while the
+pipeline is doing exactly what it should - recording why it skipped.
+**FIX:** read `structural_skip_reason` in the refusal accounting. **FLOOR:** the same run reports
+**core unreported 0** and `ok` True, with all 17 still listed as refusals carrying their reason -
+**do not make them disappear, make them reported.** Add a test with a skipped row whose only reason
+field is `structural_skip_reason`, and assert it reads as reported.
 
-**MEASURED STATE, 2026-08-11, so the round starts from facts and not from the tier list.**
-- **Tier 1 (9 documents) and Tier 2 (5) are ALREADY in the manifest, all 14 of them.** The core set
-  is largely acquired; **what is missing is the MARKING, not the documents.**
-- **In the run and in no tier:** `schedule_a`, `schedule_1a`, `form_6251`, `form_2441`,
-  `form_13614_c`, and the `schedule_a`/`6251`/`2441` instruction booklets.
-- **In a tier and not in the manifest:** Form 1116, Form 1116 Instructions, Publication 514.
-- **All three URLs verified live 2026-08-11:** `f1116--2025.pdf` 120,869 bytes,
-  `i1116--2025.pdf` 364,870, `p514--2025.pdf` 1,601,250. **The schema's URL pattern already admits
-  `f`, `i`, and `p` prefixes, so no pattern change is needed.**
-- **`schemas/manifest.schema.json` `$defs.document` has 7 properties and
-  `additionalProperties: false`, so the new field IS a schema change**, exactly as queued.
+**2. THE TIER FILE CALLS 15 DOCUMENTS TIER 1 WHERE ITS SOURCE TABLE LISTS 9.** `config/document_tiers.yaml`
+`tiers.T1` holds 15 ids; `docs/tax_graph_requirements.md` section 9.2 lists **9**. The six extras are
+John's PLUS set - `schedule_a_2025`, `schedule_1a_2025`, `form_6251_2025` - together with
+`instructions_schedule_a_2025`, `instructions_schedule_b_2025`, and `instructions_form_6251_2025`.
+**`core_documents` (22) encodes John's ruling correctly and is not the problem.** The problem is that
+`tax_graph/acquire/corpus.py` documents the file as the machine-readable projection of the
+requirements tier tables, and for T1 it is not one. **T2 IS faithful** - 5 ids, matching 9.3 exactly.
+**So the manifest and the tier file now agree while the tier file and the document it claims to
+project do not: the drift moved up a layer rather than dying, which is the third recurrence this
+round existed to prevent.**
+**FIX, and the shape is John's call to keep cheap:** keep the tiers as the requirements doc states
+them and express the PLUS set as what it is - a core-membership decision that is not a tier. **FLOOR:**
+`tiers.T1` has 9 ids and `tiers.T2` has 5, matching sections 9.2 and 9.3 id-for-id; `core_documents`
+still has 22; the bidirectional manifest guard still passes; **and a test fails if any tier's id list
+stops matching the requirements tables.** That last clause is the whole point - without it this
+recurs a fourth time.
+**ALSO UNMET FROM THE ORIGINAL FLOOR, and it is a reporting gap not a mechanism gap:** the guard was
+never run against the four documents that were drifting on 2026-08-11 to show it catching them
+before the fix. The synthetic test does prove both directions. **Demonstrate it once on the real
+four and record the output.**
 
-**JOHN'S RULING ON THE SET.** Core is **Tier 1 + Tier 2, PLUS Schedule A, Schedule 1-A, and Form
-6251** (and their instruction booklets). **Form 2441 is NOT core** - review-cycle. **Form 1116 and
-its instructions ARE core**: John called it *"a missing CORE document, not an out-of-corpus form;
-do not stub it."* **Note the tension and resolve it in the round report:** 1116 sits in Tier 4,
-which his tier-based definition does not include, so the set is defined by his explicit list plus
-1116, not by the tiers alone. **Publication 514 is named by no ruling** - acquire it as
-review-cycle or record explicitly why it is excluded, but **do not leave it drifting a third time.**
+**3. AN ACQUIRED-BUT-UNMODELLED FORM CANNOT BE STATED, SO MERELY DOWNLOADING A PDF TURNS THE BUILD
+RED.** `validate 2025` exits 1 on `exposed AcroForm form_1116_2025 -> missing committed field map and
+inventory`. **This is NOT caused by the manifest entries.** `validate_exposed_pdf_fields`
+(`tax_graph/output/field_maps.py:150`) globs `.cache/raw/<year>/*.pdf` and **never consults the
+manifest or the graph**; it went red on 2026-08-11 at 23:37 when the PDF was downloaded and the
+manifest entries were then reverted. **Every future acquired-but-unmodelled form hits this, and
+queue item 6 (out-of-corpus stubs) is the same family from the other direction.**
+**JOHN'S RULING, 2026-08-12: take the status-aware fix, not the mechanical one.** The mechanical fix
+- commit the box inventory with an empty `mappings` list - would work and is honest, but it encodes
+"not modelled yet" as an ABSENCE. **The schema already has the vocabulary John proposed long ago:**
+`schemas/document.schema.json` requires `status` with enum `supported|partial|planned|unsupported|
+unresolved`, and carries `stub_message` and `not_modeled_fields`. **All 36 live documents are
+`partial`, so `planned` would be its first real use** - check nothing downstream assumes otherwise
+before relying on it (`tax_graph/verify/record.py:116` passes status through as an opaque string,
+which is the encouraging case).
+**THE DISTINCTION TO PIN SO A LATER ROUND DOES NOT COLLAPSE IT:** `unresolved` means a formula NAMES
+a document we do not have - that is the existing `_stub_document` shape at
+`tax_graph/extract/candidate.py:1094`, whose `stub_message` says the document must be ingested.
+**`planned` means we HAVE it - acquired, rendered, hashed - and have not modelled its lines.** Form
+1116 is `planned`. **Use the existing stub shape as the reference, not a new one.**
+**FIX:** give `form_1116_2025` a live graph document with `status: planned` and a `stub_message`
+naming what must happen, and make the AcroForm check skip documents not claimed as modelled.
+**FLOOR:** `validate 2025` exits 0; the check still FAILS for a modelled document whose inventory
+drifts from its widgets - **prove that with a test, because a gate that can be silenced by a status
+flag is worse than no gate**; and `form_1116_2025` remains free of nodes, edges, and rules.
 
-**THE FIELD EXPRESSES OWNERSHIP, NOT PRIORITY** (John, 2026-08-11). Three values -
-**project-maintained, review-cycle, community-contributed.**
-**DO NOT COLLAPSE IT INTO `gate`, AND DO NOT LET THE TWO DRIFT.** `gate` already exists on graph
-objects (`schemas/document.schema.json`, enum `project|user`, all 36 documents currently `project`)
-and answers **"who stood at the promotion gate"** - a provenance fact about the past. The new field
-answers **"what do we commit to maintaining"** - a forward commitment. A community contribution is
-`gate: user` AND community-maintained; a project-promoted document may still be review-cycle.
-**Two axes, stated once each. Say in the round report how they relate so a later round does not
-merge them by accident.**
-
-**WHAT THE MARKING BUYS, and it is a REPORTING rule, not a green-build rule.** **Core means ZERO
-UNREPORTED refusals.** Non-core may refuse; the refusal must surface. **This is deliberately not
-"core must be green"** - there are 13 open derivation failures today and a gate that fails on day
-one teaches nobody anything. **A refusal that names itself is acceptable; a refusal that hides is
-not** (`AGENTS.md`). The deliverable is a report that partitions every refusal by the owning
-document's marking and **fails only when a CORE document refuses something it did not report.**
-
-**THE TARGET STATE.**
-1. **Every non-region manifest document carries the ownership field**, and the schema enforces it.
-2. **Region documents INHERIT from their parent booklet** and do not carry their own value - a
-   worksheet is maintained exactly as well as the booklet it was harvested from.
-3. **Form 1116, its instructions, and (subject to the ruling above) Publication 514 are acquired**,
-   with `expected_sha256` recorded from the real download.
-4. **The tier list and the manifest agree**, in both directions, and a test proves it. **This is the
-   drift that has already recurred twice; the round is not done until a guard prevents a third.**
-5. **`form_6251_2025` line 8 no longer fails with `operand_document_not_found: form_1116_2025`.**
-
-**WHO RUNS WHAT.**
-- **WORKER, offline:** the schema change, the field on every entry, the region-inherits rule, the
-  drift guard, and the refusal-partitioning report. **All of it is deterministic.**
-- **ARCHITECT, live:** the acquisition of 1116, its instructions, and Pub 514, plus recording their
-  `expected_sha256`. **Codex cannot reach irs.gov.**
-  **ATTEMPTED AND BLOCKED, 2026-08-11, AND THIS IS THE ONE THING JOHN MUST SUPPLY.** Both PDFs
-  download cleanly and **the FORM renders fully** - `form_1116_2025.pdf` (120,869 bytes), its
-  `.txt` (7,221) and a 42,966-byte `.fields.json` are already in `.cache/raw/2025/`, along with
-  `instructions_form_1116_2025.pdf` and its 364,246-byte `.html`. **The INSTRUCTIONS booklet cannot
-  be rendered to text:** `RendererUnavailable: Mistral OCR requires an API key`, from
-  `render_ocr.py:116`, reading `ocr.api_key_env` = **`MISTRAL_API_KEY`**.
-  **Neither document loads until that runs** - the form itself fails with `missing related rendered
-  text`, because it declares the instructions as its related document. **The manifest entries were
-  written and then REVERTED**, deliberately: committing entries whose documents cannot render would
-  leave `acquire --check` unmeetable and break the manifest-count guards mid-round.
-  **John supplies `MISTRAL_API_KEY`; the rerun is cheap because the PDFs are already downloaded.**
-
-**THE FLOOR.**
-- **`acquire --check` passes for every manifest document**, including the newly acquired ones.
-- **The ownership field is present on all 23 non-region entries**, and absent on all 19 regions.
-- **A test fails if a document is in a tier and not the manifest, or in the manifest and no tier.**
-  Run it against the four documents that are drifting TODAY and show it catching them before the
-  fix.
-- **The refusal report names every refusal with its owning document's marking**, and distinguishes
-  reported from unreported.
-- **`derive_cells` on `form_6251_2025` line 8 resolves the 1116 operand** - Architect's leg, live.
-- **The protected set stays byte-identical** apart from anything 1116's acquisition legitimately
-  adds. **State the diff explicitly.**
-
-**OUT OF SCOPE.**
-- **Deriving Form 1116 itself.** Acquiring it and clearing the 6251 operand is this round; modelling
-  1116's own lines is a later one.
-- **Prior-year documents** (queue item 1) and **out-of-corpus stubs** (item 6). Different families.
-- **Publication 514's CONTENT.** Acquiring it is bookkeeping; mining a publication is not this round.
-
-**S101 WORKER STATUS (2026-08-12; offline slice complete; committed in the current HEAD).** Added the
-`ownership` field to every acquired manifest entry and enforced the three values
-`project-maintained`, `review-cycle`, and `community-contributed` in
-`schemas/manifest.schema.json`. Regions reject the field and resolve ownership through their
-parent booklet in `AcquisitionManifest`; `gate` remains a separate historical promotion fact.
-Added `config/document_tiers.yaml` with the 26-document inventory and explicit 22-document core
-set, plus a two-direction tier/manifest guard wired into `tax-graph validate`. Added
-`pilot/maintenance_report.py`, which names every derivation or worksheet refusal, resolves its
-owning document and maintenance marking (including region inheritance), distinguishes reported
-from unreported, and fails only for an unreported core refusal. Updated temporary manifest
-fixtures and distribution documentation for the schema contract.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s101'; .venv\\Scripts\\python.exe -m pytest tests\\test_acquire_manifest.py tests\\test_m20_s101.py -q` -> **15 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s101'; .venv\\Scripts\\python.exe -m pytest tests\\test_self_serve_extension_m14.py tests\\test_acquire_manifest.py tests\\test_acquire_fetch.py tests\\test_render_ocr.py tests\\test_nomination_s59.py tests\\test_worksheet_promotion_s100.py tests\\test_doctor_m20.py tests\\test_batch_extraction_m10.py tests\\test_extract_m4.py tests\\test_m20_s101.py tests\\test_m20_s41.py -q` -> **79 passed, 2 skipped, 1 warning**.
-RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-RAN: `@' ... load_core_document_ids(); reconcile_tier_manifest().format_report() ... '@ | .venv\\Scripts\\python.exe -` -> **22 core ids; tier=26, manifest=26, both directional differences empty**.
-NOT RUN: `.venv\\Scripts\\python.exe -m tax_graph.cli acquire 2025 --check` - the existing Form 1116 instruction PDF still requires `MISTRAL_API_KEY` for OCR rendering, as recorded above.
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> **exit 1** because the checkout's already-present Form 1116 acquisition exposes an AcroForm without a committed graph field map/inventory; the new tier/manifest guard itself is green. `tests\\test_cli.py::test_cli_validate_succeeds` has the same pre-existing Form 1116 integrity failure and was not weakened.
-
-**OPEN FOR ARCHITECT / JOHN:** supply `MISTRAL_API_KEY`, finish the Form 1116 instruction render,
-run `acquire --check`, and decide the legitimate generated field-map/inventory addition needed
-for the already-present Form 1116 form so the graph validator can return green. Do not hand-author
-Form 1116 derivation in this round.
+**OUT OF SCOPE, unchanged from S101.** Deriving or modelling Form 1116's own lines. Prior-year
+documents (item 1). Out-of-corpus stubs (item 6). Publication 514's content. **And item 16, the
+API-key diagnostics, which John queued on 2026-08-12 - do not fold it in here.**
 
 
 ## Open for Architect
 
-Nothing. S100 is accepted and the full-suite floor is met at the 17-red baseline.
-**The ball is JOHN'S: pick the next item.**
+Nothing. The S101 rework is specced above and the ball is CODEX'S.
+**The one thing NOT yet measured is the full suite against the 17-red baseline** - the Architect's
+run was still in flight when the rework was specced, and it is recorded in the acceptance when it
+lands. Codex should not re-run it; the Worker command cap cannot hold it.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
@@ -318,6 +289,19 @@ Nothing. S100 is accepted and the full-suite floor is met at the 17-red baseline
    of authority may retire this**; artifact-pinned test counts measured
    against untracked `.cache/raw`; `form_8949_2025` needs table-form treatment (4 anchors, 0
    admitted); 2441 `19`/`21`/`25` are a KNOWN-UNSTABLE set - do not read them as signal.
+16. **A MISSING CONFIG SECTION REPORTS AS A MISSING API KEY** (Architect, diagnosed 2026-08-12;
+   John queued it the same day). The three-tier secret fallback John wanted **already exists** -
+   `resolve_secret` (`tax_graph/config.py:167`) tries an explicit `api_key`, then the keyring named
+   by `api_key_keyring`, then the env var named by `api_key_env`, then the persisted user
+   environment - and `config/tax-graph.config.example.yaml` already documents it identically for
+   `llm` and `ocr`. **Nothing is missing from the design.** What failed is the diagnostic: the local
+   config had no `ocr:` section at all, so all three lookups returned `None` and the renderer said
+   `RendererUnavailable: Mistral OCR requires an API key`. **That one string covers three different
+   user mistakes** - no section, a section with no key source, and a key source that resolved empty -
+   and it cost two sessions hunting for a key that was set the whole time. **Fix the message to name
+   the actual condition, and add a `doctor` check that diffs the live config's sections against the
+   example's** - verified 2026-08-12 that `doctor` has no config validation today, so this is the
+   general cure rather than a per-section patch.
 
 **REPORT EVERY ROUND WITH `pilot/run_report.py`** - per-document coverage against every printed
 anchor, plus a row-level floor check. Validated against four real runs.
