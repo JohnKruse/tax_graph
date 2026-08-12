@@ -26,6 +26,7 @@ class ManifestEntry:
     instructions_document_id: str | None = None
     instruction_url: str | None = None
     expected_sha256: str | None = None
+    ownership: str | None = None
     region_of: str | None = None
     region_title: str | None = None
     region_parent_sha256: str | None = None
@@ -46,6 +47,26 @@ class AcquisitionManifest:
     def by_document_id(self) -> dict[str, ManifestEntry]:
         """Index entries by document id."""
         return {entry.document_id: entry for entry in self.documents}
+
+    def owner_document_id(self, document_id: str) -> str:
+        """Return the acquired document that owns a document's maintenance commitment."""
+        entries = self.by_document_id()
+        entry = entries.get(document_id)
+        if entry is None:
+            raise KeyError(document_id)
+        if entry.is_region:
+            if entry.region_of is None:  # pragma: no cover - schema prevents this.
+                raise ValueError(f"region {document_id} has no parent document")
+            return self.owner_document_id(entry.region_of)
+        return entry.document_id
+
+    def ownership_for(self, document_id: str) -> str:
+        """Return effective ownership, inheriting it through a region parent."""
+        owner_id = self.owner_document_id(document_id)
+        ownership = self.by_document_id()[owner_id].ownership
+        if ownership is None:  # pragma: no cover - schema prevents this for live data.
+            raise ValueError(f"manifest document {owner_id} has no ownership")
+        return ownership
 
 
 def default_manifest_path(root: str | Path | None = None) -> Path:
@@ -71,6 +92,7 @@ def load_manifest(path: str | Path | None = None, root: str | Path | None = None
             ManifestEntry(
                 document_id=entry["document_id"],
                 kind=entry["kind"],
+                ownership=entry.get("ownership"),
                 url=entry.get("url"),
                 instructions_document_id=entry.get("instructions_document_id"),
                 instruction_url=entry.get("instruction_url"),

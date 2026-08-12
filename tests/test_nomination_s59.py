@@ -43,6 +43,7 @@ def _manifest_data(
             {
                 "document_id": parent_id,
                 "kind": "instructions",
+                "ownership": "project-maintained",
                 "url": parent_url,
             }
         ],

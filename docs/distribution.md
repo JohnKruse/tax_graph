@@ -94,6 +94,16 @@ able to impersonate a verified one.**
   only inside the artifact.
 - **Never auto-install and never auto-update.** Consistent with seasonal versioning above.
 
+The forward maintenance commitment is the manifest document's `ownership` field. It has three
+values: `project-maintained`, `review-cycle`, and `community-contributed`. Worksheet regions do
+not repeat this field; they inherit it from their parent booklet. This is separate from the
+graph object's `gate` field: ownership says what the project commits to maintain, while `gate`
+says who stood at the historical promotion gate.
+
+The machine-readable tier inventory is `config/document_tiers.yaml`. The pipeline compares its
+document ids with every non-region manifest entry in both directions. A document missing from
+either side is named as drift; it is not silently removed from the corpus denominator.
+
 **Why this is cheap for us and expensive for anyone else:** a contributor who must
 hand-author a graph will not bother. Because acquisition-to-draft is automated, their job is
 `extend`, review, accept, package. **Every pipeline improvement lowers the marginal cost of

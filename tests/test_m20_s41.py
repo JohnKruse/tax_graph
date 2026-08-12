@@ -115,7 +115,7 @@ def test_validate_surfaces_reconcile_ids_without_failing_on_preexisting_differen
 def test_manifest_document_ids_are_declared_and_ordered() -> None:
     ids = manifest_document_ids(root=ROOT, year="2025")
 
-    assert len(ids) == 23
+    assert len(ids) == 26
     assert ids[0] == "form_8949_2025"
     assert ids[-2:] == ["form_2441_2025", "instructions_form_2441_2025"]
     assert ids == [

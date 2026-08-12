@@ -16,7 +16,7 @@ def test_manifest_loads_seeded_source_docs():
     manifest = load_manifest(root=ROOT)
 
     assert manifest.tax_year == 2025
-    assert len(manifest.documents) == 42
+    assert len(manifest.documents) == 45
     assert set(manifest.by_document_id()) == {
         "form_8949_2025",
         "instructions_form_8949_2025",
@@ -34,6 +34,9 @@ def test_manifest_loads_seeded_source_docs():
         "instructions_schedule_b_2025",
         "form_6251_2025",
         "instructions_form_6251_2025",
+        "form_1116_2025",
+        "instructions_form_1116_2025",
+        "publication_514_2025",
         "form_1099b_2025",
         "form_w2_2025",
         "form_1099_int_2025",
@@ -132,6 +135,7 @@ def test_manifest_loads_structured_instruction_urls():
         "instructions_schedule_b_2025": "https://www.irs.gov/instructions/i1040sb",
         "instructions_schedule_d_2025": "https://www.irs.gov/instructions/i1040sd",
         "instructions_form_2441_2025": "https://www.irs.gov/instructions/i2441",
+        "instructions_form_1116_2025": "https://www.irs.gov/instructions/i1116",
     }
 
 

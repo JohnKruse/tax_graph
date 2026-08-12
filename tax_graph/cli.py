@@ -39,6 +39,7 @@ def validate_command(year: str = "2025", root: str | Path | None = None) -> int:
     result = validate_graph(year, root=root_path)
     print(result.format_report())
     from tax_graph.acquire.reconcile import reconcile_document_lists
+    from tax_graph.acquire.corpus import reconcile_tier_manifest
 
     try:
         reconcile = reconcile_document_lists(year, root=root_path)
@@ -47,7 +48,16 @@ def validate_command(year: str = "2025", root: str | Path | None = None) -> int:
         print(f"  status: ERROR ({type(exc).__name__}: {exc})")
     else:
         print(reconcile.format_report(), end="")
-    return 0 if result.ok else 1
+    try:
+        tier_reconcile = reconcile_tier_manifest(root=root_path, year=year)
+    except (OSError, ValueError) as exc:
+        print("=== tier and manifest reconcile ===")
+        print(f"  status: ERROR ({type(exc).__name__}: {exc})")
+        tier_ok = False
+    else:
+        print(tier_reconcile.format_report(), end="")
+        tier_ok = tier_reconcile.ok
+    return 0 if result.ok and tier_ok else 1
 
 
 def run_command(

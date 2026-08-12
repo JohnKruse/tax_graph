@@ -1,0 +1,55 @@
+tax_year: 2025
+core_documents:
+- form_1040_2025
+- instructions_form_1040_2025
+- schedule_1_2025
+- schedule_2_2025
+- schedule_3_2025
+- form_w2_2025
+- form_1099_int_2025
+- form_1099_div_2025
+- schedule_b_2025
+- instructions_schedule_b_2025
+- schedule_a_2025
+- instructions_schedule_a_2025
+- schedule_1a_2025
+- form_6251_2025
+- instructions_form_6251_2025
+- form_1099b_2025
+- form_8949_2025
+- instructions_form_8949_2025
+- schedule_d_2025
+- instructions_schedule_d_2025
+- form_1116_2025
+- instructions_form_1116_2025
+tiers:
+  T1:
+  - form_1040_2025
+  - instructions_form_1040_2025
+  - schedule_1_2025
+  - schedule_2_2025
+  - schedule_3_2025
+  - form_w2_2025
+  - form_1099_int_2025
+  - form_1099_div_2025
+  - schedule_b_2025
+  - instructions_schedule_b_2025
+  - schedule_a_2025
+  - instructions_schedule_a_2025
+  - schedule_1a_2025
+  - form_6251_2025
+  - instructions_form_6251_2025
+  T2:
+  - form_1099b_2025
+  - form_8949_2025
+  - instructions_form_8949_2025
+  - schedule_d_2025
+  - instructions_schedule_d_2025
+  T4:
+  - form_1116_2025
+  - instructions_form_1116_2025
+  - publication_514_2025
+  review-cycle:
+  - form_13614_c_2025
+  - form_2441_2025
+  - instructions_form_2441_2025

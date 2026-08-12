@@ -162,6 +162,31 @@ document's marking and **fails only when a CORE document refuses something it di
 - **Prior-year documents** (queue item 1) and **out-of-corpus stubs** (item 6). Different families.
 - **Publication 514's CONTENT.** Acquiring it is bookkeeping; mining a publication is not this round.
 
+**S101 WORKER STATUS (2026-08-12; offline slice complete; committed in the current HEAD).** Added the
+`ownership` field to every acquired manifest entry and enforced the three values
+`project-maintained`, `review-cycle`, and `community-contributed` in
+`schemas/manifest.schema.json`. Regions reject the field and resolve ownership through their
+parent booklet in `AcquisitionManifest`; `gate` remains a separate historical promotion fact.
+Added `config/document_tiers.yaml` with the 26-document inventory and explicit 22-document core
+set, plus a two-direction tier/manifest guard wired into `tax-graph validate`. Added
+`pilot/maintenance_report.py`, which names every derivation or worksheet refusal, resolves its
+owning document and maintenance marking (including region inheritance), distinguishes reported
+from unreported, and fails only for an unreported core refusal. Updated temporary manifest
+fixtures and distribution documentation for the schema contract.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s101'; .venv\\Scripts\\python.exe -m pytest tests\\test_acquire_manifest.py tests\\test_m20_s101.py -q` -> **15 passed, 1 warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s101'; .venv\\Scripts\\python.exe -m pytest tests\\test_self_serve_extension_m14.py tests\\test_acquire_manifest.py tests\\test_acquire_fetch.py tests\\test_render_ocr.py tests\\test_nomination_s59.py tests\\test_worksheet_promotion_s100.py tests\\test_doctor_m20.py tests\\test_batch_extraction_m10.py tests\\test_extract_m4.py tests\\test_m20_s101.py tests\\test_m20_s41.py -q` -> **79 passed, 2 skipped, 1 warning**.
+RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+RAN: `@' ... load_core_document_ids(); reconcile_tier_manifest().format_report() ... '@ | .venv\\Scripts\\python.exe -` -> **22 core ids; tier=26, manifest=26, both directional differences empty**.
+NOT RUN: `.venv\\Scripts\\python.exe -m tax_graph.cli acquire 2025 --check` - the existing Form 1116 instruction PDF still requires `MISTRAL_API_KEY` for OCR rendering, as recorded above.
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025` -> **exit 1** because the checkout's already-present Form 1116 acquisition exposes an AcroForm without a committed graph field map/inventory; the new tier/manifest guard itself is green. `tests\\test_cli.py::test_cli_validate_succeeds` has the same pre-existing Form 1116 integrity failure and was not weakened.
+
+**OPEN FOR ARCHITECT / JOHN:** supply `MISTRAL_API_KEY`, finish the Form 1116 instruction render,
+run `acquire --check`, and decide the legitimate generated field-map/inventory addition needed
+for the already-present Form 1116 form so the graph validator can return green. Do not hand-author
+Form 1116 derivation in this round.
+
 
 ## Open for Architect
 

@@ -592,17 +592,24 @@ def _resolve_entries(
                 source_entry = ManifestEntry(
                     document_id=document_id,
                     kind=_infer_kind(document_id, kind),
+                    ownership="community-contributed",
                     url=str(entry["target_url"]),
                 )
                 break
     if source_entry is None:
         if not url:
             raise ValueError(f"no URL known for {document_id}; provide --url")
-        source_entry = ManifestEntry(document_id=document_id, kind=_infer_kind(document_id, kind), url=url)
+        source_entry = ManifestEntry(
+            document_id=document_id,
+            kind=_infer_kind(document_id, kind),
+            ownership="community-contributed",
+            url=url,
+        )
     elif url or kind:
         source_entry = ManifestEntry(
             document_id=document_id,
             kind=kind or source_entry.kind,
+            ownership=source_entry.ownership,
             url=url or source_entry.url,
             instructions_document_id=source_entry.instructions_document_id,
             expected_sha256=source_entry.expected_sha256,
@@ -617,11 +624,17 @@ def _resolve_entries(
         instruction = None
     if instructions_url:
         instruction_id = instructions_document_id or f"instructions_{document_id}"
-        instruction = ManifestEntry(document_id=instruction_id, kind="instructions", url=instructions_url)
+        instruction = ManifestEntry(
+            document_id=instruction_id,
+            kind="instructions",
+            ownership="community-contributed",
+            url=instructions_url,
+        )
     elif instruction is not None and instructions_document_id and instruction.document_id != instructions_document_id:
         instruction = ManifestEntry(
             document_id=instructions_document_id,
             kind=instruction.kind,
+            ownership=instruction.ownership,
             url=instruction.url,
         )
     return source_entry, instruction

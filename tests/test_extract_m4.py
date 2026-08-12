@@ -347,6 +347,7 @@ def test_extract_command_year_runs_manifest_docs(tmp_path, capsys):
                 "documents:",
                 "  - document_id: form_8949_2025",
                 "    kind: tax_form",
+                "    ownership: project-maintained",
                 "    url: https://www.irs.gov/pub/irs-pdf/f8949.pdf",
                 "",
             ]

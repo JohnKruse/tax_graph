@@ -295,24 +295,26 @@ def _make_batch_project(tmp_path: Path, *, manifest_docs: list[dict[str, str]] |
             shutil.copytree(path, target)
         else:
             shutil.copyfile(path, target)
+    documents = [dict(item) for item in (manifest_docs or [
+        {
+            "document_id": "schedule_b_2025",
+            "kind": "schedule",
+            "url": "https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf",
+            "instructions_document_id": "instructions_schedule_b_2025",
+        },
+        {
+            "document_id": "instructions_schedule_b_2025",
+            "kind": "instructions",
+            "url": "https://www.irs.gov/pub/irs-prior/i1040sb--2025.pdf",
+        },
+    ])]
+    for item in documents:
+        item.setdefault("ownership", "project-maintained")
     (root / "config" / "manifest.yaml").write_text(
         yaml.safe_dump(
             {
                 "tax_year": 2025,
-                "documents": manifest_docs
-                or [
-                    {
-                        "document_id": "schedule_b_2025",
-                        "kind": "schedule",
-                        "url": "https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf",
-                        "instructions_document_id": "instructions_schedule_b_2025",
-                    },
-                    {
-                        "document_id": "instructions_schedule_b_2025",
-                        "kind": "instructions",
-                        "url": "https://www.irs.gov/pub/irs-prior/i1040sb--2025.pdf",
-                    },
-                ],
+                "documents": documents,
             },
             sort_keys=False,
         ),
@@ -323,7 +325,7 @@ def _make_batch_project(tmp_path: Path, *, manifest_docs: list[dict[str, str]] |
 
 
 def _default_manifest_docs() -> list[dict[str, str]]:
-    return [
+    documents = [
         {
             "document_id": "schedule_1_2025",
             "kind": "schedule",
@@ -387,3 +389,6 @@ def _default_manifest_docs() -> list[dict[str, str]]:
             "url": "https://www.irs.gov/pub/irs-prior/i6251--2025.pdf",
         },
     ]
+    for item in documents:
+        item["ownership"] = "project-maintained"
+    return documents

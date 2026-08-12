@@ -31,6 +31,7 @@ def _write_manifest_project(tmp_path: Path) -> Path:
             {
                 "document_id": "instructions_form_1040_2025",
                 "kind": "instructions",
+                "ownership": "project-maintained",
                 "url": "https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf",
             },
             {

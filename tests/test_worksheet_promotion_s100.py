@@ -34,6 +34,7 @@ def _project(tmp_path: Path, html_path: Path) -> Path:
                     {
                         "document_id": "instructions_toy_2025",
                         "kind": "instructions",
+                        "ownership": "project-maintained",
                         "url": "https://www.irs.gov/pub/irs-prior/itoy--2025.pdf",
                     },
                     {
