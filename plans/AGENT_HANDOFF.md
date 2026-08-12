@@ -21,7 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. Pick the next queue item. M20-S101 IS ACCEPTED and nothing is in flight.**
+**BALL: CODEX. M20-S102 is specced below and the whole round is offline and deterministic.**
+**Nothing is needed from John except the go, and a veto if he disagrees with the ruling in it.**
+The one live leg is the Architect's, and it is per-row `row_bench.py`, not a corpus run.
 
 **S101 ACCEPTED (`acb14bd`, Architect, 2026-08-12). Verified by running the corpus, the live
 provider leg, and the full suite - not by reading the report.**
@@ -79,19 +81,141 @@ while another agent is working the tree** - the result is not a baseline, it is 
 
 ## Current round
 
-**NOTHING IN FLIGHT. One spec at a time; the next round is specced when John picks it up.**
+**M20-S102 SPECCED BY ARCHITECT (2026-08-12). THE GRAPH LEARNS WHAT A PRIOR YEAR IS.**
+**REAL-PROJECT ROUND** - full-suite floor applies. This is queue item 1.
+
+**WHY THIS ONE.** It is the newest measured defect, it sits on CORE documents, and unlike item 2 it
+has no workaround: today the pipeline cannot even SAY the thing the form says. Item 6 got cheaper
+after S101 but is small; item 2 was measured on 2026-08-11 and the A/B said explicitly do not jump
+it ahead.
+
+**THE RULING, because the queue item asked for a decision and this is it.**
+**A prior-year reference is an EDGE TO THE SAME DOCUMENT IN ANOTHER TAX YEAR, and its VALUE is an
+input.** Both halves, because the three options in the queue item are not exclusive:
+- **The ADDRESS is a different document.** `simplified_method_worksheet_2024`, `form_1040_2024`,
+  `schedule_d_2024` are what the printed text actually names, and the address must survive verbatim
+  so a human approval keyed to it stays durable.
+- **The VALUE is supplied, not computed.** We do not model 2024's graph and we are not going to.
+  The node is an unresolved stub whose value arrives from the filer or from a prior Return Record.
+- **It is NOT a bare `REQUIRE_INPUT`,** which erases the address and is the degenerate green this
+  round must not buy.
+
+**THE MACHINERY IS ALREADY HALF BUILT, WHICH IS WHY THIS IS A SMALL ROUND.** Verified 2026-08-12:
+`schemas/document.schema.json` and `schemas/node.schema.json` both already carry
+`status: unresolved` plus `stub_message`, and documents already carry `tax_year`. S90c built the
+out-of-corpus stub path. At the RUNTIME end the cross-year path exists too: `ingest_prior_record`
+and `load_carryforward_block` in `tax_graph/record/return_record.py` prime this year's input facts
+from last year's carryforward block, validated by `schemas/carryforward.schema.json`.
+**What is missing is only the middle: nothing lets a DERIVED rule name a prior-year address.**
+
+**MEASURED ON THE REAL ARTIFACTS, 2026-08-12, so the round starts from printed text and not from a
+guess.** Read out of `.cache/raw/2025/*.txt`.
+- **Seven core FORM FACES carry a prior-year reference:** 1040 `26` ("amount applied from 2024
+  return"), 2441 `9b` ("If you paid 2024 expenses in 2025, complete Worksheet A") and `13`
+  ("carried over from 2024"), Schedule A `13` ("Carryover from prior year"), Schedule D `6` and
+  `14` (Capital Loss Carryover Worksheet), Schedule 3 `6b` ("Credit for prior year minimum tax").
+- **Twelve NUMBERED WORKSHEET ROWS in two core booklets name an explicit prior-year canonical
+  address.** Capital Loss Carryover Worksheet lines 1, 2, 5, 6, 9, 10 name `2024 Form 1040 line 15`
+  and `2024 Schedule D` lines 21, 7, 15; 2441 Worksheet A lines 1, 2, 5, 9, 11, 12 name
+  `2024 Form 2441` lines 3, 6 and `2024 Form 1040 line 11`. **Both worksheets are already promoted
+  documents in `graph/2025/documents/`.**
+- **Zero `_2024` documents or nodes exist in the graph.** The concept is genuinely absent, not
+  half-present.
+
+**A REAL DEFECT FOUND WHILE VERIFYING, AND IT IS THE TELLTALE FOR THIS ROUND.**
+`_document_stub` (`tax_graph/extract/candidate.py:1094`) writes `"tax_year": int(year)` from the RUN
+year, ignoring the document id's own year, and `_stub_title` strips the year suffix. **So a stub for
+`form_1040_2024` would today be written as title "Form 1040" with `tax_year: 2025`** - a second
+document with the same title and the wrong year. Related: `_external_form_is_named`
+(`cells.py:2649`) strips the year suffix before matching, so **a year-shifted id can already read as
+source-backed and mint a silent wrong-year stub.** Fix both; they are the mechanism by which this
+would go wrong quietly.
+
+**THE NEGATIVE FIXTURE IS THE POINT OF THE ROUND. READ THIS BEFORE WRITING ANY CODE.**
+The queue reported Simplified Method lines **2 and 6** failing with
+`operand_document_not_found: simplified_method_worksheet_2024`. The printed booklet says:
+- **Line 6 is a REAL prior-year reference:** *"Enter the amount, if any, recovered tax free in years
+  after 1986. If you completed this worksheet last year, enter the amount from line 10 of last
+  year's worksheet."* The correct operand is **`simplified_method_worksheet_2024` line 10**.
+- **Line 2 is NOT.** Line 2 reads *"Enter your cost in the plan at the annuity starting date."* The
+  prior-year note printed just below it belongs to **line 4** ("skip line 3 and enter the amount
+  from line 4 of last year's worksheet on line 4 below"), and it was swept into line 2's packet.
+**Making prior-year references legal would turn line 2's WRONG answer into a PASSING wrong answer.**
+That is the exact shape the 2026-08-11 A/B caught on 6251 `8` and AGENTS.md already warns about.
+**Line 2 going green is a regression in this round, not a win.** Line 4's own case is an alternation
+("if you completed this worksheet last year ... otherwise go to line 3") and is queue item 10, still
+HELD; do not solve it here, but do not let line 4 silently lose its printed DIVIDE rule either.
+
+**THE TARGET STATE.**
+1. **A typed, non-fatal `prior_year_reference` validator kind exists** in `cells.py`, distinct from
+   both `operand_document_not_found` and `unresolved_external_reference`. It fires when the operand
+   document's stem matches a document in this year's inventory and only the year differs.
+2. **It is SOURCE-BACKED or it does not fire.** The row evidence must carry a prior-year cue - an
+   explicit prior year, "last year", "prior year", "carryover/carried over from". Absent a cue the
+   operand stays a hard failure. **`_external_form_is_named` must stop folding the year away**, so
+   a year shift is a deliberate finding rather than an accidental match.
+3. **Prior-year stubs carry their OWN year.** A minted document stub for `form_1040_2024` has
+   `tax_year: 2024`, a title that distinguishes it from the 2025 document, `status: unresolved`, and
+   a `stub_message` that names the year and the address. Node ids stay canonical:
+   `form_1040_2024_line_15`.
+4. **The refusal accounting names them.** A prior-year reference must never be reported as a missing
+   document; S101's refusal report partitions it as its own kind, reported and not hidden.
+5. **The report says how many there are, per document.** Mechanism in the floor, not a number in the
+   code.
+
+**EXPLICITLY DEFERRED, AND SAY SO IN THE ROUND REPORT RATHER THAN DOING IT.**
+`return_record.py` hardcodes five capital-loss constants (`CAPITAL_LOSS_SOURCE_NODE`,
+`CAPITAL_LOSS_SHORT_TERM_NODE`, `CAPITAL_LOSS_LONG_TERM_NODE`, and the two `_TARGET`s) - hand-
+authored answers where the PRIME DIRECTIVE wants derivation, and once prior-year references exist in
+the graph those targets are derivable from it. **Do not rewire the Return Record this round.** One
+wire-touching change per round; this round's wire is `cells.py` plus `candidate.py`. **What IS in
+scope is a REPORT: list the carryforward targets the new prior-year references imply, and state
+whether they match the two hardcoded capital-loss targets.** That evidence specs the follow-up.
+
+**THE FLOOR.**
+- **Simplified Method line 6 resolves to `simplified_method_worksheet_2024` line 10**, as a
+  prior-year reference, `derived`, with ONE provider call and no repair consumed.
+- **Simplified Method line 2 does NOT become a prior-year input.** Assert this as a guard test with
+  the printed line 2 text as the fixture. **If it goes green, the round has failed, not passed.**
+- **A guard test proves an operand naming a year-shifted document with NO prior-year cue in its
+  evidence stays a hard `operand_document_not_found`.** The pair of guards must be visible in the
+  same file, the way S90b's pair is.
+- **A guard test proves a minted prior-year stub carries its own year**, and that no document in the
+  candidate graph has an id year that disagrees with its `tax_year`. **Run it against today's
+  `_document_stub` and show it FAILING before the fix** - S101's report had to admit the tier guard
+  was never demonstrated against the real drift, and that gap is avoidable here.
+- **The Capital Loss Carryover Worksheet and 2441 Worksheet A rows listed above resolve to
+  prior-year addresses on `form_1040_2024`, `schedule_d_2024`, `form_2441_2024`,** or the report
+  names each one that does not and why.
+- **The prior-year targets report is produced**, per the deferral clause above.
+- **Full suite** against the accepted 17-red / 953-passed baseline at `acb14bd`, **on a quiet tree**.
+  Do not launch it while another agent is editing; that lesson cost an hour last round.
+- **`tools/check_ascii.py` OK** and `git diff --check` clean.
+
+**WHO RUNS WHAT.**
+- **WORKER, offline, all of it.** The predicate, the cue gate, the stub year fix, the refusal
+  partition, every guard test, and the targets report are deterministic. No provider, no network.
+- **ARCHITECT, live, at acceptance:** `pilot/row_bench.py` on the named rows only - Simplified
+  Method `2`, `4`, `6`, Schedule D `6`, `14`, 1040 `26`, Schedule A `13`, 2441 `9b`, `13`.
+  **Per-row and cheap. An hour-long corpus run to check nine rows is not acceptable** (John,
+  2026-08-10).
+
+**OUT OF SCOPE.**
+- **Modelling tax year 2024.** No 2024 graph, no 2024 extraction, no 2024 acquisition.
+- **Rewiring the Return Record** - deferred above, deliberately.
+- **The line 4 alternation** (item 10, HELD) and **the empty instruction packets** (item 2, parked).
+- **The four genuinely missing documents** named in queue item 1 - `schedule_se_2025`,
+  `form_6252_2025`, `form_w2_2025`, `form_1099_g_2025`. Those are items 4 and 6, a different family.
 
 
 ## Open for Architect
 
 Nothing. **S101 is accepted at `acb14bd` and the full suite is back to the 17-red baseline at 953
 passed.** The Worker's R1 reconciliation was verified, not taken on report.
-**The ball is JOHN'S: pick the next queue item.** The Architect's reading is unchanged from S100 -
-**item 1 (prior-year documents)** is the newest and blocks carryforward worksheets; **item 6
-(out-of-corpus stubs)** is now cheaper than it was, because S101 established `status: planned` as
-the way to say "acquired, not modelled" and two gates already honour it; **item 2 (170 anchors
-deriving with an empty instruction packet)** remains the largest measured defect and is still
-deliberately parked behind the core-set work. **Ordering is John's.**
+**M20-S102 is specced above and takes queue item 1.** The ruling it makes - a prior-year reference
+is an edge to the same document in another year, whose value is an input - is the Architect's call
+on the decision that item explicitly deferred; **John can veto it, and the round waits on nothing
+else.** Item 6 stays cheap and small after S101; item 2 stays parked, per its own A/B.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
@@ -99,7 +223,8 @@ deliberately parked behind the core-set work. **Ordering is John's.**
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
 
-1. **PRIOR-YEAR DOCUMENTS ARE A CATEGORY THE GRAPH HAS NO CONCEPT OF** (Architect, measured
+1. **[SPECCED AS M20-S102, 2026-08-12 - see Current round]
+   PRIOR-YEAR DOCUMENTS ARE A CATEGORY THE GRAPH HAS NO CONCEPT OF** (Architect, measured
    2026-08-11 on the live derivation of the promoted worksheets). Simplified Method lines 2 and 6
    fail with `operand_document_not_found: simplified_method_worksheet_2024` because the printed row
    says *"enter the amount from line 4 of last year's worksheet"* - **the model read it correctly
