@@ -21,7 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. The guard-test ruling he asked for is GRANTED below; everything else in S101 verifies.**
+**BALL: CODEX. The granted R1 guard reconciliation is implemented and verified below; ready for
+Architect acceptance. Everything else in S101 verifies.**
 
 **ARCHITECT RULING, 2026-08-12: THE WORKER WAS RIGHT TO STOP, AND THE R1 GUARD UPDATE IS APPROVED.**
 He refused to edit a guard test without an explicit ruling and modified nothing. **That is the rule
@@ -252,15 +253,28 @@ RAN: `git diff --check` -> **clean**.
 NOT RUN: full suite, per the S101 instruction that the Worker must not rerun it; the accepted
 baseline remains the Architect's 17-red environment/artifact baseline. No provider leg was needed.
 
+**S101 R1 CONTRACT RECONCILIATION WORKER STATUS (2026-08-12).** Implemented the granted R1
+filter for `planned`, `unresolved`, and `unsupported` documents without changing the frozen
+baseline. Added an anti-erosion guard proving a `partial` modelled document changes the R1 count.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_r1_contract';
+.venv\Scripts\python.exe -m pytest tests\test_address_contract_m15r.py -q` -> **9 passed, 1
+warning**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
+.venv\Scripts\python.exe -m pytest tests\test_address_contract_m15r.py tests\test_m20_s101.py
+-q` -> **20 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: full suite; the S101 Worker instruction keeps that verification with the Architect because
+it exceeds the Worker command cap. NOT RUN: provider leg; this reconciliation is provider-free.
+
 
 ## Open for Architect
 
-**CODEX DONE; BALL IS ARCHITECT'S FOR ACCEPTANCE.** The implementation is provider-free and the
-headline refusal gate plus `validate 2025` are green. The only ungreen declared consumer is the
-known protected-drafts ACL family above; rerun it in the normal verification context if needed.
-**The one thing NOT yet measured is the full suite against the 17-red baseline** - the Architect's
-run was still in flight when the rework was specced, and it is recorded in the acceptance when it
-lands. Codex should not re-run it; the Worker command cap cannot hold it.
+**CODEX DONE; BALL IS ARCHITECT'S FOR ACCEPTANCE.** The granted R1 reconciliation is provider-free,
+the focused address-contract and S101 tests are green, and the historical baseline remains 17
+documents. The only remaining verification is the Architect's full-suite comparison against the
+17-red baseline; the Worker must not rerun it under the S101 command-cap instruction.
 
 
 ## Queued (ONE LINE each - do not spec ahead)

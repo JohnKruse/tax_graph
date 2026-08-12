@@ -23,6 +23,23 @@ def _registry() -> dict[str, object]:
     return yaml.safe_load((FIXTURE / "address_registry.yaml").read_text(encoding="utf-8"))
 
 
+def _r1_graph_counts(graph) -> dict[str, int]:
+    """Count the graph objects that belong to R1's frozen address contract."""
+    excluded_document_ids = {
+        item["document_id"]
+        for item in graph.items("documents")
+        if item.get("document_type") == "worksheet"
+        or item.get("status") in {"planned", "unresolved", "unsupported"}
+    }
+    return {
+        kind: sum(
+            item.get("document_id") not in excluded_document_ids
+            for item in items
+        )
+        for kind, items in graph.objects.items()
+    }
+
+
 @pytest.mark.m15r
 def test_representative_address_vocabulary_is_schema_valid() -> None:
     registry = _registry()
@@ -65,20 +82,10 @@ def test_r1_baseline_matches_unmodified_project_graph() -> None:
     baseline = json.loads((FIXTURE / "baseline.json").read_text(encoding="utf-8"))
     graph = load_graph(2025, ROOT, include_extensions=False)
     # R1 freezes the pre-worksheet address graph. S100 intentionally promotes
-    # worksheet-owned objects, which have no address bindings, so keep them
-    # out of this historical contract instead of changing its baseline.
-    worksheet_document_ids = {
-        item["document_id"]
-        for item in graph.items("documents")
-        if item.get("document_type") == "worksheet"
-    }
-    graph_counts = {
-        kind: sum(
-            item.get("document_id") not in worksheet_document_ids
-            for item in items
-        )
-        for kind, items in graph.objects.items()
-    }
+    # worksheet-owned objects, and documents not yet claimed as modelled, have
+    # no address bindings to contribute, so keep them out rather than changing
+    # the historical baseline.
+    graph_counts = _r1_graph_counts(graph)
     assert graph_counts == baseline["graph_counts"]
     counts = {}
     for path in sorted((ROOT / "graph" / "2025" / "field_inventories").glob("*.json")):
@@ -86,3 +93,20 @@ def test_r1_baseline_matches_unmodified_project_graph() -> None:
         counts[path.stem] = len(payload["fields"])
     assert counts == baseline["field_inventory_counts"]
     assert baseline["legacy_line_disagreement_count"] == 80
+
+
+@pytest.mark.m15r
+def test_r1_still_detects_drift_in_modelled_documents() -> None:
+    baseline = json.loads((FIXTURE / "baseline.json").read_text(encoding="utf-8"))
+    graph = load_graph(2025, ROOT, include_extensions=False)
+    mutated = copy.deepcopy(graph)
+    mutated.objects["documents"].append({
+        "document_id": "modelled_extra_2025",
+        "document_type": "tax_form",
+        "status": "partial",
+    })
+
+    counts = _r1_graph_counts(mutated)
+
+    assert counts["documents"] == baseline["graph_counts"]["documents"] + 1
+    assert counts != baseline["graph_counts"]
