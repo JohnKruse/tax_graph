@@ -138,7 +138,7 @@ def _reason(value: Any) -> str:
 def _reasons(row: Mapping[str, Any]) -> str:
     """Combine all row-level evidence that explains a refusal."""
     values: list[str] = []
-    for key in ("error", "review_gap"):
+    for key in ("error", "review_gap", "structural_skip_reason"):
         text = _reason(row.get(key))
         if text:
             values.append(text)

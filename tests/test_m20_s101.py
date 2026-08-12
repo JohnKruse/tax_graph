@@ -210,6 +210,34 @@ def test_refusal_report_partitions_by_ownership_and_only_core_silent_refusal_fai
     assert "UNREPORTED" in report.format_report()
 
 
+def test_refusal_report_reads_structural_skip_reason(tmp_path: Path) -> None:
+    root = tmp_path / "project"
+    _write_project_manifest(root)
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "m20_s26_form_toy_2025_derive_cells_report.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "document_id": "form_toy_2025",
+                "rows_detail": [{
+                    "line": "4",
+                    "status": "skipped",
+                    "structural_skip_reason": "structure_non_cell_anchor",
+                }],
+            },
+            sort_keys=False,
+        ),
+        encoding="ascii",
+    )
+
+    report = build_refusal_report(run, root=root)
+
+    assert report.ok is True
+    assert len(report.records) == 1
+    assert report.records[0].reported is True
+    assert report.records[0].reason == "structure_non_cell_anchor"
+
+
 def test_refusal_report_inherits_region_ownership(tmp_path: Path) -> None:
     root = tmp_path / "project"
     _write_project_manifest(root)
