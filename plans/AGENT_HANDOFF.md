@@ -21,9 +21,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S102 is specced below and the whole round is offline and deterministic.**
-**Nothing is needed from John except the go, and a veto if he disagrees with the ruling in it.**
-The one live leg is the Architect's, and it is per-row `row_bench.py`, not a corpus run.
+**BALL: JOHN, for ONE scope call. M20-S102 is implemented and NOT ACCEPTED.**
+**The round's own named failure condition is live: Simplified Method line 2 goes green as a
+prior-year reference, and line 4 - the row that actually owns the reference - hard-fails.** The
+predicate and the stub-year fix are good and stay. **John picks (a) narrow or (b) upstream extent
+fix** in the Architect verification below, and Codex reworks from there.
 
 **S101 ACCEPTED (`acb14bd`, Architect, 2026-08-12). Verified by running the corpus, the live
 provider leg, and the full suite - not by reading the report.**
@@ -215,6 +217,71 @@ RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s
 pre-existing ACL denial on `graph/2025/_drafts/form_1040_2025` in
 `tests/e2e/test_analog_pane_m15.py`, before any S102 test runs. The timed-out child processes
 were stopped after the run. Full-suite completion remains UNVERIFIED in this session.
+
+**ARCHITECT VERIFICATION (2026-08-12). THE MECHANISM IS RIGHT. THE CUE GATE IS SCOPED WRONG, AND
+THE ROUND'S OWN NAMED FAILURE CONDITION IS LIVE. S102 IS NOT ACCEPTED; IT NEEDS A REWORK.**
+
+**THE FLOOR SAID: "Simplified Method line 2 does NOT become a prior-year input... If it goes green,
+the round has failed, not passed." IT GOES GREEN.** Verified deterministically, no provider call,
+against the REAL production packet built by `build_cell_frame_from_document` on the promoted
+`simplified_method_worksheet_2025`:
+- **Line 2's real `form_face_text` contains the note verbatim** - *"2. Enter your cost in the plan
+  at the annuity starting date. Note. If you completed this worksheet last year..."* The cue `last
+  year` is therefore IN line 2's packet, `_has_prior_year_cue` returns true, and
+  `validate_cell_output` on a `simplified_method_worksheet_2024` operand returns
+  **hard `[]`, warnings `['prior_year_reference']`.** That is the passing wrong answer the spec
+  named.
+- **The guard test does not catch it because its fixture strips the packet.**
+  `test_line_2_year_shift_without_prior_year_cue_stays_hard_missing_document` passes line 2's face
+  with `instruction=""` and no note. It is a genuine no-cue guard - floor item 3, and it is correct
+  as that - **but it is not the line 2 guard, which the spec required to use the printed line 2
+  text.** The name says "line 2" and the fixture says "no cue"; those are different rows in reality.
+- **THE GATE IS ALSO TOO TIGHT, WHICH IS THE OTHER HALF AND IT IS WORSE.** Line 4 is the row the
+  note actually assigns the prior-year value to - *"enter the amount from line 4 of last year's
+  worksheet on line 4 below"* - and **line 4's packet carries NO cue at all.** So a correct
+  prior-year operand on line 4 hard-fails, while an incorrect one on line 2 passes. **The gate is
+  inverted on the exact pair of rows the round was specced around.**
+
+**IT IS NOT CONFINED TO THAT WORKSHEET.** Same check over the promoted
+`capital_loss_carryover_worksheet_2025`, 13 rows: the six genuine prior-year rows (1, 2, 5, 6, 9,
+10) all carry a cue, which is the mechanism working - **but line 4 ("Enter the smaller of line 2 or
+line 3", a same-document MIN) and line 8 also carry cues** that bled in from neighbouring printed
+text. **Three rows identified across two worksheets where a year-shifted operand would now be
+admitted instead of refused.**
+
+**ROOT CAUSE, AND IT IS A FAMILIAR ONE.** `_has_prior_year_cue` reads the row's whole joined
+evidence, so it inherits every face-extent bleed. This is the S91/S97 clause-extent family and the
+S92 validator-scope ruling all over again: **keying on a printed cue and admitting everything the
+cue's neighbourhood drags in.** The predicate itself (`_prior_year_document_match`) is good work -
+inventory-backed, requires a single stem match, requires `operand_year < current_year`, and the
+split of `_external_form_is_named` from `_external_form_stem_is_named` correctly stops a year shift
+from hiding behind a form name without disturbing S90b. **Keep all of that. Only the gate moves.**
+
+**THE DISCRIMINATOR THE REWORK NEEDS.** Presence of a cue in the packet is not the question. **The
+question is whether the prior-year clause assigns the value to THIS row.** Line 2's note says the
+amount goes "on line 4 below", which is what makes it line 4's instruction sitting in line 2's face.
+Line 6's note says "enter the amount from line 10 of last year's worksheet" with no redirection, and
+line 6 is correct. **Two ways to draw it, and John should pick the scope:**
+- **(a) Narrow, keeps the round closable:** the cue clause must not redirect to another line. If the
+  prior-year clause names a destination line that is not the row being derived, it is not this row's
+  reference. Cheap, testable on the three named rows, no upstream change.
+- **(b) Correct but wider:** fix the face extent so line 2 stops carrying line 4's note. That is the
+  real defect and it is queue item 2's family; it makes this gate and several others honest at once.
+
+**VERIFIED GOOD, so the rework does not re-litigate these.**
+- **The stub-year fix is real and the guard catches a real defect.** Ran the PRE-FIX `_stub_document`
+  from a worktree at `4e2d3b3`: `form_1040_2024` produced **`tax_year: 2025`, title `Form 1040`** -
+  wrong year, undistinguished from the 2025 document. Post-fix it is `2024` and year-qualified.
+  **This is the demonstration the spec demanded and S101 could not give; it is now on the record.**
+- **The refusal partition, the per-document counts, and `prior_year_reference_report.yaml` exist**,
+  and the Return Record was correctly left unrewired per the deferral clause.
+- **The Worker's report was honest about what it did not run**, including the full suite and the
+  600-second timeout. No claim was made that could not be checked.
+
+**STILL OPEN AT THIS WRITING.** The full suite is running Architect-side on a quiet tree
+(`C:\tmp\m20_s102_fullsuite.log`, against the 17-red / 953-passed baseline at `acb14bd`); it was
+NOT run to completion by anyone before this line was written. **The live `row_bench.py` leg is
+deliberately NOT spent yet** - it would measure the rows the rework is about to change.
 
 **WHO RUNS WHAT.**
 - **WORKER, offline, all of it.** The predicate, the cue gate, the stub year fix, the refusal
