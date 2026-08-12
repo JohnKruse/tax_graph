@@ -21,7 +21,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S101 REWORK is specced below - three items, all deterministic, no egress.**
+**BALL: CODEX for ONE contract reconciliation. Everything else in S101 verifies.**
+
+**FULL SUITE ON A QUIET TREE AT `db58775` (Architect, 2026-08-12): 18 failed, 951 passed, 8 skipped,
+1 xfailed in 1:01:47. That is the 17-red baseline PLUS EXACTLY ONE, and the one is ours.**
+`tests/test_address_contract_m15r.py::test_r1_baseline_matches_unmodified_project_graph` fails
+`{'documents': 18} != {'documents': 17}`. **Nine other counted kinds are IDENTICAL** - nodes, edges,
+addresses, citations, all unchanged - which is positive evidence that the `planned` Form 1116 stub is
+inert exactly as intended: it adds a document and nothing else.
+**DO NOT RE-BASELINE IT.** This is the same class S100 hit and the S100 ruling stands: R1 freezes the
+pre-worksheet address graph, worksheet documents were FILTERED OUT of the contract rather than
+re-baselined, and re-baselining would silently destroy what the contract exists to catch.
+**RECOMMENDED FIX, and it makes one concept serve both gates:** the contract filters on
+`document_type == "worksheet"` at `tests/test_address_contract_m15r.py:70`. **Extend the filter to
+exclude documents whose `status` says they are not yet modelled** - `planned`, `unresolved`,
+`unsupported` - which is the SAME predicate the AcroForm check now uses
+(`tax_graph/output/field_maps.py`). A document with no address bindings has nothing to contribute to
+an address contract. **FLOOR:** the R1 contract passes with 17 documents counted, Form 1116 stays in
+the graph as `planned`, and the full suite returns to 17 red.
+
+**AN EARLIER ARCHITECT SUITE RUN REPORTED 31 FAILURES AND WAS INVALID - DISCARD IT.** It was launched
+against a tree the Worker was actively editing (source touched at 09:19, 09:23 and 09:33 inside the
+window, with concurrent pytest sessions in `.test_tmp_s101_item*`). Three of its failures, including
+`test_cli.py::test_cli_validate_succeeds`, pass in isolation. **Do not run the full suite while
+another agent is working the tree.**
 
 **S101's OFFLINE SLICE LANDED (`40b4db3`) AND THE ACQUISITION LEG IS DONE (Architect, 2026-08-12).**
 The `ownership` field is on all 26 non-region entries and absent from all 19 regions; regions resolve
@@ -37,8 +60,16 @@ against renders the same run certifies as unchanged, and the one form-sourced ca
 `cite_schedule_d_line20_gate`, is a hand-authored quote that stitches across a printed branch it
 skips. Not this round's.
 
-**THE BLOCKER TO ACCEPTANCE IS THAT THE ROUND'S HEADLINE GATE FAILS FOR A FALSE REASON.** Item 1
-below. Everything else in the slice verifies.
+**THE REWORK'S THREE ITEMS ARE ALL DELIVERED AND VERIFIED ON REAL DATA (Architect, 2026-08-12).**
+**Item 1:** the refusal gate reads `structural_skip_reason` and the same run now reports **59
+refusals, 59 reported, 0 unreported, 0 core unreported, OK** - the 17 became REPORTED, not hidden,
+which is what the floor demanded. **Item 2:** `tiers.T1` is 9 and `tiers.T2` is 5, matching sections
+9.2 and 9.3; the PLUS set moved to an explicit `core_plus_documents` list, `core_documents` stays 22,
+and `load_core_plus_document_ids` REJECTS an id named by both a tier and the core-plus list - which
+is what stops T1 being re-inflated a fourth time. **Item 3:** Form 1116 is a live document with
+`status: planned` and a stub message, no field map was minted, and `validate 2025` exits 0.
+**The guard rail held:** `test_planned_acroform_is_skipped_but_modelled_inventory_drift_fails` proves
+a status flag cannot silence the check for a document that IS claimed as modelled.
 
 **S100 ACCEPTED (`c7a338b`, Architect, 2026-08-11). Verified by running the corpus and the suite,
 not by reading the report.**
