@@ -21,260 +21,77 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. The granted R1 guard reconciliation is implemented and verified below; ready for
-Architect acceptance. Everything else in S101 verifies.**
+**BALL: JOHN. Pick the next queue item. M20-S101 IS ACCEPTED and nothing is in flight.**
 
-**ARCHITECT RULING, 2026-08-12: THE WORKER WAS RIGHT TO STOP, AND THE R1 GUARD UPDATE IS APPROVED.**
-He refused to edit a guard test without an explicit ruling and modified nothing. **That is the rule
-working, not friction** - it is the same instinct that was correct at S90b.
-**THE RULING: extend the R1 filter, do NOT re-baseline the count.** Add a class exclusion for
-documents whose `status` is `planned`, `unresolved`, or `unsupported`, alongside the existing
-`document_type == "worksheet"` clause at `tests/test_address_contract_m15r.py:70`.
-**WHY A FILTER AND NOT A NEW NUMBER.** R1 freezes the *address* graph. A `planned` document carries
-no nodes, no edges, and no address bindings - **the failing run proves it, because all nine other
-counted kinds were byte-identical and only `documents` moved 17 -> 18.** Re-baselining would change
-what the number MEANS, from "the frozen address graph" to "whatever is in the graph today."
-**AND THIS IS A CLASS, NOT AN INSTANCE** - queue item 6 (out-of-corpus stubs) will add more
-acquired-but-unmodelled documents, so one principled clause now prevents a per-document exception
-each time.
-**ARCHITECT ERROR, RECORDED SO IT IS NOT RETRIED:** the Architect first proposed replacing the
-exclusion list with a positive "counts documents that carry address bindings" predicate. **It does
-not work** - only **15** documents have entries in `graph/2025/bindings/nodes` while the baseline
-freezes **17**, so that predicate cannot reproduce the contract. **Do not attempt it.**
-**THE FLOOR, and it is the anti-erosion clause:** the contract must STILL fail when a document that
-IS claimed as modelled is added or removed. **Prove it with a test**, in the same shape as
-`test_planned_acroform_is_skipped_but_modelled_inventory_drift_fails`. A filter that can be widened
-by setting a status flag is worth no more than the AcroForm check would have been. **Then the full
-suite returns to 17 red at 951 passed.**
+**S101 ACCEPTED (`acb14bd`, Architect, 2026-08-12). Verified by running the corpus, the live
+provider leg, and the full suite - not by reading the report.**
+- **FULL SUITE: 17 failed, 953 passed, 8 skipped, 1 xfailed in 1:01:53, on a quiet tree.** The SAME
+  17 test ids as the accepted baseline, and **12 more passing than S100's 941.** Confirmed by
+  differencing two independent hour-long runs: the only id that left the failure set is the R1
+  contract the round moved.
+- **THE MANIFEST NOW RECORDS WHAT WE MAINTAIN.** `ownership` is on all 26 non-region entries and
+  absent from all 19 regions; regions resolve through their parent booklet. **`gate` was kept
+  DISTINCT and both axes are stated once**: `gate` (`project|user`) is the historical fact of who
+  stood at the promotion gate; `ownership` is the forward commitment to maintain. **Do not merge
+  them.**
+- **THE TIER DRIFT IS DEAD, AND A GUARD KEEPS IT DEAD.** `tiers.T1` is 9 and `tiers.T2` is 5,
+  matching requirements sections 9.2 and 9.3 id-for-id. John's PLUS set lives in an explicit
+  `core_plus_documents` list, `core_documents` is 22, and **`load_core_plus_document_ids` REJECTS an
+  id named by both a tier and the core-plus list** - which is the mechanism that stops T1 being
+  re-inflated a fourth time. The reconcile is bidirectional and wired into `validate 2025`.
+- **FORM 1116, ITS INSTRUCTIONS, AND PUBLICATION 514 ARE ACQUIRED**, hashes pinned from the real
+  downloads, all three loading through `load_document_input`. **`acquire --check` reports 26
+  unchanged and `changed: -` empty**, so the protected set never moved.
+- **6251 LINE 8 NOW EMITS `COPY(form_1116_2025, line 17)`** - the right answer, live. It stops at
+  `operand_inventory_unavailable` because 1116's lines are deliberately unmodelled, which is the
+  boundary the spec drew.
+- **THE REFUSAL GATE IS HONEST: 59 refusals, 59 reported, 0 unreported, 0 core unreported.** The 17
+  structural skips became REPORTED, not hidden - the gate reads `structural_skip_reason` now.
+- **AN ACQUIRED-BUT-UNMODELLED FORM IS SAYABLE.** Form 1116 is a live document with `status: planned`
+  and a stub message; no field map was minted; `validate 2025` exits 0. **The same predicate now
+  serves two gates** - the AcroForm check and the R1 address contract both exclude documents not
+  claimed as modelled, rather than growing two ad-hoc exception lists.
 
-**FULL SUITE ON A QUIET TREE AT `db58775` (Architect, 2026-08-12): 18 failed, 951 passed, 8 skipped,
-1 xfailed in 1:01:47. That is the 17-red baseline PLUS EXACTLY ONE, and the one is ours.**
-`tests/test_address_contract_m15r.py::test_r1_baseline_matches_unmodified_project_graph` fails
-`{'documents': 18} != {'documents': 17}`. **Nine other counted kinds are IDENTICAL** - nodes, edges,
-addresses, citations, all unchanged - which is positive evidence that the `planned` Form 1116 stub is
-inert exactly as intended: it adds a document and nothing else.
-**DO NOT RE-BASELINE IT.** This is the same class S100 hit and the S100 ruling stands: R1 freezes the
-pre-worksheet address graph, worksheet documents were FILTERED OUT of the contract rather than
-re-baselined, and re-baselining would silently destroy what the contract exists to catch.
-**RECOMMENDED FIX, and it makes one concept serve both gates:** the contract filters on
-`document_type == "worksheet"` at `tests/test_address_contract_m15r.py:70`. **Extend the filter to
-exclude documents whose `status` says they are not yet modelled** - `planned`, `unresolved`,
-`unsupported` - which is the SAME predicate the AcroForm check now uses
-(`tax_graph/output/field_maps.py`). A document with no address bindings has nothing to contribute to
-an address contract. **FLOOR:** the R1 contract passes with 17 documents counted, Form 1116 stays in
-the graph as `planned`, and the full suite returns to 17 red.
+**BOTH ANTI-EROSION GUARDS WERE DEMANDED AND BOTH EXIST.** A status flag cannot silence either gate:
+`test_planned_acroform_is_skipped_but_modelled_inventory_drift_fails` proves the AcroForm check still
+fails for a modelled document whose inventory drifts, and `test_r1_still_detects_drift_in_modelled_documents`
+proves the R1 contract still fails when a modelled document is added. **Without these two, this round
+would have shipped two gates that could be disarmed by editing a YAML field.**
 
-**AN EARLIER ARCHITECT SUITE RUN REPORTED 31 FAILURES AND WAS INVALID - DISCARD IT.** It was launched
-against a tree the Worker was actively editing (source touched at 09:19, 09:23 and 09:33 inside the
-window, with concurrent pytest sessions in `.test_tmp_s101_item*`). Three of its failures, including
-`test_cli.py::test_cli_validate_succeeds`, pass in isolation. **Do not run the full suite while
-another agent is working the tree.**
+**THE WORKER REFUSING TO EDIT A GUARD TEST WAS THE BEST MOMENT OF THE ROUND.** He stopped, changed
+nothing, and asked for an explicit ruling. **That is the rule working, and it caught the Architect** -
+the first fix proposed in its place, a positive "count documents carrying address bindings"
+predicate, **does not work**: only 15 documents have entries in `graph/2025/bindings/nodes` against a
+frozen baseline of 17. **Recorded so it is not retried.**
 
-**S101's OFFLINE SLICE LANDED (`40b4db3`) AND THE ACQUISITION LEG IS DONE (Architect, 2026-08-12).**
-The `ownership` field is on all 26 non-region entries and absent from all 19 regions; regions resolve
-through their parent booklet. The tier guard is REAL - `test_tier_guard_names_both_directions`
-asserts both directions against a synthetic fixture, and `validate 2025` now prints a tier reconcile
-section. **Form 1116, its instructions, and Publication 514 are acquired**, hashes pinned from the
-real downloads, all three loading through `load_document_input`. **`acquire --check` reports 26
-documents unchanged and `changed: -` empty**, so the protected set did not move. **6251 line 8 no
-longer fails with `operand_document_not_found`** - it now emits `COPY(form_1116_2025, line 17)`,
-which is the right answer, and stops at `operand_inventory_unavailable` because 1116's own lines are
-deliberately unmodelled. **The 42 `acquire --check` citation reds are PRE-EXISTING** - they are
-against renders the same run certifies as unchanged, and the one form-sourced case,
-`cite_schedule_d_line20_gate`, is a hand-authored quote that stitches across a printed branch it
-skips. Not this round's.
+**NOT DEMONSTRATED, AND IT IS A REPORTING GAP NOT A MECHANISM GAP.** The original floor asked for the
+tier guard to be run against the four documents that were drifting on 2026-08-11 and shown catching
+them BEFORE the fix. **That was never done** - the drift was resolved by authoring the tier file to
+agree, and the guard is proven only against a synthetic fixture and today's reconciled state. The
+mechanism is genuinely bidirectional and tested; **what is missing is the evidence that it fires on
+the real four.** Do not read this round as having proven that.
 
-**THE REWORK'S THREE ITEMS ARE ALL DELIVERED AND VERIFIED ON REAL DATA (Architect, 2026-08-12).**
-**Item 1:** the refusal gate reads `structural_skip_reason` and the same run now reports **59
-refusals, 59 reported, 0 unreported, 0 core unreported, OK** - the 17 became REPORTED, not hidden,
-which is what the floor demanded. **Item 2:** `tiers.T1` is 9 and `tiers.T2` is 5, matching sections
-9.2 and 9.3; the PLUS set moved to an explicit `core_plus_documents` list, `core_documents` stays 22,
-and `load_core_plus_document_ids` REJECTS an id named by both a tier and the core-plus list - which
-is what stops T1 being re-inflated a fourth time. **Item 3:** Form 1116 is a live document with
-`status: planned` and a stub message, no field map was minted, and `validate 2025` exits 0.
-**The guard rail held:** `test_planned_acroform_is_skipped_but_modelled_inventory_drift_fails` proves
-a status flag cannot silence the check for a document that IS claimed as modelled.
-
-**S100 ACCEPTED (`c7a338b`, Architect, 2026-08-11). Verified by running the corpus and the suite,
-not by reading the report.**
-- **19 worksheets are harvested, promoted, loadable, and DERIVED.** All 19 region documents load
-  through `load_document_input` with correct parents; `graph/2025/` holds worksheet documents only
-  and **no form or schedule file was touched**; `test_current_2025_graph_validates` passes.
-- **DERIVATION, live over all 19: 214 lines, 201 RULED - 94%.** Schedule D Tax Worksheet **47 of
-  47**, Capital Loss Carryover 13 of 13, Worksheet A 17 of 17, Standard Deduction 7 of 7. Simplified
-  Method emits `DIVIDE(2,3)`, `MULTIPLY(4,12)`, `MIN(5,7)`, `SUBTRACT(2,10)`. **This is a booklet's
-  HTML tables becoming executable rules with no hand authoring anywhere in the chain** - the prime
-  directive, demonstrated rather than asserted.
-- **Self-serve holds:** harvest mints the manifest region entry, `promote-worksheet` promotes, and
-  **no Python edit is needed to add a worksheet.**
-- **The region ruling held:** the face comes from promoted nodes and citations, never a re-slice of
-  the parent text, and no synthetic artifact was written into `.cache/raw`.
-- **A refused worksheet now reaches a human.** `pilot/review_panel.py` reads
-  `worksheet-discovery*.yaml`, separates promoted from refused, and classifies advisory findings.
-- **FULL SUITE: 17 failed, 941 passed, 8 skipped, 1 xfailed - the SAME 17 test ids as the accepted
-  baseline, four more passing than S99.** All five contracts the round moved are reconciled.
-
-**THE REWORK'S ONE JUDGEMENT CALL WAS MADE WELL.** R1's address contract was NOT re-baselined;
-worksheet-owned objects are filtered out of it, because R1 freezes the pre-worksheet address graph
-and promoted worksheets carry no address bindings. **Re-baselining would have silently destroyed
-what that contract exists to catch.** The dead QDCGT id was also still hardcoded as the harvester's
-default target - the Architect missed that; the Worker found and fixed it.
-
-**THE 13 DERIVATION FAILURES ARE 4 FAMILIES AND ONLY ONE IS NEW:** `operand_not_printed` 5 (the
-known promoted-node inventory gap - `1z`, `2a`, `7a` on the 1040), `operand_document_not_found` 5,
-`self_reference` 2, `operand_inventory_unavailable` 1. **Prior-year documents are the new one and
-are queued as item 1.**
-
-**CARRIED FORWARD, UNANSWERED BY THE REWORK: the `REFERENCES` edges.** The harvester mints them,
-promotion excludes them, and **nothing in `tax_graph/` reads that relationship**. Inert either way,
-which is why it did not block acceptance - but the harvester still writes a relationship to disk
-that no consumer exists for. **Promote them or stop minting them.** Queued as item 14.
-
-**THE ARCHITECT'S READING OF WHAT IS NEXT.** The worksheet line is finished, so the queue's top is
-now genuinely open. **Item 4 (mark the core set, acquire Form 1116) is John's own standing priority
-and is what makes "are the core documents reliable" a measurable question at all** - today there is
-no marking, and the tier list and manifest have already drifted. **Item 1 (prior-year documents)
-is the newest and blocks carryforward worksheets.** Item 6 (out-of-corpus stubs) would clear
-`form_w2_2025` and `form_1099_g_2025` from the derivation failures above. **Ordering is John's.**
+**ONE METHOD LESSON, PAID FOR IN AN HOUR OF WALL CLOCK.** An Architect full-suite run reported 31
+failures and was INVALID: it was launched against a tree the Worker was actively editing, with
+concurrent pytest sessions. Three of its failures passed in isolation. **Never run the full suite
+while another agent is working the tree** - the result is not a baseline, it is noise.
 
 
 ## Current round
 
-**M20-S101 REWORK SPECCED BY ARCHITECT (2026-08-12). THE GATE MUST FAIL FOR TRUE REASONS, THE TIER
-FILE MUST SAY WHAT ITS SOURCE SAYS, AND AN ACQUIRED-BUT-UNMODELLED FORM MUST BE SAYABLE.**
-**REAL-PROJECT ROUND** - full-suite floor applies. The S101 spec is in `git show c479d70`; the
-offline slice is `40b4db3`. **All three items are deterministic and need no network.**
-
-**1. THE REFUSAL GATE FAILS ON DAY ONE BECAUSE THE REPORT DOES NOT READ THE FIELD THE REASON IS
-STORED IN.** Measured 2026-08-12 against `C:\tmp\m20_full\run`: **59 refusals, 42 reported, 17
-unreported, 14 of them core**, so `ok` is False. **All 17 unreported rows DO record their reason** -
-`structural_skip_reason`, with values `structure_duplicate_anchor` 8, `structure_non_cell_anchor` 7,
-`structure_header_anchor` 2. **`_reasons()` at `pilot/maintenance_report.py:141` scans only `error`,
-`review_gap`, `validation_failures`, `validation_warnings`, and `findings`**, so every structurally
-skipped row prints `(no reason recorded)` and counts as a hidden refusal.
-**This is the round's headline deliverable failing for a reason that is not true.** The spec said in
-so many words that a gate failing on day one teaches nobody anything, and this one fails while the
-pipeline is doing exactly what it should - recording why it skipped.
-**FIX:** read `structural_skip_reason` in the refusal accounting. **FLOOR:** the same run reports
-**core unreported 0** and `ok` True, with all 17 still listed as refusals carrying their reason -
-**do not make them disappear, make them reported.** Add a test with a skipped row whose only reason
-field is `structural_skip_reason`, and assert it reads as reported.
-
-**2. THE TIER FILE CALLS 15 DOCUMENTS TIER 1 WHERE ITS SOURCE TABLE LISTS 9.** `config/document_tiers.yaml`
-`tiers.T1` holds 15 ids; `docs/tax_graph_requirements.md` section 9.2 lists **9**. The six extras are
-John's PLUS set - `schedule_a_2025`, `schedule_1a_2025`, `form_6251_2025` - together with
-`instructions_schedule_a_2025`, `instructions_schedule_b_2025`, and `instructions_form_6251_2025`.
-**`core_documents` (22) encodes John's ruling correctly and is not the problem.** The problem is that
-`tax_graph/acquire/corpus.py` documents the file as the machine-readable projection of the
-requirements tier tables, and for T1 it is not one. **T2 IS faithful** - 5 ids, matching 9.3 exactly.
-**So the manifest and the tier file now agree while the tier file and the document it claims to
-project do not: the drift moved up a layer rather than dying, which is the third recurrence this
-round existed to prevent.**
-**FIX, and the shape is John's call to keep cheap:** keep the tiers as the requirements doc states
-them and express the PLUS set as what it is - a core-membership decision that is not a tier. **FLOOR:**
-`tiers.T1` has 9 ids and `tiers.T2` has 5, matching sections 9.2 and 9.3 id-for-id; `core_documents`
-still has 22; the bidirectional manifest guard still passes; **and a test fails if any tier's id list
-stops matching the requirements tables.** That last clause is the whole point - without it this
-recurs a fourth time.
-**ALSO UNMET FROM THE ORIGINAL FLOOR, and it is a reporting gap not a mechanism gap:** the guard was
-never run against the four documents that were drifting on 2026-08-11 to show it catching them
-before the fix. The synthetic test does prove both directions. **Demonstrate it once on the real
-four and record the output.**
-
-**3. AN ACQUIRED-BUT-UNMODELLED FORM CANNOT BE STATED, SO MERELY DOWNLOADING A PDF TURNS THE BUILD
-RED.** `validate 2025` exits 1 on `exposed AcroForm form_1116_2025 -> missing committed field map and
-inventory`. **This is NOT caused by the manifest entries.** `validate_exposed_pdf_fields`
-(`tax_graph/output/field_maps.py:150`) globs `.cache/raw/<year>/*.pdf` and **never consults the
-manifest or the graph**; it went red on 2026-08-11 at 23:37 when the PDF was downloaded and the
-manifest entries were then reverted. **Every future acquired-but-unmodelled form hits this, and
-queue item 6 (out-of-corpus stubs) is the same family from the other direction.**
-**JOHN'S RULING, 2026-08-12: take the status-aware fix, not the mechanical one.** The mechanical fix
-- commit the box inventory with an empty `mappings` list - would work and is honest, but it encodes
-"not modelled yet" as an ABSENCE. **The schema already has the vocabulary John proposed long ago:**
-`schemas/document.schema.json` requires `status` with enum `supported|partial|planned|unsupported|
-unresolved`, and carries `stub_message` and `not_modeled_fields`. **All 36 live documents are
-`partial`, so `planned` would be its first real use** - check nothing downstream assumes otherwise
-before relying on it (`tax_graph/verify/record.py:116` passes status through as an opaque string,
-which is the encouraging case).
-**THE DISTINCTION TO PIN SO A LATER ROUND DOES NOT COLLAPSE IT:** `unresolved` means a formula NAMES
-a document we do not have - that is the existing `_stub_document` shape at
-`tax_graph/extract/candidate.py:1094`, whose `stub_message` says the document must be ingested.
-**`planned` means we HAVE it - acquired, rendered, hashed - and have not modelled its lines.** Form
-1116 is `planned`. **Use the existing stub shape as the reference, not a new one.**
-**FIX:** give `form_1116_2025` a live graph document with `status: planned` and a `stub_message`
-naming what must happen, and make the AcroForm check skip documents not claimed as modelled.
-**FLOOR:** `validate 2025` exits 0; the check still FAILS for a modelled document whose inventory
-drifts from its widgets - **prove that with a test, because a gate that can be silenced by a status
-flag is worse than no gate**; and `form_1116_2025` remains free of nodes, edges, and rules.
-
-**OUT OF SCOPE, unchanged from S101.** Deriving or modelling Form 1116's own lines. Prior-year
-documents (item 1). Out-of-corpus stubs (item 6). Publication 514's content. **And item 16, the
-API-key diagnostics, which John queued on 2026-08-12 - do not fold it in here.**
-
-
-**S101 WORKER STATUS (2026-08-12; three commits: `da90dbe`, `29d0362`, `1feafef`).** The three
-rework items are implemented. The refusal report now reads `structural_skip_reason`; the real
-`C:\tmp\m20_full\run` report is **59 refusals, 59 reported, 0 unreported, 0 core unreported,
-result OK**. The requirements projection now has T1=9 and T2=5 in source-table order; John's six
-additional core documents are in `core_plus_documents`, not mislabelled as a priority tier. The
-live reconcile is 26 inventory / 26 manifest with no directional differences. A four-document
-replay names both directions: tier-only `form_1116_2025`, `instructions_form_1116_2025`; manifest-
-only `form_6251_2025`, `schedule_a_2025`. Form 1116 is a promoted document-only `planned` artifact
-with a stub message and no nodes, edges, or rules. Status-aware AcroForm validation skips planned,
-unsupported, and unresolved documents while still failing a partial modelled document with widget
-inventory drift. `python -m tax_graph.cli validate 2025` exits 0 and reports graph integrity OK.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s101.py -q` -> **11 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item2';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s101.py tests\test_acquire_manifest.py -q`
--> **17 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s101.py tests\test_field_maps_m12.py
-tests\test_field_dispositions_m15.py tests\test_graph_validator.py -q -k "not validator_rejects
-and not validator_catches and not validator_flags and not validator_allows"` -> **38 passed, 11
-deselected, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
-.venv\Scripts\python.exe -m pytest tests\test_cli.py -q` -> **7 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
-.venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q -k
-"current_2025_graph_validates or current_documents_have_role_axis_classes"` -> **2 passed, 12
-deselected, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
-.venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q` -> **3 passed, 11 failed,
-2 warnings**. All 11 failures are the known `WinError 5` while copying protected
-`graph/2025/_drafts`; no assertion failure remains in that file.
-RAN: `.venv\Scripts\python.exe pilot\maintenance_report.py C:\tmp\m20_full\run --root . |
-Select-String -Pattern 'refusals:|reported:|unreported:|core unreported:|result:'` -> **59 / 59,
-0 / 0, result OK**.
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli validate 2025` -> **exit 0**, graph integrity OK.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: full suite, per the S101 instruction that the Worker must not rerun it; the accepted
-baseline remains the Architect's 17-red environment/artifact baseline. No provider leg was needed.
-
-**S101 R1 CONTRACT RECONCILIATION WORKER STATUS (2026-08-12).** Implemented the granted R1
-filter for `planned`, `unresolved`, and `unsupported` documents without changing the frozen
-baseline. Added an anti-erosion guard proving a `partial` modelled document changes the R1 count.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_r1_contract';
-.venv\Scripts\python.exe -m pytest tests\test_address_contract_m15r.py -q` -> **9 passed, 1
-warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s101_item3';
-.venv\Scripts\python.exe -m pytest tests\test_address_contract_m15r.py tests\test_m20_s101.py
--q` -> **20 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: full suite; the S101 Worker instruction keeps that verification with the Architect because
-it exceeds the Worker command cap. NOT RUN: provider leg; this reconciliation is provider-free.
+**NOTHING IN FLIGHT. One spec at a time; the next round is specced when John picks it up.**
 
 
 ## Open for Architect
 
-**CODEX DONE; BALL IS ARCHITECT'S FOR ACCEPTANCE.** The granted R1 reconciliation is provider-free,
-the focused address-contract and S101 tests are green, and the historical baseline remains 17
-documents. The only remaining verification is the Architect's full-suite comparison against the
-17-red baseline; the Worker must not rerun it under the S101 command-cap instruction.
+Nothing. **S101 is accepted at `acb14bd` and the full suite is back to the 17-red baseline at 953
+passed.** The Worker's R1 reconciliation was verified, not taken on report.
+**The ball is JOHN'S: pick the next queue item.** The Architect's reading is unchanged from S100 -
+**item 1 (prior-year documents)** is the newest and blocks carryforward worksheets; **item 6
+(out-of-corpus stubs)** is now cheaper than it was, because S101 established `status: planned` as
+the way to say "acquired, not modelled" and two gates already honour it; **item 2 (170 anchors
+deriving with an empty instruction packet)** remains the largest measured defect and is still
+deliberately parked behind the core-set work. **Ordering is John's.**
 
 
 ## Queued (ONE LINE each - do not spec ahead)
