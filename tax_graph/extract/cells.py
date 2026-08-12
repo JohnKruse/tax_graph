@@ -964,7 +964,12 @@ def validate_cell_output(
             and (
                 not operand_form
                 or operand_form == current_form
-                or _legitimate_external_reference(row, operand_form, operand_line)
+                or _legitimate_external_reference(
+                    row,
+                    operand_form,
+                    operand_line,
+                    reference_documents=reference_documents,
+                )
             )
         ):
             hard.append(
@@ -1002,20 +1007,52 @@ def validate_cell_output(
                     )
                 )
             elif operand_form not in reference_documents:
-                issue = CellValidationIssue(
-                    "unresolved_external_reference",
-                    f"cross-form operand names document {operand_form} line {operand_line} outside the document inventory",
-                    hard=False,
+                prior_document = _prior_year_document_match(
+                    operand_form,
+                    reference_documents,
+                    current_document_id=current_form,
                 )
-                if _legitimate_external_reference(row, operand_form, operand_line):
-                    warnings.append(issue)
-                else:
-                    hard.append(
-                        CellValidationIssue(
-                            "operand_document_not_found",
-                            f"cross-form operand names unknown document {operand_form}",
+                if prior_document is not None:
+                    if _prior_year_reference_is_source_backed(
+                        row,
+                        operand_form,
+                        reference_documents,
+                    ):
+                        warnings.append(
+                            CellValidationIssue(
+                                "prior_year_reference",
+                                f"{operand_form} line {operand_line} is supplied from the prior-year document "
+                                f"{prior_document}; the prior-year value is an input",
+                                hard=False,
+                            )
                         )
+                    else:
+                        hard.append(
+                            CellValidationIssue(
+                                "operand_document_not_found",
+                                f"cross-form operand names unknown document {operand_form}",
+                            )
+                        )
+                else:
+                    issue = CellValidationIssue(
+                        "unresolved_external_reference",
+                        f"cross-form operand names document {operand_form} line {operand_line} outside the document inventory",
+                        hard=False,
                     )
+                    if _legitimate_external_reference(
+                        row,
+                        operand_form,
+                        operand_line,
+                        reference_documents=reference_documents,
+                    ):
+                        warnings.append(issue)
+                    else:
+                        hard.append(
+                            CellValidationIssue(
+                                "operand_document_not_found",
+                                f"cross-form operand names unknown document {operand_form}",
+                            )
+                        )
             else:
                 cross_form_lines = _reference_lines(inventory, operand_form)
                 if cross_form_lines is None:
@@ -1594,6 +1631,84 @@ def _reference_document_ids(inventory: Mapping[str, Any] | None) -> set[str] | N
     if values is None:
         return set()
     return {str(value).strip().lower() for value in values if str(value).strip()}
+
+
+_DOCUMENT_YEAR_RE = re.compile(r"_(?P<year>(?:19|20)\d{2})$")
+_PRIOR_YEAR_CUE_RE = re.compile(
+    r"\b(?:last\s+year(?:'s)?|prior[\s-]+year(?:'s)?|carryover|carried\s+over)\b",
+    re.IGNORECASE,
+)
+
+
+def _document_year(document_id: str) -> int | None:
+    """Return a document id's explicit tax year, if it has one."""
+    match = _DOCUMENT_YEAR_RE.search(str(document_id or "").strip().lower())
+    return int(match.group("year")) if match else None
+
+
+def _document_stem(document_id: str) -> str:
+    """Remove only the terminal year from a document id."""
+    return _DOCUMENT_YEAR_RE.sub("", str(document_id or "").strip().lower())
+
+
+def _prior_year_document_match(
+    operand_document_id: str,
+    document_ids: Iterable[str] | None,
+    *,
+    current_document_id: str = "",
+) -> str | None:
+    """Return the current-inventory document sharing a prior operand's stem.
+
+    The match is deliberately inventory-backed.  A year-shaped id is not a
+    prior-year reference merely because it looks old; the current run must
+    hold exactly one document with the same semantic stem, and the row's
+    evidence must still provide the prior-year cue before validation promotes
+    it to a warning.
+    """
+    if document_ids is None:
+        return None
+    operand_id = str(operand_document_id or "").strip().lower()
+    operand_year = _document_year(operand_id)
+    stem = _document_stem(operand_id)
+    if operand_year is None or not stem:
+        return None
+    current_year = _document_year(current_document_id)
+    matches = sorted({
+        candidate
+        for candidate in document_ids
+        if _document_stem(candidate) == stem
+        and _document_year(candidate) is not None
+        and _document_year(candidate) != operand_year
+        and (current_year is None or _document_year(candidate) == current_year)
+        and (current_year is None or operand_year < current_year)
+    })
+    return matches[0] if len(matches) == 1 else None
+
+
+def _has_prior_year_cue(evidence: str, operand_year: int | None) -> bool:
+    """Return whether source evidence explicitly identifies a prior year."""
+    value = str(evidence or "")
+    if _PRIOR_YEAR_CUE_RE.search(value):
+        return True
+    if operand_year is None:
+        return False
+    return bool(re.search(rf"\b{operand_year}\b", value))
+
+
+def _prior_year_reference_is_source_backed(
+    row: CellRecord,
+    operand_document_id: str,
+    reference_documents: Iterable[str] | None,
+) -> bool:
+    """Return whether a known year-shifted operand has source support."""
+    if _prior_year_document_match(
+        operand_document_id,
+        reference_documents,
+        current_document_id=row.form,
+    ) is None:
+        return False
+    evidence = " ".join((row.form_face_text, row.instruction_text, _evidence_span_text(row)))
+    return _has_prior_year_cue(evidence, _document_year(operand_document_id))
 
 
 def _reference_node_ids(inventory: Mapping[str, Any] | None) -> set[str] | None:
@@ -2597,17 +2712,43 @@ def _record_external_inputs(
     if expression is None or reference_documents is None:
         return
     records: list[dict[str, Any]] = []
+    prior_year_node_ids: list[str] = []
     seen: set[str] = set()
     for operand in _expression_operands(expression):
         operand_form = str(operand.get("form") or "").strip().lower()
         operand_line = str(operand.get("line") or "").strip().lower()
         operand_column = _operand_column(operand)
+        prior_year_reference = _prior_year_document_match(
+            operand_form,
+            reference_documents,
+            current_document_id=row.form,
+        )
+        source_backed_prior_year = (
+            prior_year_reference is not None
+            and _prior_year_reference_is_source_backed(
+                row,
+                operand_form,
+                reference_documents,
+            )
+        )
         if (
             not operand_form
             or not operand_line
             or operand_form in reference_documents
             or _is_instruction_document_id(operand_form)
-            or not _legitimate_external_reference(row, operand_form, operand_line)
+            or (
+                prior_year_reference is not None
+                and not source_backed_prior_year
+            )
+            or (
+                prior_year_reference is None
+                and not _legitimate_external_reference(
+                    row,
+                    operand_form,
+                    operand_line,
+                    reference_documents=reference_documents,
+                )
+            )
             or not re.fullmatch(r"[0-9]+[a-z]?", operand_line, re.IGNORECASE)
         ):
             continue
@@ -2628,25 +2769,69 @@ def _record_external_inputs(
             "citation_refs": [row.quote_span_id] if row.quote_span_id else [],
         }
         records.append(record)
+        if source_backed_prior_year:
+            prior_year_node_ids.append(node_id)
     if records:
         row.metadata["unresolved_external_nodes"] = records
+    else:
+        row.metadata.pop("unresolved_external_nodes", None)
+    if prior_year_node_ids:
+        row.metadata["prior_year_reference_nodes"] = sorted(prior_year_node_ids)
+    else:
+        row.metadata.pop("prior_year_reference_nodes", None)
 
 
-def _legitimate_external_reference(row: CellRecord, form: str, line: str) -> bool:
-    """Return true when the row evidence names this external form.
+def _legitimate_external_reference(
+    row: CellRecord,
+    form: str,
+    line: str,
+    *,
+    reference_documents: Iterable[str] | None = None,
+) -> bool:
+    """Return true when the row evidence supports this external operand.
 
     The model may obtain the printed line from the external document's
-    instructions rather than the current row's evidence.  The document name
-    is the source-backed proof needed to mint a stub; the line is preserved in
-    the canonical node address and checked when the document is inducted.
+    instructions rather than the current row's evidence.  A known prior-year
+    operand instead needs a prior-year cue; an unknown same-year form needs a
+    named form.  The line is preserved in the canonical node address and
+    checked when the document is inducted.
     """
+    del line
     evidence = " ".join((row.form_face_text, row.instruction_text, _evidence_span_text(row)))
-    return _external_form_is_named(evidence, form)
+    if _prior_year_document_match(
+        form,
+        reference_documents,
+        current_document_id=row.form,
+    ) is not None:
+        return _has_prior_year_cue(evidence, _document_year(form))
+    if _external_form_is_named(evidence, form):
+        return True
+    return (
+        _document_year(form) is not None
+        and _document_year(row.form) == _document_year(form)
+        and _external_form_stem_is_named(evidence, form)
+    )
 
 
 def _external_form_is_named(evidence: str, form: str) -> bool:
-    """Match form ids against evidence after folding punctuation and year suffixes."""
-    stem = re.sub(r"_[0-9]{4}$", "", str(form).strip().lower())
+    """Match a fully qualified document id without discarding its year."""
+    normalized = str(form).strip().lower()
+    words = normalized.replace("_", " ")
+    year = _document_year(normalized)
+    aliases = {words}
+    if year is not None:
+        base = _document_stem(normalized).replace("_", " ")
+        aliases.update({f"{base} {year}", f"{year} {base}"})
+    compact_evidence = re.sub(r"[^a-z0-9]+", "", evidence.lower())
+    return any(
+        re.sub(r"[^a-z0-9]+", "", alias) in compact_evidence
+        for alias in aliases
+    )
+
+
+def _external_form_stem_is_named(evidence: str, form: str) -> bool:
+    """Match a same-year external form when prose omits the tax year."""
+    stem = _document_stem(form)
     aliases = {stem.replace("_", " ")}
     if stem.startswith("form_"):
         aliases.add(f"form {stem.removeprefix('form_').replace('_', ' ')}")

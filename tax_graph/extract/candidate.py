@@ -105,6 +105,7 @@ def write_candidate_from_run(
     _write_yaml(destination / "stub_lifecycle.yaml", stub_registry["lifecycle"])
     graph_diff = _handcrafted_diff(root_path, str(year), documents)
     coverage = _coverage_total(documents)
+    prior_year_report = build_prior_year_target_report(source, year=year)
     publish = {
         "status": "not_published",
         "would_replace": [
@@ -131,11 +132,13 @@ def write_candidate_from_run(
         "stub_lifecycle": stub_registry["lifecycle"],
         "graph_integrity": graph_integrity,
         "worksheet_drafts": worksheet_report,
+        "prior_year_reference_report": prior_year_report,
         "diff": graph_diff,
         "publish": publish,
     }
     _write_yaml(destination / "candidate.yaml", manifest)
     _write_yaml(destination / "coverage.yaml", coverage)
+    _write_yaml(destination / "prior_year_reference_report.yaml", prior_year_report)
     _write_yaml(destination / "diff.yaml", graph_diff)
     _write_yaml(destination / "publish.yaml", publish)
     return destination
@@ -197,6 +200,7 @@ def build_candidate_from_run(
         "stub_documents": stub_registry["document_ids"],
         "coverage": _coverage_total(documents),
         "stub_lifecycle": stub_registry["lifecycle"],
+        "prior_year_reference_report": build_prior_year_target_report(source, year=year),
         "diff": _handcrafted_diff(root_path, str(year), documents),
     }
 
@@ -517,6 +521,11 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
     findings = [dict(item) for item in row.get("validation_failures", []) or [] if isinstance(item, Mapping)]
     findings.extend(_source_findings(row.get("source_findings")))
     warnings = [dict(item) for item in row.get("validation_warnings", []) or [] if isinstance(item, Mapping)]
+    prior_year_nodes = {
+        str(value)
+        for value in row.get("prior_year_reference_nodes", []) or []
+        if str(value)
+    }
     unresolved = [
         dict(item)
         for item in row.get("unresolved_external_nodes", []) or []
@@ -525,9 +534,17 @@ def _candidate_row(document_id: str, row: Mapping[str, Any], field_addresses: Ma
     for item in unresolved:
         external_document = str(item.get("document_id") or "unknown document")
         external_line = str(item.get("line") or "unknown line")
+        is_prior_year = (
+            str(item.get("node_id") or "") in prior_year_nodes
+            or any(str(warning.get("kind") or "") == "prior_year_reference" for warning in warnings)
+        )
         finding = {
-            "kind": "unresolved_external_reference",
-            "message": f"{external_document} line {external_line} is outside the document inventory",
+            "kind": "prior_year_reference" if is_prior_year else "unresolved_external_reference",
+            "message": (
+                f"{external_document} line {external_line} is supplied from the prior-year document"
+                if is_prior_year
+                else f"{external_document} line {external_line} is outside the document inventory"
+            ),
             "document_id": external_document,
             "line": external_line,
         }
@@ -1086,7 +1103,8 @@ def _stub_document(
     year: str,
     nodes: Sequence[Mapping[str, Any]],
 ) -> dict[str, Any]:
-    title = _stub_title(document_id)
+    document_year = _document_year(document_id, year)
+    title = _stub_title(document_id, include_year=document_year != int(year))
     line_text = ", ".join(
         _stub_address_text(str(item.get("line") or ""), _column_value(item))
         for item in nodes
@@ -1094,7 +1112,7 @@ def _stub_document(
     return {
         "document_id": document_id,
         "title": title,
-        "tax_year": int(year),
+        "tax_year": document_year,
         "document_type": "schedule" if document_id.startswith("schedule_") else "tax_form",
         "document_class": "return",
         "status": "unresolved",
@@ -1105,10 +1123,21 @@ def _stub_document(
     }
 
 
-def _stub_title(document_id: str) -> str:
-    stem = re.sub(r"_[0-9]{4}$", "", str(document_id).strip().lower())
+def _stub_title(document_id: str, *, include_year: bool = False) -> str:
+    normalized = str(document_id).strip().lower()
+    year = _document_year(normalized, None)
+    stem = re.sub(r"_[0-9]{4}$", "", normalized)
     words = stem.replace("_", " ").split()
-    return " ".join(word.upper() if word.isdigit() else word.title() for word in words)
+    title = " ".join(word.upper() if word.isdigit() else word.title() for word in words)
+    return f"{title} ({year})" if include_year and year is not None else title
+
+
+def _document_year(document_id: str, fallback: str | None) -> int | None:
+    """Return the id's own year, falling back only for untimestamped ids."""
+    match = re.search(r"_(19|20)\d{2}$", str(document_id).strip().lower())
+    if match:
+        return int(str(document_id).strip().lower()[-4:])
+    return int(fallback) if fallback is not None else None
 
 
 def _stub_line_message(document_id: str, line: str, column: str = "") -> str:
@@ -1369,6 +1398,104 @@ def _coverage_total(documents: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     total["skipped_by_reason"] = dict(sorted(skipped.items()))
     total["documents"] = len(documents)
     return total
+
+
+def build_prior_year_target_report(
+    run_dir: str | Path,
+    *,
+    year: str | int = "2025",
+) -> dict[str, Any]:
+    """Report prior-year inputs and their current-year carryforward targets.
+
+    The report is derived from completed row reports.  It does not invent a
+    2024 graph or alter Return Record computation; it records which source
+    rows now name a prior-year address and compares the two Schedule D
+    carryforward destinations that remain hardcoded elsewhere.
+    """
+    from tax_graph.record.return_record import (
+        CAPITAL_LOSS_LONG_TERM_TARGET,
+        CAPITAL_LOSS_SHORT_TERM_TARGET,
+    )
+
+    references: list[dict[str, Any]] = []
+    for document_id, report_path, report in _load_reports(Path(run_dir), year=str(year)):
+        rows = report.get("rows_detail") or []
+        for row in rows:
+            if not isinstance(row, Mapping):
+                continue
+            if str(row.get("status") or "").strip().lower() not in {"derived", "repaired"}:
+                continue
+            warnings = [
+                item
+                for item in row.get("validation_warnings", []) or []
+                if isinstance(item, Mapping)
+                and str(item.get("kind") or "") == "prior_year_reference"
+            ]
+            if not warnings:
+                continue
+            prior_nodes = {
+                str(value)
+                for value in row.get("prior_year_reference_nodes", []) or []
+                if str(value)
+            }
+            nodes = [
+                item
+                for item in row.get("unresolved_external_nodes", []) or []
+                if isinstance(item, Mapping)
+                and (
+                    not prior_nodes
+                    or str(item.get("node_id") or "") in prior_nodes
+                )
+            ]
+            if not nodes:
+                nodes = [{}]
+            for node in nodes:
+                references.append(
+                    {
+                        "document_id": document_id,
+                        "line": str(row.get("line") or ""),
+                        "referenced_document_id": str(node.get("document_id") or ""),
+                        "referenced_line": str(node.get("line") or ""),
+                        "node_id": str(node.get("node_id") or ""),
+                        "kind": "prior_year_reference",
+                        "source": report_path.name,
+                    }
+                )
+
+    hardcoded_targets = sorted({
+        CAPITAL_LOSS_SHORT_TERM_TARGET,
+        CAPITAL_LOSS_LONG_TERM_TARGET,
+    })
+    implied_targets = sorted({
+        target
+        for reference in references
+        for target in hardcoded_targets
+        if target.startswith(
+            f"{reference['document_id']}_line_{str(reference['line']).strip().lower()}_"
+        )
+    })
+    by_document: dict[str, int] = {}
+    for reference in references:
+        document_id = str(reference["document_id"])
+        by_document[document_id] = by_document.get(document_id, 0) + 1
+    return {
+        "kind": "prior_year_reference_report",
+        "tax_year": str(year),
+        "count": len(references),
+        "by_document": dict(sorted(by_document.items())),
+        "references": sorted(
+            references,
+            key=lambda item: (
+                str(item["document_id"]),
+                str(item["line"]),
+                str(item["referenced_document_id"]),
+                str(item["referenced_line"]),
+            ),
+        ),
+        "hardcoded_capital_loss_targets": hardcoded_targets,
+        "implied_capital_loss_targets": implied_targets,
+        "capital_loss_targets_match": implied_targets == hardcoded_targets,
+    }
 
 
 def _field_map_addresses(root: Path, year: str, document_id: str) -> dict[str, str]:

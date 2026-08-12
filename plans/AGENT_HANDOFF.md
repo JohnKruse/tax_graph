@@ -192,6 +192,30 @@ whether they match the two hardcoded capital-loss targets.** That evidence specs
   Do not launch it while another agent is editing; that lesson cost an hour last round.
 - **`tools/check_ascii.py` OK** and `git diff --check` clean.
 
+**WORKER STATUS (Codex, 2026-08-12): offline implementation slice complete; Architect live leg
+remains.** The validator now emits
+the non-fatal `prior_year_reference` kind only for an inventory-backed, source-cued earlier-year
+document; no-cue year shifts remain `operand_document_not_found`. Candidate stubs take the id's
+own year and prior-year titles are year-qualified. Refusal accounting has a separate reported
+prior-year partition with per-source-document counts, and candidate workspaces emit a deterministic
+`prior_year_reference_report.yaml` comparing implied Schedule D carryforward targets with the two
+hardcoded Return Record targets. No Return Record computation was rewired.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s102';
+& .venv\Scripts\python.exe -m pytest tests/test_m20_s102.py tests/test_derive_cells_m20.py
+tests/test_candidate_regeneration_m20.py tests/test_m20_s90c.py tests/test_m20_s101.py
+tests/test_run_summary_m20.py tests/test_workbench_m15.py -q` -> 113 passed, 1 warning.
+RAN: `& .venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
+RAN: `git diff --check` -> clean.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s102';
+& .venv\Scripts\python.exe -m pytest -q` -> NOT RUN to completion; timed out after 600.2s
+(exit 124). The partial stream showed 14 setup errors and 3 failures before timeout.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s102';
+& .venv\Scripts\python.exe -m pytest -x -q` -> NOT RUN to completion; first error is the
+pre-existing ACL denial on `graph/2025/_drafts/form_1040_2025` in
+`tests/e2e/test_analog_pane_m15.py`, before any S102 test runs. The timed-out child processes
+were stopped after the run. Full-suite completion remains UNVERIFIED in this session.
+
 **WHO RUNS WHAT.**
 - **WORKER, offline, all of it.** The predicate, the cue gate, the stub year fix, the refusal
   partition, every guard test, and the targets report are deterministic. No provider, no network.

@@ -51,11 +51,37 @@ class RefusalRecord:
 
 
 @dataclass(frozen=True)
+class PriorYearReferenceRecord:
+    """One source-backed input supplied by a different tax year's record."""
+
+    document_id: str
+    line: str
+    referenced_document_id: str
+    referenced_line: str
+    reason: str
+    source: str
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return a distinct accounting record, not a missing-document refusal."""
+        return {
+            "kind": "prior_year_reference",
+            "document_id": self.document_id,
+            "line": self.line,
+            "referenced_document_id": self.referenced_document_id,
+            "referenced_line": self.referenced_line,
+            "reason": self.reason,
+            "reported": True,
+            "source": self.source,
+        }
+
+
+@dataclass(frozen=True)
 class MaintenanceRefusalReport:
     """Complete refusal accounting for a derivation run."""
 
     tax_year: str
     records: tuple[RefusalRecord, ...]
+    prior_year_references: tuple[PriorYearReferenceRecord, ...] = ()
 
     @property
     def reported(self) -> tuple[RefusalRecord, ...]:
@@ -77,6 +103,14 @@ class MaintenanceRefusalReport:
         """Return whether every core refusal is explicitly reported."""
         return not self.core_unreported
 
+    @property
+    def prior_year_reference_counts(self) -> dict[str, int]:
+        """Count prior-year inputs by the current-year source document."""
+        counts: dict[str, int] = {}
+        for item in self.prior_year_references:
+            counts[item.document_id] = counts.get(item.document_id, 0) + 1
+        return dict(sorted(counts.items()))
+
     def as_dict(self) -> dict[str, Any]:
         """Return a machine-readable report without collapsing refusals to counts."""
         by_ownership: dict[str, list[dict[str, Any]]] = {}
@@ -90,9 +124,11 @@ class MaintenanceRefusalReport:
                 "reported": len(self.reported),
                 "unreported": len(self.unreported),
                 "core_unreported": len(self.core_unreported),
+                "prior_year_references": len(self.prior_year_references),
             },
             "by_ownership": by_ownership,
             "records": [item.as_dict() for item in self.records],
+            "prior_year_references": [item.as_dict() for item in self.prior_year_references],
         }
 
     def format_report(self) -> str:
@@ -104,6 +140,7 @@ class MaintenanceRefusalReport:
             f"  reported: {len(self.reported)}",
             f"  unreported: {len(self.unreported)}",
             f"  core unreported: {len(self.core_unreported)}",
+            f"  prior-year references: {len(self.prior_year_references)}",
         ]
         for item in self.records:
             core = "core" if item.is_core else "non-core"
@@ -114,6 +151,16 @@ class MaintenanceRefusalReport:
                 f"  {item.document_id}{line}: {item.status}; {core}; "
                 f"owner={item.owner_document_id}; ownership={item.ownership}; {state}; {reason}"
             )
+        if self.prior_year_references:
+            lines.append("  prior-year references by document:")
+            for document_id, count in self.prior_year_reference_counts.items():
+                lines.append(f"    {document_id}: {count}")
+            for item in self.prior_year_references:
+                lines.append(
+                    f"    {item.document_id} line {item.line} -> "
+                    f"{item.referenced_document_id} line {item.referenced_line}; "
+                    f"reported; {item.reason or '(source-backed prior-year input)'}"
+                )
         lines.append("  result: " + ("OK" if self.ok else "FAILED: core refusal is unreported"))
         return "\n".join(lines) + "\n"
 
@@ -244,6 +291,49 @@ def _run_records(
     return records
 
 
+def _prior_year_records(run_dir: Path) -> list[PriorYearReferenceRecord]:
+    """Read successful prior-year inputs into their own non-refusal partition."""
+    records: list[PriorYearReferenceRecord] = []
+    for document_id in discover_documents(run_dir):
+        path = run_dir / f"{REPORT_PREFIX}{document_id}{REPORT_SUFFIX}"
+        payload = _load(path, default={})
+        if not isinstance(payload, Mapping):
+            continue
+        for row in payload.get("rows_detail") or []:
+            if not isinstance(row, Mapping):
+                continue
+            if str(row.get("status") or "").strip().lower() not in SUCCESS_STATUSES:
+                continue
+            warnings = [
+                item
+                for item in row.get("validation_warnings", []) or []
+                if isinstance(item, Mapping)
+                and str(item.get("kind") or "") == "prior_year_reference"
+            ]
+            if not warnings:
+                continue
+            nodes = [
+                item
+                for item in row.get("unresolved_external_nodes", []) or []
+                if isinstance(item, Mapping)
+            ] or [{}]
+            reason = "; ".join(
+                text for item in warnings if (text := _reason(item))
+            )
+            for node in nodes:
+                records.append(
+                    PriorYearReferenceRecord(
+                        document_id=document_id,
+                        line="" if row.get("line") is None else str(row.get("line")),
+                        referenced_document_id=str(node.get("document_id") or ""),
+                        referenced_line=str(node.get("line") or ""),
+                        reason=reason,
+                        source=path.name,
+                    )
+                )
+    return records
+
+
 def _worksheet_records(
     run_dir: Path,
     manifest: AcquisitionManifest,
@@ -307,7 +397,21 @@ def build_refusal_report(
     records = _run_records(run_path, manifest, core_ids)
     records.extend(_worksheet_records(run_path, manifest, core_ids))
     records.sort(key=lambda item: (item.document_id, item.line, item.source, item.reason))
-    return MaintenanceRefusalReport(tax_year=str(year), records=tuple(records))
+    prior_year_references = _prior_year_records(run_path)
+    prior_year_references.sort(
+        key=lambda item: (
+            item.document_id,
+            item.line,
+            item.referenced_document_id,
+            item.referenced_line,
+            item.source,
+        )
+    )
+    return MaintenanceRefusalReport(
+        tax_year=str(year),
+        records=tuple(records),
+        prior_year_references=tuple(prior_year_references),
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
