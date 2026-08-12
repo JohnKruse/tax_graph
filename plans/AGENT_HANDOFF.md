@@ -278,10 +278,24 @@ line 6 is correct. **Two ways to draw it, and John should pick the scope:**
 - **The Worker's report was honest about what it did not run**, including the full suite and the
   600-second timeout. No claim was made that could not be checked.
 
-**STILL OPEN AT THIS WRITING.** The full suite is running Architect-side on a quiet tree
-(`C:\tmp\m20_s102_fullsuite.log`, against the 17-red / 953-passed baseline at `acb14bd`); it was
-NOT run to completion by anyone before this line was written. **The live `row_bench.py` leg is
-deliberately NOT spent yet** - it would measure the rows the rework is about to change.
+**STILL OPEN.** No valid full suite exists for S102 - see the method finding immediately below; the
+Architect's attempt was VOID and was stopped. **The live `row_bench.py` leg is deliberately NOT
+spent** - it would measure the rows the rework is about to change. **Both move to the rework's
+acceptance.**
+
+**METHOD, AND IT INVALIDATES TWO RUNS INCLUDING MINE. DO NOT SET `PYTEST_DEBUG_TEMPROOT` BY HAND.**
+`conftest.py:33` pins the temp root with `os.environ.setdefault`, so **an explicitly exported value
+WINS and replaces the pinned root**, and a fresh non-standard root produces a storm of setup ERRORS
+in tests that are actually green. Measured 2026-08-12 on the same two files, same tree, seconds
+apart:
+- `$env:PYTEST_DEBUG_TEMPROOT='...\.test_tmp_arch102'; pytest tests/test_m20_s102.py tests/test_candidate_regeneration_m20.py -q` -> **3 passed, 5 errors**
+- no override, `pytest tests/test_m20_s102.py tests/test_candidate_regeneration_m20.py -q` -> **8 passed**
+**The Architect's S102 full-suite run used the override and is therefore VOID** - it was showing
+hundreds of E's against a 17-red baseline, which should have been the tell, and it was stopped
+rather than reported. **The Worker's "14 setup errors" in its aborted full-suite attempt is very
+likely the same artifact** and should not be read as real. **AGENTS.md already says "just run
+`python -m pytest`"; that is literal, and it now covers the env var and not only `--basetemp`.**
+**The rework's suite leg must use the bare command.**
 
 **M20-S102 REWORK, SPECCED BY ARCHITECT (2026-08-12). FIX THE FACE, NOT THE GATE.**
 **John approved the sequencing on 2026-08-12: one round - repair the extent, then turn the
