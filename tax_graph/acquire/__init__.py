@@ -4,6 +4,7 @@ from tax_graph.acquire.manifest import AcquisitionManifest, ManifestEntry, load_
 from tax_graph.acquire.corpus import (
     TierManifestReport,
     load_core_document_ids,
+    load_core_plus_document_ids,
     load_document_tiers,
     reconcile_tier_manifest,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "ReconcileDifference",
     "TierManifestReport",
     "load_core_document_ids",
+    "load_core_plus_document_ids",
     "load_document_tiers",
     "load_manifest",
     "reconcile_document_lists",

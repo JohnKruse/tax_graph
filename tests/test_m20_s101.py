@@ -7,7 +7,11 @@ from pathlib import Path
 import pytest
 import yaml
 
-from tax_graph.acquire.corpus import reconcile_tier_manifest
+from tax_graph.acquire.corpus import (
+    load_core_document_ids,
+    load_document_tiers,
+    reconcile_tier_manifest,
+)
 from tax_graph.acquire.manifest import AcquisitionManifest, ManifestEntry, validate_manifest_data
 from pilot.maintenance_report import build_refusal_report
 
@@ -119,6 +123,42 @@ def test_live_tier_and_manifest_inventories_are_reconciled() -> None:
     assert report.tier_not_in_manifest == ()
     assert report.manifest_not_in_tier == ()
     assert len(report.manifest_document_ids) == 26
+
+
+def test_live_tier_projection_matches_requirements_tables() -> None:
+    tiers = load_document_tiers(root=ROOT)
+    assert tiers["T1"] == (
+        "form_1040_2025",
+        "instructions_form_1040_2025",
+        "schedule_1_2025",
+        "schedule_2_2025",
+        "schedule_3_2025",
+        "form_w2_2025",
+        "form_1099_int_2025",
+        "form_1099_div_2025",
+        "schedule_b_2025",
+    )
+    assert tiers["T2"] == (
+        "form_1099b_2025",
+        "form_8949_2025",
+        "schedule_d_2025",
+        "instructions_schedule_d_2025",
+        "instructions_form_8949_2025",
+    )
+    core_ids = load_core_document_ids(root=ROOT)
+    assert len(core_ids) == 22
+    assert set(
+        yaml.safe_load((ROOT / "config" / "document_tiers.yaml").read_text(encoding="ascii"))[
+            "core_plus_documents"
+        ]
+    ) == {
+        "instructions_schedule_b_2025",
+        "schedule_a_2025",
+        "instructions_schedule_a_2025",
+        "schedule_1a_2025",
+        "form_6251_2025",
+        "instructions_form_6251_2025",
+    }
 
 
 def _write_project_manifest(root: Path) -> None:

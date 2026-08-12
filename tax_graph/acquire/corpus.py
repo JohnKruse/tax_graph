@@ -1,11 +1,13 @@
 """Reconcile the maintained document tiers with the acquisition manifest.
 
 The manifest is the source-backed inventory and ``document_tiers.yaml`` is the
-machine-readable projection of the requirements document's tier tables.  They
-are checked in both directions so adding a document to either side cannot
-silently change the corpus denominator.  Worksheet regions are deliberately
-excluded: they inherit maintenance ownership from their parent booklet and
-are not independent tier entries.
+machine-readable projection of the requirements document's tier tables.  The
+explicit ``core_plus_documents`` list records John's core-membership additions
+that are not priority tiers.  Both inventories are checked in both directions
+so adding a document to either side cannot silently change the corpus
+denominator.  Worksheet regions are deliberately excluded: they inherit
+maintenance ownership from their parent booklet and are not independent tier
+entries.
 """
 
 from __future__ import annotations
@@ -28,6 +30,7 @@ class TierManifestReport:
 
     tax_year: str
     tiers: Mapping[str, tuple[str, ...]]
+    core_plus_document_ids: tuple[str, ...]
     tier_document_ids: tuple[str, ...]
     manifest_document_ids: tuple[str, ...]
     tier_not_in_manifest: tuple[str, ...]
@@ -43,6 +46,7 @@ class TierManifestReport:
         return {
             "tax_year": self.tax_year,
             "tiers": {name: list(ids) for name, ids in self.tiers.items()},
+            "core_plus_document_ids": list(self.core_plus_document_ids),
             "tier_document_ids": list(self.tier_document_ids),
             "manifest_document_ids": list(self.manifest_document_ids),
             "tier_not_in_manifest": list(self.tier_not_in_manifest),
@@ -56,6 +60,7 @@ class TierManifestReport:
             "=== tier and manifest reconcile ===",
             f"  tax year: {self.tax_year}",
             f"  tier documents: {len(self.tier_document_ids)}",
+            f"  core-plus documents: {len(self.core_plus_document_ids)}",
             f"  manifest documents: {len(self.manifest_document_ids)}",
             "  tier not in manifest: " + ", ".join(self.tier_not_in_manifest or ("-",)),
             "  manifest not in tier: " + ", ".join(self.manifest_not_in_tier or ("-",)),
@@ -106,6 +111,43 @@ def load_document_tiers(
     return result
 
 
+def load_core_plus_document_ids(
+    *,
+    root: str | Path | None = None,
+    path: str | Path | None = None,
+    year: str | int = "2025",
+) -> tuple[str, ...]:
+    """Load core documents that are not named by a requirements priority tier."""
+    root_path = Path(root).resolve() if root is not None else project_root()
+    tier_path = Path(path) if path is not None else root_path / DEFAULT_TIER_PATH
+    if not tier_path.is_absolute():
+        tier_path = root_path / tier_path
+    payload = load_yaml(tier_path) or {}
+    if str(payload.get("tax_year")) != str(year):
+        raise ValueError(
+            f"document tier tax_year {payload.get('tax_year')} does not match requested year {year}"
+        )
+    raw_ids = payload.get("core_plus_documents") or []
+    if not isinstance(raw_ids, list):
+        raise ValueError(f"document tier core_plus_documents must be a list: {tier_path}")
+    ids = tuple(str(item).strip() for item in raw_ids)
+    if any(not item for item in ids) or len(set(ids)) != len(ids):
+        raise ValueError(
+            f"document tier core_plus_documents must be unique and non-empty: {tier_path}"
+        )
+    tier_ids = {
+        item
+        for values in load_document_tiers(root=root_path, path=tier_path, year=year).values()
+        for item in values
+    }
+    overlap = sorted(set(ids) & tier_ids)
+    if overlap:
+        raise ValueError(
+            "core-plus documents must not also be named by a tier: " + ", ".join(overlap)
+        )
+    return ids
+
+
 def load_core_document_ids(
     *,
     root: str | Path | None = None,
@@ -138,10 +180,12 @@ def load_core_document_ids(
         for values in load_document_tiers(root=root_path, path=tier_path, year=year).values()
         for item in values
     }
+    tier_ids.update(load_core_plus_document_ids(root=root_path, path=tier_path, year=year))
     missing = sorted(set(ids) - tier_ids)
     if missing:
         raise ValueError(
-            "core documents must also be named by a tier: " + ", ".join(missing)
+            "core documents must also be named by a tier or core-plus list: "
+            + ", ".join(missing)
         )
     return ids
 
@@ -161,16 +205,19 @@ def reconcile_tier_manifest(
             f"manifest tax_year {active_manifest.tax_year} does not match requested year {year}"
         )
     tiers = load_document_tiers(root=root_path, path=tier_path, year=year)
-    tier_ids = tuple(document_id for ids in tiers.values() for document_id in ids)
+    core_plus_ids = load_core_plus_document_ids(root=root_path, path=tier_path, year=year)
+    tier_ids = tuple(document_id for values in tiers.values() for document_id in values)
+    inventory_ids = tier_ids + core_plus_ids
     manifest_ids = tuple(
         entry.document_id for entry in active_manifest.documents if not entry.is_region
     )
-    tier_set = set(tier_ids)
+    tier_set = set(inventory_ids)
     manifest_set = set(manifest_ids)
     return TierManifestReport(
         tax_year=str(year),
         tiers=tiers,
-        tier_document_ids=tier_ids,
+        core_plus_document_ids=core_plus_ids,
+        tier_document_ids=inventory_ids,
         manifest_document_ids=manifest_ids,
         tier_not_in_manifest=tuple(sorted(tier_set - manifest_set)),
         manifest_not_in_tier=tuple(sorted(manifest_set - tier_set)),

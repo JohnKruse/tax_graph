@@ -22,6 +22,13 @@ core_documents:
 - instructions_schedule_d_2025
 - form_1116_2025
 - instructions_form_1116_2025
+core_plus_documents:
+- instructions_schedule_b_2025
+- schedule_a_2025
+- instructions_schedule_a_2025
+- schedule_1a_2025
+- form_6251_2025
+- instructions_form_6251_2025
 tiers:
   T1:
   - form_1040_2025
@@ -33,18 +40,12 @@ tiers:
   - form_1099_int_2025
   - form_1099_div_2025
   - schedule_b_2025
-  - instructions_schedule_b_2025
-  - schedule_a_2025
-  - instructions_schedule_a_2025
-  - schedule_1a_2025
-  - form_6251_2025
-  - instructions_form_6251_2025
   T2:
   - form_1099b_2025
   - form_8949_2025
-  - instructions_form_8949_2025
   - schedule_d_2025
   - instructions_schedule_d_2025
+  - instructions_form_8949_2025
   T4:
   - form_1116_2025
   - instructions_form_1116_2025
