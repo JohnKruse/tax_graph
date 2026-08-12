@@ -13,6 +13,8 @@ from tax_graph.acquire.corpus import (
     reconcile_tier_manifest,
 )
 from tax_graph.acquire.manifest import AcquisitionManifest, ManifestEntry, validate_manifest_data
+from tax_graph.io.loader import load_graph
+from tax_graph.output.field_maps import validate_exposed_pdf_fields
 from pilot.maintenance_report import build_refusal_report
 
 
@@ -159,6 +161,53 @@ def test_live_tier_projection_matches_requirements_tables() -> None:
         "form_6251_2025",
         "instructions_form_6251_2025",
     }
+
+
+def test_form_1116_is_an_explicit_planned_document_without_graph_objects() -> None:
+    graph = load_graph(2025, root=ROOT)
+    document = next(
+        item for item in graph.items("documents") if item["document_id"] == "form_1116_2025"
+    )
+
+    assert document["status"] == "planned"
+    assert "line model must be generated" in document["stub_message"]
+    for kind in ("nodes", "edges", "rules"):
+        assert all(
+            "form_1116_2025" not in str(item)
+            for item in graph.items(kind)
+        )
+
+
+def test_planned_acroform_is_skipped_but_modelled_inventory_drift_fails(tmp_path: Path) -> None:
+    fitz = pytest.importorskip("fitz")
+    raw = tmp_path / ".cache" / "raw" / "2025"
+    documents = tmp_path / "graph" / "2025" / "documents"
+    raw.mkdir(parents=True)
+    documents.mkdir(parents=True)
+    (documents / "form-1116.yaml").write_text(
+        "document_id: form_1116_2025\nstatus: planned\n",
+        encoding="ascii",
+    )
+    (documents / "form-toy.yaml").write_text(
+        "document_id: form_toy_2025\nstatus: partial\n",
+        encoding="ascii",
+    )
+    for document_id in ("form_1116_2025", "form_toy_2025"):
+        document = fitz.open()
+        page = document.new_page()
+        widget = fitz.Widget()
+        widget.field_name = "amount"
+        widget.field_type = fitz.PDF_WIDGET_TYPE_TEXT
+        widget.rect = fitz.Rect(20, 20, 80, 40)
+        page.add_widget(widget)
+        document.save(raw / f"{document_id}.pdf")
+        document.close()
+
+    errors = validate_exposed_pdf_fields("2025", tmp_path)
+
+    assert errors == [
+        "exposed AcroForm form_toy_2025 -> missing committed field map and inventory"
+    ]
 
 
 def _write_project_manifest(root: Path) -> None:

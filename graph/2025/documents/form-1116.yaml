@@ -1,0 +1,8 @@
+document_id: form_1116_2025
+title: Form 1116 - Foreign Tax Credit (Individual, Estate, or Trust)
+tax_year: 2025
+document_type: tax_form
+document_class: return
+source_url: https://www.irs.gov/pub/irs-prior/f1116--2025.pdf
+status: planned
+stub_message: Form 1116 is acquired and rendered, but its line model must be generated before computation.

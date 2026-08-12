@@ -42,10 +42,16 @@ def validate_field_maps(
     *,
     node_ids: Iterable[str],
     frontier_ids: Iterable[str],
+    document_statuses: Mapping[str, str] | None = None,
     check_exposed_pdfs: bool = False,
 ) -> list[str]:
-    """Validate schemas and both sides of every authored field mapping."""
+    """Validate field mappings and enforce status-aware AcroForm coverage."""
     root_path = Path(root)
+    statuses = (
+        dict(document_statuses)
+        if document_statuses is not None
+        else _load_document_statuses(year, root_path)
+    )
     schema = json.loads((root_path / "schemas" / "field_map.schema.json").read_text(encoding="utf-8"))
     known_nodes = set(node_ids)
     known_frontier = set(frontier_ids)
@@ -143,18 +149,45 @@ def validate_field_maps(
                 )
             )
     if check_exposed_pdfs:
-        errors.extend(validate_exposed_pdf_fields(year, root_path))
+        errors.extend(validate_exposed_pdf_fields(year, root_path, document_statuses=statuses))
     return errors
 
 
-def validate_exposed_pdf_fields(year: str | int, root: str | Path) -> list[str]:
+def _load_document_statuses(year: str | int, root: Path) -> dict[str, str]:
+    """Read graph document lifecycle statuses for build-time boundary checks."""
+    documents_dir = root / "graph" / str(year) / "documents"
+    statuses: dict[str, str] = {}
+    for path in sorted(documents_dir.glob("*.yaml")):
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        if not isinstance(payload, Mapping):
+            continue
+        document_id = str(payload.get("document_id") or "").strip()
+        status = str(payload.get("status") or "").strip()
+        if document_id and status:
+            statuses[document_id] = status
+    return statuses
+
+
+def validate_exposed_pdf_fields(
+    year: str | int,
+    root: str | Path,
+    *,
+    document_statuses: Mapping[str, str] | None = None,
+) -> list[str]:
     """Compare every exposed AcroForm widget with its committed inventory/map.
 
     Instruction PDFs and other PDFs with no widgets are intentionally exempt.
+    Acquired documents marked planned, unsupported, or unresolved are also
+    exempt because they are not yet claimed as modelled graph inputs.
     PyMuPDF is imported only inside this build-time check so runtime modules stay
     free of build-only imports.
     """
     root_path = Path(root)
+    statuses = (
+        dict(document_statuses)
+        if document_statuses is not None
+        else _load_document_statuses(year, root_path)
+    )
     pdf_root = root_path / ".cache" / "raw" / str(year)
     if not pdf_root.is_dir():
         return []
@@ -168,6 +201,8 @@ def validate_exposed_pdf_fields(year: str | int, root: str | Path) -> list[str]:
         if not widget_names:
             continue
         document_id = pdf_path.stem
+        if statuses.get(document_id) in {"planned", "unsupported", "unresolved"}:
+            continue
         field_map = maps.get(document_id)
         if field_map is None:
             errors.append(f"exposed AcroForm {document_id} -> missing committed field map and inventory")

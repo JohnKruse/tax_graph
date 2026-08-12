@@ -48,7 +48,8 @@ def test_current_documents_have_role_axis_classes():
     graph = load_graph("2025", root=ROOT, include_extensions=False)
     documents = {item["document_id"]: item for item in graph.items("documents")}
 
-    assert len(documents) == 36
+    # S101 makes the acquired-but-unmodeled Form 1116 explicit as planned.
+    assert len(documents) == 37
     assert {item["document_class"] for item in documents.values()} == {
         "return",
         "information_return",
