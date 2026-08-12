@@ -21,7 +21,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX for ONE contract reconciliation. Everything else in S101 verifies.**
+**BALL: CODEX. The guard-test ruling he asked for is GRANTED below; everything else in S101 verifies.**
+
+**ARCHITECT RULING, 2026-08-12: THE WORKER WAS RIGHT TO STOP, AND THE R1 GUARD UPDATE IS APPROVED.**
+He refused to edit a guard test without an explicit ruling and modified nothing. **That is the rule
+working, not friction** - it is the same instinct that was correct at S90b.
+**THE RULING: extend the R1 filter, do NOT re-baseline the count.** Add a class exclusion for
+documents whose `status` is `planned`, `unresolved`, or `unsupported`, alongside the existing
+`document_type == "worksheet"` clause at `tests/test_address_contract_m15r.py:70`.
+**WHY A FILTER AND NOT A NEW NUMBER.** R1 freezes the *address* graph. A `planned` document carries
+no nodes, no edges, and no address bindings - **the failing run proves it, because all nine other
+counted kinds were byte-identical and only `documents` moved 17 -> 18.** Re-baselining would change
+what the number MEANS, from "the frozen address graph" to "whatever is in the graph today."
+**AND THIS IS A CLASS, NOT AN INSTANCE** - queue item 6 (out-of-corpus stubs) will add more
+acquired-but-unmodelled documents, so one principled clause now prevents a per-document exception
+each time.
+**ARCHITECT ERROR, RECORDED SO IT IS NOT RETRIED:** the Architect first proposed replacing the
+exclusion list with a positive "counts documents that carry address bindings" predicate. **It does
+not work** - only **15** documents have entries in `graph/2025/bindings/nodes` while the baseline
+freezes **17**, so that predicate cannot reproduce the contract. **Do not attempt it.**
+**THE FLOOR, and it is the anti-erosion clause:** the contract must STILL fail when a document that
+IS claimed as modelled is added or removed. **Prove it with a test**, in the same shape as
+`test_planned_acroform_is_skipped_but_modelled_inventory_drift_fails`. A filter that can be widened
+by setting a status flag is worth no more than the AcroForm check would have been. **Then the full
+suite returns to 17 red at 951 passed.**
 
 **FULL SUITE ON A QUIET TREE AT `db58775` (Architect, 2026-08-12): 18 failed, 951 passed, 8 skipped,
 1 xfailed in 1:01:47. That is the 17-red baseline PLUS EXACTLY ONE, and the one is ours.**
