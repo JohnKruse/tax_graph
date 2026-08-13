@@ -21,131 +21,105 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S103 is specced below. It is a PILOT round - provider-free, no graph writes, no
-CLI wiring - so it is cheap and it cannot destabilise the tree.**
+**BALL: CODEX. M20-S104 is specced below. PILOT round again - provider-free, no graph writes.**
+**This is the LAST measurement round before the storage change; it is bounded on purpose.**
 
-**M20-S102 IS ACCEPTED (`ee6eb55`, Architect, 2026-08-13). Verified by running the corpus and the
-suite, not by reading the report.**
-- **FULL SUITE, bare command, quiet tree: 18 failed, 960 passed, 8 skipped, 1 xfailed in 1:03:55,
-  ZERO errors.** The outcome total moved 979 -> 987 and **all 8 new outcomes are new tests** (7 in
-  `test_m20_s102.py`, 1 opt-in test in `test_m20_s91.py`). **All four reds the rework introduced are
-  gone and 7 more tests pass than at baseline.**
-- **THE GRAPH HAS A PRIOR-YEAR CONCEPT.** Simplified Method line 2 REFUSES a year-shifted operand,
-  lines 4 and 6 ADMIT one, and line 4 keeps its own `Divide line 2 by the number on line 3`. The
-  inversion that defined this round is fixed in both directions.
-- **THE SELECTOR IS SCOPED TO WHERE ITS PRODUCER IS TRUSTED.** 196 changed rows, **all on
-  worksheets, none on acquired forms**; truncations 17 -> 3, all three on worksheet table headers
-  that were dropped from scope; residual absorbed rows 0.
-- **THE CORPUS IS DEFINED BY RULE, NOT BY AN EXCLUSION LIST.** 731 rows over 35 documents,
-  `excluded_documents: []`, Form 2441 included. **That exclusion had hidden three failures.**
-- **CONTIGUITY IS BACK TO BASELINE EXACTLY.** An independent corpus-wide check (not the face report,
-  which was shown blind to this class) gives **992 spans, 7 non-contiguous, and the identical 992/7
-  at `58ae3b1`.**
-- **THE RE-BASELINE BOUGHT AN INVARIANT.** 44/27 -> 41/26 with the producer reason recorded, the
-  selected-row SET contract untouched, and a real contiguity assertion replacing a count.
+**WHY THE HANDOFF LOOKED STALE (Architect, 2026-08-13).** Codex completed S103 at `21cd81f` and
+recorded it correctly. **The file still said "Current round: M20-S103 / BALL: CODEX" because
+accepting a finished round and speccing the next one is the ARCHITECT's move and I never made it.**
+The scheduled check at 16:34 therefore found the only assigned round was one it had already
+finished, and **stopping was the right call.** Nothing was broken and nothing was lost - a turn of
+mine was missing. **Fixed here.**
 
-**THE 18 REDS ARE THE NEW PINNED BASELINE. ENUMERATED HERE SO NOBODY SPENDS ANOTHER HOUR ON IT.**
-**Seven confirmed identical at `58ae3b1`** by direct comparison in a short-path worktree with
-`.cache`, `graph/2025/_drafts` and `graph_ext` junctioned in:
-`test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
-`test_field_identity_m16::test_schedule_2_raw_cache_reproduces_target_fields`,
-`test_m20_s71::test_real_candidate_node_labels_use_clean_text`,
-`test_review_preflight_m15::test_real_2025_preflight_passes_with_all_coverage_dimensions`,
-`test_review_scope_migration_m15::test_live_queue_migration_gives_every_pending_entry_a_primary_target`
-(identical `FileNotFoundError` on a `review_queue/2025/deferred_review.yaml` absent from both trees),
-`test_schedule_2_m16::test_schedule_2_part_i_raw_acroform_identity`,
-`test_schedule_d_extraction_m9::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`.
-**Eleven are the `tests/e2e/*_m15.py` environment family**, unchanged for many rounds and not
-re-run.
+**M20-S103 IS ACCEPTED (`21cd81f`, Architect, 2026-08-13). Verified by running the pilot, not by
+reading the report.**
+- **731 rows over 35 documents, `excluded_documents: []`.** Every row is classified and none is
+  silently absent: **710 single-range, 11 multi-range, 10 unreconstructable with named reasons.**
+- **The tool is DETERMINISTIC** - two independent runs classified all 731 rows identically. For a
+  round whose whole product is a measurement, that was worth checking and it holds.
+- **THE KNOWN ANSWER LANDS.** Simplified Method line 2's range is **118182-118241**, inside the
+  "at or before 118265" the spec demanded, and the note appears as its own chunk with
+  **`kind: note`, `governs: ['3','4']`** - the exact fact two rounds were spent fighting as a regex.
+  The Capital Loss Carryover routing sentences after lines 4 and 8 are caught as
+  **`kind: routing_sentence`** with their targets.
+- **ALL SEVEN LAYOUT ROWS ARE MULTI-RANGE**, including `form_6251_2025` line 7 - **which I omitted
+  from the spec's list while calling it "all seven".** Codex flagged the arithmetic and the tool
+  handled the seventh anyway. **My error, correctly caught.**
+- **ZERO cross-row overlaps.** Expected post-S102 and worth stating: the face-level bleed is gone.
 
-**ONE COUNT IS UNRECONCILED AND I AM NOT PAPERING OVER IT.** 7 + 11 = 18, but the accepted baseline
-was recorded as **17 with no test ids enumerated**. **No current red is attributable to S102** - every
-one is either confirmed identical at baseline or in the e2e family. **The likely explanation is that
-the baseline denominator itself moves:** `test_address_campaign_m15r` and `test_review_preflight_m15`
-SKIP when `graph/2025/_drafts` is absent and FAIL when it is present, and drafts are regenerated
-every round. **That is the same disease as the 2441 exclusion - a measured set defined by whatever
-happens to be on disk.** Enumerating the 18 above is the fix; do not re-derive it.
+**THREE CORRECTIONS TO THE WORKER REPORT, none of them a code defect.**
+1. **The reported split is wrong.** The status says **704 single / 17 multi**; the committed tool
+   produces **710 single / 11 multi**, twice, deterministically. Totals and the unreconstructable
+   count agree. **Report stale numbers and the next round gets specced off fiction** - re-run before
+   quoting.
+2. **"679 meaningful unclaimed runs" overstates it.** The median unclaimed run is **38 characters**
+   and most previews are dot-leader and field scaffolding (`. . . . . 2. \_\_\_\_\_`). **Only 26 of
+   679 carry a kind and only 50 carry `governs`.** The number is real; the word "meaningful" is not
+   earned, and S104 exists to establish which ones are.
+3. **`form_1099_div_2025` line `2f` appears TWICE** in the unreconstructable list with two different
+   reasons. One printed address, two rows. Small, but it is an identity defect - name it or fix it.
 
 ## Current round
 
-**M20-S103 SPECCED BY ARCHITECT (2026-08-13). MEASURE THE EXTENTS BEFORE STORING THEM.**
-**PILOT ROUND** - standalone under `pilot/`, its own tests outside `tests/`, **no CLI wiring, no
-graph writes, no provider, and NO full-suite floor** (pilot rules, John 2026-08-06).
+**M20-S104 SPECCED BY ARCHITECT (2026-08-13). WHAT IS IN THE UNCLAIMED SOURCE?**
+**PILOT ROUND** - `pilot/` only, own tests, no CLI wiring, no graph writes, no provider, no
+full-suite floor. **AND IT IS THE LAST MEASUREMENT ROUND: the storage change is specced off its
+output, not after another survey.**
 
-**WHY THIS SHAPE.** `../docs/source-extents.md` is the pinned direction: a citation should record
-WHERE its text is rather than carry a copy. **But three of its four invariants presuppose that
-ranges exist, which is the storage change.** Wiring storage first would be the same mistake this
-project keeps paying for - a wire-touching change specced off two examples. **So this round derives
-ranges and MEASURES them, and changes nothing.** The measurement is what makes the storage round
-speccable.
+**WHY.** S103 answered the row question - **721 of 731 rows reconstruct from their source, and
+nothing overlaps.** The rows are in good shape. **What is NOT known is what sits in the 679
+unclaimed runs**, and that is the reliability question, because unclaimed source is text the
+pipeline currently drops on the floor. **Two open queue items are almost certainly hiding in there:**
+item 2 (170 anchors deriving with an empty instruction packet) and item 3 (untitled computations
+that carry worksheet weight). **Storing ranges without knowing what the unclaimed material contains
+would carry the same hole into a new representation.**
 
-**WHAT TO BUILD.** One pilot tool that, for every row of every corpus document, computes the
-range or ranges in the acquired source that its face came from, and reports:
-1. **Rows whose face cannot be reconstructed** from any range set, with the reason.
-2. **Overlapping ranges between different rows of the same document** - this is the bleed, expressed
-   as arithmetic instead of a regex hunting for `Note.`.
-3. **Unclaimed runs of source** between claimed ranges - these are the unnumbered notes, routing
-   sentences and table headers that currently get glued onto a neighbour.
-4. **Rows that legitimately need more than one range**, reported as a distinct class and NOT as a
-   defect.
+**WHAT TO BUILD.** Extend the S103 pilot to partition every unclaimed run into:
+1. **SCAFFOLDING** - dot leaders, field markers, catalog numbers, `Cat. No.`, form footers,
+   page furniture. Carries no rule and no meaning. **Expect this to be the large majority.**
+2. **RULE-BEARING** - text that states or conditions a computation: routing sentences, notes,
+   thresholds, `If ... skip lines ... go to line`, table headers that name columns used by a rule.
+3. **UNDECIDED** - everything else, reported with its preview, never silently folded into either.
 
-**THE KNOWN ANSWERS IT MUST REPRODUCE. These are measured, not guessed.**
-- **Simplified Method line 2's range must END at or before source offset 118265**, and the note at
-  **118266-118490** must appear as an unclaimed run or a non-row chunk, **naming line 4**, which it
-  references twice. This is the exact defect the last two rounds were spent on.
-- **Capital Loss Carryover lines 4 and 8** must not claim the routing sentences that follow them.
-- **THE NEGATIVE FIXTURE, AND IT IS THE ONE THE ARCHITECT GOT WRONG:** `form_6251_2025` line 5,
-  `schedule_d_2025` line 21, and `form_1116_2025` lines `1a`, `3b`, `10`, `18` **are NOT defects.**
-  They are multi-column and braced layouts where the face's reading order is legitimately not the
-  linear order of the source. **All seven must land in the multi-range class.** A tool that calls
-  them broken has reproduced the Architect's error of 2026-08-13 and is wrong.
+**THE REPORT THAT MATTERS**, and it is one table: **per core document, how many characters of
+rule-bearing source are currently unclaimed by any row.** That number is the size of what the
+pipeline is dropping, it has never been measured, and the storage round is specced from it.
+
+**DO NOT BUILD A BIGGER CUE MATCHER.** S103's own `kind` classification is pattern-based and
+reaches only 26 of 679 runs - **the same keying-on-printed-tokens this whole line of work exists to
+end.** Prefer decisions that fall out of structure already present: a run that lies between two
+rows of the same document, a run that names a printed line, a run that is bounded by the source's
+own line breaks. **Where a judgement genuinely needs prose understanding, report it as UNDECIDED and
+say so - an honest undecided bucket is the deliverable, a confident wrong bucket is not.**
 
 **THE FLOOR.**
-- **Runs over the full corpus by the manifest rule** - 35 documents, 731 rows, **no exclusion list.**
-- **Every row is classified**: reconstructed from one range, reconstructed from several, or
-  unreconstructable with a named reason. **No row is silently absent.**
-- **The counts are reported, not asserted into the code.** This round measures; it does not pin.
-- **The four known-answer cases above hold**, with the seven negative-fixture rows in the multi-range
-  class.
+- **Every one of the 679 runs lands in exactly one of the three partitions.** No run is unreported.
+- **The per-document rule-bearing character count is reported for all 35 documents.**
+- **The Simplified Method note, and the Capital Loss routing sentences after lines 4 and 8, are
+  RULE-BEARING.** They are the known answers; a partition that calls them scaffolding is wrong.
+- **Dot-leader-only and `Cat. No.` runs are SCAFFOLDING.** The opposite error, equally checkable.
+- **The S103 numbers are re-run and quoted from the artifact**, correcting 704/17 to whatever the
+  committed tool actually produces.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, pilot tests green.
-- **Nothing under `tax_graph/` changes.** If the derivation needs something from production, read it;
-  do not modify it.
+- **Nothing under `tax_graph/` changes.**
 
-**OUT OF SCOPE.** The citation schema, the storage change, re-promotion of the worksheets, the 3
-remaining worksheet truncations, the acquired-form end-anchor repair, and the information returns.
-**All of those are specced off THIS round's measurement, not ahead of it.**
+**OUT OF SCOPE.** The citation schema, storage, re-promotion, the information returns, and any
+change to production extraction. **The next round after this one is the storage change, and it is
+the Architect's to spec.**
 
 ## Open for Architect
 
-Nothing blocking. **M20-S102 is accepted at `ee6eb55`, the 18-red baseline is enumerated in BALL,
-and M20-S103 is specced above and needs no decision to start.**
+Nothing blocking. **S103 accepted at `21cd81f`; S104 specced above and needs no decision to start.**
 
-**Two items carried for the Architect, neither blocking S103.**
-1. **The live nine-row `row_bench.py` leg was never spent** on S102 - deliberately, since the rows
-   kept moving. The gate is verified correct deterministically on the real rows, which is stronger
-   evidence than a provider run, but **the live leg remains unrun and should not be claimed.**
-2. **This file was pruned at S102 acceptance** per the standing rule. **The older Worker-completion
-   sections below were left alone deliberately** while John was away; they are stale and should be
-   pruned at the next acceptance.
+**Carried, not blocking.** The live nine-row `row_bench.py` leg has still never been spent - the
+prior-year gate is verified deterministically on real rows, which is stronger, but the live leg
+must not be claimed as run. **The stale Worker-completion sections below predate S102 and should be
+pruned at the next acceptance.**
 
-**M20-S103 WORKER STATUS (2026-08-13):** Implemented the read-only provider-free pilot in
-`pilot/source_extents.py`, its focused real-corpus tests, and the pilot README. The pilot changes
-no production code, graph artifacts, or manifest. The report accounts for **731 rows across 35
-non-empty corpus documents**, with **704 single-range, 17 multi-range, 10 unreconstructable with
-named reasons, zero cross-row overlaps, and 679 meaningful unclaimed runs**. The Simplified
-Method line 2 range ends at **118241**, and the unclaimed run from **118241-118491** includes the
-note naming line 4. The named layout rows land in the multi-range class.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s103'; .venv\\Scripts\\python.exe -m pytest pilot\\test_source_extents_s103.py -q` -> **4 passed, 1 warning** in 39.36s.
-RAN: `.venv\\Scripts\\python.exe pilot\\source_extents.py --output C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s103\\source_extents.yaml` -> **exit 0**, 731 rows measured.
-RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: full suite; this is an explicitly provider-free pilot round and the round spec does not
-require the full-suite floor. NOT RUN: provider leg; no provider is in scope.
-
-**SPEC AMBIGUITY TO RESOLVE BEFORE THE STORAGE ROUND:** the S103 known-answer prose says "all
-seven" but names six row ids (`6251:5`, `Schedule D:21`, and `1116:1a`, `3b`, `10`, `18`). The
-pilot guards all six named rows; no seventh identifier was supplied.
+**PROCESS NOTE FOR THE WORKER.** S103's focused run set `PYTEST_DEBUG_TEMPROOT` by hand. **BALL
+above and `AGENTS.md` both say to use the bare `python -m pytest` command**: `conftest.py` pins the
+temp root with `setdefault`, so an exported value REPLACES it and turns green tests into setup
+errors. It did no harm on a single pilot file, but it is the rule that voided two full-suite runs.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
