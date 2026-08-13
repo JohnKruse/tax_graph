@@ -566,6 +566,13 @@ NOT RUN: full suite and Architect live row bench; the extent gate is not accepte
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
 
+**DIRECTION PINNED 2026-08-13 IN `../docs/source-extents.md`. DO NOT REDESIGN IT HERE.** A citation
+should record WHERE its text is, not carry a copy of it, and a source chunk that is not a numbered
+row should say what it is and what it governs. **The queue has NOT been reshaped around it yet -
+that is John's call.** What the doc settles is that items 2, 3, 6 and the recurring extent defects
+are one root cause and should stop being specced as separate cue-matching repairs. **The S102
+rework finish list stands unchanged and is still the immediate work.**
+
 1. **[SPECCED AS M20-S102, 2026-08-12 - see Current round]
    PRIOR-YEAR DOCUMENTS ARE A CATEGORY THE GRAPH HAS NO CONCEPT OF** (Architect, measured
    2026-08-11 on the live derivation of the promoted worksheets). Simplified Method lines 2 and 6
