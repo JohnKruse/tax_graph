@@ -121,6 +121,21 @@ above and `AGENTS.md` both say to use the bare `python -m pytest` command**: `co
 temp root with `setdefault`, so an exported value REPLACES it and turns green tests into setup
 errors. It did no harm on a single pilot file, but it is the rule that voided two full-suite runs.
 
+**M20-S104 WORKER STATUS (2026-08-13):** Extended the read-only S103 pilot to partition every
+unclaimed run into `scaffolding`, `rule_bearing`, or `undecided`, with a partition reason and a
+35-document `unclaimed_rule_bearing_characters_by_document` report. The classifier is conservative:
+page/layout furniture is scaffolding, explicit conditions/operations/routing/table rules are
+rule-bearing, and unsupported prose stays undecided. The current real-corpus report has **679
+runs: 411 scaffolding, 74 rule-bearing, 194 undecided**, and **16,211 rule-bearing characters**.
+The pilot remains under `pilot/`; nothing under `tax_graph/`, the graph, or the manifest changed.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_source_extents_s103.py pilot\test_source_extents_s104.py -q` -> **8 passed, 1 warning** in 80.04s.
+RAN: `.venv\Scripts\python.exe pilot\source_extents.py --output .test_tmp_s104\source_extents_s104.yaml` -> **exit 0**, 731 rows and 679 unclaimed runs measured.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: full suite; this is the explicitly provider-free pilot and the round spec does not
+require the full-suite floor. NOT RUN: provider leg; no provider is in scope.
+
 ## Queued (ONE LINE each - do not spec ahead)
 
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.

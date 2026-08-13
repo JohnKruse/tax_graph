@@ -29,12 +29,28 @@ review state.
 `source_extents.py` is a provider-free, read-only measurement of the acquired source ranges
 behind the current form-face evidence spans. It runs the manifest-defined form and worksheet
 corpus, classifies every row as one range, multiple ranges, or an unreconstructable row with a
-reason, and reports overlaps plus meaningful unclaimed source runs. It does not write graph
+reason, and reports overlaps plus unclaimed source runs. It does not write graph
 state or change production code.
 
 Run it with:
 
     .venv\Scripts\python.exe pilot\source_extents.py --output C:\tmp\m20_s103\source_extents.yaml
+
+## M20-S104 unclaimed-source partition pilot
+
+The same read-only report partitions every S103 unclaimed run into `scaffolding`,
+`rule_bearing`, or `undecided`. The partition is deliberately conservative: layout and page
+furniture are scaffolding, explicit conditions and operations are rule-bearing, and prose that
+needs a judgment the pilot cannot prove remains undecided with an ASCII preview. The report
+also includes `unclaimed_rule_bearing_characters_by_document`, including zero-valued entries,
+so the storage round can size the text that is currently dropped.
+
+Run it with:
+
+    .venv\Scripts\python.exe pilot\source_extents.py --output C:\tmp\m20_s104\source_extents.yaml
+
+This pilot only measures acquired source. It does not add citation ranges, write graph state,
+or change production extraction.
 
 ## M20-S88 context arms
 

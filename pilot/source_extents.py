@@ -33,6 +33,28 @@ ROUTING_RE = re.compile(
     re.IGNORECASE,
 )
 LINE_RE = re.compile(r"\bline\s+([0-9]+[a-z]?)\b", re.IGNORECASE)
+FURNITURE_RE = re.compile(
+    r"\b(?:paperwork\s+reduction\s+act|privacy\s+act|cat\.?\s+no\.?|"
+    r"attachment\s+sequence|created\s+[0-9/]+|omb\s+no\.?|"
+    r"department\s+of\s+the\s+treasury|internal\s+revenue\s+service)\b",
+    re.IGNORECASE,
+)
+RULE_CONDITION_RE = re.compile(
+    r"\b(?:if|unless|when|only\s+if|otherwise|must|do\s+not|don't|"
+    r"check\s+if|complete|attach|claim|file)\b",
+    re.IGNORECASE,
+)
+RULE_OPERATION_RE = re.compile(
+    r"\b(?:enter|add|subtract|multiply|divide|include|exclude|report|"
+    r"apply|use|calculate|compute|sum|total|amount\s+from)\b",
+    re.IGNORECASE,
+)
+THRESHOLD_RE = re.compile(
+    r"\b(?:over|under|less\s+than|greater\s+than|more\s+than|"
+    r"at\s+least|not\s+over|exceeds|equal(?:s)?|between)\b|\$\s*[0-9]",
+    re.IGNORECASE,
+)
+MARKDOWN_TABLE_RE = re.compile(r"\|[^\r\n]*\|(?:\s*\|[^\r\n]*\|)+")
 
 
 @dataclass(frozen=True)
@@ -243,6 +265,56 @@ def _meaningful_gap(value: str) -> bool:
     return bool(re.sub(r"[\s._|\\-]+", "", value))
 
 
+def _layout_only(value: str) -> tuple[bool, str]:
+    """Recognize only source gaps that are mechanically safe to call scaffolding."""
+    if FURNITURE_RE.search(value):
+        return True, "page_or_form_furniture"
+    if not re.search(r"[A-Za-z]", value):
+        return True, "non_lexical_layout"
+    words = re.findall(r"[A-Za-z]+", value)
+    if words and all(len(word) == 1 for word in words) and DOT_LEADER_RE.search(value):
+        return True, "field_marker_layout"
+    if MARKDOWN_TABLE_RE.fullmatch(value.strip()):
+        cells = [cell.strip() for cell in value.split("|") if cell.strip()]
+        if cells and all(not re.search(r"[A-Za-z]{2,}", cell) for cell in cells):
+            return True, "table_layout_markers"
+    return False, ""
+
+
+def partition_unclaimed_text(value: str, *, kind: str = "") -> tuple[str, str]:
+    """Conservatively partition an unclaimed source gap for the S104 pilot.
+
+    Scaffolding is limited to mechanically recognizable layout and page
+    furniture. Rule-bearing requires an explicit condition, operation,
+    routing instruction, threshold, or table rule. Everything else remains
+    undecided so the measurement does not turn a growing cue list into a
+    hidden extraction policy.
+    """
+    is_layout, layout_reason = _layout_only(value)
+    if is_layout:
+        return "scaffolding", layout_reason
+
+    if ROUTING_RE.search(value):
+        return "rule_bearing", "routing_instruction"
+    if RULE_CONDITION_RE.search(value):
+        return "rule_bearing", "condition_or_filer_instruction"
+    if RULE_OPERATION_RE.search(value) and (
+        LINE_RE.search(value) or THRESHOLD_RE.search(value)
+    ):
+        return "rule_bearing", "operation_instruction"
+    if THRESHOLD_RE.search(value) and (
+        LINE_RE.search(value) or re.search(r"\b(?:then|column|filing\s+status)\b", value, re.I)
+    ):
+        return "rule_bearing", "threshold"
+    if kind == "table_or_header" and (
+        LINE_RE.search(value) or re.search(r"\b(?:column|then|enter)\b", value, re.I)
+    ):
+        return "rule_bearing", "rule_table_header"
+    if kind == "note" and re.search(r"\b(?:note|caution)\b", value, re.I):
+        return "rule_bearing", "note_or_caution"
+    return "undecided", "no_structural_rule_evidence"
+
+
 def _corpus_entries(manifest: AcquisitionManifest) -> tuple[ManifestEntry, ...]:
     """Return the manifest-defined form/region corpus with no exclusion list."""
     return tuple(
@@ -371,13 +443,19 @@ def _add_unclaimed_runs(
             gap = source[start:end]
             if not _meaningful_gap(gap):
                 continue
+            partition, partition_reason = partition_unclaimed_text(
+                gap, kind=_gap_kind(gap)
+            )
             unclaimed.append(
                 {
                     "source_document_id": source_id,
+                    "document_id": previous_owner.split(":", 1)[0],
                     "source_window": {"start": window_start, "end": window_end},
                     "start": start,
                     "end": end,
                     "kind": _gap_kind(gap),
+                    "partition": partition,
+                    "partition_reason": partition_reason,
                     "governs": _governs(gap),
                     "text_fingerprint": _fingerprint(gap),
                     "preview": _ascii_preview(gap),
@@ -473,8 +551,16 @@ def measure_source_extents(*, root: str | Path, year: str | int = "2025") -> dic
     }
     row_document_ids = sorted({str(record["document_id"]) for record in records})
     unclaimed = _add_unclaimed_runs(claims, source_texts)
+    partition_counts = {
+        partition: sum(item["partition"] == partition for item in unclaimed)
+        for partition in ("scaffolding", "rule_bearing", "undecided")
+    }
+    rule_bearing_chars_by_document = {document_id: 0 for document_id in row_document_ids}
+    for item in unclaimed:
+        if item["partition"] == "rule_bearing":
+            rule_bearing_chars_by_document[item["document_id"]] += item["end"] - item["start"]
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "year": year_text,
         "documents": row_document_ids,
         "manifest_documents": sorted(all_manifest_ids),
@@ -486,10 +572,13 @@ def measure_source_extents(*, root: str | Path, year: str | int = "2025") -> dic
             "classification": status_counts,
             "overlaps": len(overlaps),
             "unclaimed_runs": len(unclaimed),
+            "unclaimed_partitions": partition_counts,
+            "unclaimed_rule_bearing_characters": sum(rule_bearing_chars_by_document.values()),
         },
         "rows": records,
         "overlaps": overlaps,
         "unclaimed_runs": unclaimed,
+        "unclaimed_rule_bearing_characters_by_document": rule_bearing_chars_by_document,
         "source_cursors": source_cursors,
     }
 
