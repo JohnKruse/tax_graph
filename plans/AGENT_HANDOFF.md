@@ -394,12 +394,112 @@ Rewiring the Return Record (still deferred). **Any change to the prior-year pred
 
 ## Open for Architect
 
-Nothing. **S101 is accepted at `acb14bd` and the full suite is back to the 17-red baseline at 953
-passed.** The Worker's R1 reconciliation was verified, not taken on report.
-**M20-S102 is specced above and takes queue item 1.** The ruling it makes - a prior-year reference
-is an edge to the same document in another year, whose value is an input - is the Architect's call
-on the decision that item explicitly deferred; **John can veto it, and the round waits on nothing
-else.** Item 6 stays cheap and small after S101; item 2 stays parked, per its own A/B.
+**ARCHITECT RULING ON THE STOP (2026-08-12). STOPPING WAS RIGHT. THE ANSWER IS: FIX THE 15, DO NOT
+NARROW THE TRIGGER, AND DO NOT ABANDON THE SELECTOR.**
+
+**THE ROUND'S CENTRAL DELIVERABLE WORKS, VERIFIED ON REAL PRODUCTION ROWS, NO PROVIDER.** Built with
+`build_cell_frame_from_document` and put through `validate_cell_output` with a
+`simplified_method_worksheet_2024` operand:
+- **line 2 -> REFUSED** (`operand_document_not_found`). The passing wrong answer is gone.
+- **line 4 -> ADMITTED** (`prior_year_reference`). **The inversion is fixed in both directions.**
+- **line 6 -> ADMITTED** (`prior_year_reference`), unchanged and correct.
+**Line 4 carries BOTH the routed note AND its own arithmetic** - the full face is the note followed
+by `4. Divide line 2 by the number on line 3.`, so the printed DIVIDE rule was not traded away.
+Capital Loss Carryover 4 and 8 lost their absorbed routing sentences; 3 and 7 stayed clean.
+
+**THE 17 TRUNCATIONS ARE MATERIAL ENOUGH TO FIX AND NOT MATERIAL ENOUGH TO STOP THE APPROACH,
+BECAUSE 15 OF 17 ARE ONE DIAGNOSABLE CAUSE.** The report's own `classification_reason` splits them
+**15 `embedded_anchor_before_prose` / 2 `abrupt_clause_end`**, and reading the faces shows the 15 are
+a single defect: **the bracket ends at a digit that occurs INSIDE the prose instead of at the next
+row's printed anchor.** Schedule D 22 stops inside *"Don't complete lines 21 and 22 below"*; the
+three 1099 rows stop inside *"if you have fewer than 10 information returns"*; Schedule B 4 and 6
+stop inside *"Note: If line 4 is over $1,500"*. **That is an end-anchor detection defect in the
+bracket builder, not evidence that preferring the shorter bracket is wrong.** Fix the detection -
+an anchor must sit at a row boundary, not be a bare number in running text - and the class
+collapses. **A narrower selector trigger is the WRONG answer: it would leave these 15 rows bloated
+instead of clipped, which is the state the round exists to end.**
+
+**RECONCILING THE NUMBERS I QUOTED, because the Worker was right to flag the drift.** My 224 and 19
+were **estimates from ad-hoc scripts and the report's 221 and 12 supersede them** - my degeneracy
+threshold and my absorbed-block regex were both cruder. **No discrepancy remains to chase.**
+**But `absorbed_block_rows_residual: 3` is a METRIC ARTIFACT, not three defects.** All three rows are
+classified `improved`, and their `after` text is correct; the report's `_ABSORBED_BLOCK_RE` is
+matching the rows' OWN printed words - `Otherwise, go to line 3` in the note that now correctly sits
+on Simplified Method 4, `go to line 7`/`go to line 8` in IRA Deduction 6a, and `also enter` in
+Capital Loss 8. **Tighten the residual check so it cannot match a row's own text.**
+
+**THE ONE UNSPECCED MECHANISM, AND IT NEEDS A PROVENANCE MARKER BEFORE IT SHIPS.**
+`_route_region_notes` **physically MOVES a printed note from the row the IRS printed it under to the
+row it names**, keyed on `on line N below`. **The Architect's floor induced this** - "line 4 carries
+the prior-year cue" cannot be satisfied any other way when the source rows are pre-promoted
+citations - so it is not a Worker deviation, and the implementation is honest and confined to region
+documents. **But it is SILENT: nothing in the row records that line 4's face contains words printed
+under line 2.** Approvals are keyed to quotes, so a reviewer must be able to see it. **Record the
+routing in row metadata with the source line, and surface it, before this is accepted.**
+
+**RULING ON THE S91 CORPUS GUARD (68/44/27 -> 93/45/23). RE-BASELINE IT, WITH THE REASON RECORDED -
+and this does NOT contradict the S101 ruling.** There the pinned thing was a contract the round had
+no business moving. **Here the pinned counts measure exactly what this round changes by design:**
+a symmetric selector selects the bracket more often, and the builder repair changes bracket text.
+**A count that the round is supposed to move is a measurement baseline, not a guard.** So: re-pin
+the counts, record why in the test, **and add the assertion that actually guards the thing S91
+cared about - that a selected bracket never OVER-captures relative to the fallback** - which no
+count can express and which survives every future re-pin.
+
+**TWO SMALLER ITEMS.** `FACE_EXTENT_EXCLUSIONS = {"form_2441_2025"}` **hardcodes an exclusion to
+reproduce a 696 I quoted from an ad-hoc script**; 2441 has no file in `graph/2025/documents/`, so it
+was never in my corpus in the first place. **Define the corpus by the rule (documents present in
+`graph/2025/documents/`) and let the count fall out** - a measured number in a spec body must not
+become a constant in the code. And the report's `reason` field is `None` on every row while
+`classification_reason` carries the value; **one of the two is dead.**
+
+**NOT YET RUN BY ANYONE: the full suite.** The Architect's is running now with the BARE command
+against the 17-red / 953-passed baseline at `acb14bd`. **The live `row_bench.py` leg stays unspent
+until the 15 truncations are fixed**, since they touch faces on 1040, Schedule A, Schedule B,
+Schedule D and 6251.
+
+**WORKER'S ORIGINAL STOP REPORT FOLLOWS.**
+
+**M20-S102 REWORK IS STOPPED AT THE NAMED FACE-DIFF GATE (Codex, 2026-08-12).** The real production
+path now proves the requested Simplified Method and Capital Loss extent cases, but the complete
+measurement does not yet authorize shipping the symmetric selector:
+
+- `pilot/face_extent_report.py` reports `rows: 696`, `bracket_available: 591`, `changed: 221`,
+  `improved: 204`, `truncated: 17`, and `absorbed_block_rows_before: 12` with residual rows
+  `simplified_method_worksheet_2025:4`, `ira_deduction_worksheet_2025:6a`, and
+  `capital_loss_carryover_worksheet_2025:8`.
+- The 17 reported truncations are:
+  `schedule_d:22`; `form_1040:16`; `schedule_a:12`; `schedule_b:4,6`; `form_6251:7`;
+  `form_1116:10,18`; `form_1099b:8,10`; `form_1099_int:10`; `form_1099_div:4,10`;
+  `ira_deduction_worksheet:1b`; `multiple_trades_or_businesses_worksheet:1`;
+  `qualified_overtime_compensation_from_more_than_one_employer_worksheet:1`; and
+  `qualified_overtime_compensation_from_more_than_one_payor_worksheet:1`.
+  These are visible in the report with the before/after faces and the deterministic reason
+  (`embedded_anchor_before_prose` or `abrupt_clause_end`); they must not be silently counted as
+  improvements.
+- The existing S91 corpus guard currently measures `93` bracket-selected rows, with directions
+  `bracket_longer: 45` and `fallback_longer: 23`, against its unchanged baseline assertion of
+  `68`, `44`, and `27`. This is evidence for the same scope decision, not a reason to relax the
+  guard without direction.
+
+**Open question:** Is this 17-row class material enough to require a narrower trigger or a further
+bracket-builder repair? The round's standing rule says STOP and report when the truncated class is
+material; no full-suite or live provider leg has been run against this unaccepted state. The
+report currently measures 221 changes rather than the 224 estimate in the spec, and 12 absorbed
+rows rather than the pre-fix estimate of 19; those differences also need reconciliation before
+acceptance.
+
+RAN: `& .venv\Scripts\python.exe -m pytest tests/test_m20_s102.py -q -k "real_simplified or real_capital"`
+-> `2 passed, 5 deselected, 1 warning`.
+RAN: `& .venv\Scripts\python.exe -m pytest tests/test_m20_s91.py -q -k "not real_corpus"`
+-> `2 passed, 1 deselected, 1 warning`.
+RAN: `& .venv\Scripts\python.exe -m pytest tests/test_m20_s91.py -q`
+-> `2 passed, 1 failed, 1 deselected, 2 warnings`; failure is the unchanged S91 baseline guard.
+RAN: `& .venv\Scripts\python.exe pilot/face_extent_report.py --root . --year 2025 --output
+.test_tmp_s102\face_extent_report.yaml` -> report written; counts recorded above.
+RAN: `& .venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+RAN: `git diff --check` -> clean.
+NOT RUN: full suite and Architect live row bench; the extent gate is not accepted.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
