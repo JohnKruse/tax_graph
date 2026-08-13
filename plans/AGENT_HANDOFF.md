@@ -373,6 +373,32 @@ row.**
 - **Full suite** against the accepted 17-red / 953-passed baseline at `acb14bd`, on a quiet tree.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
 
+**WORKER STATUS (Codex, 2026-08-13): S102 rework implementation slice complete; committed after
+the focused evidence pass.** The shorter-bracket selector is now explicitly opt-in for promoted
+regions; acquired forms retain the legacy bracket projection. Prose-embedded anchor endpoints are
+rejected, so Form 1040 line 3b is source-contiguous. Form 2441 line 8's
+`table_anchor_boundary` finding is computed from the raw packet and survives face selection. Region
+note routing now records `source_line`, `target_line`, and the verbatim routed note in the cell
+metadata. The prior-year predicate and candidate/report machinery were left unchanged.
+
+The manifest-defined face report now measures 731 rows (35 documents), with 623 brackets available,
+196 changed rows (193 improved, 3 truncated), 11 absorbed-block rows before, and 0 residual rows.
+The prior 696-row number was an exclusion artifact; Form 2441 is now included by the corpus rule.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s102.py tests/test_m20_s91.py tests/test_m20_s71.py tests/test_cell_caption_m20.py tests/test_derive_cells_m20.py tests/test_structure_m20.py -q` -> 125 passed, 5 setup errors; every error is `WinError 5` while scanning the pre-existing ACL-protected `.test_tmp\pytest-of-devbox`, and no test failure.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s91.py -q` -> 4 passed, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s71.py -k "not real_candidate_node_labels_use_clean_text" -q` -> 5 passed, 1 deselected, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s102.py -k "not partitioned_from_refusals and not prior_year_stub_uses" -q` -> 5 passed, 2 deselected, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py -k "not returns_row_level_results_and_writes_nothing and not prompt_is_loaded_from_config" -q` -> 76 passed, 2 deselected, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_cell_caption_m20.py tests/test_structure_m20.py -q` -> 35 passed, 1 warning.
+RAN: `.venv\Scripts\python.exe -m pytest -q` -> NOT RUN to completion; bare command timed out after 600.2 seconds with setup errors from the same ACL-protected temp root and partial output through 21% of collection/execution. Full-suite completion remains UNVERIFIED.
+RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
+RAN: `git diff --check` -> clean.
+
+**OPEN FOR ARCHITECT:** The worker slice is ready for the live nine-row `row_bench.py` leg. Full
+suite completion still needs a quiet tree with a usable pytest temp root; no `--basetemp` or manual
+`PYTEST_DEBUG_TEMPROOT` override was used.
+
 **OUT OF SCOPE.** The redirect heuristic (rejected above). The empty instruction packets (item 2).
 Rewiring the Return Record (still deferred). **Any change to the prior-year predicate itself.**
 

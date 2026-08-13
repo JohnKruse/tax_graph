@@ -306,13 +306,17 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                 form_span.text,
                 line,
                 bracket_text=bracket_text or None,
+                allow_shorter_bracket=document.source_document_id is not None,
             )
             caption_split = split_caption_and_instruction(full_form_face, line)
             form_face_text = caption_split.cell_instruction or full_form_face
             evidence_findings = list(form_span.findings)
             table_finding = _table_anchor_boundary_finding(
                 form_span.text,
-                cleaned_text=full_form_face,
+                # The finding is about the raw source packet's unresolved
+                # repeated anchor. It must not disappear merely because a
+                # bounded alternative was selected for the displayed face.
+                cleaned_text=form_span.text,
                 line=line,
             )
             if table_finding is not None:
@@ -359,6 +363,11 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "outline_id": node.outline_id,
                     "outline_kind": node.kind,
                     "structural_skip_reason": structural_skip_reason or None,
+                    "routed_note_provenance": list(
+                        (document.fields or {})
+                        .get("routed_note_provenance", {})
+                        .get(line, [])
+                    ),
                 },
             )
         )
@@ -761,6 +770,7 @@ def clean_form_face_text_with_extent(
     line: str,
     *,
     bracket_text: str | None = None,
+    allow_shorter_bracket: bool = False,
 ) -> tuple[str, dict[str, Any]]:
     """Select a printed-bracket clause for weak or bounded faces.
 
@@ -769,16 +779,19 @@ def clean_form_face_text_with_extent(
     describe exactly what the derivation model receives. A bracket is also
     preferred when the fallback is a strict substring of it, because that
     retains every fallback word while recovering the surrounding clause. It
-    is also preferred when it is a strict substring of the fallback: the
-    printed bracket is the stronger boundary witness in that direction and
-    removes text absorbed from the next printed row. Both candidates remain
-    in the row metadata for human review and later measurement.
+    is also preferred when it is a strict substring of the fallback, but only
+    when the caller has proved that the bracket builder is authoritative for
+    this source kind. Region documents use the promoted citation layout and
+    may opt in; acquired forms keep the fallback until their extent builder
+    has the same provenance guarantee. Both candidates remain in the row
+    metadata for human review and later measurement.
     """
     return _select_form_face_text_with_extent(
         text,
         line,
         bracket_text=bracket_text,
-        prefer_shorter_bracket=True,
+        prefer_shorter_bracket=allow_shorter_bracket,
+        clean_bracket=not allow_shorter_bracket,
     )
 
 
@@ -787,6 +800,7 @@ def compare_form_face_text_with_extent(
     line: str,
     *,
     bracket_text: str | None = None,
+    allow_shorter_bracket: bool = False,
 ) -> dict[str, Any]:
     """Compare the legacy and bounded face selections for one source row.
 
@@ -794,19 +808,22 @@ def compare_form_face_text_with_extent(
     legacy result keeps the fallback unless the bracket is longer or contains
     it; the bounded result additionally trusts a shorter bracket when the
     fallback strictly contains it. No source text is authored or changed by
-    this comparison.
+    this comparison. ``allow_shorter_bracket`` mirrors the production policy
+    so the measurement reports the same source-kind boundary decision.
     """
     before, before_diagnostic = _select_form_face_text_with_extent(
         text,
         line,
         bracket_text=bracket_text,
         prefer_shorter_bracket=False,
+        clean_bracket=True,
     )
     after, after_diagnostic = _select_form_face_text_with_extent(
         text,
         line,
         bracket_text=bracket_text,
-        prefer_shorter_bracket=True,
+        prefer_shorter_bracket=allow_shorter_bracket,
+        clean_bracket=not allow_shorter_bracket,
     )
     return {
         "before": before,
@@ -825,6 +842,7 @@ def _select_form_face_text_with_extent(
     *,
     bracket_text: str | None,
     prefer_shorter_bracket: bool,
+    clean_bracket: bool,
 ) -> tuple[str, dict[str, Any]]:
     """Apply one face-selection policy and retain both source candidates."""
     fallback = _clean_form_face_text_fallback(text, line)
@@ -833,7 +851,11 @@ def _select_form_face_text_with_extent(
     # anchors. Running the anchor cleaner over it again can mistake a
     # legitimate reference such as "line 4" in a Note block for this row's
     # printed anchor.
-    bracket = " ".join(str(bracket_text or "").split()) if bracket_text else ""
+    bracket = (
+        _clean_form_face_text_fallback(bracket_text, line)
+        if clean_bracket and bracket_text
+        else " ".join(str(bracket_text or "").split()) if bracket_text else ""
+    )
     bracket_face = _cell_face_text(bracket, line) if bracket else ""
     fallback_is_strict_substring = _is_strict_face_substring(fallback_face, bracket_face)
     bracket_is_strict_substring = _is_strict_face_substring(bracket_face, fallback_face)

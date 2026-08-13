@@ -1635,6 +1635,7 @@ def _bracketed_source_text(
         match
         for match in _printed_anchor_matches(value, normalized_anchor)
         if prior_offset <= match.start() < next_offset
+        and _printed_anchor_match_is_row_boundary(value, match)
     ]
     if not full_matches:
         return None
@@ -1720,6 +1721,19 @@ def _printed_anchor_matches(value: str, anchor: str) -> list[re.Match[str]]:
         body = re.escape(anchor)
     pattern = rf"(?<![A-Za-z0-9]){body}(?![A-Za-z0-9])"
     return list(re.finditer(pattern, value, re.IGNORECASE))
+
+
+def _printed_anchor_match_is_row_boundary(value: str, match: re.Match[str]) -> bool:
+    """Reject a line-number mention embedded in prose as a row endpoint.
+
+    A form can print a checkbox instruction such as ``Line 3b`` between the
+    real row anchor and the next row. Treating that reference as the closing
+    anchor makes the bracket omit the source text between it and the actual
+    row boundary. The geometry anchor index remains the authority for the
+    row start; this check only rejects the known prose-reference shape.
+    """
+    prefix = value[max(0, match.start() - 16) : match.start()]
+    return re.search(r"\bline\s+$", prefix, re.IGNORECASE) is None
 
 
 def _remove_dot_leader_rows(value: str) -> str:

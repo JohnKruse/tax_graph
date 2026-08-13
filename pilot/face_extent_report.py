@@ -18,8 +18,6 @@ from tax_graph.extract.inputs import load_document_input
 
 
 FACE_EXTENT_KINDS = frozenset({"tax_form", "schedule", "source_document"})
-# The 696-row S102 face corpus excludes the review-cycle Form 2441 face.
-FACE_EXTENT_EXCLUSIONS = frozenset({"form_2441_2025"})
 _ABSORBED_BLOCK_RE = re.compile(
     r"\b(?:note\.|otherwise\b|go\s+to\s+line\b|skip\s+lines?\b|also\s+enter\b)",
     re.IGNORECASE,
@@ -86,14 +84,28 @@ def _absorbed_block(before: str, after: str) -> bool:
     return bool(_ABSORBED_BLOCK_RE.search(removed))
 
 
+def _absorbed_block_residual(
+    after: str,
+    *,
+    is_region: bool,
+) -> bool:
+    """Flag routing cues left in an acquired face after extent selection.
+
+    Promoted regions deliberately route a note to the line it names, so a
+    routing word in their selected face is not residual absorbed text. The
+    measurement therefore asks about acquired forms only; this prevents a
+    row's own routed instruction from being counted as a defect.
+    """
+    return not is_region and bool(_ABSORBED_BLOCK_RE.search(_normalized(after)))
+
+
 def _default_document_ids(root: Path, year: str) -> list[str]:
-    """Return the deterministic 696-row face corpus for one tax year."""
+    """Return the face corpus defined by the manifest and promoted graph."""
     manifest = load_manifest(root=root)
     return [
         entry.document_id
         for entry in manifest.documents
-        if entry.document_id not in FACE_EXTENT_EXCLUSIONS
-        and (entry.is_region or entry.kind in FACE_EXTENT_KINDS)
+        if entry.is_region or entry.kind in FACE_EXTENT_KINDS
     ]
 
 
@@ -126,6 +138,7 @@ def build_face_extent_report(
                 bracket_text=str(
                     extent.get("bracket_text") or extent.get("bracket_face") or ""
                 ),
+                allow_shorter_bracket=document.source_document_id is not None,
             )
             before = str(comparison["before_face"] or "")
             after = str(comparison["after_face"] or "")
@@ -146,7 +159,10 @@ def build_face_extent_report(
             records.append(record)
             if _absorbed_block(before, after):
                 absorbed_before.append(record)
-                if _ABSORBED_BLOCK_RE.search(_normalized(after)):
+                if _absorbed_block_residual(
+                    after,
+                    is_region=document.source_document_id is not None,
+                ):
                     absorbed_residual.append(record)
 
     changed = [record for record in records if record["changed"]]
@@ -157,7 +173,7 @@ def build_face_extent_report(
     return {
         "year": year_text,
         "documents": sorted(set(record["document_id"] for record in records)),
-        "excluded_documents": sorted(FACE_EXTENT_EXCLUSIONS),
+        "excluded_documents": [],
         "counts": {
             "rows": len(records),
             "bracket_available": sum(record["bracket_available"] for record in records),

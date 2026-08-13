@@ -133,6 +133,15 @@ def test_real_simplified_method_extent_routes_prior_year_note_to_line_4() -> Non
     assert "last year's worksheet" not in rows["2"].form_face_text
     assert "last year's worksheet" in rows["4"].form_face_text
     assert "last year's worksheet" in rows["6"].form_face_text
+    assert rows["4"].metadata["routed_note_provenance"] == [{
+        "source_line": "2",
+        "target_line": "4",
+        "text": (
+            "Note. If you completed this worksheet last year, skip line 3 and enter "
+            "the amount from line 4 of last year's worksheet on line 4 below (even if "
+            "the amount of your pension or annuity has changed). Otherwise, go to line 3."
+        ),
+    }]
 
     inventory = {
         "document_ids": ["simplified_method_worksheet_2025"],

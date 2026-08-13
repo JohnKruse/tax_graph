@@ -183,7 +183,7 @@ def _load_region_document_input(
         )
 
     title = str(entry.region_title or document.get("title") or document_id)
-    rows, routed_notes = _route_region_notes(rows)
+    rows, routed_notes, routed_note_provenance = _route_region_notes(rows)
     text_lines = [f"Header: {title}"]
     line_anchors: list[dict[str, Any]] = []
     fields: list[dict[str, Any]] = []
@@ -212,7 +212,11 @@ def _load_region_document_input(
         url=None,
         text="\n".join(text_lines) + "\n",
         text_path=document_path,
-        fields={"fields": fields, "line_anchors": line_anchors},
+        fields={
+            "fields": fields,
+            "line_anchors": line_anchors,
+            "routed_note_provenance": routed_note_provenance,
+        },
         fields_path=None,
         pages_dir=None,
         links=[],
@@ -231,7 +235,7 @@ _REGION_NOTE_TARGET_RE = re.compile(
 
 def _route_region_notes(
     rows: list[tuple[str, str, str]],
-) -> tuple[list[tuple[str, str, str]], dict[str, str]]:
+) -> tuple[list[tuple[str, str, str]], dict[str, str], dict[str, list[dict[str, str]]]]:
     """Route an unnumbered note to the printed line it explicitly names.
 
     Promoted worksheet citations can contain a note between two numbered
@@ -243,6 +247,7 @@ def _route_region_notes(
     """
     cleaned: list[tuple[str, str, str]] = []
     routed: dict[str, str] = {}
+    provenance: dict[str, list[dict[str, str]]] = {}
     for line, quote, node_id in rows:
         value = str(quote or "")
         note_match = re.search(r"\bNote\.\s*", value, re.IGNORECASE)
@@ -262,8 +267,15 @@ def _route_region_notes(
         else:
             value = prefix
         routed[target] = " ".join(part for part in (routed.get(target), note) if part)
+        provenance.setdefault(target, []).append(
+            {
+                "source_line": line,
+                "target_line": target,
+                "text": note,
+            }
+        )
         cleaned.append((line, value, node_id))
-    return cleaned, routed
+    return cleaned, routed, provenance
 
 
 def _prepend_region_note(quote: str, note: str) -> str:

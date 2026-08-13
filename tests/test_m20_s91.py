@@ -10,7 +10,7 @@ import pytest
 from tax_graph.extract.cells import clean_form_face_text_with_extent, build_cell_frame_from_document
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.models import SourceDocumentInput
-from tax_graph.extract.outline_pipeline import _bracketed_source_text
+from tax_graph.extract.outline_pipeline import _bracketed_source_text, _remove_dot_leader_rows
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -78,6 +78,28 @@ def test_bracket_selection_repairs_weak_face_and_fragment_face_but_preserves_oth
     assert diagnostic["selection_reason"] == "fallback_strict_substring"
 
 
+def test_shorter_bracket_selection_is_opt_in_for_promoted_regions() -> None:
+    fallback = "Line amount followed by an absorbed next-row note"
+    bracket = "Line amount"
+
+    selected, diagnostic = clean_form_face_text_with_extent(
+        fallback,
+        "9",
+        bracket_text=bracket,
+    )
+    assert selected == fallback
+    assert diagnostic["method"] == "fallback"
+
+    selected, diagnostic = clean_form_face_text_with_extent(
+        fallback,
+        "9",
+        bracket_text=bracket,
+        allow_shorter_bracket=True,
+    )
+    assert selected == bracket
+    assert diagnostic["selection_reason"] == "bracket_strict_substring"
+
+
 def test_real_corpus_repairs_all_68_weak_or_fragment_packets_and_reports_both_directions() -> None:
     document_ids = [
         "form_1040_2025",
@@ -104,12 +126,15 @@ def test_real_corpus_repairs_all_68_weak_or_fragment_packets_and_reports_both_di
     selected_faces: dict[tuple[str, str], str] = {}
     directions = Counter()
     for document_id in document_ids:
-        frame = build_cell_frame_from_document(
-            load_document_input(document_id, year="2025", root=ROOT)
-        )
+        document = load_document_input(document_id, year="2025", root=ROOT)
+        frame = build_cell_frame_from_document(document)
+        source_without_dot_leaders = " ".join(
+            _remove_dot_leader_rows(document.text).split()
+        ).casefold()
         for row in frame.rows:
             extent = row.metadata["clause_extent"]
             directions[extent["disagreement"] or "agree"] += 1
+            assert " ".join(row.form_face_text.split()).casefold() in source_without_dot_leaders
             if extent["method"] == "bracket":
                 selected.add((document_id, row.line))
                 selected_faces[(document_id, row.line)] = row.form_face_text
@@ -141,8 +166,12 @@ def test_real_corpus_repairs_all_68_weak_or_fragment_packets_and_reports_both_di
     } | {
         ("schedule_a_2025", line) for line in ("5a", "8b", "8c")
     }
-    assert directions["bracket_longer"] == 44
-    assert directions["fallback_longer"] == 27
+    # S102 rework now rejects prose-embedded printed-anchor endpoints and
+    # keeps the legacy bracket projection for acquired forms. Those producer
+    # changes intentionally move the measurement from 44/27 to 41/26; the
+    # selected-row contract above remains unchanged.
+    assert directions["bracket_longer"] == 41
+    assert directions["fallback_longer"] == 26
     assert {"( )", "years"}.isdisjoint(
         set(selected_faces.values())
     )
