@@ -453,10 +453,57 @@ was never in my corpus in the first place. **Define the corpus by the rule (docu
 become a constant in the code. And the report's `reason` field is `None` on every row while
 `classification_reason` carries the value; **one of the two is dead.**
 
-**NOT YET RUN BY ANYONE: the full suite.** The Architect's is running now with the BARE command
-against the 17-red / 953-passed baseline at `acb14bd`. **The live `row_bench.py` leg stays unspent
-until the 15 truncations are fixed**, since they touch faces on 1040, Schedule A, Schedule B,
-Schedule D and 6251.
+**FULL SUITE, ARCHITECT, 2026-08-13, BARE COMMAND, QUIET TREE: 22 failed, 955 passed, 8 skipped,
+1 xfailed in 1:02:47, and ZERO errors.** The error storm is gone, which confirms the temp-root
+diagnosis. **The arithmetic reconciles exactly: 979 outcomes at baseline, 986 now, and the 7 new
+ones are the 7 tests in `tests/test_m20_s102.py`, all passing.** So nothing was lost and the delta
+is **+5 failures against the 17-red baseline.**
+
+**FOUR OF THE FIVE ARE ISOLATED, by running each red against `58ae3b1` in a short-path worktree
+(`C:\tmp\b58`, `.cache` junctioned in) - the three that SKIP there for absent `_drafts` are not
+attributable this way and are named below rather than guessed at.**
+**TWO ARE PINNED COUNTS THIS ROUND IS SUPPOSED TO MOVE - re-baseline them with the reason recorded,
+exactly as ruled for S91:**
+- `test_cell_caption_m20.py::test_real_corpus_caption_distribution_is_measured_and_conservative` -
+  `assert 28 == 29`, one caption.
+- `test_m20_s91.py::test_real_corpus_repairs_all_68_weak_or_fragment_packets_and_reports_both_directions` -
+  the guard already ruled on above.
+
+**TWO ARE REAL DEFECTS AND MUST BE FIXED, NOT RE-PINNED.**
+- **VERBATIM PROVENANCE IS BROKEN ON ONE ROW.**
+  `test_derive_cells_m20.py::test_real_1040_frame_carries_join_ownership_and_printed_line_inventory`
+  asserts every evidence span's text occurs in the acquired source after whitespace normalization.
+  **`form_1040_2025` line `3b` now produces a face that is NOT contiguous in the source**:
+  `Ordinary dividends 3b c Check if your child's dividends are included in 1 Line 3a 2 Line`.
+  Exactly one span corpus-wide, but **a face that cannot be quoted from the source breaks the thing
+  approvals are keyed to**, so this is a correctness defect and not a count. Suspect
+  `_remove_dot_leader_rows` excising interior rows and leaving stitched text.
+- **A REAL EVIDENCE FINDING DISAPPEARED ON FORM 2441.**
+  `test_m20_s71.py::test_real_frame_cleans_all_printed_anchors_and_reports_line_8_table` now raises
+  `IndexError` because `form_2441_2025` line 8's `evidence_findings` is EMPTY - the
+  `table_anchor_boundary` finding is gone. **And note where it happened: 2441 is the one document
+  `FACE_EXTENT_EXCLUSIONS` removes from the report.** The exclusion did not stop the code from
+  changing 2441's behaviour; it only stopped the round from SEEING it. **That is the concrete cost
+  of hardcoding an exclusion to reproduce a number I quoted, and it is the strongest argument for
+  the corpus-by-rule fix already asked for above.**
+
+**THREE REDS REMAIN UNATTRIBUTED and must not be reported as either ours or baseline until they
+are:** `test_address_campaign_m15r.py::test_form_8949_cross_form_claims_resolve_exactly`,
+`test_review_preflight_m15.py::test_real_2025_preflight_passes_with_all_coverage_dimensions`, and
+`test_review_scope_migration_m15.py::test_live_queue_migration_gives_every_pending_entry_a_primary_target`.
+All three SKIP in a fresh checkout for absent `_drafts` or 2441 extension artifacts, so the
+worktree cannot compare them; **one of them is the fifth new red.** `test_review_scope_migration_m15`
+was recorded as a long-standing red in the S91-era notes, which makes the other two the likely
+candidates. **Isolating them needs the baseline source in the MAIN tree, which is a destructive
+checkout the Architect did not perform unasked.**
+
+**FOUR REDS ARE CONFIRMED BASELINE, unchanged at `58ae3b1`:** `test_field_identity_m16`,
+`test_m20_s71.py::test_real_candidate_node_labels_use_clean_text`, `test_schedule_2_m16`, and
+`test_schedule_d_extraction_m9`. **The 11 `tests/e2e/*_m15.py` reds are the known environment
+family** and were not re-run.
+
+**The live `row_bench.py` leg stays unspent** until the truncations and the two defects are fixed,
+since they touch faces on 1040, Schedule A, Schedule B, Schedule D and 6251.
 
 **WORKER'S ORIGINAL STOP REPORT FOLLOWS.**
 
