@@ -100,6 +100,18 @@ holds independently of any measured number.
 1. **A citation's text equals the source slice at its range.** A face that is not contiguous in its
    source becomes impossible to represent rather than something a test has to notice. The
    `form_1040_2025` line `3b` defect found in the S102 rework is in this class.
+   **A ROW MAY OWN MORE THAN ONE RANGE, and the design is wrong without this.** Measured
+   2026-08-13: seven rows across `form_1116_2025`, `form_6251_2025` and `schedule_d_2025` are not
+   linear substrings of their source, **and none of them is a defect.** They are multi-column and
+   braced layouts - the 6251 line 5 exemption table, the Schedule D line 21 brace pairing two
+   alternatives, the 1116 column headers - where the reading order the face needs is legitimately
+   not the linear order of the text. **The invariant is that a row's ranges, in order, reconstruct
+   its face; it is NOT that a face is one contiguous slice.** A single-range rule would declare
+   seven correct rows broken and invite exactly the fudge that hides real breaks. Note what the
+   S102 rework had to do without extents: it compares faces against a dot-leader-stripped copy of
+   the source, which is a fair like-for-like given string faces, but it also collapses the very
+   boundaries a broken face might be jumping. **Ranges remove the question instead of normalizing
+   around it.**
 2. **Ranges belonging to one document do not overlap.** Bleed becomes arithmetic. Line 2 claiming
    characters past 118265 is visible without any regex hunting for the word `Note`.
 3. **Every chunk of a harvested region is claimed.** An unclaimed run of source text is the

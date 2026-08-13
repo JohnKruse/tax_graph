@@ -399,6 +399,38 @@ RAN: `git diff --check` -> clean.
 suite completion still needs a quiet tree with a usable pytest temp root; no `--basetemp` or manual
 `PYTEST_DEBUG_TEMPROOT` override was used.
 
+**ARCHITECT VERIFICATION OF THE FOUR-ITEM LIST (2026-08-13). ALL FOUR HOLD, VERIFIED INDEPENDENTLY
+AND NOT FROM THE REPORT.**
+1. **THE SELECTOR IS REGION-ONLY.** Regenerated face report: **196 changed rows, ALL 196 on
+   worksheets and ZERO on acquired forms.** Truncations **17 -> 3**, all three on worksheet table
+   headers, which were explicitly dropped from scope. Residual absorbed rows **0**. The corpus is
+   now **731 rows over 35 documents by manifest rule, `excluded_documents: []`, 2441 included** -
+   the exclusion is gone and so is the blindness it caused.
+2. **BOTH CORE-FORM REGRESSIONS ARE REPAIRED.** `form_2441_2025` line 8 reports
+   `evidence_findings: ['table_anchor_boundary']` again across all 35 rows. **A corpus-wide
+   contiguity check written independently of the face report gives 992 spans and 7 non-contiguous,
+   and the SAME 992/7 at `58ae3b1`** - so the round's own break on 1040 `3b` is gone and the tree is
+   back to the baseline set exactly.
+3. **THE PRIOR-YEAR GATE IS CORRECT ON THE REAL ROWS:** line 2 REFUSED, lines 4 and 6 ADMITTED.
+4. **THE RE-BASELINE IS HONEST AND IT BOUGHT AN INVARIANT.** 44/27 -> 41/26 with the producer
+   reason recorded in the test, **the selected-row SET contract left untouched** - the count moved,
+   the contract did not, which is the distinction that matters - plus a new opt-in test proving the
+   shorter-bracket rule fires only with `allow_shorter_bracket=True`, and **a real contiguity
+   assertion over the corpus in place of a count.**
+
+**I WAS WRONG ABOUT THE 7, AND THE CORRECTION CHANGES THE EXTENTS DESIGN.** I called them
+pre-existing defects the contiguity invariant would flag. **They are not defects.** They are
+multi-column and braced layouts - the 6251 line 5 exemption table, the Schedule D line 21 brace,
+the 1116 column headers - where the face's reading order is legitimately not the linear order of
+the source. **`../docs/source-extents.md` has been corrected: a row may own MORE THAN ONE range,
+and the invariant is that its ranges in order reconstruct its face.** A single-range rule would
+have declared seven correct rows broken.
+
+**CODEX ALSO DELIVERED TWO ITEMS I HAD DROPPED** - the note-routing provenance record
+(`source_line`, `target_line`, verbatim note in cell metadata) and the manifest-driven corpus rule.
+Both were on the original list and both are cheap; **no objection, and the corpus rule is what
+removed the 2441 blindness.**
+
 **OUT OF SCOPE.** The redirect heuristic (rejected above). The empty instruction packets (item 2).
 Rewiring the Return Record (still deferred). **Any change to the prior-year predicate itself.**
 
