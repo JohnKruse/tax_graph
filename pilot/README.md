@@ -24,6 +24,18 @@ the source-side error. Live mode requires exactly one line:
 This pilot is measurement evidence only. It does not change prompts, validators, graph files, or
 review state.
 
+## M20-S103 source-extents pilot
+
+`source_extents.py` is a provider-free, read-only measurement of the acquired source ranges
+behind the current form-face evidence spans. It runs the manifest-defined form and worksheet
+corpus, classifies every row as one range, multiple ranges, or an unreconstructable row with a
+reason, and reports overlaps plus meaningful unclaimed source runs. It does not write graph
+state or change production code.
+
+Run it with:
+
+    .venv\Scripts\python.exe pilot\source_extents.py --output C:\tmp\m20_s103\source_extents.yaml
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction

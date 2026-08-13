@@ -128,6 +128,25 @@ and M20-S103 is specced above and needs no decision to start.**
    sections below were left alone deliberately** while John was away; they are stale and should be
    pruned at the next acceptance.
 
+**M20-S103 WORKER STATUS (2026-08-13):** Implemented the read-only provider-free pilot in
+`pilot/source_extents.py`, its focused real-corpus tests, and the pilot README. The pilot changes
+no production code, graph artifacts, or manifest. The report accounts for **731 rows across 35
+non-empty corpus documents**, with **704 single-range, 17 multi-range, 10 unreconstructable with
+named reasons, zero cross-row overlaps, and 679 meaningful unclaimed runs**. The Simplified
+Method line 2 range ends at **118241**, and the unclaimed run from **118241-118491** includes the
+note naming line 4. The named layout rows land in the multi-range class.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s103'; .venv\\Scripts\\python.exe -m pytest pilot\\test_source_extents_s103.py -q` -> **4 passed, 1 warning** in 39.36s.
+RAN: `.venv\\Scripts\\python.exe pilot\\source_extents.py --output C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s103\\source_extents.yaml` -> **exit 0**, 731 rows measured.
+RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: full suite; this is an explicitly provider-free pilot round and the round spec does not
+require the full-suite floor. NOT RUN: provider leg; no provider is in scope.
+
+**SPEC AMBIGUITY TO RESOLVE BEFORE THE STORAGE ROUND:** the S103 known-answer prose says "all
+seven" but names six row ids (`6251:5`, `Schedule D:21`, and `1116:1a`, `3b`, `10`, `18`). The
+pilot guards all six named rows; no seventh identifier was supplied.
+
 ## Queued (ONE LINE each - do not spec ahead)
 
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
