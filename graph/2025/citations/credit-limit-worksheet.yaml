@@ -2,17 +2,28 @@
   document_id: credit_limit_worksheet_2025
   source_document_id: instructions_form_2441_2025
   locator: source_document=instructions_form_2441_2025;worksheet=Credit Limit Worksheet;lines=1
-  quoted_text: 1. Enter the amount from Form 1040, 1040-SR, or 1040-NR, line 18 1.
-    _____
+  quoted_text: 1. 1. Enter the amount from Form 1040, 1040-SR, or 1040-NR, line 18
+  kind: row
+  ranges:
+  - start: 25254
+    end: 25321
 - citation_id: cite_credit_limit_worksheet_2025_lines_2
   document_id: credit_limit_worksheet_2025
   source_document_id: instructions_form_2441_2025
   locator: source_document=instructions_form_2441_2025;worksheet=Credit Limit Worksheet;lines=2
   quoted_text: 2. Enter the amount from Schedule 3 (Form 1040), line 1 (foreign tax
-    credit) and line 6l (Form 8978, line 14) 2. _____
+    credit) and line 6 (Form 8978, line 14
+  kind: row
+  ranges:
+  - start: 25349
+    end: 25456
 - citation_id: cite_credit_limit_worksheet_2025_lines_3
   document_id: credit_limit_worksheet_2025
   source_document_id: instructions_form_2441_2025
   locator: source_document=instructions_form_2441_2025;worksheet=Credit Limit Worksheet;lines=3
-  quoted_text: 3. Subtract line 2 from line 1. Also enter this amount on Form 2441,
-    line 10. But if zero or less, stop; you can't take the credit 3. _____
+  quoted_text: 3. 3. Subtract line 2 from line 1. Also enter this amount on Form 2441,
+    line 10. But if zero or less, stop; you can't take the credit
+  kind: row
+  ranges:
+  - start: 25482
+    end: 25615

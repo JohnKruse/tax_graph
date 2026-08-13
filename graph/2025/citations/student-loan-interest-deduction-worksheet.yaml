@@ -3,35 +3,58 @@
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Student Loan Interest
     Deduction Worksheet;lines=1
-  quoted_text: 1. Enter the total interest you paid in 2025 on qualified student loans
-    (see the instructions for line 21). Don't enter more than $2,500 1. _____
+  quoted_text: 1, line 24z, have you enter a write-in adjustment on line 24z, figure
+    that write-in before completing this worksheet (see the instructions for Schedule
+    1, line 24z). Be sure you have read the **Exception** in the instructions for
+    this line to see if you can use this worksheet instead of Pub. 970 to figure your
+    deduction. | 1. Enter the total interest you paid in 2025 on qualified student
+    loans (see the instructions for line 21). **Don't** enter more than $2,500
+  kind: row
+  ranges:
+  - start: 555994
+    end: 556462
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_2
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Student Loan Interest
     Deduction Worksheet;lines=2
-  quoted_text: 2. Enter the amount from Form 1040 or 1040-SR, line 9 2. _____
+  quoted_text: 2. Enter the amount from Form 1040 or 1040-SR, line 9
+  kind: row
+  ranges:
+  - start: 556488
+    end: 556541
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_3
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Student Loan Interest
     Deduction Worksheet;lines=3
   quoted_text: 3. Enter the total of the amounts from Schedule 1, lines 11 through
-    20, and 23 and 25 3. _____
+    20, and 23 and 25
+  kind: row
+  ranges:
+  - start: 556553
+    end: 556638
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_4
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Student Loan Interest
     Deduction Worksheet;lines=4
-  quoted_text: 4. Subtract line 3 from line 2 4. _____
+  quoted_text: 4. Subtract line 3 from line 2
+  kind: row
+  ranges:
+  - start: 556650
+    end: 556680
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_5
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Student Loan Interest
     Deduction Worksheet;lines=5
   quoted_text: 5. Enter the amount shown below for your filing status. Single, head
-    of household, or qualifying surviving spouse-$85,000 Married filing jointly-$170,000
-    5. _____
+    of household, or qualifying surviving spouse$85,000 Married filing jointly$170,000
+  kind: row
+  ranges:
+  - start: 556692
+    end: 556845
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_6
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
@@ -39,7 +62,11 @@
     Deduction Worksheet;lines=6
   quoted_text: 6. Is the amount on line 4 more than the amount on line 5? No. Skip
     lines 6 and 7, enter -0- on line 8, and go to line 9. Yes. Subtract line 5 from
-    line 4 6. _____
+    line 4
+  kind: row
+  ranges:
+  - start: 556857
+    end: 557013
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_7
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
@@ -47,18 +74,30 @@
     Deduction Worksheet;lines=7
   quoted_text: 7. Divide line 6 by $15,000 ($30,000 if married filing jointly). Enter
     the result as a decimal (rounded to at least three places). If the result is 1.000
-    or more, enter 1.000 7. .
+    or more, enter 1.000 | 7
+  kind: row
+  ranges:
+  - start: 557025
+    end: 557203
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_8
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Student Loan Interest
     Deduction Worksheet;lines=8
-  quoted_text: 8. Multiply line 1 by line 7 8. _____
+  quoted_text: 8. Multiply line 1 by line 7
+  kind: row
+  ranges:
+  - start: 557211
+    end: 557239
 - citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_9
   document_id: student_loan_interest_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Student Loan Interest
     Deduction Worksheet;lines=9
-  quoted_text: 9. Student loan interest deduction. Subtract line 8 from line 1. Enter
-    the result here and on Schedule 1, line 21. Don't include this amount in figuring
-    any other deduction on your return (such as on Schedule A, C, E, etc.) 9. _____
+  quoted_text: 9. **Student loan interest deduction.** Subtract line 8 from line 1.
+    Enter the result here and on Schedule 1, line 21. **Don't** include this amount
+    in figuring any other deduction on your return (such as on Schedule A, C, E, etc
+  kind: row
+  ranges:
+  - start: 557251
+    end: 557480

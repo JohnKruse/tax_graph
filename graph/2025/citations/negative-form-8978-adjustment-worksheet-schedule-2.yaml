@@ -4,7 +4,11 @@
   locator: "source_document=instructions_form_1040_2025;worksheet=Negative Form 8978\
     \ Adjustment Worksheet\u2014Schedule 2 (;lines=1"
   quoted_text: 1. Enter the sum of any chapter 1 taxes* (other than your negative
-    Form 8978 adjustment) reported in Part II of Schedule 2 1. _____
+    Form 8978 adjustment) reported in Part II of Schedule 2
+  ranges:
+  - start: 632085
+    end: 632207
+  kind: row
 - citation_id: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_2
   document_id: negative_form_8978_adjustment_worksheet_schedule_2_2025
   source_document_id: instructions_form_1040_2025
@@ -12,18 +16,17 @@
     \ Adjustment Worksheet\u2014Schedule 2 (;lines=2"
   quoted_text: 2. Enter as a positive number the negative amount from line 3 of the
     Negative Form 8978 Adjustment Worksheet in the Schedule 3, line 6l, instructions
-    2. _____
+  ranges:
+  - start: 632239
+    end: 632388
+  kind: row
 - citation_id: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_3
   document_id: negative_form_8978_adjustment_worksheet_schedule_2_2025
   source_document_id: instructions_form_1040_2025
   locator: "source_document=instructions_form_1040_2025;worksheet=Negative Form 8978\
     \ Adjustment Worksheet\u2014Schedule 2 (;lines=3"
-  quoted_text: 3. Is the amount on line 1 more than the amount on line 2? Yes. List
-    the type (Form 8978 ADJ) and the amount from line 2 as a negative number (in parentheses)
-    on line 17z. No. List the type (Form 8978 ADJ) and the amount from line 1 as a
-    negative number (in parentheses) on line 17z. Combine this amount with any other
-    amounts reported on line 17z to complete the line 17z entry space. * Chapter 1
-    taxes include taxes from sections 1 through 1400Z-2 of the Code, as well as certain
-    amounts the Code treats as chapter 1 taxes. Generally, this does not include amounts
-    reported on Schedule 2, lines 4, 7, 9, 11-13, 17k-17m, or 17z (other than chapter
-    1 taxes).
+  quoted_text: 3. Is the amount on line 1 more than the amount on line 2
+  ranges:
+  - start: 632406
+    end: 632463
+  kind: row

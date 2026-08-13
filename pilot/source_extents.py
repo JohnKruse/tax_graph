@@ -144,15 +144,21 @@ def _face_text(row: CellRecord) -> str:
             break
     if not face:
         face = str(row.metadata.get("form_face_before") or row.form_face_text or "")
-    # A routed worksheet note is deliberately measured as an unclaimed source
-    # chunk governed by its target line. It must not be re-claimed by the
-    # target row merely because the in-memory projection prepended it.
-    for provenance in row.metadata.get("routed_note_provenance") or []:
+    # Governed notes are separate source chunks.  Exclude them from the row's
+    # extent measurement while retaining their provenance in the cell packet.
+    for provenance in row.metadata.get("governed_note_provenance") or []:
         note = str(provenance.get("text") or "")
+        note = re.sub(r"\*+", "", note)
         note = re.sub(r"^\s*note\.\s*", "", note, flags=re.IGNORECASE)
         if note:
-            face = face.replace(note, " ", 1)
-    return face
+            face = re.sub(
+                rf"\*{{0,2}}note\.\*{{0,2}}\s*{re.escape(note)}",
+                " ",
+                face,
+                count=1,
+                flags=re.IGNORECASE,
+            )
+    return face.rstrip()
 
 
 def _positions(tokens: Iterable[SourceToken]) -> dict[str, tuple[int, ...]]:

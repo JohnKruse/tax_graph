@@ -3,9 +3,13 @@
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=1
-  quoted_text: 1. Enter the income tax refund from Form(s) 1099-G (or similar statement).
-    But don't enter more than the amount of your state and local income taxes shown
-    on your 2024 Schedule A, line 5d 1. _____
+  quoted_text: 1. Enter the income tax refund from **Form(s) 1099-G** (or similar
+    statement). But **don't** enter more than the amount of your state and local income
+    taxes shown on your 2024 Schedule A, line 5d
+  kind: row
+  ranges:
+  - start: 518816
+    end: 519011
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_2
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
@@ -14,65 +18,125 @@
   quoted_text: 2. Is the amount of state and local income taxes (or general sales
     taxes), real estate taxes, and personal property taxes paid in 2024 (generally,
     this is the amount reported on your 2024 Schedule A, line 5d) more than the amount
-    on your 2024 Schedule A, line 5e? No. Enter the amount from line 1 on line 3 and
-    go to line 4. 2. _____ Yes. Subtract the amount on your 2024 Schedule A, line
-    5e, from the amount of state and local income taxes (or general sales taxes),
-    real estate taxes, and personal property taxes paid in 2024 (generally, this is
-    the amount reported on your 2024 Schedule A, line 5d).
+    on your 2024 Schedule A, line 5e? Yes. Subtract the amount on your 2024 Schedule
+    A, line 5e, from the amount of state and local income taxes (or general sales
+    taxes), real estate taxes, and personal property taxes paid in 2024 (generally,
+    this is the amount reported on your 2024 Schedule A, line 5d
+  kind: row
+  ranges:
+  - start: 519031
+    end: 519296
+  - start: 519356
+    end: 519623
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_3
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=3
-  quoted_text: 3. Is the amount on line 1 more than the amount on line 2? No. None
-    of your refund is taxable. 3. _____ Yes. Subtract line 2 from line 1.
+  quoted_text: 3. Is the amount on line 1 more than the amount on line 2? No. **STOP**
+    None of your refund is taxable. Yes. Subtract line 2 from line 1
+  kind: row
+  ranges:
+  - start: 519642
+    end: 519780
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_4
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=4
   quoted_text: 4. Enter your total itemized deductions from your 2024 Schedule A,
-    line 17. 4. _____ Note. If the filing status on your 2024 Form 1040 or 1040-SR
-    was married filing separately and your spouse itemized deductions in 2024, skip
-    lines 5 through 7, enter the amount from line 4 on line 8, and go to line 9.
+    line 17. 4. \_\_\_\_\_
+  kind: row
+  ranges:
+  - start: 519798
+    end: 519890
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_5
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=5
   quoted_text: 5. Enter the amount shown below for the filing status claimed on your
-    2024 Form 1040 or 1040-SR. Single or married filing separately-$14,600 Married
-    filing jointly or qualifying surviving spouse-$29,200 Head of household-$21,900
-    5. _____
+    **2024** Form 1040 or 1040-SR. - Single or married filing separately\$14,600 -
+    Married filing jointly or qualifying surviving spouse\$29,200 - Head of household\$21,900
+  kind: row
+  ranges:
+  - start: 520113
+    end: 520355
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_6
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=6
-  quoted_text: 6. Check any boxes that apply.* You were born before January 2, 1960.
+  quoted_text: 6. Check any boxes that apply.\* You were born before January 2, 1960.
     You are blind. Spouse was born before January 2, 1960. Spouse is blind. No boxes
-    checked. Enter -0-. Multiply the number of boxes checked by $1,550 ($1,950 if
-    your 2024 filing status was single or head of household). 6. _____ *If your filing
-    status is married filing separately, you can check the boxes for your spouse only
-    if your spouse had no income, isn't filing a return, and can't be claimed as a
-    dependent on another person's return.
+    checked. Enter -0-. Multiply the number of boxes checked by \$1,550 (\$1,950 if
+    your 2024 filing status was single or head of household). 6. \_\_\_\_\_ \*If your
+    filing status is married filing separately, you can check the boxes for your spouse
+    only if your spouse had no income, isn't filing a return, and can't be claimed
+    as a dependent on another person's return
+  kind: row
+  ranges:
+  - start: 520372
+    end: 520898
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_7
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=7
-  quoted_text: 7. Add lines 5 and 6 7. _____
+  quoted_text: 7. Add lines 5 and 6
+  kind: row
+  ranges:
+  - start: 520901
+    end: 520921
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_8
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=8
-  quoted_text: 8. Is the amount on line 7 less than the amount on line 4? No. None
-    of your refund is taxable. Yes. Subtract line 7 from line 4 8. _____
+  quoted_text: 8. Is the amount on line 7 less than the amount on line 4? No. **STOP**
+    None of your refund is taxable. Yes. Subtract line 7 from line 4
+  kind: row
+  ranges:
+  - start: 520941
+    end: 521079
 - citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_9
   document_id: state_and_local_income_tax_refund_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
     Tax Refund Worksheet;lines=9
-  quoted_text: 9. Taxable part of your refund. Enter the smaller of line 3 or line
-    8 here and on Schedule 1, line 1 9. _____
+  quoted_text: 9. **Taxable part of your refund.** Enter the **smaller** of line 3
+    or line 8 here and on Schedule 1, line 1
+  kind: row
+  ranges:
+  - start: 521099
+    end: 521207
+- citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_routing_sentence_after_2_0
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
+    Tax Refund Worksheet;after=2
+  quoted_text: No. Enter the amount from line 1 on line 3 and go to line 4.
+  kind: routing_sentence
+  governs:
+  - '1'
+  - '3'
+  - '4'
+  ranges:
+  - start: 519296
+    end: 519356
+- citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_note_after_4_1
+  document_id: state_and_local_income_tax_refund_worksheet_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;worksheet=State and Local Income
+    Tax Refund Worksheet;after=4
+  quoted_text: '**Note.** If the filing status on your 2024 Form 1040 or 1040-SR was
+    married filing separately and your spouse itemized deductions in 2024, skip lines
+    5 through 7, enter the amount from line 4 on line 8, and go to line 9.'
+  kind: note
+  governs:
+  - '4'
+  - '8'
+  - '9'
+  ranges:
+  - start: 519890
+    end: 520111

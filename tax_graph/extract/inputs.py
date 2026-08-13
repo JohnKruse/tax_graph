@@ -15,6 +15,8 @@ from tax_graph.io.loader import load_graph
 
 FORM_KINDS = {"tax_form", "schedule", "source_document"}
 INSTRUCTION_KINDS = {"instructions", "publication"}
+_FACE_TOKEN_RE = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)?|[0-9]+(?:[A-Za-z]+)?")
+_WORKSHEET_FACE_CACHE: dict[tuple[str, str, str], dict[str, str]] = {}
 
 
 def load_document_input(
@@ -138,6 +140,15 @@ def _load_region_document_input(
         and item.get("node_type") == "worksheet_field"
     ]
     citations = {str(item.get("citation_id")): item for item in graph.items("citations")}
+    governed_notes: dict[str, list[dict[str, Any]]] = {}
+    for citation in citations.values():
+        if (
+            citation.get("document_id") != document_id
+            or citation.get("kind") != "note"
+        ):
+            continue
+        for governed_line in citation.get("governs") or []:
+            governed_notes.setdefault(str(governed_line).lower(), []).append(citation)
     if document is None:
         raise FileNotFoundError(
             f"promoted region document is missing from graph: {document_id}"
@@ -146,6 +157,14 @@ def _load_region_document_input(
         raise FileNotFoundError(
             f"promoted region line nodes are missing from graph: {document_id}"
         )
+    source_path = root / ".cache" / "raw" / year / f"{parent_id}.txt"
+    source_text = source_path.read_text(encoding="ascii") if source_path.exists() else ""
+    html_faces = _worksheet_html_faces(
+        document_id,
+        entry=entry,
+        year=year,
+        root=root,
+    )
 
     def line_key(item: dict[str, Any]) -> tuple[int, str]:
         match = re.search(r"_line_([0-9]+[a-z]?|[a-z])(?:$|_)", str(item.get("node_id") or ""), re.IGNORECASE)
@@ -154,6 +173,7 @@ def _load_region_document_input(
         return (int(number.group(0)) if number else 10**9, value)
 
     rows: list[tuple[str, str, str]] = []
+    governed_note_provenance: dict[str, list[dict[str, str]]] = {}
     for node in sorted(nodes, key=line_key):
         node_id = str(node.get("node_id") or "")
         match = re.search(r"_line_([0-9]+[a-z]?|[a-z])(?:$|_)", node_id, re.IGNORECASE)
@@ -165,17 +185,66 @@ def _load_region_document_input(
             citation = citations.get(str(citation_id))
             if citation is not None:
                 quote = str(citation.get("quoted_text") or "").strip()
+                if citation.get("kind", "row") == "row":
+                    html_face = html_faces.get(node_id, "")
+                    if html_face:
+                        # The node id is the deterministic HTML row selected
+                        # for these ranges.  The range projection trims only
+                        # source chunks that bleed into a neighboring row;
+                        # retain the row's form controls for the existing
+                        # cell-face cleaner.
+                        quote = _worksheet_face_from_ranges(
+                            html_face,
+                            citation,
+                            source_text,
+                        )
+                    else:
+                        quote = re.sub(
+                            rf'^\s*{re.escape(line)}\s*[.):]?\s*',
+                            "",
+                            quote,
+                            count=1,
+                            flags=re.IGNORECASE,
+                        )
                 if quote:
                     break
         if not quote:
             quote = str(node.get("label") or "").strip()
         quote = re.sub(
-            rf"^\s*{re.escape(line)}\s*[.)]?\s*",
+            rf"^\s*{re.escape(line)}\s*[.):]?\s*",
             "",
             quote,
             count=1,
             flags=re.IGNORECASE,
         )
+        note_provenance: list[dict[str, str]] = []
+        for note in governed_notes.get(line, []):
+            governed_lines = [str(value).lower() for value in note.get("governs") or []]
+            if not governed_lines or line == governed_lines[0]:
+                continue
+            note_text = str(note.get("quoted_text") or "").strip()
+            if not note_text:
+                continue
+            projected_note = re.sub(
+                r"^\s*\*{0,2}note\.\*{0,2}\s*",
+                "",
+                note_text,
+                flags=re.IGNORECASE,
+            )
+            if quote.startswith('"'):
+                quote = '"' + projected_note + " " + quote[1:]
+            else:
+                quote = projected_note + " " + quote
+            note_provenance.append(
+                {
+                    "source_line": str(note.get("locator") or "").split("after=", 1)[-1],
+                    "target_line": line,
+                    "citation_id": str(note.get("citation_id") or ""),
+                    "text": note_text,
+                }
+            )
+        if note_provenance:
+            governed_note_provenance[line] = note_provenance
         rows.append((line, quote, node_id))
     if not rows:
         raise FileNotFoundError(
@@ -183,14 +252,10 @@ def _load_region_document_input(
         )
 
     title = str(entry.region_title or document.get("title") or document_id)
-    rows, routed_notes, routed_note_provenance = _route_region_notes(rows)
     text_lines = [f"Header: {title}"]
     line_anchors: list[dict[str, Any]] = []
     fields: list[dict[str, Any]] = []
     for line, quote, node_id in rows:
-        note = routed_notes.get(line)
-        if note:
-            quote = _prepend_region_note(quote, note)
         text_offset = sum(len(item) + 1 for item in text_lines)
         text_lines.append(f"- {line}: {quote}")
         line_anchors.append({"anchor": line, "text_offset": text_offset, "text_length": len(quote)})
@@ -215,7 +280,7 @@ def _load_region_document_input(
         fields={
             "fields": fields,
             "line_anchors": line_anchors,
-            "routed_note_provenance": routed_note_provenance,
+            "governed_note_provenance": governed_note_provenance,
         },
         fields_path=None,
         pages_dir=None,
@@ -227,63 +292,115 @@ def _load_region_document_input(
     )
 
 
-_REGION_NOTE_TARGET_RE = re.compile(
-    r"\bon\s+line\s+(?P<line>[0-9]+[a-z]?)\s+below\b",
-    re.IGNORECASE,
-)
+def _worksheet_html_faces(
+    document_id: str,
+    *,
+    entry: Any,
+    year: str,
+    root: Path,
+) -> dict[str, str]:
+    """Render a transient HTML face bounded by the promoted source ranges."""
+    key = (str(root), str(year), document_id)
+    if key in _WORKSHEET_FACE_CACHE:
+        return _WORKSHEET_FACE_CACHE[key]
+    html_path = root / ".cache" / "raw" / year / f"{entry.region_of}.html"
+    if not html_path.exists():
+        _WORKSHEET_FACE_CACHE[key] = {}
+        return {}
+    try:
+        from tax_graph.ingest.worksheet_harvest import WorksheetTarget, harvest_worksheet_file
 
-
-def _route_region_notes(
-    rows: list[tuple[str, str, str]],
-) -> tuple[list[tuple[str, str, str]], dict[str, str], dict[str, list[dict[str, str]]]]:
-    """Route an unnumbered note to the printed line it explicitly names.
-
-    Promoted worksheet citations can contain a note between two numbered
-    rows. When the note says to enter an amount on a later line, keeping it on
-    the preceding row makes the later row look like a plain calculation and
-    lets a wrong prior-year operand pass on the preceding row. The note is
-    moved only inside this in-memory source projection; its words remain
-    verbatim and occur exactly once.
-    """
-    cleaned: list[tuple[str, str, str]] = []
-    routed: dict[str, str] = {}
-    provenance: dict[str, list[dict[str, str]]] = {}
-    for line, quote, node_id in rows:
-        value = str(quote or "")
-        note_match = re.search(r"\bNote\.\s*", value, re.IGNORECASE)
-        if note_match is None:
-            cleaned.append((line, quote, node_id))
-            continue
-        note = value[note_match.start() :]
-        target_match = _REGION_NOTE_TARGET_RE.search(note)
-        if target_match is None:
-            cleaned.append((line, quote, node_id))
-            continue
-        target = target_match.group("line").lower()
-        note = re.sub(r"\"\s*field\s*$", "", note).strip()
-        prefix = value[: note_match.start()].rstrip()
-        if value.startswith('"') and value.endswith(' field'):
-            value = prefix + '" field'
-        else:
-            value = prefix
-        routed[target] = " ".join(part for part in (routed.get(target), note) if part)
-        provenance.setdefault(target, []).append(
-            {
-                "source_line": line,
-                "target_line": target,
-                "text": note,
-            }
+        result = harvest_worksheet_file(
+            html_path,
+            WorksheetTarget(
+                document_id=document_id,
+                title=str(entry.region_title or document_id),
+                start_anchor="",
+                source_document_id=str(entry.region_of or ""),
+            ),
+            source_document_id=str(entry.region_of or ""),
+            year=year,
+            advisories_enabled=True,
         )
-        cleaned.append((line, value, node_id))
-    return cleaned, routed, provenance
+    except (OSError, RuntimeError, ValueError):
+        _WORKSHEET_FACE_CACHE[key] = {}
+        return {}
+    faces = {
+        str(node["node_id"]): str(node.source_quote or "")
+        for node in result.nodes
+        if node.get("node_type") == "worksheet_field"
+    }
+    _WORKSHEET_FACE_CACHE[key] = faces
+    return faces
 
 
-def _prepend_region_note(quote: str, note: str) -> str:
-    """Insert a routed note inside a serialized citation wrapper."""
-    value = str(quote or "")
-    if value.startswith('"'):
-        return '"' + note + " " + value[1:]
-    return note + " " + value
+def _worksheet_face_from_ranges(
+    html_face: str,
+    citation: dict[str, Any],
+    source_text: str,
+) -> str:
+    """Project a transient HTML face onto a citation's source ranges."""
+    if not html_face or not source_text or not citation.get("ranges"):
+        return html_face
+    source_value = " ".join(
+        source_text[int(item["start"]):int(item["end"])]
+        for item in citation["ranges"]
+    )
+    expected = tuple(_FACE_TOKEN_RE.finditer(source_value))
+    actual = tuple(_FACE_TOKEN_RE.finditer(html_face))
+    if not expected or not actual:
+        return html_face
+    cursor = 0
+    first_start: int | None = None
+    last_end = 0
+    for token in expected:
+        wanted = token.group(0).casefold().replace("'", "")
+        while cursor < len(actual):
+            candidate = actual[cursor]
+            cursor += 1
+            if candidate.group(0).casefold().replace("'", "") == wanted:
+                if first_start is None:
+                    first_start = candidate.start()
+                last_end = candidate.end()
+                break
+        else:
+            return html_face
+    if first_start is None:
+        return html_face
+    line = str(citation.get("locator") or "").rsplit("lines=", 1)[-1]
+    if (
+        re.fullmatch(r"[0-9]+[a-z]", line, flags=re.IGNORECASE)
+        and first_start > 0
+        and html_face[:first_start].strip()
+    ):
+        # Lettered output columns may be represented by marker-only source
+        # ranges while the preceding HTML cell carries the column's prose.
+        # Preserve the full deterministic cell so the existing face cleaner
+        # can remove the repeated marker and continuation furniture.
+        return html_face
+    trimmed = html_face[first_start:last_end]
+    tail = html_face[last_end:]
+    tail_tokens = tuple(_FACE_TOKEN_RE.finditer(tail))
+    if not tail_tokens:
+        return html_face
+    first = tail_tokens[0].group(0).casefold()
+    if first in {"field", "checkbox"}:
+        return html_face
+    if re.fullmatch(r"[0-9]+[a-z]?", first) and first == line.casefold():
+        return html_face
+    if re.fullmatch(rf"{re.escape(line)}[a-z]", first) or first in {"no", "yes"}:
+        return html_face
+    repeated_marker = re.search(
+        rf"\s+{re.escape(line)}\s*$",
+        trimmed,
+        flags=re.IGNORECASE,
+    )
+    if repeated_marker:
+        trimmed = trimmed[: repeated_marker.start()].rstrip()
+    if html_face.startswith('"'):
+        punctuation = "" if trimmed.rstrip().endswith((".", "?", "!")) else "."
+        return '"' + trimmed.rstrip(" .") + punctuation + '" field'
+    return trimmed
 
 
 def _document_file_stem(document_id: str) -> str:

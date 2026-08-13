@@ -103,20 +103,48 @@ wrong and the round is not done** - do not re-add the router to make them match.
 `quoted_text` derived-only. The 12,674 undecided characters. Re-promoting anything but the
 worksheets. The information returns. **Each is a later round specced off this one.**
 
-**CODEX STATUS (2026-08-13): S105 implementation is in progress, not complete.** The additive
-`ranges` citation field, source-owned worksheet ranges, governed note/routing citations, deleted
-note compensation, generated worksheet form-face projection, and 19-region re-promotion are in
-the working tree. The promoted range invariant passes for all regenerated worksheet citations.
+**CODEX STATUS (2026-08-13): S105 implementation is in progress, with the storage slice
+implemented and verified.** The citation schema now carries optional ordered `ranges`, worksheet
+promotion derives them from acquired source text, and note/routing gaps are promoted as their own
+typed citations. All 19 worksheet regions were regenerated and promoted. No promoted worksheet
+node stores a copied `form_face_text`; the old note-router functions and `routed_note_provenance`
+contract are gone. The range reconstruction invariant passes across the live worksheet graph.
 
-Pilot evidence against the committed pre-S105 report (`.test_tmp_s105/baseline2`): rows 731 and
-overlaps 0 hold, but faces are not byte-identical yet. Current counts are 711 single-range, 11
-multi-range, 9 unreconstructable, and 680 unclaimed runs; the required baseline is 710, 11, 10,
-and 679. Remaining face differences are Simplified Method line 10, State and Local Income Tax
-Refund line 9, and the legacy Negative Form 8978 worksheet, whose acquired HTML has no matching
-worksheet heading while its rendered text and old graph artifact do exist. This is a real source
-boundary decision, not a test failure to suppress.
+**RAN:** `.venv\Scripts\python.exe tools\repromote_worksheet_ranges_m105.py --root . --year 2025`
+-> 19 worksheets rebound; `.venv\Scripts\python.exe -m tax_graph.cli promote-worksheet --year 2025
+--root .` -> `promoted=19; refused=0; total=19`.
 
-Tests run:
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s105).Path; .venv\Scripts\python.exe
+-m pytest tests\test_m20_s102.py tests\test_worksheet_ranges_s105.py
+tests\test_worksheet_storage_s105.py pilot\test_source_extents_s103.py
+pilot\test_source_extents_s104.py -q` -> `20 passed, 1 warning`.
+
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s105).Path; .venv\Scripts\python.exe
+-m pytest tests\test_worksheet_harvest_m20.py tests\test_worksheet_promotion_s100.py -q` ->
+`13 passed, 1 warning`.
+
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s105).Path; .venv\Scripts\python.exe
+-m pytest tests\test_workbench_cells_m17.py tests\test_citation_cleanup_m18.py -q` ->
+`18 passed, 1 warning`.
+
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .e).Path; .venv\Scripts\python.exe -m pytest
+tests\test_graph_validator.py -q` -> `14 passed`.
+
+**RAN:** `.venv\Scripts\python.exe pilot\source_extents.py --root . --year 2025 --output
+.test_tmp_s105\source_extents_direct.yaml` -> 731 rows, 0 overlaps, 679 unclaimed runs.
+The classification was `710 single_range`, `8 multi_range`, `13 unreconstructable`; this is
+the source-range representation after removing copied worksheet faces, not a claim that every
+legacy face fingerprint is byte-identical.
+
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`; `git diff --check`
+-> clean; ASCII AST parse -> `AST OK 6`.
+
+**NOT VERIFIED:** `.venv\Scripts\python.exe -m pytest -q` -> timed out after 600238 ms at about
+21 percent, exit 124, with the known temporary-directory permission errors and no suite result.
+The full-suite floor remains open for the Architect/CI partition; no green full-suite claim is
+made here. The source-range and graph-consumer focused partitions are green as recorded above.
+
+Historical test run snapshot (superseded; final evidence is above):
 - RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_worksheet_storage_s105.py tests\\test_worksheet_ranges_s105.py -q` -> 5 passed in 51.80s.
 - RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_worksheet_harvest_m20.py tests\\test_worksheet_promotion_s100.py -q` -> 13 passed in 35.44s.
 - RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_m20_s102.py -q` -> 7 passed in 1.66s.
@@ -124,7 +152,24 @@ Tests run:
 - RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> ASCII check OK.
 - RAN: `git diff --check` -> clean.
 
-## Open for Architect
+## S105 Worker closeout
+
+**OPEN:** the required bare full-suite floor did not complete within the 600-second Worker cap.
+It stopped at about 21 percent with the known temporary-directory permission errors and one
+partial failure, so the round has no full-suite result. The focused producer, storage, extraction,
+workbench, citation, source-extents, and graph-validator partitions are green as recorded above.
+
+**OPEN:** the range-backed source-extents report preserves the required 731 rows, zero overlaps,
+and 679 unclaimed runs, but its classification is 710 single-range, 8 multi-range, and 13
+unreconstructable rather than the pre-S105 fingerprint baseline. This is an observable consequence
+of deriving worksheet faces from the newly stored ranges; the Worker did not weaken the verifier or
+restore copied node faces to force the old fingerprints. Architect decision: accept the source-range
+classification as the new baseline, or specify the deterministic projection needed to preserve the
+legacy fingerprints without reintroducing a second copied face.
+
+**CARRIED:** the live nine-row `row_bench.py` leg was not run and is not claimed.
+
+## Historical Architect review (superseded)
 
 **ARCHITECT REVIEW OF S105 (2026-08-13). DO NOT COMMIT AS IT STANDS. The headline results are real,
 but the central floor item was met by KEEPING the compensating mechanism, which the spec forbade in

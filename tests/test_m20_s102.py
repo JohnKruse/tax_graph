@@ -133,11 +133,12 @@ def test_real_simplified_method_extent_routes_prior_year_note_to_line_4() -> Non
     assert "last year's worksheet" not in rows["2"].form_face_text
     assert "last year's worksheet" in rows["4"].form_face_text
     assert "last year's worksheet" in rows["6"].form_face_text
-    assert rows["4"].metadata["routed_note_provenance"] == [{
+    assert rows["4"].metadata["governed_note_provenance"] == [{
         "source_line": "2",
         "target_line": "4",
+        "citation_id": "cite_simplified_method_worksheet_2025_note_after_2_0",
         "text": (
-            "Note. If you completed this worksheet last year, skip line 3 and enter "
+            "**Note.** If you completed this worksheet last year, skip line 3 and enter "
             "the amount from line 4 of last year's worksheet on line 4 below (even if "
             "the amount of your pension or annuity has changed). Otherwise, go to line 3."
         ),
@@ -159,12 +160,17 @@ def test_real_simplified_method_extent_routes_prior_year_note_to_line_4() -> Non
     hard_4, warnings_4 = validate_cell_output(
         rows["4"], operand, rows["4"].form_face_text, reference_inventory=inventory
     )
+    hard_6, warnings_6 = validate_cell_output(
+        rows["6"], operand, rows["6"].form_face_text, reference_inventory=inventory
+    )
     assert [issue.kind for issue in hard_2] == ["operand_document_not_found"]
     assert all(issue.kind != "prior_year_reference" for issue in warnings_2)
     assert not hard_4
     warning_kinds_4 = [issue.kind for issue in warnings_4]
     assert "prior_year_reference" in warning_kinds_4
     assert "operand_not_in_quote" in warning_kinds_4
+    assert not hard_6
+    assert "prior_year_reference" in [issue.kind for issue in warnings_6]
 
 
 def test_real_capital_loss_extent_removes_routing_tail_but_keeps_prior_year_rows() -> None:

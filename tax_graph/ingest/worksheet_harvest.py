@@ -418,6 +418,14 @@ class _RowParser(HTMLParser):
 
 
 WINDOW_LOOKAHEAD = 4
+_SOURCE_TOKEN_RE = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)?|[0-9]+(?:[A-Za-z]+)?")
+_SOURCE_DOT_LEADER_RE = re.compile(r"(?:\.{2,}|\.\s+\.|_{2,}|\\_{2,})")
+_SOURCE_NOTE_RE = re.compile(r"\bnote\b", re.IGNORECASE)
+_SOURCE_ROUTING_RE = re.compile(
+    r"\b(?:go\s+to\s+line|otherwise|skip\s+lines?|also\s+enter)\b",
+    re.IGNORECASE,
+)
+_SOURCE_LINE_REFERENCE_RE = re.compile(r"\bline\s+([0-9]+[a-z]?)\b", re.IGNORECASE)
 ADVISORY_FINDING_KINDS = frozenset(
     {
         "html_markdown_extent_disagreement",
@@ -1038,6 +1046,7 @@ def harvest_worksheet(
         resolved_target,
         source_id,
         line_rows,
+        oracle_source_text=oracle_source_text,
     )
     nodes = _build_line_nodes(
         source_text,
@@ -1059,9 +1068,23 @@ def harvest_worksheet(
     nodes = [*nodes, *parameter_nodes]
     document = _document_object(resolved_target, year_text, source_id, start_heading)
     all_findings = [*_initial_findings, *findings]
+    if oracle_source_text is not None:
+        missing_ranges = tuple(
+            str(citation.get("citation_id"))
+            for citation in citations
+            if citation.get("kind") == "row" and not citation.get("ranges")
+        )
+        if missing_ranges:
+            all_findings.append(
+                WorksheetFinding(
+                    "source_range_missing",
+                    "one or more worksheet row citations could not be mapped to rendered source ranges",
+                    missing_ranges,
+                )
+            )
     all_findings.extend(_count_findings(resolved_target, line_rows, parameter_nodes))
     all_objects = [document, *nodes, *edges, *citations]
-    all_findings.extend(_verify_harvest_objects(source_text, all_objects))
+    all_findings.extend(_verify_harvest_objects(source_text, all_objects, oracle_source_text=oracle_source_text))
     markdown_lines: tuple[str, ...] | None = None
     if oracle_source_text is not None:
         markdown_lines = _markdown_extent_lines(
@@ -1122,6 +1145,7 @@ def harvest_worksheet_file(
     *,
     source_document_id: str | None = None,
     year: str | int = "2025",
+    advisories_enabled: bool = False,
 ) -> WorksheetHarvest:
     """Read an acquired file and use a sibling rendered text file as oracle."""
     source_path = Path(path)
@@ -1136,6 +1160,7 @@ def harvest_worksheet_file(
         source_document_id=source_document_id,
         year=year,
         oracle_source_text=oracle_source_text,
+        _advisories_enabled=advisories_enabled,
     )
 
 
@@ -1491,13 +1516,19 @@ def _markdown_extent_lines(
         selected_headings = tuple(
             heading
             for heading in headings
-            if _title_matches(heading.text, wanted)
+            if (
+                _title_matches(heading.text, wanted)
+                or _source_title_prefix_matches(heading.text, wanted)
+            )
             and not re.search(r"continued\s*$", heading.text, re.IGNORECASE)
         )
         continuations = tuple(
             heading
             for heading in headings
-            if _title_matches(heading.text, wanted)
+            if (
+                _title_matches(heading.text, wanted)
+                or _source_title_prefix_matches(heading.text, wanted)
+            )
             and re.search(r"continued\s*$", heading.text, re.IGNORECASE)
         )
         selected_headings = selected_headings + continuations
@@ -1522,7 +1553,7 @@ def _markdown_extent_lines(
         )
         end = min(next_selected, next_boundary)
         for row in _parse_text_rows(source_text[heading.source_end:end]):
-            line = _row_line(row)
+            line = _source_line(row)
             if line is not None:
                 line_tokens.append(line)
     return tuple(sorted(dict.fromkeys(line_tokens), key=_line_sort_key))
@@ -1577,6 +1608,11 @@ def _parse_text_rows(source_text: str) -> tuple[_RawRow, ...]:
             raw,
             re.IGNORECASE,
         )
+        table_line_match = re.match(
+            r"^\s*\|\s*(?P<line>[0-9]+[a-z]?)\s*\|\s*(?P<body>.*)$",
+            raw,
+            re.IGNORECASE,
+        )
         if line_match:
             token = line_match.group("line").lower()
             body = line_match.group("body").strip()
@@ -1586,6 +1622,11 @@ def _parse_text_rows(source_text: str) -> tuple[_RawRow, ...]:
             else:
                 text = _normalize_text(f"{token}. {body}")
                 cells = (f"{token}.", body)
+        elif table_line_match:
+            token = table_line_match.group("line").lower()
+            body = table_line_match.group("body").strip().rstrip("|").strip()
+            text = _normalize_text(f"{token}. {body}")
+            cells = (token, body)
         elif re.match(r"^\s*\|?\s*---(?:\s*\|\s*---)+", raw):
             text = ""
             cells = ("",)
@@ -1635,6 +1676,111 @@ def write_worksheet_draft(harvest: WorksheetHarvest, draft_dir: str | Path) -> P
         newline="\n",
     )
     return output
+
+
+def rebind_worksheet_draft_ranges(
+    draft_dir: str | Path,
+    *,
+    source_text: str,
+    target: WorksheetTarget,
+) -> Path:
+    """Regenerate draft citation text and ranges from acquired source text.
+
+    This is the bounded re-promotion seam for already-harvested worksheet
+    drafts.  It preserves object ids and node references while replacing the
+    fused citation payload with source-owned ranges and adding any explicit
+    note or routing chunks discovered between numbered rows.
+    """
+    output = Path(draft_dir).resolve()
+    citation_path = output / "citations.yaml"
+    if not citation_path.exists():
+        raise FileNotFoundError(f"worksheet draft citations are missing: {citation_path}")
+    citations = yaml.safe_load(citation_path.read_text(encoding="ascii")) or []
+    rows = _source_text_rows_for_target(source_text, target)
+    line_names = tuple(
+        sorted(
+            {
+                str(line)
+                for citation in citations
+                for line in _citation_lines(citation)
+                if str(line)
+            },
+            key=_line_sort_key,
+        )
+    )
+    line_ranges, gaps = _source_ranges_for_lines(source_text, rows, line_names)
+    missing = [line for line in line_names if not line_ranges.get(line)]
+    if missing:
+        raise ValueError(
+            f"worksheet citation ranges could not be derived for {target.document_id}: "
+            f"{','.join(missing)}"
+        )
+    existing_ids = {str(citation.get("citation_id")) for citation in citations}
+    for citation in citations:
+        lines = _citation_lines(citation)
+        if not lines:
+            continue
+        # Fresh drafts already carry the source-owned ranges and their
+        # normalized quote from the HTML/oracle join.  Rebinding is a repair
+        # seam for older drafts, not a second extent algorithm that may erase
+        # legitimate multi-column ranges or replace the stored quote with a
+        # broader row fallback.
+        ranges = tuple(
+            dict(item)
+            for item in citation.get("ranges") or ()
+            if isinstance(item, Mapping)
+        )
+        if not ranges:
+            ranges = tuple(
+                source_range
+                for line in lines
+                for source_range in line_ranges[line]
+            )
+            citation["quoted_text"] = _source_quote_for_ranges(source_text, ranges)
+            citation["ranges"] = list(ranges)
+        citation.setdefault("kind", "row")
+    for gap_index, gap in enumerate(gaps):
+        suffix = _slug(f"{gap['kind']}_after_{gap['after_line']}_{gap_index}")
+        citation_id = (
+            f"cite_{_slug(target.document_id)}_"
+            f"{suffix}"
+        )
+        if citation_id in existing_ids:
+            continue
+        ranges = gap["ranges"]
+        citations.append(
+            {
+                "citation_id": citation_id,
+                "document_id": target.document_id,
+                "source_document_id": target.source_document_id or "",
+                "locator": (
+                    f"source_document={target.source_document_id or ''};"
+                    f"worksheet={target.title};after={gap['after_line']}"
+                ),
+                "quoted_text": _source_quote_for_ranges(source_text, ranges),
+                "kind": gap["kind"],
+                "governs": gap["governs"],
+                "ranges": list(ranges),
+            }
+        )
+    _write_yaml(citation_path, citations)
+    return citation_path
+
+
+def _citation_lines(citation: Mapping[str, Any]) -> tuple[str, ...]:
+    """Read the stable printed-line list from a worksheet citation locator."""
+    locator = str(citation.get("locator") or "")
+    match = re.search(r";lines=([^;]+)$", locator)
+    if match is None:
+        return ()
+    value = match.group(1)
+    parts = tuple(part for part in value.split("_") if part)
+    if len(parts) == 1:
+        return parts
+    if all(re.fullmatch(r"[0-9]+", part) for part in parts):
+        start, end = (int(parts[0]), int(parts[-1]))
+        return tuple(str(number) for number in range(start, end + 1))
+    return parts
 
 
 def write_worksheet_discovery_report(discovery: WorksheetDiscovery, draft_dir: str | Path) -> Path:
@@ -1692,6 +1838,7 @@ def _find_start_headings(
         for heading in headings
         if _title_matches(heading.text, wanted)
         or _text_heading_matches(heading.text, wanted)
+        or _source_title_prefix_matches(heading.text, wanted)
     )
 
 
@@ -1915,6 +2062,30 @@ def _row_line(row: _RawRow) -> str | None:
     return None
 
 
+def _source_line(row: _RawRow) -> str | None:
+    """Return a rendered-source line label without mistaking table values for lines."""
+    for cell in row.cells:
+        match = re.fullmatch(r"\s*([0-9]+[a-z]?)\s*[.)]\s*", cell, re.IGNORECASE)
+        if match:
+            return match.group(1).lower()
+        match = re.match(r"\s*[\"']?([0-9]+[a-z]?)\s*[.)]\s+", cell, re.IGNORECASE)
+        if match:
+            return match.group(1).lower()
+    return None
+
+
+def _source_row_line(row: _RawRow) -> str | None:
+    """Return a source row's line label, including bare Markdown table cells."""
+    line = _source_line(row)
+    if line is not None:
+        return line
+    for cell in row.cells:
+        match = re.fullmatch(r"\s*([0-9]+[a-z]?)\s*", cell, re.IGNORECASE)
+        if match:
+            return match.group(1).lower()
+    return None
+
+
 def _first_table_line(table: _RawTable) -> str | None:
     for row in table.rows:
         line = _row_line(row)
@@ -1928,45 +2099,616 @@ def _build_citations(
     target: WorksheetTarget,
     source_document_id: str,
     line_rows: Mapping[str, tuple[_RawRow, ...]],
+    *,
+    oracle_source_text: str | None = None,
 ) -> tuple[tuple[HarvestObject, ...], dict[str, HarvestObject]]:
     line_numbers = tuple(sorted(line_rows, key=_line_sort_key))
     groups = target.citation_groups or tuple((line,) for line in line_numbers)
     citations: list[HarvestObject] = []
     citation_for_line: dict[str, HarvestObject] = {}
+    source_rows = (
+        _source_text_rows_for_target(oracle_source_text, target)
+        if oracle_source_text is not None
+        else ()
+    )
+    source_line_ranges, source_gaps = _source_ranges_for_lines(
+        oracle_source_text or "",
+        source_rows,
+        line_numbers,
+        line_faces={
+            line: _visible_text(
+                source_text[line_rows[line][0].start:line_rows[line][-1].end]
+            )
+            for line in line_numbers
+            if line_rows.get(line)
+        },
+    )
     for group in groups:
         selected_lines = tuple(line for line in group if line in line_rows)
         if not selected_lines:
             continue
         first = line_rows[selected_lines[0]][0]
         last = line_rows[selected_lines[-1]][-1]
-        quote = _visible_text(source_text[first.start:last.end])
+        ranges = tuple(
+            source_range
+            for line in selected_lines
+            for source_range in source_line_ranges.get(line, ())
+        )
+        quote = (
+            _source_quote_for_ranges(oracle_source_text, ranges)
+            if oracle_source_text is not None and ranges
+            else _visible_text(source_text[first.start:last.end])
+        )
         slug = _citation_slug(selected_lines)
         citation_id = f"cite_{_slug(target.document_id)}_lines_{slug}"
+        data = {
+            "citation_id": citation_id,
+            # The citation belongs to the promoted worksheet object while
+            # source_document_id preserves the acquired text authority.
+            "document_id": target.document_id,
+            "source_document_id": source_document_id,
+            "locator": (
+                f"source_document={source_document_id};"
+                f"worksheet={target.title};lines={slug}"
+            ),
+            "quoted_text": quote,
+            "kind": "row",
+        }
+        if ranges:
+            data["ranges"] = list(ranges)
         citation = HarvestObject(
             kind="citation",
-            data={
-                "citation_id": citation_id,
-                # The citation belongs to the promoted worksheet object while
-                # source_document_id preserves the acquired HTML authority.
-                "document_id": target.document_id,
-                "source_document_id": source_document_id,
-                "locator": (
-                    f"source_document={source_document_id};"
-                    f"worksheet={target.title};lines={slug}"
-                ),
-                "quoted_text": quote,
-            },
+            data=data,
             source_quote=quote,
-            source_start=first.start,
-            source_end=last.end,
-            source_spans=((first.start, last.end),),
+            source_start=(ranges[0]["start"] if ranges else first.start),
+            source_end=(ranges[-1]["end"] if ranges else last.end),
+            source_spans=tuple(
+                (item["start"], item["end"])
+                for item in ranges
+            ) or ((first.start, last.end),),
         )
         citations.append(citation)
         for line in selected_lines:
             current = citation_for_line.get(line)
             if current is None or _citation_span_size(citation) < _citation_span_size(current):
                 citation_for_line[line] = citation
+    for gap_index, gap in enumerate(source_gaps):
+        kind = gap["kind"]
+        governs = gap["governs"]
+        after_line = gap["after_line"]
+        suffix = _slug(f"{kind}_after_{after_line}_{gap_index}")
+        citation_id = f"cite_{_slug(target.document_id)}_{suffix}"
+        quote = _source_quote_for_ranges(oracle_source_text, gap["ranges"])
+        data = {
+            "citation_id": citation_id,
+            "document_id": target.document_id,
+            "source_document_id": source_document_id,
+            "locator": (
+                f"source_document={source_document_id};"
+                f"worksheet={target.title};after={after_line}"
+            ),
+            "quoted_text": quote,
+            "kind": kind,
+            "governs": governs,
+            "ranges": list(gap["ranges"]),
+        }
+        citations.append(
+            HarvestObject(
+                kind="citation",
+                data=data,
+                source_quote=quote,
+                source_start=gap["ranges"][0]["start"],
+                source_end=gap["ranges"][-1]["end"],
+                source_spans=tuple(
+                    (item["start"], item["end"])
+                    for item in gap["ranges"]
+                ),
+            )
+        )
     return tuple(citations), citation_for_line
+
+
+def _source_text_rows_for_target(
+    source_text: str,
+    target: WorksheetTarget,
+) -> tuple[_RawRow, ...]:
+    """Return rendered-source rows inside the target worksheet heading."""
+    headings = _parse_text_headings(source_text)
+    wanted = _normalize_title(target.title)
+    selected = tuple(
+        heading
+        for heading in headings
+        if _title_matches(heading.text, wanted)
+        or _source_title_prefix_matches(heading.text, wanted)
+    )
+    if not selected:
+        return ()
+    all_rows = _parse_text_rows(source_text)
+    selected_rows: list[_RawRow] = []
+    for index, heading in enumerate(selected):
+        next_selected = (
+            selected[index + 1].source_start
+            if index + 1 < len(selected)
+            else len(source_text)
+        )
+        next_boundary = next(
+            (
+                candidate.source_start
+                for candidate in headings
+                if candidate.source_start > heading.source_start
+                and candidate.level <= heading.level
+            ),
+            len(source_text),
+        )
+        end = min(next_selected, next_boundary)
+        selected_rows.extend(
+            row for row in all_rows
+            if row.start >= heading.source_end and row.start < end
+        )
+    return tuple(selected_rows)
+
+
+def _source_title_prefix_matches(value: str, wanted: str) -> bool:
+    """Match renderer headings that weld a worksheet title to its schedule."""
+    candidate = re.sub(r"[^a-z0-9]+", "", value.casefold())
+    expected = re.sub(r"[^a-z0-9]+", "", wanted.casefold())
+    return bool(expected) and candidate.startswith(expected)
+
+
+def _source_ranges_for_lines(
+    source_text: str,
+    source_rows: tuple[_RawRow, ...],
+    lines: Iterable[str],
+    *,
+    line_faces: Mapping[str, str] | None = None,
+) -> tuple[dict[str, tuple[dict[str, int], ...]], tuple[dict[str, Any], ...]]:
+    """Align HTML row faces to rendered source and preserve intervening chunks."""
+    if not source_rows:
+        return {}, ()
+    ordered_lines = tuple(lines)
+    start = source_rows[0].start
+    end = source_rows[-1].end
+    by_line: dict[str, tuple[dict[str, int], ...]] = {}
+    positions: list[tuple[str, int]] = []
+    cursor = 0
+    inline_gaps: list[dict[str, Any]] = []
+    for line in ordered_lines:
+        face = (line_faces or {}).get(line, "")
+        if face:
+            aligned, next_cursor = _align_source_face(
+                source_text,
+                face,
+                line=line,
+                start=max(start, cursor),
+                end=end,
+            )
+        else:
+            aligned_parts: list[dict[str, int]] = []
+            next_cursor = max(start, cursor)
+            for row in source_rows:
+                is_subline = re.fullmatch(r"[0-9]+[a-z]", line, re.IGNORECASE)
+                if row.start < next_cursor and not is_subline:
+                    continue
+                row_ranges = ()
+                row_line = _source_row_line(row)
+                if row_line == line:
+                    row_ranges = _source_row_ranges(source_text, row, line)
+                elif is_subline and row_line in {
+                    re.match(r"[0-9]+", line).group(0),
+                    None,
+                }:
+                    # Lettered sub-lines share a parent table row.  Do not
+                    # apply this fallback to numeric lines: prose such as
+                    # ``go to line 3.`` is not a printed row anchor.
+                    row_ranges = _source_subrow_ranges(source_text, row, line)
+                    if not row_ranges and row_line is not None:
+                        # Some Markdown tables print the sub-line output
+                        # cells as ``2a 2b`` without a prose anchor.  The
+                        # parent row is the only source-owned text available
+                        # for that sub-line; keep it rather than matching a
+                        # later prose reference such as ``line 2a.``.
+                        row_ranges = _source_row_ranges(
+                            source_text,
+                            row,
+                            row_line,
+                        )
+                if row_ranges:
+                    aligned_parts.extend(row_ranges)
+                    next_cursor = row_ranges[-1]["end"]
+                    break
+            aligned = tuple(aligned_parts)
+        if not aligned:
+            # The HTML face can contain renderer-only punctuation or a
+            # continuation fragment that is absent from the acquired text.
+            # The printed source row is still an authoritative, bounded
+            # fallback; keep the row visible rather than refusing the batch.
+            for row in source_rows:
+                if _source_row_line(row) != line:
+                    continue
+                aligned = _source_row_ranges(source_text, row, line)
+                if aligned:
+                    next_cursor = aligned[-1]["end"]
+                break
+        if not aligned:
+            continue
+        line_ranges = aligned
+        span_start = aligned[0]["start"]
+        span_end = aligned[-1]["end"]
+        for row in source_rows:
+            if row.end <= span_start or row.start >= span_end or not row.text:
+                continue
+            governed = _governed_source_row(row)
+            if governed is None:
+                continue
+            kind, governs = governed
+            governed_start = _governed_source_row_start(source_text, row)
+            line_ranges = _subtract_source_interval(
+                line_ranges,
+                governed_start,
+                row.end,
+            )
+            route_ranges: tuple[dict[str, int], ...] = (
+                {"start": governed_start, "end": row.end},
+            )
+            marker_ranges = _source_marker_ranges_for_row(source_text, row, line)
+            for marker in marker_ranges:
+                route_ranges = _subtract_source_interval(
+                    route_ranges,
+                    marker["start"],
+                    marker["end"],
+                )
+            if re.fullmatch(r"[0-9]+[a-z]", line, re.IGNORECASE):
+                line_ranges = tuple([*line_ranges, *marker_ranges])
+            inline_gaps.append(
+                {
+                    "after_line": (
+                        ordered_lines[ordered_lines.index(line) - 1]
+                        if re.fullmatch(r"[0-9]+[a-z]", line, re.IGNORECASE)
+                        and ordered_lines.index(line) > 0
+                        else line
+                    ),
+                    "kind": kind,
+                    "governs": governs,
+                    "ranges": route_ranges,
+                }
+            )
+        by_line[line] = line_ranges
+        positions.append((line, aligned[0]["start"], aligned[-1]["end"]))
+        cursor = next_cursor
+
+    gaps: list[dict[str, Any]] = [*inline_gaps]
+    for previous, current in zip(positions, positions[1:]):
+        previous_line, _, previous_end = previous
+        _, current_start, _ = current
+        gap_start = previous_end
+        gap_end = current_start
+        gap_text = source_text[gap_start:gap_end]
+        content_rows = tuple(
+            row
+            for row in source_rows
+            if row.start >= gap_start and row.end <= gap_end and row.text
+        )
+        governed_rows = tuple(
+            (row, _governed_source_row(row))
+            for row in content_rows
+            if _governed_source_row(row) is not None
+        )
+        if not governed_rows:
+            continue
+        for row, governed in governed_rows:
+            assert governed is not None
+            kind, governs = governed
+            gaps.append(
+                {
+                    "after_line": previous_line,
+                    "kind": kind,
+                    "governs": governs,
+                    "ranges": ({"start": row.start, "end": row.end},),
+                }
+            )
+    unique_gaps: list[dict[str, Any]] = []
+    seen_gaps: set[tuple[Any, ...]] = set()
+    for gap in gaps:
+        key = (
+            gap["kind"],
+            tuple(gap["governs"]),
+            tuple((item["start"], item["end"]) for item in gap["ranges"]),
+        )
+        if key in seen_gaps:
+            continue
+        seen_gaps.add(key)
+        unique_gaps.append(gap)
+    return by_line, tuple(unique_gaps)
+
+
+def _governed_source_row(row: _RawRow) -> tuple[str, list[str]] | None:
+    """Classify a standalone rendered row that governs later worksheet lines."""
+    has_next_instruction = re.search(r"\bnext\s*[.:]", row.text, re.IGNORECASE) is not None
+    starts_yes_branch = re.match(r"\s*\|?\s*yes\b", row.text, re.IGNORECASE) is not None
+    if _source_row_line(row) is not None and not has_next_instruction and not starts_yes_branch:
+        return None
+    if _SOURCE_NOTE_RE.search(row.text):
+        kind = "note"
+    elif _SOURCE_ROUTING_RE.search(row.text):
+        kind = "routing_sentence"
+    else:
+        return None
+    governs = list(
+        dict.fromkeys(
+            match.group(1).lower()
+            for match in _SOURCE_LINE_REFERENCE_RE.finditer(row.text)
+        )
+    )
+    return (kind, governs) if governs else None
+
+
+def _governed_source_row_start(source_text: str, row: _RawRow) -> int:
+    """Return the first byte of the routing/note prose within one source row."""
+    raw = source_text[row.start:row.end]
+    match = re.search(
+        r"\b(?:next|yes)\s*[.:]",
+        raw,
+        re.IGNORECASE,
+    )
+    if match is None:
+        return row.start
+    start = row.start + match.start()
+    if start >= row.start + 2 and source_text[start - 2:start] == "**":
+        start -= 2
+    return start
+
+
+def _source_marker_ranges_for_row(
+    source_text: str,
+    row: _RawRow,
+    line: str,
+) -> tuple[dict[str, int], ...]:
+    """Keep printed output markers when a governed tail owns the row prose."""
+    number = re.match(r"[0-9]+", line)
+    if number is None:
+        return ()
+    prefix = number.group(0)
+    marker_pattern = re.compile(
+        rf"(?<![A-Za-z0-9]){re.escape(prefix)}[a-z]?\s*[.)]",
+        re.IGNORECASE,
+    )
+    matches = tuple(marker_pattern.finditer(source_text, row.start, row.end))
+    return tuple(
+        {"start": match.start(), "end": match.end()}
+        for match in matches
+        if re.fullmatch(rf"{re.escape(prefix)}[a-z]?", match.group(0).rstrip(".) "), re.IGNORECASE)
+    )
+
+
+def _subtract_source_range_rows(
+    ranges: Iterable[Mapping[str, int]],
+    excluded: _RawRow,
+) -> tuple[dict[str, int], ...]:
+    """Remove one governed source row from an aligned line span."""
+    result: list[dict[str, int]] = []
+    for item in ranges:
+        start = int(item["start"])
+        end = int(item["end"])
+        if excluded.end <= start or excluded.start >= end:
+            result.append({"start": start, "end": end})
+            continue
+        if start < excluded.start:
+            result.append({"start": start, "end": excluded.start})
+        if excluded.end < end:
+            result.append({"start": excluded.end, "end": end})
+    return tuple(item for item in result if item["start"] < item["end"])
+
+
+def _subtract_source_interval(
+    ranges: Iterable[Mapping[str, int]],
+    start: int,
+    end: int,
+) -> tuple[dict[str, int], ...]:
+    """Remove an arbitrary source interval from aligned ranges."""
+    result: list[dict[str, int]] = []
+    for item in ranges:
+        item_start = int(item["start"])
+        item_end = int(item["end"])
+        if end <= item_start or start >= item_end:
+            result.append({"start": item_start, "end": item_end})
+            continue
+        if item_start < start:
+            result.append({"start": item_start, "end": start})
+        if end < item_end:
+            result.append({"start": end, "end": item_end})
+    return tuple(item for item in result if item["start"] < item["end"])
+
+
+def _align_source_face(
+    source_text: str,
+    face: str,
+    *,
+    line: str,
+    start: int,
+    end: int,
+) -> tuple[tuple[dict[str, int], ...], int]:
+    """Find one HTML-derived face in the rendered source, in order."""
+    source_matches = tuple(_SOURCE_TOKEN_RE.finditer(source_text, start, end))
+    # HTML tables put output slots in the middle of prose (and repeat the
+    # printed line marker there).  Those slots are not worksheet prose and
+    # must not force a false mismatch against the rendered text row.
+    face = re.sub(
+        r"(?<![A-Za-z0-9])[0-9]+[a-z]?\s*[.)]\s*(?:_+|\\_+)",
+        " ",
+        face,
+        flags=re.IGNORECASE,
+    )
+    # A continuation table header can be attached to the last preceding HTML
+    # row by the structural parser.  It is a boundary marker, not row prose.
+    face = re.split(r"\b[A-Za-z][A-Za-z ]+Worksheet[- ]Continued\b", face, maxsplit=1)[0]
+    wanted_matches = tuple(_SOURCE_TOKEN_RE.finditer(face))
+    wanted = [
+        match.group(0).casefold().replace("'", "")
+        for match in wanted_matches
+        if match.group(0).casefold() not in {"field", "checkbox"}
+    ]
+    if not wanted:
+        return (), start
+    for first_index, first in enumerate(source_matches):
+        if first.group(0).casefold().replace("'", "") != wanted[0]:
+            continue
+        selected = [first]
+        source_index = first_index + 1
+        for wanted_token in wanted[1:]:
+            while source_index < len(source_matches):
+                candidate = source_matches[source_index]
+                source_index += 1
+                if candidate.group(0).casefold().replace("'", "") == wanted_token:
+                    selected.append(candidate)
+                    break
+            else:
+                break
+        if len(selected) != len(wanted):
+            continue
+        ranges: list[dict[str, int]] = []
+        range_start = selected[0].start()
+        previous_end = selected[0].end()
+        for previous, current in zip(selected, selected[1:]):
+            gap = source_text[previous.end():current.start()]
+            if _SOURCE_DOT_LEADER_RE.search(gap):
+                ranges.append({"start": range_start, "end": previous_end})
+                range_start = current.start()
+            previous_end = current.end()
+        ranges.append({"start": range_start, "end": previous_end})
+        return tuple(ranges), selected[-1].end()
+    return (), start
+
+
+def _source_row_ranges(
+    source_text: str,
+    row: _RawRow,
+    line: str,
+) -> tuple[dict[str, int], ...]:
+    """Keep lexical row text while dropping printed field markers and leaders."""
+    raw = source_text[row.start:row.end]
+    anchor = _source_printed_anchor(source_text, row, line)
+    if anchor is None:
+        return ()
+    start, end_limit = anchor
+    tokens = tuple(_SOURCE_TOKEN_RE.finditer(source_text[start:end_limit]))
+    if not tokens:
+        return ()
+    ranges: list[dict[str, int]] = []
+    range_start = start + tokens[0].start()
+    previous_end = start + tokens[0].end()
+    for previous, current in zip(tokens, tokens[1:]):
+        previous_absolute_end = start + previous.end()
+        current_absolute_start = start + current.start()
+        gap = source_text[previous_absolute_end:current_absolute_start]
+        if _SOURCE_DOT_LEADER_RE.search(gap):
+            ranges.append({"start": range_start, "end": previous_end})
+            range_start = current_absolute_start
+        previous_end = start + current.end()
+    ranges.append({"start": range_start, "end": previous_end})
+    return tuple(ranges)
+
+
+def _source_printed_anchor(
+    source_text: str,
+    row: _RawRow,
+    line: str,
+) -> tuple[int, int] | None:
+    """Return the bounded printed anchor segment for one source row."""
+    raw = source_text[row.start:row.end]
+    anchor = re.compile(
+        rf"""(?:
+            (?<![A-Za-z0-9]){re.escape(line)}[.)](?=\s|$)
+            |\|\s*{re.escape(line)}\s*\|
+        )""",
+        re.IGNORECASE | re.VERBOSE,
+    )
+    matches = tuple(anchor.finditer(raw))
+    if not matches:
+        return None
+    first_index = 0
+    if (
+        len(matches) >= 3
+        and matches[1].start() - matches[0].end() <= 2
+    ):
+        # Some rendered Markdown rows repeat the printed line in the first
+        # cell and at the start of the prose cell: ``1. 1. Enter ... 1.``.
+        # The second anchor is the prose row's start; the third is its
+        # trailing printed marker.
+        first_index = 1
+    first = matches[first_index]
+    second = matches[first_index + 1] if len(matches) > first_index + 1 else None
+    return (
+        row.start + first.start(),
+        row.start + (second.start() if second is not None else len(raw)),
+    )
+
+
+def _source_subrow_ranges(
+    source_text: str,
+    row: _RawRow,
+    line: str,
+) -> tuple[dict[str, int], ...]:
+    """Claim a lettered sub-line's prose before its printed output marker."""
+    suffix = re.fullmatch(r"[0-9]+([a-z])", line, re.IGNORECASE)
+    if suffix is None:
+        return ()
+    body_anchor = re.compile(
+        rf"(?<![A-Za-z0-9]){re.escape(suffix.group(1))}[.)](?=\s)",
+        re.IGNORECASE,
+    ).search(source_text, row.start, row.end)
+    if body_anchor is None:
+        return ()
+    marker_pattern = re.compile(
+        rf"(?<![A-Za-z0-9]){re.escape(line)}[.)](?=\s|$)",
+        re.IGNORECASE,
+    )
+    marker = None
+    for candidate in marker_pattern.finditer(source_text, body_anchor.end(), row.end):
+        prefix = source_text[max(row.start, candidate.start() - 4):candidate.start()]
+        suffix_text = source_text[candidate.end():candidate.end() + 12]
+        if "|" in prefix or _SOURCE_DOT_LEADER_RE.search(suffix_text):
+            marker = candidate
+            break
+    end = marker.start() if marker is not None else row.end
+    if end <= body_anchor.start():
+        return ()
+    start = body_anchor.start()
+    return _source_ranges_for_fragment(source_text, start, end)
+
+
+def _source_ranges_for_fragment(
+    source_text: str,
+    start: int,
+    end: int,
+) -> tuple[dict[str, int], ...]:
+    """Split a source fragment at dot leaders while retaining lexical text."""
+    tokens = tuple(_SOURCE_TOKEN_RE.finditer(source_text[start:end]))
+    if not tokens:
+        return ()
+    ranges: list[dict[str, int]] = []
+    range_start = start + tokens[0].start()
+    previous_end = start + tokens[0].end()
+    for previous, current in zip(tokens, tokens[1:]):
+        previous_absolute_end = start + previous.end()
+        current_absolute_start = start + current.start()
+        if _SOURCE_DOT_LEADER_RE.search(source_text[previous_absolute_end:current_absolute_start]):
+            ranges.append({"start": range_start, "end": previous_end})
+            range_start = current_absolute_start
+        previous_end = start + current.end()
+    ranges.append({"start": range_start, "end": previous_end})
+    return tuple(ranges)
+
+
+def _source_quote_for_ranges(
+    source_text: str | None,
+    ranges: Iterable[Mapping[str, int]],
+) -> str:
+    """Render source ranges into the stored quote without inventing prose."""
+    if source_text is None:
+        return ""
+    return _normalize_text(
+        " ".join(source_text[int(item["start"]):int(item["end"])] for item in ranges)
+    )
 
 
 def _build_line_nodes(
@@ -1981,7 +2723,14 @@ def _build_line_nodes(
     for line in sorted(line_rows, key=_line_sort_key):
         rows = line_rows[line]
         first, last = rows[0], rows[-1]
-        quote = _visible_text(source_text[first.start:last.end])
+        face_end = last.end
+        fragment = source_text[first.start:face_end]
+        if "<table" in fragment.lower() and "</table>" in fragment.lower():
+            nested_end = source_text.find("</table>", first.start)
+            outer_end = source_text.find("</tr>", nested_end)
+            if nested_end >= 0 and outer_end >= 0:
+                face_end = outer_end + len("</tr>")
+        quote = _visible_text(source_text[first.start:face_end])
         citation = citation_for_line.get(line)
         if citation is None:
             continue
@@ -2252,7 +3001,12 @@ def _count_findings(
     return _dedupe_findings(findings)
 
 
-def _verify_harvest_objects(source_text: str, objects: Iterable[HarvestObject]) -> list[WorksheetFinding]:
+def _verify_harvest_objects(
+    source_text: str,
+    objects: Iterable[HarvestObject],
+    *,
+    oracle_source_text: str | None = None,
+) -> list[WorksheetFinding]:
     findings: list[WorksheetFinding] = []
     for obj in objects:
         spans = obj.source_spans or ((obj.source_start, obj.source_end),)
@@ -2263,6 +3017,21 @@ def _verify_harvest_objects(source_text: str, objects: Iterable[HarvestObject]) 
                     f"{obj.kind} {obj.get('node_id', obj.get('edge_id', obj.get('citation_id', '')))} has no source quote",
                 )
             )
+            continue
+        ranged = obj.data.get("ranges")
+        if oracle_source_text is not None and ranged:
+            expected = _source_quote_for_ranges(oracle_source_text, ranged)
+            if _normalize_text(obj.source_quote) != expected:
+                findings.append(
+                    WorksheetFinding(
+                        "quote_not_verbatim",
+                        f"{obj.kind} source quote does not reconstruct from its ranges",
+                        (
+                            f"source_span={obj.source_start}:{obj.source_end}",
+                            f"range_count={len(ranged)}",
+                        ),
+                    )
+                )
             continue
         if not any(
             _normalize_text(obj.source_quote).lower()
@@ -2368,6 +3137,9 @@ def _is_external_line_reference(text: str, start: int) -> bool:
 
 
 def _citation_span_size(citation: HarvestObject) -> int:
+    ranges = citation.data.get("ranges")
+    if ranges:
+        return sum(int(item["end"]) - int(item["start"]) for item in ranges)
     return citation.source_end - citation.source_start
 
 

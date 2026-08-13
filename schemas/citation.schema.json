@@ -27,6 +27,29 @@
       "minLength": 1,
       "description": "The verbatim source passage, stored so the agent need not re-fetch."
     },
+    "ranges": {
+      "type": "array",
+      "description": "Ordered half-open character ranges into source_document_id.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["start", "end"],
+        "properties": {
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "minItems": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["row", "note", "routing_sentence", "table_header"]
+    },
+    "governs": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[0-9]+[a-z]?$" },
+      "minItems": 1
+    },
     "semantic_title": {
       "type": "string",
       "description": "The source heading's semantic title, when the acquired source provides one."

@@ -363,9 +363,9 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "outline_id": node.outline_id,
                     "outline_kind": node.kind,
                     "structural_skip_reason": structural_skip_reason or None,
-                    "routed_note_provenance": list(
+                    "governed_note_provenance": list(
                         (document.fields or {})
-                        .get("routed_note_provenance", {})
+                        .get("governed_note_provenance", {})
                         .get(line, [])
                     ),
                 },

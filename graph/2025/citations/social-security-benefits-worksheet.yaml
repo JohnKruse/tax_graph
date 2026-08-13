@@ -3,49 +3,82 @@
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=1
-  quoted_text: 1. Enter the total amount from box 5 of all your Forms SSA-1099 and
-    RRB-1099 . Also enter this amount on Form 1040 or 1040-SR, line 6a 1. _____
+  quoted_text: 1, line 24z, have you enter a write-in adjustment on line 24z, figure
+    that write-in before completing this worksheet (see the instructions for Schedule
+    1, line 24z). If you are married filing separately and you lived apart from your
+    spouse for all of 2025, check the box on line 6d. Be sure you have read the *Exception*
+    in the line 6a and 6b instructions to see if you can use this worksheet instead
+    of a publication to find out if any of your benefits are taxable. | 1. Enter the
+    total amount from **box 5** of all your **Forms SSA-1099** and **RRB-1099**. Also
+    enter this amount on Form 1040 or 1040-SR, line 6a
+  kind: row
+  ranges:
+  - start: 132847
+    end: 133465
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_2
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=2
-  quoted_text: 2. Multiply line 1 by 50% (0.50) 2. _____
+  quoted_text: 2. Multiply line 1 by 50% (0.50
+  kind: row
+  ranges:
+  - start: 133497
+    end: 133528
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_3
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=3
   quoted_text: 3. Combine the amounts from Form 1040 or 1040-SR, lines 1z, 2b, 3b,
-    4b, 5b, 7a, and 8 3. _____
+    4b, 5b, 7a, and 8
+  kind: row
+  ranges:
+  - start: 133547
+    end: 133632
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_4
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=4
-  quoted_text: 4. Enter the amount, if any, from Form 1040 or 1040-SR, line 2a 4.
-    _____
+  quoted_text: 4. Enter the amount, if any, from Form 1040 or 1040-SR, line 2a
+  kind: row
+  ranges:
+  - start: 133650
+    end: 133713
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_5
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=5
-  quoted_text: 5. Combine lines 2, 3, and 4 5. _____
+  quoted_text: 5. Combine lines 2, 3, and 4
+  kind: row
+  ranges:
+  - start: 133731
+    end: 133759
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_6
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=6
   quoted_text: 6. Enter the total of the amounts from Schedule 1, lines 11 through
-    20, and 23 and 25 6. _____
+    20, and 23 and 25
+  kind: row
+  ranges:
+  - start: 133777
+    end: 133862
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_7
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=7
-  quoted_text: 7. Is the amount on line 6 less than the amount on line 5? No. None
-    of your social security benefits are taxable. Enter -0- on Form 1040 or 1040-SR,
-    line 6b. Yes. Subtract line 6 from line 5 7. _____
+  quoted_text: 7. Is the amount on line 6 less than the amount on line 5? No. **STOP**
+    None of your social security benefits are taxable. Enter -0- on Form 1040 or 1040-SR,
+    line 6b. Yes. Subtract line 6 from line 5
+  kind: row
+  ranges:
+  - start: 133880
+    end: 134081
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_8
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
@@ -53,20 +86,28 @@
     Worksheet;lines=8
   quoted_text: '8. If you are: Married filing jointly, enter $32,000 Single, head
     of household, qualifying surviving spouse, or married filing separately and you
-    lived apart from your spouse for all of 2025, enter $25,000 8. _____ Married filing
+    **lived apart** from your spouse for all of 2025, enter $25,000 Married filing
     separately and you lived with your spouse at any time in 2025, skip lines 8 through
     15; multiply line 7 by 85% (0.85) and enter the result on line 16. Then, go to
     line 17'
+  kind: row
+  ranges:
+  - start: 134099
+    end: 134497
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_9
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=9
-  quoted_text: 9. Is the amount on line 8 less than the amount on line 7? No. None
-    of your social security benefits are taxable. Enter -0- on Form 1040 or 1040-SR,
-    line 6b. If you are married filing separately and you lived apart from your spouse
-    for all of 2025, be sure you checked the box on line 6d. Yes. Subtract line 8
-    from line 7 9. _____
+  quoted_text: 9. Is the amount on line 8 less than the amount on line 7? No. **STOP**
+    None of your social security benefits are taxable. Enter -0- on Form 1040 or 1040-SR,
+    line 6b. If you are married filing separately and you **lived apart** from your
+    spouse for all of 2025, be sure you checked the box on line 6d. Yes. Subtract
+    line 8 from line 7
+  kind: row
+  ranges:
+  - start: 134515
+    end: 134851
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_10
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
@@ -74,57 +115,94 @@
     Worksheet;lines=10
   quoted_text: 10. Enter $12,000 if married filing jointly; $9,000 if single, head
     of household, qualifying surviving spouse, or married filing separately and you
-    lived apart from your spouse for all of 2025 10. _____
+    **lived apart** from your spouse for all of 2025
+  kind: row
+  ranges:
+  - start: 134869
+    end: 135065
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_11
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=11
-  quoted_text: 11. Subtract line 10 from line 9. If zero or less, enter -0- 11. _____
+  quoted_text: 11. Subtract line 10 from line 9. If zero or less, enter -0
+  kind: row
+  ranges:
+  - start: 135084
+    end: 135143
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_12
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=12
-  quoted_text: 12. Enter the smaller of line 9 or line 10 12. _____
+  quoted_text: 12. Enter the **smaller** of line 9 or line 10
+  kind: row
+  ranges:
+  - start: 135163
+    end: 135209
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_13
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=13
-  quoted_text: 13. Enter one-half of line 12 13. _____
+  quoted_text: 13. Enter one-half of line 12
+  kind: row
+  ranges:
+  - start: 135228
+    end: 135257
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_14
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=14
-  quoted_text: 14. Enter the smaller of line 2 or line 13 14. _____
+  quoted_text: 14. Enter the **smaller** of line 2 or line 13
+  kind: row
+  ranges:
+  - start: 135276
+    end: 135322
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_15
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=15
-  quoted_text: 15. Multiply line 11 by 85% (0.85). If line 11 is zero, enter -0- 15.
-    _____
+  quoted_text: 15. Multiply line 11 by 85% (0.85). If line 11 is zero, enter -0
+  kind: row
+  ranges:
+  - start: 135341
+    end: 135405
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_16
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=16
-  quoted_text: 16. Add lines 14 and 15 16. _____
+  quoted_text: 16. Add lines 14 and 15
+  kind: row
+  ranges:
+  - start: 135425
+    end: 135448
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_17
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=17
-  quoted_text: 17. Multiply line 1 by 85% (0.85) 17. _____
+  quoted_text: 17. Multiply line 1 by 85% (0.85
+  kind: row
+  ranges:
+  - start: 135467
+    end: 135499
 - citation_id: cite_social_security_benefits_worksheet_2025_lines_18
   document_id: social_security_benefits_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Social Security Benefits
     Worksheet;lines=18
-  quoted_text: 18. Taxable social security benefits. Enter the smaller of line 16
-    or line 17. Also enter this amount on Form 1040 or 1040-SR, line 6b 18. _____
-    If any of your benefits are taxable for 2025 and they include a lump-sum benefit
+  quoted_text: 18. **Taxable social security benefits.** Enter the **smaller** of
+    line 16 or line 17. Also enter this amount on Form 1040 or 1040-SR, line 6b If
+    any of your benefits are taxable for 2025 and they include a lump-sum benefit
     payment that was for an earlier year, you may be able to reduce the taxable amount.
-    See Lump-Sum Election in Pub. 915 for details.
+    See Lump-Sum Election in Pub. 915 for details
+  kind: row
+  ranges:
+  - start: 135519
+    end: 135661
+  - start: 135679
+    end: 135889
