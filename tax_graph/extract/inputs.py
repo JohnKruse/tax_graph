@@ -183,10 +183,14 @@ def _load_region_document_input(
         )
 
     title = str(entry.region_title or document.get("title") or document_id)
+    rows, routed_notes = _route_region_notes(rows)
     text_lines = [f"Header: {title}"]
     line_anchors: list[dict[str, Any]] = []
     fields: list[dict[str, Any]] = []
     for line, quote, node_id in rows:
+        note = routed_notes.get(line)
+        if note:
+            quote = _prepend_region_note(quote, note)
         text_offset = sum(len(item) + 1 for item in text_lines)
         text_lines.append(f"- {line}: {quote}")
         line_anchors.append({"anchor": line, "text_offset": text_offset, "text_length": len(quote)})
@@ -217,6 +221,57 @@ def _load_region_document_input(
         not_modeled_fields=list(document.get("not_modeled_fields", []) or []),
         source_document_id=parent_id,
     )
+
+
+_REGION_NOTE_TARGET_RE = re.compile(
+    r"\bon\s+line\s+(?P<line>[0-9]+[a-z]?)\s+below\b",
+    re.IGNORECASE,
+)
+
+
+def _route_region_notes(
+    rows: list[tuple[str, str, str]],
+) -> tuple[list[tuple[str, str, str]], dict[str, str]]:
+    """Route an unnumbered note to the printed line it explicitly names.
+
+    Promoted worksheet citations can contain a note between two numbered
+    rows. When the note says to enter an amount on a later line, keeping it on
+    the preceding row makes the later row look like a plain calculation and
+    lets a wrong prior-year operand pass on the preceding row. The note is
+    moved only inside this in-memory source projection; its words remain
+    verbatim and occur exactly once.
+    """
+    cleaned: list[tuple[str, str, str]] = []
+    routed: dict[str, str] = {}
+    for line, quote, node_id in rows:
+        value = str(quote or "")
+        note_match = re.search(r"\bNote\.\s*", value, re.IGNORECASE)
+        if note_match is None:
+            cleaned.append((line, quote, node_id))
+            continue
+        note = value[note_match.start() :]
+        target_match = _REGION_NOTE_TARGET_RE.search(note)
+        if target_match is None:
+            cleaned.append((line, quote, node_id))
+            continue
+        target = target_match.group("line").lower()
+        note = re.sub(r"\"\s*field\s*$", "", note).strip()
+        prefix = value[: note_match.start()].rstrip()
+        if value.startswith('"') and value.endswith(' field'):
+            value = prefix + '" field'
+        else:
+            value = prefix
+        routed[target] = " ".join(part for part in (routed.get(target), note) if part)
+        cleaned.append((line, value, node_id))
+    return cleaned, routed
+
+
+def _prepend_region_note(quote: str, note: str) -> str:
+    """Insert a routed note inside a serialized citation wrapper."""
+    value = str(quote or "")
+    if value.startswith('"'):
+        return '"' + note + " " + value[1:]
+    return note + " " + value
 
 
 def _document_file_stem(document_id: str) -> str:

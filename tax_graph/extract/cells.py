@@ -762,21 +762,81 @@ def clean_form_face_text_with_extent(
     *,
     bracket_text: str | None = None,
 ) -> tuple[str, dict[str, Any]]:
-    """Select a printed-bracket clause for weak or strictly contained faces.
+    """Select a printed-bracket clause for weak or bounded faces.
 
     The fallback remains authoritative for a useful existing face. The
     bracket is compared after caption/instruction projection so diagnostics
     describe exactly what the derivation model receives. A bracket is also
     preferred when the fallback is a strict substring of it, because that
-    retains every fallback word while recovering the surrounding clause.
-    Both candidates remain in the row metadata for human review and later
-    measurement.
+    retains every fallback word while recovering the surrounding clause. It
+    is also preferred when it is a strict substring of the fallback: the
+    printed bracket is the stronger boundary witness in that direction and
+    removes text absorbed from the next printed row. Both candidates remain
+    in the row metadata for human review and later measurement.
     """
+    return _select_form_face_text_with_extent(
+        text,
+        line,
+        bracket_text=bracket_text,
+        prefer_shorter_bracket=True,
+    )
+
+
+def compare_form_face_text_with_extent(
+    text: str,
+    line: str,
+    *,
+    bracket_text: str | None = None,
+) -> dict[str, Any]:
+    """Compare the legacy and bounded face selections for one source row.
+
+    This is a deterministic measurement seam for a producer change. The
+    legacy result keeps the fallback unless the bracket is longer or contains
+    it; the bounded result additionally trusts a shorter bracket when the
+    fallback strictly contains it. No source text is authored or changed by
+    this comparison.
+    """
+    before, before_diagnostic = _select_form_face_text_with_extent(
+        text,
+        line,
+        bracket_text=bracket_text,
+        prefer_shorter_bracket=False,
+    )
+    after, after_diagnostic = _select_form_face_text_with_extent(
+        text,
+        line,
+        bracket_text=bracket_text,
+        prefer_shorter_bracket=True,
+    )
+    return {
+        "before": before,
+        "after": after,
+        "before_face": before_diagnostic["selected_face"],
+        "after_face": after_diagnostic["selected_face"],
+        "changed": before != after,
+        "before_diagnostic": before_diagnostic,
+        "after_diagnostic": after_diagnostic,
+    }
+
+
+def _select_form_face_text_with_extent(
+    text: str,
+    line: str,
+    *,
+    bracket_text: str | None,
+    prefer_shorter_bracket: bool,
+) -> tuple[str, dict[str, Any]]:
+    """Apply one face-selection policy and retain both source candidates."""
     fallback = _clean_form_face_text_fallback(text, line)
     fallback_face = _cell_face_text(fallback, line)
-    bracket = _clean_form_face_text_fallback(bracket_text, line) if bracket_text else ""
+    # The outline pipeline already bounded this candidate between printed
+    # anchors. Running the anchor cleaner over it again can mistake a
+    # legitimate reference such as "line 4" in a Note block for this row's
+    # printed anchor.
+    bracket = " ".join(str(bracket_text or "").split()) if bracket_text else ""
     bracket_face = _cell_face_text(bracket, line) if bracket else ""
     fallback_is_strict_substring = _is_strict_face_substring(fallback_face, bracket_face)
+    bracket_is_strict_substring = _is_strict_face_substring(bracket_face, fallback_face)
     disagreement: str | None = None
     if bracket_face and fallback_face != bracket_face:
         disagreement = (
@@ -793,11 +853,18 @@ def clean_form_face_text_with_extent(
                 and len(bracket_face) >= len(fallback_face)
             )
             or fallback_is_strict_substring
+            or (
+                prefer_shorter_bracket
+                and bracket_is_strict_substring
+                and not _weak_cell_face(bracket_face)
+            )
         )
     )
     selected = bracket if use_bracket else fallback
     if use_bracket and fallback_is_strict_substring:
         selection_reason = "fallback_strict_substring"
+    elif use_bracket and bracket_is_strict_substring:
+        selection_reason = "bracket_strict_substring"
     elif use_bracket:
         selection_reason = "weak_fallback"
     else:
@@ -809,6 +876,9 @@ def clean_form_face_text_with_extent(
         "disagreement": disagreement,
         "fallback_face": fallback_face,
         "bracket_face": bracket_face,
+        "bracket_text": bracket,
+        "selected_face": _cell_face_text(selected, line),
+        "bracket_is_strict_substring": bracket_is_strict_substring,
     }
 
 
@@ -821,7 +891,16 @@ def _weak_cell_face(value: str) -> bool:
     normalized = " ".join(str(value or "").split()).strip().lower()
     if not normalized:
         return True
-    if normalized in {"( )", "()", "years", "instructions", "instructions."}:
+    if normalized in {
+        "( )",
+        "()",
+        ":",
+        ': "',
+        '"',
+        "years",
+        "instructions",
+        "instructions.",
+    }:
         return True
     return normalized.startswith("attach form") or normalized.startswith("form ")
 

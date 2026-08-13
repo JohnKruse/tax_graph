@@ -1543,10 +1543,21 @@ def _attach_clause_extent(
     if not entries:
         return span
     entry = min(entries, key=lambda item: int(item["text_offset"]))
+    anchor_offset = int(entry["text_offset"])
+    if document.source_document_id:
+        region_entries = [
+            record
+            for record in (document.fields or {}).get("line_anchors", []) or []
+            if isinstance(record, dict)
+            and str(record.get("anchor", "")).strip().lower() == str(anchor).strip().lower()
+            and _valid_text_offset(document.text, record.get("text_offset"))
+        ]
+        if len(region_entries) == 1:
+            anchor_offset = int(region_entries[0]["text_offset"])
     bracket_text = _bracketed_source_text(
         document,
         anchor=anchor,
-        anchor_offset=int(entry["text_offset"]),
+        anchor_offset=anchor_offset,
     )
     if not bracket_text:
         return span
@@ -1554,7 +1565,7 @@ def _attach_clause_extent(
         span,
         extent={
             "bracket_text": bracket_text,
-            "anchor_offset": int(entry["text_offset"]),
+            "anchor_offset": anchor_offset,
             "source_line": source_line,
         },
     )
@@ -1611,6 +1622,15 @@ def _bracketed_source_text(
         default=len(value),
     )
 
+    serialized_clause = _serialized_region_row_clause(
+        value,
+        anchor=normalized_anchor,
+        anchor_offset=anchor_offset,
+        next_offset=next_offset,
+    )
+    if serialized_clause is not None:
+        return serialized_clause
+
     full_matches = [
         match
         for match in _printed_anchor_matches(value, normalized_anchor)
@@ -1643,6 +1663,54 @@ def _bracketed_source_text(
     )
     clause = _remove_dot_leader_rows(value[start_match.end() : end_match.start()])
     return clause or None
+
+
+def _serialized_region_row_clause(
+    value: str,
+    *,
+    anchor: str,
+    anchor_offset: int,
+    next_offset: int,
+) -> str | None:
+    """Unwrap a graph-region row before applying printed-anchor matching.
+
+    Region inputs are assembled from promoted citation text as ``- 2: "2.
+    Caption" field``. The wrapper is pipeline scaffolding, not form prose.
+    The generic anchor walk sees the repeated printed ``2`` and can therefore
+    return only ``: "``. Restrict this repair to the exact serialized-region
+    shape so acquired form text keeps the ordinary bracket path.
+    """
+    segment = value[anchor_offset:next_offset]
+    start = re.match(
+        rf"\s*-\s*{re.escape(anchor)}\s*:\s*[\"']\s*",
+        segment,
+        re.IGNORECASE,
+    )
+    quoted = start is not None
+    if start is None:
+        start = re.match(
+            rf"\s*-\s*{re.escape(anchor)}\s*:\s*",
+            segment,
+            re.IGNORECASE,
+        )
+    if start is None:
+        return None
+    body = segment[start.end() :]
+    if quoted:
+        close = body.rfind('" field')
+        if close <= 0:
+            return None
+        clause = body[:close].strip()
+    else:
+        end = re.search(
+            rf"(?<!\w){re.escape(anchor)}\s*[.)]\s*(?=[_])",
+            body,
+            re.IGNORECASE,
+        )
+        if end is None:
+            return None
+        clause = body[:end.start()].strip()
+    return _remove_dot_leader_rows(clause) or None
 
 
 def _printed_anchor_matches(value: str, anchor: str) -> list[re.Match[str]]:

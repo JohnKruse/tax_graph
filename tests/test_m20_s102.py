@@ -17,10 +17,12 @@ from tax_graph.extract.candidate import (
 )
 from tax_graph.extract.cells import (
     CellFrame,
+    build_cell_frame_from_document,
     _external_form_is_named,
     derive_cells,
     validate_cell_output,
 )
+from tax_graph.extract.inputs import load_document_input
 
 
 pytestmark = pytest.mark.m20
@@ -116,6 +118,62 @@ def test_line_2_year_shift_without_prior_year_cue_stays_hard_missing_document() 
 def test_year_shift_is_not_hidden_by_form_name_matching() -> None:
     assert not _external_form_is_named("Enter the amount from Form 1040, line 15.", "form_1040_2024")
     assert _external_form_is_named("Enter the amount from 2024 Form 1040, line 15.", "form_1040_2024")
+
+
+def test_real_simplified_method_extent_routes_prior_year_note_to_line_4() -> None:
+    document = load_document_input(
+        "simplified_method_worksheet_2025",
+        year="2025",
+        root=ROOT,
+    )
+    frame = build_cell_frame_from_document(document)
+    rows = {row.line: row for row in frame.rows}
+
+    assert "Note." not in rows["2"].form_face_text
+    assert "last year's worksheet" not in rows["2"].form_face_text
+    assert "last year's worksheet" in rows["4"].form_face_text
+    assert "last year's worksheet" in rows["6"].form_face_text
+
+    inventory = {
+        "document_ids": ["simplified_method_worksheet_2025"],
+        "printed_lines": {"simplified_method_worksheet_2025": [str(number) for number in range(1, 12)]},
+        "node_ids": [],
+        "graph_nodes": [],
+    }
+    operand = {
+        "op": "COPY",
+        "args": [{"form": "simplified_method_worksheet_2024", "line": "10"}],
+    }
+    hard_2, warnings_2 = validate_cell_output(
+        rows["2"], operand, rows["2"].form_face_text, reference_inventory=inventory
+    )
+    hard_4, warnings_4 = validate_cell_output(
+        rows["4"], operand, rows["4"].form_face_text, reference_inventory=inventory
+    )
+    assert [issue.kind for issue in hard_2] == ["operand_document_not_found"]
+    assert all(issue.kind != "prior_year_reference" for issue in warnings_2)
+    assert not hard_4
+    warning_kinds_4 = [issue.kind for issue in warnings_4]
+    assert "prior_year_reference" in warning_kinds_4
+    assert "operand_not_in_quote" in warning_kinds_4
+
+
+def test_real_capital_loss_extent_removes_routing_tail_but_keeps_prior_year_rows() -> None:
+    document = load_document_input(
+        "capital_loss_carryover_worksheet_2025",
+        year="2025",
+        root=ROOT,
+    )
+    rows = {
+        row.line: row
+        for row in build_cell_frame_from_document(document).rows
+    }
+    assert "go to line 5" not in rows["4"].form_face_text
+    assert "go to line 9" not in rows["8"].form_face_text
+    for line in ("1", "2", "5", "6", "9", "10"):
+        assert "2024" in rows[line].form_face_text
+    for line in ("3", "7"):
+        assert "2024" not in rows[line].form_face_text
 
 
 def _prior_year_row(line: str, referenced_line: str) -> dict:
