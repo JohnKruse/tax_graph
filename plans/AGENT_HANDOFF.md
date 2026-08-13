@@ -462,12 +462,24 @@ is **+5 failures against the 17-red baseline.**
 **FOUR OF THE FIVE ARE ISOLATED, by running each red against `58ae3b1` in a short-path worktree
 (`C:\tmp\b58`, `.cache` junctioned in) - the three that SKIP there for absent `_drafts` are not
 attributable this way and are named below rather than guessed at.**
-**TWO ARE PINNED COUNTS THIS ROUND IS SUPPOSED TO MOVE - re-baseline them with the reason recorded,
-exactly as ruled for S91:**
+**TWO PIN MEASUREMENTS RATHER THAN BEHAVIOUR. I EARLIER CALLED BOTH SAFE TO RE-BASELINE. THAT WAS
+PREMATURE FOR AT LEAST ONE OF THEM AND NEITHER IS CLEARED YET.**
 - `test_cell_caption_m20.py::test_real_corpus_caption_distribution_is_measured_and_conservative` -
-  `assert 28 == 29`, one caption.
+  `assert 28 == 29`, one caption lost. **Located 2026-08-13: it is NOT in 1040, 6251 or
+  schedule_1a - recomputing the caption split from the report's own before/after faces gives ZERO
+  status flips across all three. The test's fourth document is `form_2441_2025`, which the report
+  EXCLUDES, so the lost caption is on the one document nobody measured** - the same document that
+  silently lost its `table_anchor_boundary` finding. **Treat this as a probable second symptom of
+  that regression, not as a number to re-pin.** Name the row and the cause before deciding.
 - `test_m20_s91.py::test_real_corpus_repairs_all_68_weak_or_fragment_packets_and_reports_both_directions` -
-  the guard already ruled on above.
+  selected rows moved 68 -> 93, which the round intends. **But the DIRECTION split also moved,
+  44/27 -> 45/23, and a pure selection change cannot move it** - that split describes which face is
+  longer, so its movement means the bracket TEXT changed. **Explain that before re-pinning.**
+
+**THE DISTINCTION THAT MATTERS IS NOT "REAL VERSUS NOT REAL" - every one of these is a real
+failure.** It is **what the test pins** (behaviour, or a measured count) and **whether the move has
+been explained**. A count that moved for an unexamined reason is exactly how a regression gets
+re-baselined away, which is what `AGENTS.md` forbids. **Two of the four are explained. Two are not.**
 
 **TWO ARE REAL DEFECTS AND MUST BE FIXED, NOT RE-PINNED.**
 - **VERBATIM PROVENANCE IS BROKEN ON ONE ROW.**
