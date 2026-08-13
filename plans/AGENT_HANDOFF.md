@@ -21,11 +21,11 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. The M20-S102 REWORK is specced below and is entirely offline and deterministic.**
-**John approved the sequencing on 2026-08-12: fix the face extent, then turn the prior-year admit
-path on in the same round.** The S102 predicate, stub-year fix, refusal partition and target report
-are verified good and do NOT move. **One decision may come back to the Architect mid-round:** if the
-224-row face diff shows a material truncated class, the round STOPS and reports instead of shipping.
+**BALL: CODEX, on the FOUR-ITEM finish list in "Open for Architect" - restrict the selector to
+region documents, fix the two core-form regressions, turn the prior-year gate on, re-baseline only
+what moved.** Everything else from the earlier list is dropped, because it polishes machinery that
+`../docs/source-extents.md` replaces. **The round after this one is extents, starting with its four
+invariants.** Sequencing decided by the Architect on John's standing direction, 2026-08-13.
 
 **S101 ACCEPTED (`acb14bd`, Architect, 2026-08-12). Verified by running the corpus, the live
 provider leg, and the full suite - not by reading the report.**
@@ -393,6 +393,57 @@ Rewiring the Return Record (still deferred). **Any change to the prior-year pred
 
 
 ## Open for Architect
+
+**SEQUENCING DECIDED BY THE ARCHITECT, 2026-08-13, ON JOHN'S STANDING DIRECTION ("my goal is a
+reliable pipeline; let that guide your sequencing and choices"). THIS SUPERSEDES THE FINISH LIST
+BELOW WHERE THEY DISAGREE.**
+
+**MOST OF THE OLD FINISH LIST WAS POLISH ON MACHINERY `../docs/source-extents.md` REPLACES.** Better
+end-anchor regexes, a tightened residual metric, re-pinned counts - each is another cue-matching
+repair that moves hundreds of faces, breaks a pinned count elsewhere, and is discarded when extents
+land. **Reliability does not come from another turn of that crank. It comes from shipping no known
+wrong output and then changing the representation.** So the round finishes with four items and
+stops.
+
+**TWO MEASUREMENTS MADE THIS DECIDABLE.**
+- **All 17 truncations carry `selection_reason: bracket_strict_substring`** - every one is the NEW
+  symmetric selector. Of the 221 changed rows, **196 are worksheets and 25 are acquired forms; of
+  the 17 truncations, 13 are on acquired forms and 4 on worksheets.**
+- **`form_1040_2025` line `3b` is NOT among the changed rows at all.** The face report compares
+  selector output, so **it cannot see bracket-BUILDER changes** - the region unwrapper and the new
+  `_attach_clause_extent` offset. **The round's own instrument under-measures the round's blast
+  radius**, which is the same defect as excluding 2441: what is not measured is not seen.
+
+**THE FINISH LIST, IN ORDER.**
+1. **RESTRICT THE SYMMETRIC SELECTOR TO REGION DOCUMENTS.** Not a narrowed heuristic - a statement
+   about which producer we trust. The unwrapper made region brackets correct; the acquired-form
+   anchor walk still ends on digits inside prose, which is precisely `embedded_anchor_before_prose`.
+   **A selector may only prefer a bracket where the builder is known good.** This keeps Simplified
+   Method 2, 4 and 6 and Capital Loss 4 and 8 - the entire prior-year deliverable - and **removes 13
+   of the 17 truncations at a stroke, with no new pattern matching.**
+2. **FIX OR REVERT THE TWO CORE-FORM REGRESSIONS: `form_1040_2025` `3b` contiguity and the lost
+   `form_2441_2025` line 8 `table_anchor_boundary` finding.** Neither is selector-driven, so item 1
+   does not cover them. **They must not ship: one breaks the quote approvals are keyed to and the
+   other silently drops evidence on a core document.** The proof must be a corpus-wide contiguity
+   check, NOT the face report, which has just been shown blind to this class.
+3. **TURN THE PRIOR-YEAR ADMIT PATH ON.** Verified correct on the real rows already.
+4. **RE-BASELINE ONLY WHAT ITEMS 1-3 ACTUALLY MOVE**, each with its reason, plus the over-capture
+   invariant. **Explain the caption and S91 direction-split moves before re-pinning either** - the
+   caption loss is on 2441 and is probably a symptom of item 2.
+
+**EXPLICITLY DROPPED FROM THE ROUND.** The 4 remaining worksheet truncations, the end-anchor
+detection repair for acquired forms, the residual-metric tightening, the note-routing provenance
+marker, and the `FACE_EXTENT_EXCLUSIONS` corpus rule. **All are on machinery extents replaces, and
+the note router is deleted by it outright.** **The 3 unattributed reds are NOT worth a destructive
+baseline checkout**; under the extents invariants they either pass or they name a real defect.
+
+**THEN THE NEXT ROUND IS EXTENTS, AND IT STARTS WITH THE INVARIANTS**, not the storage change:
+contiguity, non-overlap, every chunk claimed, and measured-corpus-equals-core-set. **Those four are
+what make every later change measurable, and three of the defects in this round would have been
+caught by them without any count.**
+
+**ORIGINAL RULING OF 2026-08-12 FOLLOWS, kept for its reasoning on why a redirect heuristic was
+rejected and why the truncations are one cause.**
 
 **ARCHITECT RULING ON THE STOP (2026-08-12). STOPPING WAS RIGHT. THE ANSWER IS: FIX THE 15, DO NOT
 NARROW THE TRIGGER, AND DO NOT ABANDON THE SELECTOR.**
