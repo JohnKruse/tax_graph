@@ -21,654 +21,112 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX, on the FOUR-ITEM finish list in "Open for Architect" - restrict the selector to
-region documents, fix the two core-form regressions, turn the prior-year gate on, re-baseline only
-what moved.** Everything else from the earlier list is dropped, because it polishes machinery that
-`../docs/source-extents.md` replaces. **The round after this one is extents, starting with its four
-invariants.** Sequencing decided by the Architect on John's standing direction, 2026-08-13.
+**BALL: CODEX. M20-S103 is specced below. It is a PILOT round - provider-free, no graph writes, no
+CLI wiring - so it is cheap and it cannot destabilise the tree.**
 
-**S101 ACCEPTED (`acb14bd`, Architect, 2026-08-12). Verified by running the corpus, the live
-provider leg, and the full suite - not by reading the report.**
-- **FULL SUITE: 17 failed, 953 passed, 8 skipped, 1 xfailed in 1:01:53, on a quiet tree.** The SAME
-  17 test ids as the accepted baseline, and **12 more passing than S100's 941.** Confirmed by
-  differencing two independent hour-long runs: the only id that left the failure set is the R1
-  contract the round moved.
-- **THE MANIFEST NOW RECORDS WHAT WE MAINTAIN.** `ownership` is on all 26 non-region entries and
-  absent from all 19 regions; regions resolve through their parent booklet. **`gate` was kept
-  DISTINCT and both axes are stated once**: `gate` (`project|user`) is the historical fact of who
-  stood at the promotion gate; `ownership` is the forward commitment to maintain. **Do not merge
-  them.**
-- **THE TIER DRIFT IS DEAD, AND A GUARD KEEPS IT DEAD.** `tiers.T1` is 9 and `tiers.T2` is 5,
-  matching requirements sections 9.2 and 9.3 id-for-id. John's PLUS set lives in an explicit
-  `core_plus_documents` list, `core_documents` is 22, and **`load_core_plus_document_ids` REJECTS an
-  id named by both a tier and the core-plus list** - which is the mechanism that stops T1 being
-  re-inflated a fourth time. The reconcile is bidirectional and wired into `validate 2025`.
-- **FORM 1116, ITS INSTRUCTIONS, AND PUBLICATION 514 ARE ACQUIRED**, hashes pinned from the real
-  downloads, all three loading through `load_document_input`. **`acquire --check` reports 26
-  unchanged and `changed: -` empty**, so the protected set never moved.
-- **6251 LINE 8 NOW EMITS `COPY(form_1116_2025, line 17)`** - the right answer, live. It stops at
-  `operand_inventory_unavailable` because 1116's lines are deliberately unmodelled, which is the
-  boundary the spec drew.
-- **THE REFUSAL GATE IS HONEST: 59 refusals, 59 reported, 0 unreported, 0 core unreported.** The 17
-  structural skips became REPORTED, not hidden - the gate reads `structural_skip_reason` now.
-- **AN ACQUIRED-BUT-UNMODELLED FORM IS SAYABLE.** Form 1116 is a live document with `status: planned`
-  and a stub message; no field map was minted; `validate 2025` exits 0. **The same predicate now
-  serves two gates** - the AcroForm check and the R1 address contract both exclude documents not
-  claimed as modelled, rather than growing two ad-hoc exception lists.
+**M20-S102 IS ACCEPTED (`ee6eb55`, Architect, 2026-08-13). Verified by running the corpus and the
+suite, not by reading the report.**
+- **FULL SUITE, bare command, quiet tree: 18 failed, 960 passed, 8 skipped, 1 xfailed in 1:03:55,
+  ZERO errors.** The outcome total moved 979 -> 987 and **all 8 new outcomes are new tests** (7 in
+  `test_m20_s102.py`, 1 opt-in test in `test_m20_s91.py`). **All four reds the rework introduced are
+  gone and 7 more tests pass than at baseline.**
+- **THE GRAPH HAS A PRIOR-YEAR CONCEPT.** Simplified Method line 2 REFUSES a year-shifted operand,
+  lines 4 and 6 ADMIT one, and line 4 keeps its own `Divide line 2 by the number on line 3`. The
+  inversion that defined this round is fixed in both directions.
+- **THE SELECTOR IS SCOPED TO WHERE ITS PRODUCER IS TRUSTED.** 196 changed rows, **all on
+  worksheets, none on acquired forms**; truncations 17 -> 3, all three on worksheet table headers
+  that were dropped from scope; residual absorbed rows 0.
+- **THE CORPUS IS DEFINED BY RULE, NOT BY AN EXCLUSION LIST.** 731 rows over 35 documents,
+  `excluded_documents: []`, Form 2441 included. **That exclusion had hidden three failures.**
+- **CONTIGUITY IS BACK TO BASELINE EXACTLY.** An independent corpus-wide check (not the face report,
+  which was shown blind to this class) gives **992 spans, 7 non-contiguous, and the identical 992/7
+  at `58ae3b1`.**
+- **THE RE-BASELINE BOUGHT AN INVARIANT.** 44/27 -> 41/26 with the producer reason recorded, the
+  selected-row SET contract untouched, and a real contiguity assertion replacing a count.
 
-**BOTH ANTI-EROSION GUARDS WERE DEMANDED AND BOTH EXIST.** A status flag cannot silence either gate:
-`test_planned_acroform_is_skipped_but_modelled_inventory_drift_fails` proves the AcroForm check still
-fails for a modelled document whose inventory drifts, and `test_r1_still_detects_drift_in_modelled_documents`
-proves the R1 contract still fails when a modelled document is added. **Without these two, this round
-would have shipped two gates that could be disarmed by editing a YAML field.**
+**THE 18 REDS ARE THE NEW PINNED BASELINE. ENUMERATED HERE SO NOBODY SPENDS ANOTHER HOUR ON IT.**
+**Seven confirmed identical at `58ae3b1`** by direct comparison in a short-path worktree with
+`.cache`, `graph/2025/_drafts` and `graph_ext` junctioned in:
+`test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
+`test_field_identity_m16::test_schedule_2_raw_cache_reproduces_target_fields`,
+`test_m20_s71::test_real_candidate_node_labels_use_clean_text`,
+`test_review_preflight_m15::test_real_2025_preflight_passes_with_all_coverage_dimensions`,
+`test_review_scope_migration_m15::test_live_queue_migration_gives_every_pending_entry_a_primary_target`
+(identical `FileNotFoundError` on a `review_queue/2025/deferred_review.yaml` absent from both trees),
+`test_schedule_2_m16::test_schedule_2_part_i_raw_acroform_identity`,
+`test_schedule_d_extraction_m9::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`.
+**Eleven are the `tests/e2e/*_m15.py` environment family**, unchanged for many rounds and not
+re-run.
 
-**THE WORKER REFUSING TO EDIT A GUARD TEST WAS THE BEST MOMENT OF THE ROUND.** He stopped, changed
-nothing, and asked for an explicit ruling. **That is the rule working, and it caught the Architect** -
-the first fix proposed in its place, a positive "count documents carrying address bindings"
-predicate, **does not work**: only 15 documents have entries in `graph/2025/bindings/nodes` against a
-frozen baseline of 17. **Recorded so it is not retried.**
-
-**NOT DEMONSTRATED, AND IT IS A REPORTING GAP NOT A MECHANISM GAP.** The original floor asked for the
-tier guard to be run against the four documents that were drifting on 2026-08-11 and shown catching
-them BEFORE the fix. **That was never done** - the drift was resolved by authoring the tier file to
-agree, and the guard is proven only against a synthetic fixture and today's reconciled state. The
-mechanism is genuinely bidirectional and tested; **what is missing is the evidence that it fires on
-the real four.** Do not read this round as having proven that.
-
-**ONE METHOD LESSON, PAID FOR IN AN HOUR OF WALL CLOCK.** An Architect full-suite run reported 31
-failures and was INVALID: it was launched against a tree the Worker was actively editing, with
-concurrent pytest sessions. Three of its failures passed in isolation. **Never run the full suite
-while another agent is working the tree** - the result is not a baseline, it is noise.
-
+**ONE COUNT IS UNRECONCILED AND I AM NOT PAPERING OVER IT.** 7 + 11 = 18, but the accepted baseline
+was recorded as **17 with no test ids enumerated**. **No current red is attributable to S102** - every
+one is either confirmed identical at baseline or in the e2e family. **The likely explanation is that
+the baseline denominator itself moves:** `test_address_campaign_m15r` and `test_review_preflight_m15`
+SKIP when `graph/2025/_drafts` is absent and FAIL when it is present, and drafts are regenerated
+every round. **That is the same disease as the 2441 exclusion - a measured set defined by whatever
+happens to be on disk.** Enumerating the 18 above is the fix; do not re-derive it.
 
 ## Current round
 
-**M20-S102 SPECCED BY ARCHITECT (2026-08-12). THE GRAPH LEARNS WHAT A PRIOR YEAR IS.**
-**REAL-PROJECT ROUND** - full-suite floor applies. This is queue item 1.
+**M20-S103 SPECCED BY ARCHITECT (2026-08-13). MEASURE THE EXTENTS BEFORE STORING THEM.**
+**PILOT ROUND** - standalone under `pilot/`, its own tests outside `tests/`, **no CLI wiring, no
+graph writes, no provider, and NO full-suite floor** (pilot rules, John 2026-08-06).
 
-**WHY THIS ONE.** It is the newest measured defect, it sits on CORE documents, and unlike item 2 it
-has no workaround: today the pipeline cannot even SAY the thing the form says. Item 6 got cheaper
-after S101 but is small; item 2 was measured on 2026-08-11 and the A/B said explicitly do not jump
-it ahead.
+**WHY THIS SHAPE.** `../docs/source-extents.md` is the pinned direction: a citation should record
+WHERE its text is rather than carry a copy. **But three of its four invariants presuppose that
+ranges exist, which is the storage change.** Wiring storage first would be the same mistake this
+project keeps paying for - a wire-touching change specced off two examples. **So this round derives
+ranges and MEASURES them, and changes nothing.** The measurement is what makes the storage round
+speccable.
 
-**THE RULING, because the queue item asked for a decision and this is it.**
-**A prior-year reference is an EDGE TO THE SAME DOCUMENT IN ANOTHER TAX YEAR, and its VALUE is an
-input.** Both halves, because the three options in the queue item are not exclusive:
-- **The ADDRESS is a different document.** `simplified_method_worksheet_2024`, `form_1040_2024`,
-  `schedule_d_2024` are what the printed text actually names, and the address must survive verbatim
-  so a human approval keyed to it stays durable.
-- **The VALUE is supplied, not computed.** We do not model 2024's graph and we are not going to.
-  The node is an unresolved stub whose value arrives from the filer or from a prior Return Record.
-- **It is NOT a bare `REQUIRE_INPUT`,** which erases the address and is the degenerate green this
-  round must not buy.
+**WHAT TO BUILD.** One pilot tool that, for every row of every corpus document, computes the
+range or ranges in the acquired source that its face came from, and reports:
+1. **Rows whose face cannot be reconstructed** from any range set, with the reason.
+2. **Overlapping ranges between different rows of the same document** - this is the bleed, expressed
+   as arithmetic instead of a regex hunting for `Note.`.
+3. **Unclaimed runs of source** between claimed ranges - these are the unnumbered notes, routing
+   sentences and table headers that currently get glued onto a neighbour.
+4. **Rows that legitimately need more than one range**, reported as a distinct class and NOT as a
+   defect.
 
-**THE MACHINERY IS ALREADY HALF BUILT, WHICH IS WHY THIS IS A SMALL ROUND.** Verified 2026-08-12:
-`schemas/document.schema.json` and `schemas/node.schema.json` both already carry
-`status: unresolved` plus `stub_message`, and documents already carry `tax_year`. S90c built the
-out-of-corpus stub path. At the RUNTIME end the cross-year path exists too: `ingest_prior_record`
-and `load_carryforward_block` in `tax_graph/record/return_record.py` prime this year's input facts
-from last year's carryforward block, validated by `schemas/carryforward.schema.json`.
-**What is missing is only the middle: nothing lets a DERIVED rule name a prior-year address.**
-
-**MEASURED ON THE REAL ARTIFACTS, 2026-08-12, so the round starts from printed text and not from a
-guess.** Read out of `.cache/raw/2025/*.txt`.
-- **Seven core FORM FACES carry a prior-year reference:** 1040 `26` ("amount applied from 2024
-  return"), 2441 `9b` ("If you paid 2024 expenses in 2025, complete Worksheet A") and `13`
-  ("carried over from 2024"), Schedule A `13` ("Carryover from prior year"), Schedule D `6` and
-  `14` (Capital Loss Carryover Worksheet), Schedule 3 `6b` ("Credit for prior year minimum tax").
-- **Twelve NUMBERED WORKSHEET ROWS in two core booklets name an explicit prior-year canonical
-  address.** Capital Loss Carryover Worksheet lines 1, 2, 5, 6, 9, 10 name `2024 Form 1040 line 15`
-  and `2024 Schedule D` lines 21, 7, 15; 2441 Worksheet A lines 1, 2, 5, 9, 11, 12 name
-  `2024 Form 2441` lines 3, 6 and `2024 Form 1040 line 11`. **Both worksheets are already promoted
-  documents in `graph/2025/documents/`.**
-- **Zero `_2024` documents or nodes exist in the graph.** The concept is genuinely absent, not
-  half-present.
-
-**A REAL DEFECT FOUND WHILE VERIFYING, AND IT IS THE TELLTALE FOR THIS ROUND.**
-`_document_stub` (`tax_graph/extract/candidate.py:1094`) writes `"tax_year": int(year)` from the RUN
-year, ignoring the document id's own year, and `_stub_title` strips the year suffix. **So a stub for
-`form_1040_2024` would today be written as title "Form 1040" with `tax_year: 2025`** - a second
-document with the same title and the wrong year. Related: `_external_form_is_named`
-(`cells.py:2649`) strips the year suffix before matching, so **a year-shifted id can already read as
-source-backed and mint a silent wrong-year stub.** Fix both; they are the mechanism by which this
-would go wrong quietly.
-
-**THE NEGATIVE FIXTURE IS THE POINT OF THE ROUND. READ THIS BEFORE WRITING ANY CODE.**
-The queue reported Simplified Method lines **2 and 6** failing with
-`operand_document_not_found: simplified_method_worksheet_2024`. The printed booklet says:
-- **Line 6 is a REAL prior-year reference:** *"Enter the amount, if any, recovered tax free in years
-  after 1986. If you completed this worksheet last year, enter the amount from line 10 of last
-  year's worksheet."* The correct operand is **`simplified_method_worksheet_2024` line 10**.
-- **Line 2 is NOT.** Line 2 reads *"Enter your cost in the plan at the annuity starting date."* The
-  prior-year note printed just below it belongs to **line 4** ("skip line 3 and enter the amount
-  from line 4 of last year's worksheet on line 4 below"), and it was swept into line 2's packet.
-**Making prior-year references legal would turn line 2's WRONG answer into a PASSING wrong answer.**
-That is the exact shape the 2026-08-11 A/B caught on 6251 `8` and AGENTS.md already warns about.
-**Line 2 going green is a regression in this round, not a win.** Line 4's own case is an alternation
-("if you completed this worksheet last year ... otherwise go to line 3") and is queue item 10, still
-HELD; do not solve it here, but do not let line 4 silently lose its printed DIVIDE rule either.
-
-**THE TARGET STATE.**
-1. **A typed, non-fatal `prior_year_reference` validator kind exists** in `cells.py`, distinct from
-   both `operand_document_not_found` and `unresolved_external_reference`. It fires when the operand
-   document's stem matches a document in this year's inventory and only the year differs.
-2. **It is SOURCE-BACKED or it does not fire.** The row evidence must carry a prior-year cue - an
-   explicit prior year, "last year", "prior year", "carryover/carried over from". Absent a cue the
-   operand stays a hard failure. **`_external_form_is_named` must stop folding the year away**, so
-   a year shift is a deliberate finding rather than an accidental match.
-3. **Prior-year stubs carry their OWN year.** A minted document stub for `form_1040_2024` has
-   `tax_year: 2024`, a title that distinguishes it from the 2025 document, `status: unresolved`, and
-   a `stub_message` that names the year and the address. Node ids stay canonical:
-   `form_1040_2024_line_15`.
-4. **The refusal accounting names them.** A prior-year reference must never be reported as a missing
-   document; S101's refusal report partitions it as its own kind, reported and not hidden.
-5. **The report says how many there are, per document.** Mechanism in the floor, not a number in the
-   code.
-
-**EXPLICITLY DEFERRED, AND SAY SO IN THE ROUND REPORT RATHER THAN DOING IT.**
-`return_record.py` hardcodes five capital-loss constants (`CAPITAL_LOSS_SOURCE_NODE`,
-`CAPITAL_LOSS_SHORT_TERM_NODE`, `CAPITAL_LOSS_LONG_TERM_NODE`, and the two `_TARGET`s) - hand-
-authored answers where the PRIME DIRECTIVE wants derivation, and once prior-year references exist in
-the graph those targets are derivable from it. **Do not rewire the Return Record this round.** One
-wire-touching change per round; this round's wire is `cells.py` plus `candidate.py`. **What IS in
-scope is a REPORT: list the carryforward targets the new prior-year references imply, and state
-whether they match the two hardcoded capital-loss targets.** That evidence specs the follow-up.
+**THE KNOWN ANSWERS IT MUST REPRODUCE. These are measured, not guessed.**
+- **Simplified Method line 2's range must END at or before source offset 118265**, and the note at
+  **118266-118490** must appear as an unclaimed run or a non-row chunk, **naming line 4**, which it
+  references twice. This is the exact defect the last two rounds were spent on.
+- **Capital Loss Carryover lines 4 and 8** must not claim the routing sentences that follow them.
+- **THE NEGATIVE FIXTURE, AND IT IS THE ONE THE ARCHITECT GOT WRONG:** `form_6251_2025` line 5,
+  `schedule_d_2025` line 21, and `form_1116_2025` lines `1a`, `3b`, `10`, `18` **are NOT defects.**
+  They are multi-column and braced layouts where the face's reading order is legitimately not the
+  linear order of the source. **All seven must land in the multi-range class.** A tool that calls
+  them broken has reproduced the Architect's error of 2026-08-13 and is wrong.
 
 **THE FLOOR.**
-- **Simplified Method line 6 resolves to `simplified_method_worksheet_2024` line 10**, as a
-  prior-year reference, `derived`, with ONE provider call and no repair consumed.
-- **Simplified Method line 2 does NOT become a prior-year input.** Assert this as a guard test with
-  the printed line 2 text as the fixture. **If it goes green, the round has failed, not passed.**
-- **A guard test proves an operand naming a year-shifted document with NO prior-year cue in its
-  evidence stays a hard `operand_document_not_found`.** The pair of guards must be visible in the
-  same file, the way S90b's pair is.
-- **A guard test proves a minted prior-year stub carries its own year**, and that no document in the
-  candidate graph has an id year that disagrees with its `tax_year`. **Run it against today's
-  `_document_stub` and show it FAILING before the fix** - S101's report had to admit the tier guard
-  was never demonstrated against the real drift, and that gap is avoidable here.
-- **The Capital Loss Carryover Worksheet and 2441 Worksheet A rows listed above resolve to
-  prior-year addresses on `form_1040_2024`, `schedule_d_2024`, `form_2441_2024`,** or the report
-  names each one that does not and why.
-- **The prior-year targets report is produced**, per the deferral clause above.
-- **Full suite** against the accepted 17-red / 953-passed baseline at `acb14bd`, **on a quiet tree**.
-  Do not launch it while another agent is editing; that lesson cost an hour last round.
-- **`tools/check_ascii.py` OK** and `git diff --check` clean.
+- **Runs over the full corpus by the manifest rule** - 35 documents, 731 rows, **no exclusion list.**
+- **Every row is classified**: reconstructed from one range, reconstructed from several, or
+  unreconstructable with a named reason. **No row is silently absent.**
+- **The counts are reported, not asserted into the code.** This round measures; it does not pin.
+- **The four known-answer cases above hold**, with the seven negative-fixture rows in the multi-range
+  class.
+- **`tools/check_ascii.py` OK**, `git diff --check` clean, pilot tests green.
+- **Nothing under `tax_graph/` changes.** If the derivation needs something from production, read it;
+  do not modify it.
 
-**WORKER STATUS (Codex, 2026-08-12): offline implementation slice complete; Architect live leg
-remains.** The validator now emits
-the non-fatal `prior_year_reference` kind only for an inventory-backed, source-cued earlier-year
-document; no-cue year shifts remain `operand_document_not_found`. Candidate stubs take the id's
-own year and prior-year titles are year-qualified. Refusal accounting has a separate reported
-prior-year partition with per-source-document counts, and candidate workspaces emit a deterministic
-`prior_year_reference_report.yaml` comparing implied Schedule D carryforward targets with the two
-hardcoded Return Record targets. No Return Record computation was rewired.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s102';
-& .venv\Scripts\python.exe -m pytest tests/test_m20_s102.py tests/test_derive_cells_m20.py
-tests/test_candidate_regeneration_m20.py tests/test_m20_s90c.py tests/test_m20_s101.py
-tests/test_run_summary_m20.py tests/test_workbench_m15.py -q` -> 113 passed, 1 warning.
-RAN: `& .venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
-RAN: `git diff --check` -> clean.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s102';
-& .venv\Scripts\python.exe -m pytest -q` -> NOT RUN to completion; timed out after 600.2s
-(exit 124). The partial stream showed 14 setup errors and 3 failures before timeout.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s102';
-& .venv\Scripts\python.exe -m pytest -x -q` -> NOT RUN to completion; first error is the
-pre-existing ACL denial on `graph/2025/_drafts/form_1040_2025` in
-`tests/e2e/test_analog_pane_m15.py`, before any S102 test runs. The timed-out child processes
-were stopped after the run. Full-suite completion remains UNVERIFIED in this session.
-
-**ARCHITECT VERIFICATION (2026-08-12). THE MECHANISM IS RIGHT. THE CUE GATE IS SCOPED WRONG, AND
-THE ROUND'S OWN NAMED FAILURE CONDITION IS LIVE. S102 IS NOT ACCEPTED; IT NEEDS A REWORK.**
-
-**THE FLOOR SAID: "Simplified Method line 2 does NOT become a prior-year input... If it goes green,
-the round has failed, not passed." IT GOES GREEN.** Verified deterministically, no provider call,
-against the REAL production packet built by `build_cell_frame_from_document` on the promoted
-`simplified_method_worksheet_2025`:
-- **Line 2's real `form_face_text` contains the note verbatim** - *"2. Enter your cost in the plan
-  at the annuity starting date. Note. If you completed this worksheet last year..."* The cue `last
-  year` is therefore IN line 2's packet, `_has_prior_year_cue` returns true, and
-  `validate_cell_output` on a `simplified_method_worksheet_2024` operand returns
-  **hard `[]`, warnings `['prior_year_reference']`.** That is the passing wrong answer the spec
-  named.
-- **The guard test does not catch it because its fixture strips the packet.**
-  `test_line_2_year_shift_without_prior_year_cue_stays_hard_missing_document` passes line 2's face
-  with `instruction=""` and no note. It is a genuine no-cue guard - floor item 3, and it is correct
-  as that - **but it is not the line 2 guard, which the spec required to use the printed line 2
-  text.** The name says "line 2" and the fixture says "no cue"; those are different rows in reality.
-- **THE GATE IS ALSO TOO TIGHT, WHICH IS THE OTHER HALF AND IT IS WORSE.** Line 4 is the row the
-  note actually assigns the prior-year value to - *"enter the amount from line 4 of last year's
-  worksheet on line 4 below"* - and **line 4's packet carries NO cue at all.** So a correct
-  prior-year operand on line 4 hard-fails, while an incorrect one on line 2 passes. **The gate is
-  inverted on the exact pair of rows the round was specced around.**
-
-**IT IS NOT CONFINED TO THAT WORKSHEET.** Same check over the promoted
-`capital_loss_carryover_worksheet_2025`, 13 rows: the six genuine prior-year rows (1, 2, 5, 6, 9,
-10) all carry a cue, which is the mechanism working - **but line 4 ("Enter the smaller of line 2 or
-line 3", a same-document MIN) and line 8 also carry cues** that bled in from neighbouring printed
-text. **Three rows identified across two worksheets where a year-shifted operand would now be
-admitted instead of refused.**
-
-**ROOT CAUSE, AND IT IS A FAMILIAR ONE.** `_has_prior_year_cue` reads the row's whole joined
-evidence, so it inherits every face-extent bleed. This is the S91/S97 clause-extent family and the
-S92 validator-scope ruling all over again: **keying on a printed cue and admitting everything the
-cue's neighbourhood drags in.** The predicate itself (`_prior_year_document_match`) is good work -
-inventory-backed, requires a single stem match, requires `operand_year < current_year`, and the
-split of `_external_form_is_named` from `_external_form_stem_is_named` correctly stops a year shift
-from hiding behind a form name without disturbing S90b. **Keep all of that. Only the gate moves.**
-
-**THE DISCRIMINATOR THE REWORK NEEDS.** Presence of a cue in the packet is not the question. **The
-question is whether the prior-year clause assigns the value to THIS row.** Line 2's note says the
-amount goes "on line 4 below", which is what makes it line 4's instruction sitting in line 2's face.
-Line 6's note says "enter the amount from line 10 of last year's worksheet" with no redirection, and
-line 6 is correct. **Two ways to draw it, and John should pick the scope:**
-- **(a) Narrow, keeps the round closable:** the cue clause must not redirect to another line. If the
-  prior-year clause names a destination line that is not the row being derived, it is not this row's
-  reference. Cheap, testable on the three named rows, no upstream change.
-- **(b) Correct but wider:** fix the face extent so line 2 stops carrying line 4's note. That is the
-  real defect and it is queue item 2's family; it makes this gate and several others honest at once.
-
-**VERIFIED GOOD, so the rework does not re-litigate these.**
-- **The stub-year fix is real and the guard catches a real defect.** Ran the PRE-FIX `_stub_document`
-  from a worktree at `4e2d3b3`: `form_1040_2024` produced **`tax_year: 2025`, title `Form 1040`** -
-  wrong year, undistinguished from the 2025 document. Post-fix it is `2024` and year-qualified.
-  **This is the demonstration the spec demanded and S101 could not give; it is now on the record.**
-- **The refusal partition, the per-document counts, and `prior_year_reference_report.yaml` exist**,
-  and the Return Record was correctly left unrewired per the deferral clause.
-- **The Worker's report was honest about what it did not run**, including the full suite and the
-  600-second timeout. No claim was made that could not be checked.
-
-**STILL OPEN.** No valid full suite exists for S102 - see the method finding immediately below; the
-Architect's attempt was VOID and was stopped. **The live `row_bench.py` leg is deliberately NOT
-spent** - it would measure the rows the rework is about to change. **Both move to the rework's
-acceptance.**
-
-**METHOD, AND IT INVALIDATES TWO RUNS INCLUDING MINE. DO NOT SET `PYTEST_DEBUG_TEMPROOT` BY HAND.**
-`conftest.py:33` pins the temp root with `os.environ.setdefault`, so **an explicitly exported value
-WINS and replaces the pinned root**, and a fresh non-standard root produces a storm of setup ERRORS
-in tests that are actually green. Measured 2026-08-12 on the same two files, same tree, seconds
-apart:
-- `$env:PYTEST_DEBUG_TEMPROOT='...\.test_tmp_arch102'; pytest tests/test_m20_s102.py tests/test_candidate_regeneration_m20.py -q` -> **3 passed, 5 errors**
-- no override, `pytest tests/test_m20_s102.py tests/test_candidate_regeneration_m20.py -q` -> **8 passed**
-**The Architect's S102 full-suite run used the override and is therefore VOID** - it was showing
-hundreds of E's against a 17-red baseline, which should have been the tell, and it was stopped
-rather than reported. **The Worker's "14 setup errors" in its aborted full-suite attempt is very
-likely the same artifact** and should not be read as real. **AGENTS.md already says "just run
-`python -m pytest`"; that is literal, and it now covers the env var and not only `--basetemp`.**
-**The rework's suite leg must use the bare command.**
-
-**M20-S102 REWORK, SPECCED BY ARCHITECT (2026-08-12). FIX THE FACE, NOT THE GATE.**
-**John approved the sequencing on 2026-08-12: one round - repair the extent, then turn the
-prior-year admit path on inside the same round.** **REAL-PROJECT ROUND** - full-suite floor applies.
-
-**THE REJECTED OPTION, recorded so it is not revived.** A redirect rule in the validator ("the
-prior-year clause must not send the value to another line") **would work on all three known bad
-rows, and that is exactly why it is wrong.** It is not a rule about how tax documents reference a
-prior year; it is a rule about the shape of the text currently leaking into the face. John,
-2026-08-12: *"why do A at all if we then do B later?"* **Do not build it.**
-
-**THE DEFECT, MEASURED ON THE PRODUCTION PATH 2026-08-12 (no provider, `build_cell_frame_from_document`).**
-An unnumbered printed block between two numbered rows is absorbed into the PRECEDING row's face.
-`_clean_form_face_text_fallback` takes the text from the row's anchor **to the end of the passed
-text and never truncates at the next anchor**, so a `Note.` block or a standalone routing sentence
-lands in the wrong row. **19 rows across 11 documents carry an absorbed block, including
-`form_6251_2025` and `schedule_d_2025`** - it is not a worksheet-only quirk.
-
-**AND THE FIX IS MOSTLY ALREADY BUILT, WHICH IS THE POINT.** S91 computes a printed bracket that
-ends at the next printed anchor. Of 696 rows, **591 have a bracket available.** For the Capital Loss
-Carryover Worksheet the bracket is **exactly right and is being discarded**:
-- line 4 fallback: `Enter the smaller of line 2 or line 3 4. _____ If line 7 of your 2024 Schedule D
-  is a loss, go to line 5; otherwise...` / bracket: `Enter the smaller of line 2 or line 3`
-- line 8 fallback carries `If line 15 of your 2024 Schedule D is a loss...`; the bracket stops at
-  `...also enter this amount on Schedule D, line 6`
-**All six inspected rows recorded `method='fallback'`, `disagreement='fallback_longer'`,
-`bracket_available=True`.** `clean_form_face_text_with_extent` prefers the bracket only when the
-fallback is WEAK or is a strict substring of it. **The mirror case - the bracket being a strict
-substring of the fallback, i.e. the fallback running past the bracket's end - keeps the fallback,
-and that is the bug.**
-
-**TWO PIECES, AND BOTH ARE REQUIRED TO MEET THE FLOOR. DO NOT SHIP ONE AND CLAIM THE ROUND.**
-1. **THE SELECTION RULE IS ASYMMETRIC. Make it symmetric.** Prefer a non-degenerate bracket when the
-   kept fallback strictly extends past it. **This fixes Capital Loss Carryover 4 and 8 with no new
-   extraction.** S91's recorded worry was the bracket OVER-capturing; this trigger fires only when
-   the bracket is SHORTER, so it cannot reintroduce that.
-   **THE RISK, MEASURED, AND IT IS THE REASON THIS ROUND IS NOT AS SMALL AS I FIRST TOLD JOHN:
-   224 of 696 rows have a usable bracket that is shorter than the fallback currently kept.** The
-   change is therefore in scope for 224 rows, not 19. **Two good examples do not license flipping
-   224 faces.** Comparing faces is deterministic and free, so **the round must produce the full
-   before/after face diff for all 696 rows, classify every one of the 224 changes as improved,
-   neutral, or truncated, and report the counts.** **If the truncated class is material, STOP and
-   report rather than shipping** - a narrower trigger is then the answer, and it is a decision for
-   the Architect, not a judgement call inside the round.
-2. **THE SIMPLIFIED METHOD WORKSHEET'S BRACKET IS DEGENERATE and piece 1 cannot help it.** Its
-   bracket face is `: "` - **12 rows corpus-wide are degenerate and 10 of them are this one
-   document** (the other two are one row each in the IRA Deduction and Worksheet A documents), so
-   this is a bounded, near-single-document defect in the bracket BUILDER, not a corpus-wide one.
-   **Lines 2 and 6 - the rows this whole round is named after - are fixed only by this piece.**
-   The row shape is a quoted face carrying a trailing `field` token; diagnose it against the real
-   document before changing anything.
-
-**ONLY AFTER BOTH PIECES: turn the prior-year admit path on.** The S102 predicate, the stub-year
-fix, the refusal partition, and the target report are **verified good and stay as they are** - see
-the Architect verification above. **Nothing in `_prior_year_document_match`, `_external_form_is_named`
-or `_external_form_stem_is_named` should move.**
-
-**THE PROCESS RULE THAT WOULD HAVE CAUGHT THIS, and it now binds every guard test in this round.**
-**A guard fixture for a real printed row MUST be built from the real document via
-`build_cell_frame_from_document`, never hand-written.** S102's line 2 guard passed a hand-written
-face with the instruction stripped, so it proved a condition that does not occur and missed the one
-that does. **A hand-authored fixture asserting a claim about a real row is not evidence about that
-row.**
-
-**THE FLOOR.**
-- **Simplified Method line 2's REAL face no longer contains the `Note.` block**, and a year-shifted
-  operand on line 2 is REFUSED. **Fixture built from the real document.**
-- **Simplified Method line 4 - which the note actually addresses - carries the prior-year cue**, and
-  line 6 keeps it. **The inversion is gone in both directions, proven on real rows.**
-- **Capital Loss Carryover lines 4 and 8 lose the absorbed routing sentence**; lines 1, 2, 5, 6, 9,
-  10 keep their genuine prior-year cues, and 3 and 7 stay clean.
-- **The 696-row before/after face diff exists**, with the 224 changes classified and counted, and
-  the truncated class reported honestly whatever it is.
-- **The 19 absorbed-block rows are re-measured after the fix** and the residual is named.
-- **Full suite** against the accepted 17-red / 953-passed baseline at `acb14bd`, on a quiet tree.
-- **`tools/check_ascii.py` OK**, `git diff --check` clean.
-
-**WORKER STATUS (Codex, 2026-08-13): S102 rework implementation slice complete; committed after
-the focused evidence pass.** The shorter-bracket selector is now explicitly opt-in for promoted
-regions; acquired forms retain the legacy bracket projection. Prose-embedded anchor endpoints are
-rejected, so Form 1040 line 3b is source-contiguous. Form 2441 line 8's
-`table_anchor_boundary` finding is computed from the raw packet and survives face selection. Region
-note routing now records `source_line`, `target_line`, and the verbatim routed note in the cell
-metadata. The prior-year predicate and candidate/report machinery were left unchanged.
-
-The manifest-defined face report now measures 731 rows (35 documents), with 623 brackets available,
-196 changed rows (193 improved, 3 truncated), 11 absorbed-block rows before, and 0 residual rows.
-The prior 696-row number was an exclusion artifact; Form 2441 is now included by the corpus rule.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s102.py tests/test_m20_s91.py tests/test_m20_s71.py tests/test_cell_caption_m20.py tests/test_derive_cells_m20.py tests/test_structure_m20.py -q` -> 125 passed, 5 setup errors; every error is `WinError 5` while scanning the pre-existing ACL-protected `.test_tmp\pytest-of-devbox`, and no test failure.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s91.py -q` -> 4 passed, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s71.py -k "not real_candidate_node_labels_use_clean_text" -q` -> 5 passed, 1 deselected, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s102.py -k "not partitioned_from_refusals and not prior_year_stub_uses" -q` -> 5 passed, 2 deselected, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py -k "not returns_row_level_results_and_writes_nothing and not prompt_is_loaded_from_config" -q` -> 76 passed, 2 deselected, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_cell_caption_m20.py tests/test_structure_m20.py -q` -> 35 passed, 1 warning.
-RAN: `.venv\Scripts\python.exe -m pytest -q` -> NOT RUN to completion; bare command timed out after 600.2 seconds with setup errors from the same ACL-protected temp root and partial output through 21% of collection/execution. Full-suite completion remains UNVERIFIED.
-RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
-RAN: `git diff --check` -> clean.
-
-**OPEN FOR ARCHITECT:** The worker slice is ready for the live nine-row `row_bench.py` leg. Full
-suite completion still needs a quiet tree with a usable pytest temp root; no `--basetemp` or manual
-`PYTEST_DEBUG_TEMPROOT` override was used.
-
-**ARCHITECT VERIFICATION OF THE FOUR-ITEM LIST (2026-08-13). ALL FOUR HOLD, VERIFIED INDEPENDENTLY
-AND NOT FROM THE REPORT.**
-1. **THE SELECTOR IS REGION-ONLY.** Regenerated face report: **196 changed rows, ALL 196 on
-   worksheets and ZERO on acquired forms.** Truncations **17 -> 3**, all three on worksheet table
-   headers, which were explicitly dropped from scope. Residual absorbed rows **0**. The corpus is
-   now **731 rows over 35 documents by manifest rule, `excluded_documents: []`, 2441 included** -
-   the exclusion is gone and so is the blindness it caused.
-2. **BOTH CORE-FORM REGRESSIONS ARE REPAIRED.** `form_2441_2025` line 8 reports
-   `evidence_findings: ['table_anchor_boundary']` again across all 35 rows. **A corpus-wide
-   contiguity check written independently of the face report gives 992 spans and 7 non-contiguous,
-   and the SAME 992/7 at `58ae3b1`** - so the round's own break on 1040 `3b` is gone and the tree is
-   back to the baseline set exactly.
-3. **THE PRIOR-YEAR GATE IS CORRECT ON THE REAL ROWS:** line 2 REFUSED, lines 4 and 6 ADMITTED.
-4. **THE RE-BASELINE IS HONEST AND IT BOUGHT AN INVARIANT.** 44/27 -> 41/26 with the producer
-   reason recorded in the test, **the selected-row SET contract left untouched** - the count moved,
-   the contract did not, which is the distinction that matters - plus a new opt-in test proving the
-   shorter-bracket rule fires only with `allow_shorter_bracket=True`, and **a real contiguity
-   assertion over the corpus in place of a count.**
-
-**I WAS WRONG ABOUT THE 7, AND THE CORRECTION CHANGES THE EXTENTS DESIGN.** I called them
-pre-existing defects the contiguity invariant would flag. **They are not defects.** They are
-multi-column and braced layouts - the 6251 line 5 exemption table, the Schedule D line 21 brace,
-the 1116 column headers - where the face's reading order is legitimately not the linear order of
-the source. **`../docs/source-extents.md` has been corrected: a row may own MORE THAN ONE range,
-and the invariant is that its ranges in order reconstruct its face.** A single-range rule would
-have declared seven correct rows broken.
-
-**CODEX ALSO DELIVERED TWO ITEMS I HAD DROPPED** - the note-routing provenance record
-(`source_line`, `target_line`, verbatim note in cell metadata) and the manifest-driven corpus rule.
-Both were on the original list and both are cheap; **no objection, and the corpus rule is what
-removed the 2441 blindness.**
-
-**OUT OF SCOPE.** The redirect heuristic (rejected above). The empty instruction packets (item 2).
-Rewiring the Return Record (still deferred). **Any change to the prior-year predicate itself.**
-
-**WHO RUNS WHAT.**
-- **WORKER, offline, all of it.** The predicate, the cue gate, the stub year fix, the refusal
-  partition, every guard test, and the targets report are deterministic. No provider, no network.
-- **ARCHITECT, live, at acceptance:** `pilot/row_bench.py` on the named rows only - Simplified
-  Method `2`, `4`, `6`, Schedule D `6`, `14`, 1040 `26`, Schedule A `13`, 2441 `9b`, `13`.
-  **Per-row and cheap. An hour-long corpus run to check nine rows is not acceptable** (John,
-  2026-08-10).
-
-**OUT OF SCOPE.**
-- **Modelling tax year 2024.** No 2024 graph, no 2024 extraction, no 2024 acquisition.
-- **Rewiring the Return Record** - deferred above, deliberately.
-- **The line 4 alternation** (item 10, HELD) and **the empty instruction packets** (item 2, parked).
-- **The four genuinely missing documents** named in queue item 1 - `schedule_se_2025`,
-  `form_6252_2025`, `form_w2_2025`, `form_1099_g_2025`. Those are items 4 and 6, a different family.
-
+**OUT OF SCOPE.** The citation schema, the storage change, re-promotion of the worksheets, the 3
+remaining worksheet truncations, the acquired-form end-anchor repair, and the information returns.
+**All of those are specced off THIS round's measurement, not ahead of it.**
 
 ## Open for Architect
 
-**SEQUENCING DECIDED BY THE ARCHITECT, 2026-08-13, ON JOHN'S STANDING DIRECTION ("my goal is a
-reliable pipeline; let that guide your sequencing and choices"). THIS SUPERSEDES THE FINISH LIST
-BELOW WHERE THEY DISAGREE.**
+Nothing blocking. **M20-S102 is accepted at `ee6eb55`, the 18-red baseline is enumerated in BALL,
+and M20-S103 is specced above and needs no decision to start.**
 
-**MOST OF THE OLD FINISH LIST WAS POLISH ON MACHINERY `../docs/source-extents.md` REPLACES.** Better
-end-anchor regexes, a tightened residual metric, re-pinned counts - each is another cue-matching
-repair that moves hundreds of faces, breaks a pinned count elsewhere, and is discarded when extents
-land. **Reliability does not come from another turn of that crank. It comes from shipping no known
-wrong output and then changing the representation.** So the round finishes with four items and
-stops.
-
-**TWO MEASUREMENTS MADE THIS DECIDABLE.**
-- **All 17 truncations carry `selection_reason: bracket_strict_substring`** - every one is the NEW
-  symmetric selector. Of the 221 changed rows, **196 are worksheets and 25 are acquired forms; of
-  the 17 truncations, 13 are on acquired forms and 4 on worksheets.**
-- **`form_1040_2025` line `3b` is NOT among the changed rows at all.** The face report compares
-  selector output, so **it cannot see bracket-BUILDER changes** - the region unwrapper and the new
-  `_attach_clause_extent` offset. **The round's own instrument under-measures the round's blast
-  radius**, which is the same defect as excluding 2441: what is not measured is not seen.
-
-**THE FINISH LIST, IN ORDER.**
-1. **RESTRICT THE SYMMETRIC SELECTOR TO REGION DOCUMENTS.** Not a narrowed heuristic - a statement
-   about which producer we trust. The unwrapper made region brackets correct; the acquired-form
-   anchor walk still ends on digits inside prose, which is precisely `embedded_anchor_before_prose`.
-   **A selector may only prefer a bracket where the builder is known good.** This keeps Simplified
-   Method 2, 4 and 6 and Capital Loss 4 and 8 - the entire prior-year deliverable - and **removes 13
-   of the 17 truncations at a stroke, with no new pattern matching.**
-2. **FIX OR REVERT THE TWO CORE-FORM REGRESSIONS: `form_1040_2025` `3b` contiguity and the lost
-   `form_2441_2025` line 8 `table_anchor_boundary` finding.** Neither is selector-driven, so item 1
-   does not cover them. **They must not ship: one breaks the quote approvals are keyed to and the
-   other silently drops evidence on a core document.** The proof must be a corpus-wide contiguity
-   check, NOT the face report, which has just been shown blind to this class.
-3. **TURN THE PRIOR-YEAR ADMIT PATH ON.** Verified correct on the real rows already.
-4. **RE-BASELINE ONLY WHAT ITEMS 1-3 ACTUALLY MOVE**, each with its reason, plus the over-capture
-   invariant. **Explain the caption and S91 direction-split moves before re-pinning either** - the
-   caption loss is on 2441 and is probably a symptom of item 2.
-
-**EXPLICITLY DROPPED FROM THE ROUND.** The 4 remaining worksheet truncations, the end-anchor
-detection repair for acquired forms, the residual-metric tightening, the note-routing provenance
-marker, and the `FACE_EXTENT_EXCLUSIONS` corpus rule. **All are on machinery extents replaces, and
-the note router is deleted by it outright.** **The 3 unattributed reds are NOT worth a destructive
-baseline checkout**; under the extents invariants they either pass or they name a real defect.
-
-**THEN THE NEXT ROUND IS EXTENTS, AND IT STARTS WITH THE INVARIANTS**, not the storage change:
-contiguity, non-overlap, every chunk claimed, and measured-corpus-equals-core-set. **Those four are
-what make every later change measurable, and three of the defects in this round would have been
-caught by them without any count.**
-
-**ORIGINAL RULING OF 2026-08-12 FOLLOWS, kept for its reasoning on why a redirect heuristic was
-rejected and why the truncations are one cause.**
-
-**ARCHITECT RULING ON THE STOP (2026-08-12). STOPPING WAS RIGHT. THE ANSWER IS: FIX THE 15, DO NOT
-NARROW THE TRIGGER, AND DO NOT ABANDON THE SELECTOR.**
-
-**THE ROUND'S CENTRAL DELIVERABLE WORKS, VERIFIED ON REAL PRODUCTION ROWS, NO PROVIDER.** Built with
-`build_cell_frame_from_document` and put through `validate_cell_output` with a
-`simplified_method_worksheet_2024` operand:
-- **line 2 -> REFUSED** (`operand_document_not_found`). The passing wrong answer is gone.
-- **line 4 -> ADMITTED** (`prior_year_reference`). **The inversion is fixed in both directions.**
-- **line 6 -> ADMITTED** (`prior_year_reference`), unchanged and correct.
-**Line 4 carries BOTH the routed note AND its own arithmetic** - the full face is the note followed
-by `4. Divide line 2 by the number on line 3.`, so the printed DIVIDE rule was not traded away.
-Capital Loss Carryover 4 and 8 lost their absorbed routing sentences; 3 and 7 stayed clean.
-
-**THE 17 TRUNCATIONS ARE MATERIAL ENOUGH TO FIX AND NOT MATERIAL ENOUGH TO STOP THE APPROACH,
-BECAUSE 15 OF 17 ARE ONE DIAGNOSABLE CAUSE.** The report's own `classification_reason` splits them
-**15 `embedded_anchor_before_prose` / 2 `abrupt_clause_end`**, and reading the faces shows the 15 are
-a single defect: **the bracket ends at a digit that occurs INSIDE the prose instead of at the next
-row's printed anchor.** Schedule D 22 stops inside *"Don't complete lines 21 and 22 below"*; the
-three 1099 rows stop inside *"if you have fewer than 10 information returns"*; Schedule B 4 and 6
-stop inside *"Note: If line 4 is over $1,500"*. **That is an end-anchor detection defect in the
-bracket builder, not evidence that preferring the shorter bracket is wrong.** Fix the detection -
-an anchor must sit at a row boundary, not be a bare number in running text - and the class
-collapses. **A narrower selector trigger is the WRONG answer: it would leave these 15 rows bloated
-instead of clipped, which is the state the round exists to end.**
-
-**RECONCILING THE NUMBERS I QUOTED, because the Worker was right to flag the drift.** My 224 and 19
-were **estimates from ad-hoc scripts and the report's 221 and 12 supersede them** - my degeneracy
-threshold and my absorbed-block regex were both cruder. **No discrepancy remains to chase.**
-**But `absorbed_block_rows_residual: 3` is a METRIC ARTIFACT, not three defects.** All three rows are
-classified `improved`, and their `after` text is correct; the report's `_ABSORBED_BLOCK_RE` is
-matching the rows' OWN printed words - `Otherwise, go to line 3` in the note that now correctly sits
-on Simplified Method 4, `go to line 7`/`go to line 8` in IRA Deduction 6a, and `also enter` in
-Capital Loss 8. **Tighten the residual check so it cannot match a row's own text.**
-
-**THE ONE UNSPECCED MECHANISM, AND IT NEEDS A PROVENANCE MARKER BEFORE IT SHIPS.**
-`_route_region_notes` **physically MOVES a printed note from the row the IRS printed it under to the
-row it names**, keyed on `on line N below`. **The Architect's floor induced this** - "line 4 carries
-the prior-year cue" cannot be satisfied any other way when the source rows are pre-promoted
-citations - so it is not a Worker deviation, and the implementation is honest and confined to region
-documents. **But it is SILENT: nothing in the row records that line 4's face contains words printed
-under line 2.** Approvals are keyed to quotes, so a reviewer must be able to see it. **Record the
-routing in row metadata with the source line, and surface it, before this is accepted.**
-
-**RULING ON THE S91 CORPUS GUARD (68/44/27 -> 93/45/23). RE-BASELINE IT, WITH THE REASON RECORDED -
-and this does NOT contradict the S101 ruling.** There the pinned thing was a contract the round had
-no business moving. **Here the pinned counts measure exactly what this round changes by design:**
-a symmetric selector selects the bracket more often, and the builder repair changes bracket text.
-**A count that the round is supposed to move is a measurement baseline, not a guard.** So: re-pin
-the counts, record why in the test, **and add the assertion that actually guards the thing S91
-cared about - that a selected bracket never OVER-captures relative to the fallback** - which no
-count can express and which survives every future re-pin.
-
-**TWO SMALLER ITEMS.** `FACE_EXTENT_EXCLUSIONS = {"form_2441_2025"}` **hardcodes an exclusion to
-reproduce a 696 I quoted from an ad-hoc script**; 2441 has no file in `graph/2025/documents/`, so it
-was never in my corpus in the first place. **Define the corpus by the rule (documents present in
-`graph/2025/documents/`) and let the count fall out** - a measured number in a spec body must not
-become a constant in the code. And the report's `reason` field is `None` on every row while
-`classification_reason` carries the value; **one of the two is dead.**
-
-**FULL SUITE, ARCHITECT, 2026-08-13, BARE COMMAND, QUIET TREE: 22 failed, 955 passed, 8 skipped,
-1 xfailed in 1:02:47, and ZERO errors.** The error storm is gone, which confirms the temp-root
-diagnosis. **The arithmetic reconciles exactly: 979 outcomes at baseline, 986 now, and the 7 new
-ones are the 7 tests in `tests/test_m20_s102.py`, all passing.** So nothing was lost and the delta
-is **+5 failures against the 17-red baseline.**
-
-**FOUR OF THE FIVE ARE ISOLATED, by running each red against `58ae3b1` in a short-path worktree
-(`C:\tmp\b58`, `.cache` junctioned in) - the three that SKIP there for absent `_drafts` are not
-attributable this way and are named below rather than guessed at.**
-**TWO PIN MEASUREMENTS RATHER THAN BEHAVIOUR. I EARLIER CALLED BOTH SAFE TO RE-BASELINE. THAT WAS
-PREMATURE FOR AT LEAST ONE OF THEM AND NEITHER IS CLEARED YET.**
-- `test_cell_caption_m20.py::test_real_corpus_caption_distribution_is_measured_and_conservative` -
-  `assert 28 == 29`, one caption lost. **Located 2026-08-13: it is NOT in 1040, 6251 or
-  schedule_1a - recomputing the caption split from the report's own before/after faces gives ZERO
-  status flips across all three. The test's fourth document is `form_2441_2025`, which the report
-  EXCLUDES, so the lost caption is on the one document nobody measured** - the same document that
-  silently lost its `table_anchor_boundary` finding. **Treat this as a probable second symptom of
-  that regression, not as a number to re-pin.** Name the row and the cause before deciding.
-- `test_m20_s91.py::test_real_corpus_repairs_all_68_weak_or_fragment_packets_and_reports_both_directions` -
-  selected rows moved 68 -> 93, which the round intends. **But the DIRECTION split also moved,
-  44/27 -> 45/23, and a pure selection change cannot move it** - that split describes which face is
-  longer, so its movement means the bracket TEXT changed. **Explain that before re-pinning.**
-
-**THE DISTINCTION THAT MATTERS IS NOT "REAL VERSUS NOT REAL" - every one of these is a real
-failure.** It is **what the test pins** (behaviour, or a measured count) and **whether the move has
-been explained**. A count that moved for an unexamined reason is exactly how a regression gets
-re-baselined away, which is what `AGENTS.md` forbids. **Two of the four are explained. Two are not.**
-
-**TWO ARE REAL DEFECTS AND MUST BE FIXED, NOT RE-PINNED.**
-- **VERBATIM PROVENANCE IS BROKEN ON ONE ROW.**
-  `test_derive_cells_m20.py::test_real_1040_frame_carries_join_ownership_and_printed_line_inventory`
-  asserts every evidence span's text occurs in the acquired source after whitespace normalization.
-  **`form_1040_2025` line `3b` now produces a face that is NOT contiguous in the source**:
-  `Ordinary dividends 3b c Check if your child's dividends are included in 1 Line 3a 2 Line`.
-  Exactly one span corpus-wide, but **a face that cannot be quoted from the source breaks the thing
-  approvals are keyed to**, so this is a correctness defect and not a count. Suspect
-  `_remove_dot_leader_rows` excising interior rows and leaving stitched text.
-- **A REAL EVIDENCE FINDING DISAPPEARED ON FORM 2441.**
-  `test_m20_s71.py::test_real_frame_cleans_all_printed_anchors_and_reports_line_8_table` now raises
-  `IndexError` because `form_2441_2025` line 8's `evidence_findings` is EMPTY - the
-  `table_anchor_boundary` finding is gone. **And note where it happened: 2441 is the one document
-  `FACE_EXTENT_EXCLUSIONS` removes from the report.** The exclusion did not stop the code from
-  changing 2441's behaviour; it only stopped the round from SEEING it. **That is the concrete cost
-  of hardcoding an exclusion to reproduce a number I quoted, and it is the strongest argument for
-  the corpus-by-rule fix already asked for above.**
-
-**THREE REDS REMAIN UNATTRIBUTED and must not be reported as either ours or baseline until they
-are:** `test_address_campaign_m15r.py::test_form_8949_cross_form_claims_resolve_exactly`,
-`test_review_preflight_m15.py::test_real_2025_preflight_passes_with_all_coverage_dimensions`, and
-`test_review_scope_migration_m15.py::test_live_queue_migration_gives_every_pending_entry_a_primary_target`.
-All three SKIP in a fresh checkout for absent `_drafts` or 2441 extension artifacts, so the
-worktree cannot compare them; **one of them is the fifth new red.** `test_review_scope_migration_m15`
-was recorded as a long-standing red in the S91-era notes, which makes the other two the likely
-candidates. **Isolating them needs the baseline source in the MAIN tree, which is a destructive
-checkout the Architect did not perform unasked.**
-
-**FOUR REDS ARE CONFIRMED BASELINE, unchanged at `58ae3b1`:** `test_field_identity_m16`,
-`test_m20_s71.py::test_real_candidate_node_labels_use_clean_text`, `test_schedule_2_m16`, and
-`test_schedule_d_extraction_m9`. **The 11 `tests/e2e/*_m15.py` reds are the known environment
-family** and were not re-run.
-
-**The live `row_bench.py` leg stays unspent** until the truncations and the two defects are fixed,
-since they touch faces on 1040, Schedule A, Schedule B, Schedule D and 6251.
-
-**WORKER'S ORIGINAL STOP REPORT FOLLOWS.**
-
-**M20-S102 REWORK IS STOPPED AT THE NAMED FACE-DIFF GATE (Codex, 2026-08-12).** The real production
-path now proves the requested Simplified Method and Capital Loss extent cases, but the complete
-measurement does not yet authorize shipping the symmetric selector:
-
-- `pilot/face_extent_report.py` reports `rows: 696`, `bracket_available: 591`, `changed: 221`,
-  `improved: 204`, `truncated: 17`, and `absorbed_block_rows_before: 12` with residual rows
-  `simplified_method_worksheet_2025:4`, `ira_deduction_worksheet_2025:6a`, and
-  `capital_loss_carryover_worksheet_2025:8`.
-- The 17 reported truncations are:
-  `schedule_d:22`; `form_1040:16`; `schedule_a:12`; `schedule_b:4,6`; `form_6251:7`;
-  `form_1116:10,18`; `form_1099b:8,10`; `form_1099_int:10`; `form_1099_div:4,10`;
-  `ira_deduction_worksheet:1b`; `multiple_trades_or_businesses_worksheet:1`;
-  `qualified_overtime_compensation_from_more_than_one_employer_worksheet:1`; and
-  `qualified_overtime_compensation_from_more_than_one_payor_worksheet:1`.
-  These are visible in the report with the before/after faces and the deterministic reason
-  (`embedded_anchor_before_prose` or `abrupt_clause_end`); they must not be silently counted as
-  improvements.
-- The existing S91 corpus guard currently measures `93` bracket-selected rows, with directions
-  `bracket_longer: 45` and `fallback_longer: 23`, against its unchanged baseline assertion of
-  `68`, `44`, and `27`. This is evidence for the same scope decision, not a reason to relax the
-  guard without direction.
-
-**Open question:** Is this 17-row class material enough to require a narrower trigger or a further
-bracket-builder repair? The round's standing rule says STOP and report when the truncated class is
-material; no full-suite or live provider leg has been run against this unaccepted state. The
-report currently measures 221 changes rather than the 224 estimate in the spec, and 12 absorbed
-rows rather than the pre-fix estimate of 19; those differences also need reconciliation before
-acceptance.
-
-RAN: `& .venv\Scripts\python.exe -m pytest tests/test_m20_s102.py -q -k "real_simplified or real_capital"`
--> `2 passed, 5 deselected, 1 warning`.
-RAN: `& .venv\Scripts\python.exe -m pytest tests/test_m20_s91.py -q -k "not real_corpus"`
--> `2 passed, 1 deselected, 1 warning`.
-RAN: `& .venv\Scripts\python.exe -m pytest tests/test_m20_s91.py -q`
--> `2 passed, 1 failed, 1 deselected, 2 warnings`; failure is the unchanged S91 baseline guard.
-RAN: `& .venv\Scripts\python.exe pilot/face_extent_report.py --root . --year 2025 --output
-.test_tmp_s102\face_extent_report.yaml` -> report written; counts recorded above.
-RAN: `& .venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
-RAN: `git diff --check` -> clean.
-NOT RUN: full suite and Architect live row bench; the extent gate is not accepted.
-
+**Two items carried for the Architect, neither blocking S103.**
+1. **The live nine-row `row_bench.py` leg was never spent** on S102 - deliberately, since the rows
+   kept moving. The gate is verified correct deterministically on the real rows, which is stronger
+   evidence than a provider run, but **the live leg remains unrun and should not be claimed.**
+2. **This file was pruned at S102 acceptance** per the standing rule. **The older Worker-completion
+   sections below were left alone deliberately** while John was away; they are stale and should be
+   pruned at the next acceptance.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
@@ -679,8 +137,16 @@ NOT RUN: full suite and Architect live row bench; the extent gate is not accepte
 should record WHERE its text is, not carry a copy of it, and a source chunk that is not a numbered
 row should say what it is and what it governs. **The queue has NOT been reshaped around it yet -
 that is John's call.** What the doc settles is that items 2, 3, 6 and the recurring extent defects
-are one root cause and should stop being specced as separate cue-matching repairs. **The S102
-rework finish list stands unchanged and is still the immediate work.**
+are one root cause and should stop being specced as separate cue-matching repairs.
+**M20-S103 is the first round off that direction and it MEASURES rather than wires**; the storage
+round is specced from its output.
+
+**ITEM 1 IS DELIVERED.** Prior-year documents were M20-S102, accepted at `ee6eb55`. The graph now
+has the concept, the gate is correct on the real rows, and `status: unresolved` prior-year stubs
+carry their own year. **The four documents item 1 also named remain open** and belong to items 4
+and 6: `schedule_se_2025` and `form_6252_2025` are real IRS forms absent from the manifest;
+`form_w2_2025` and `form_1099_g_2025` are information returns, which
+`../docs/source-extents.md` records as NOT covered by the extents work.
 
 1. **[SPECCED AS M20-S102, 2026-08-12 - see Current round]
    PRIOR-YEAR DOCUMENTS ARE A CATEGORY THE GRAPH HAS NO CONCEPT OF** (Architect, measured
@@ -1125,6 +591,11 @@ the verdict while nothing changes - but not first review. That decision shapes S
 ## From Architect
 
 **One spec at a time. The next round is specced when it is picked up.**
+
+**M20-S103 IS READY TO START AND NEEDS NOTHING FROM JOHN** (Architect, 2026-08-13). It is a pilot
+round: measure the extents, change nothing. **The two failure modes to avoid are both recorded in
+the spec** - do not wire storage off two examples, and do not classify the seven multi-range rows as
+defects, which is the error the Architect made and corrected the same day.
 
 ## History
 
