@@ -149,7 +149,7 @@ guard must keep one side pinned - after this round the pinned side is the SOURCE
 **OUT OF SCOPE.** Non-core acquired documents. The information returns. The 194 undecided chunks.
 The 8978 heading defect. Making `quoted_text` derived-only across the graph.
 
-**WORKER STATUS (CODEX, 2026-08-14; M20-S107 implementation is in the worktree).** The
+**WORKER STATUS (CODEX, 2026-08-14; M20-S107 scoped implementation committed as `5c3f91b`).** The
 deterministic stage re-extracts the named 30 paraphrases from acquired source ranges and promotes
 the four tax-bracket citations as `computed_table` records with table ranges and derivation text.
 The corrected Markdown-row matcher selects actual table cells, not bold condition markers, and the
