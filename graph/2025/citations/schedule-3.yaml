@@ -42,10 +42,10 @@
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 11
-  quoted_text: Other nonrefundable credits
+  quoted_text: 'Other nonrefundable credits:'
   ranges:
   - start: 926
-    end: 953
+    end: 954
 - citation_id: cite_span_schedule_3_2025_0025
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
@@ -82,10 +82,10 @@
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 31
-  quoted_text: Amount paid with request for extension to file (see instructions
+  quoted_text: Amount paid with request for extension to file (see instructions)
   ranges:
   - start: 2289
-    end: 2353
+    end: 2354
 - citation_id: cite_span_schedule_3_2025_0032
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
@@ -98,10 +98,10 @@
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 34
-  quoted_text: Other payments or refundable credits
+  quoted_text: 'Other payments or refundable credits:'
   ranges:
   - start: 2571
-    end: 2607
+    end: 2608
 - citation_id: cite_span_schedule_3_2025_0036
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025

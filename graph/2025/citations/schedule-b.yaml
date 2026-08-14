@@ -18,10 +18,10 @@
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
   locator: page 1, line 8
-  quoted_text: Excludable interest on series EE and I U.S. savings bonds issued after 1989
+  quoted_text: Excludable interest on series EE and I U.S. savings bonds issued after 1989.
   ranges:
   - start: 898
-    end: 973
+    end: 974
 - citation_id: cite_span_schedule_b_2025_0009
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
@@ -34,10 +34,10 @@
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
   locator: page 1, line 12
-  quoted_text: List name of payer
+  quoted_text: 'List name of payer:'
   ranges:
-  - start: 330
-    end: 348
+  - start: 1207
+    end: 1226
 - citation_id: cite_span_schedule_b_2025_0015
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025

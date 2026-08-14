@@ -10,10 +10,10 @@
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
   locator: page 1, line 5
-  quoted_text: Additions to tax
+  quoted_text: 'Additions to tax:'
   ranges:
   - start: 345
-    end: 361
+    end: 362
 - citation_id: cite_span_schedule_2_2025_0007
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
@@ -26,17 +26,17 @@
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
   locator: page 1, line 12
-  quoted_text: ii) Line
+  quoted_text: (ii) Line
   ranges:
-  - start: 1063
+  - start: 1062
     end: 1071
 - citation_id: cite_span_schedule_2_2025_0012
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
   locator: page 1, line 13
-  quoted_text: iv) Line 2a
+  quoted_text: (iv) Line 2a
   ranges:
-  - start: 1090
+  - start: 1089
     end: 1101
 - citation_id: cite_span_schedule_2_2025_0019
   document_id: schedule_2_2025
@@ -50,10 +50,10 @@
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
   locator: page 1, line 22
-  quoted_text: Self-employment tax. Attach Schedule SE. Check if any exemption from (see instructions
+  quoted_text: 'Self-employment tax. Attach Schedule SE. Check if any exemption from (see instructions):'
   ranges:
   - start: 1617
-    end: 1703
+    end: 1705
 - citation_id: cite_span_schedule_2_2025_0023
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
@@ -82,10 +82,10 @@
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
   locator: page 1, line 27
-  quoted_text: Additional tax on IRAs or other tax-favored accounts. Attach Form 5329 if required
+  quoted_text: Additional tax on IRAs or other tax-favored accounts. Attach Form 5329 if required.
   ranges:
   - start: 2003
-    end: 2085
+    end: 2086
 - citation_id: cite_span_schedule_2_2025_0027
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
@@ -186,10 +186,10 @@
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025
   locator: page 2, line 64
-  quoted_text: Recapture of net EPE from Form 4255, line 1d, column (l
+  quoted_text: Recapture of net EPE from Form 4255, line 1d, column (l)
   ranges:
   - start: 5072
-    end: 5127
+    end: 5128
 - citation_id: cite_span_schedule_2_2025_0063
   document_id: schedule_2_2025
   source_document_id: schedule_2_2025

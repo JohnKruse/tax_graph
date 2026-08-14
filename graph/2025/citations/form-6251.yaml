@@ -42,18 +42,18 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 10
-  quoted_text: Investment interest expense (difference between regular tax and AMT
+  quoted_text: Investment interest expense (difference between regular tax and AMT)
   ranges:
   - start: 1040
-    end: 1107
+    end: 1108
 - citation_id: cite_span_form_6251_2025_0010
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 11
-  quoted_text: Depletion (difference between regular tax and AMT
+  quoted_text: Depletion (difference between regular tax and AMT)
   ranges:
   - start: 1138
-    end: 1187
+    end: 1188
 - citation_id: cite_span_form_6251_2025_0011
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -66,10 +66,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 13
-  quoted_text: Alternative tax net operating loss deduction 2f
+  quoted_text: Alternative tax net operating loss deduction 2f ( )
   ranges:
   - start: 1337
-    end: 1384
+    end: 1388
 - citation_id: cite_span_form_6251_2025_0013
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -90,90 +90,90 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 16
-  quoted_text: Exercise of incentive stock options (excess of AMT income over regular tax income
+  quoted_text: Exercise of incentive stock options (excess of AMT income over regular tax income)
   ranges:
   - start: 1625
-    end: 1706
+    end: 1707
 - citation_id: cite_span_form_6251_2025_0016
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 17
-  quoted_text: Estates and trusts (amount from Schedule K-1 (Form 1041), box 12, code A
+  quoted_text: Estates and trusts (amount from Schedule K-1 (Form 1041), box 12, code A)
   ranges:
   - start: 1729
-    end: 1801
+    end: 1802
 - citation_id: cite_span_form_6251_2025_0017
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 18
-  quoted_text: Disposition of property (difference between AMT and regular tax gain or loss
+  quoted_text: Disposition of property (difference between AMT and regular tax gain or loss)
   ranges:
   - start: 1828
-    end: 1904
+    end: 1905
 - citation_id: cite_span_form_6251_2025_0018
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 19
-  quoted_text: Depreciation on assets placed in service after 1986 (difference between regular tax and AMT
+  quoted_text: Depreciation on assets placed in service after 1986 (difference between regular tax and AMT)
   ranges:
   - start: 1931
-    end: 2022
+    end: 2023
 - citation_id: cite_span_form_6251_2025_0019
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 20
-  quoted_text: Passive activities (difference between AMT and regular tax income or loss
+  quoted_text: Passive activities (difference between AMT and regular tax income or loss)
   ranges:
   - start: 2039
-    end: 2112
+    end: 2113
 - citation_id: cite_span_form_6251_2025_0020
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 21
-  quoted_text: Loss limitations (difference between AMT and regular tax income or loss
+  quoted_text: Loss limitations (difference between AMT and regular tax income or loss)
   ranges:
   - start: 2139
-    end: 2210
+    end: 2211
 - citation_id: cite_span_form_6251_2025_0021
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 22
-  quoted_text: Circulation costs (difference between regular tax and AMT
+  quoted_text: Circulation costs (difference between regular tax and AMT)
   ranges:
   - start: 2239
-    end: 2296
+    end: 2297
 - citation_id: cite_span_form_6251_2025_0022
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 23
-  quoted_text: Long-term contracts (difference between AMT and regular tax income
+  quoted_text: Long-term contracts (difference between AMT and regular tax income)
   ranges:
   - start: 2333
-    end: 2399
+    end: 2400
 - citation_id: cite_span_form_6251_2025_0023
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 24
-  quoted_text: Mining costs (difference between regular tax and AMT
+  quoted_text: Mining costs (difference between regular tax and AMT)
   ranges:
   - start: 2430
-    end: 2482
+    end: 2483
 - citation_id: cite_span_form_6251_2025_0024
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 25
-  quoted_text: Research and experimental costs (difference between regular tax and AMT
+  quoted_text: Research and experimental costs (difference between regular tax and AMT)
   ranges:
   - start: 2523
-    end: 2594
+    end: 2595
 - citation_id: cite_span_form_6251_2025_0025
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 26
-  quoted_text: Income from certain installment sales before January 1, 1987 2s
+  quoted_text: Income from certain installment sales before January 1, 1987 2s ( )
   ranges:
   - start: 2621
-    end: 2684
+    end: 2688
 - citation_id: cite_span_form_6251_2025_0026
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -194,10 +194,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 31
-  quoted_text: Exemption
+  quoted_text: Exemption.
   ranges:
   - start: 3136
-    end: 3145
+    end: 3146
 - citation_id: cite_span_form_6251_2025_0032
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -219,10 +219,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 39
-  quoted_text: Add Form 1040 or 1040-SR, line 16 (minus any tax from Form 4972), and Schedule 2 (Form 1040), line 1z
+  quoted_text: Add Form 1040 or 1040-SR, line 16 (minus any tax from Form 4972), and Schedule 2 (Form 1040), line 1z.
   ranges:
   - start: 4574
-    end: 4675
+    end: 4676
 - citation_id: cite_span_form_6251_2025_0044
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -251,18 +251,18 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 54
-  quoted_text: If line 17 is $239,100 or less ($119,550 or less if married filing separately), multiply line 17 by 26% (0.26
+  quoted_text: If line 17 is $239,100 or less ($119,550 or less if married filing separately), multiply line 17 by 26% (0.26).
   ranges:
   - start: 6933
-    end: 7042
+    end: 7044
 - citation_id: cite_span_form_6251_2025_0054
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 56
-  quoted_text: enter
+  quoted_text: 'Enter: }'
   ranges:
-  - start: 652
-    end: 657
+  - start: 7167
+    end: 7175
 - citation_id: cite_span_form_6251_2025_0055
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -275,10 +275,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 59
-  quoted_text: Subtract line 20 from line 19. If zero or less, enter -0
+  quoted_text: Subtract line 20 from line 19. If zero or less, enter -0-
   ranges:
   - start: 7771
-    end: 7827
+    end: 7828
 - citation_id: cite_span_form_6251_2025_0058
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -291,10 +291,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 61
-  quoted_text: Enter the smaller of line 21 or line 22. This amount is taxed at 0
+  quoted_text: Enter the smaller of line 21 or line 22. This amount is taxed at 0%
   ranges:
   - start: 7959
-    end: 8025
+    end: 8026
 - citation_id: cite_span_form_6251_2025_0060
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -307,10 +307,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 63
-  quoted_text: enter
+  quoted_text: 'Enter: }'
   ranges:
-  - start: 783
-    end: 788
+  - start: 8145
+    end: 8153
 - citation_id: cite_span_form_6251_2025_0062
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -339,10 +339,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 68
-  quoted_text: Subtract line 28 from line 25. If zero or less, enter -0
+  quoted_text: Subtract line 28 from line 25. If zero or less, enter -0-
   ranges:
   - start: 8934
-    end: 8990
+    end: 8991
 - citation_id: cite_span_form_6251_2025_0067
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -355,10 +355,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 70
-  quoted_text: Multiply line 30 by 15% (0.15
+  quoted_text: Multiply line 30 by 15% (0.15)
   ranges:
   - start: 9122
-    end: 9151
+    end: 9152
 - citation_id: cite_span_form_6251_2025_0069
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -379,10 +379,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 74
-  quoted_text: Multiply line 33 by 20% (0.20
+  quoted_text: Multiply line 33 by 20% (0.20)
   ranges:
   - start: 9480
-    end: 9509
+    end: 9510
 - citation_id: cite_span_form_6251_2025_0074
   document_id: form_6251_2025
   source_document_id: form_6251_2025
@@ -411,10 +411,10 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 80
-  quoted_text: If line 12 is $239,100 or less ($119,550 or less if married filing separately), multiply line 12 by 26% (0.26
+  quoted_text: If line 12 is $239,100 or less ($119,550 or less if married filing separately), multiply line 12 by 26% (0.26).
   ranges:
   - start: 10001
-    end: 10110
+    end: 10112
 - citation_id: cite_span_form_6251_2025_0080
   document_id: form_6251_2025
   source_document_id: form_6251_2025

@@ -98,10 +98,10 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 22
-  quoted_text: Enter $150,000 ($300,000 if married filing jointly
+  quoted_text: Enter $150,000 ($300,000 if married filing jointly)
   ranges:
   - start: 2912
-    end: 2962
+    end: 2963
 - citation_id: cite_span_schedule_1a_2025_0022
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
@@ -138,10 +138,10 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 34
-  quoted_text: Enter $150,000 ($300,000 if married filing jointly
+  quoted_text: Enter $150,000 ($300,000 if married filing jointly)
   ranges:
   - start: 4409
-    end: 4459
+    end: 4460
 - citation_id: cite_span_schedule_1a_2025_0034
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
@@ -170,18 +170,18 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 43
-  quoted_text: Applicable passenger vehicle (see instructions). If more than two VINs, see instructions
+  quoted_text: Applicable passenger vehicle (see instructions). If more than two VINs, see instructions.
   ranges:
   - start: 5464
-    end: 5552
+    end: 5553
 - citation_id: cite_span_schedule_1a_2025_0045
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 47
-  quoted_text: Add lines 22a and 22b, column (iii
+  quoted_text: Add lines 22a and 22b, column (iii)
   ranges:
   - start: 5699
-    end: 5733
+    end: 5734
 - citation_id: cite_span_schedule_1a_2025_0046
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
@@ -202,10 +202,10 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 50
-  quoted_text: Enter $100,000 ($200,000 if married filing jointly
+  quoted_text: Enter $100,000 ($200,000 if married filing jointly)
   ranges:
   - start: 5960
-    end: 6010
+    end: 6011
 - citation_id: cite_span_schedule_1a_2025_0049
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
@@ -242,10 +242,10 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 58
-  quoted_text: Enter $75,000 ($150,000 if married filing jointly
+  quoted_text: Enter $75,000 ($150,000 if married filing jointly)
   ranges:
   - start: 6900
-    end: 6949
+    end: 6950
 - citation_id: cite_span_schedule_1a_2025_0057
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
@@ -258,18 +258,18 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 60
-  quoted_text: Multiply line 33 by 6% (0.06
+  quoted_text: Multiply line 33 by 6% (0.06)
   ranges:
   - start: 7093
-    end: 7121
+    end: 7122
 - citation_id: cite_span_schedule_1a_2025_0060
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 62
-  quoted_text: If you have a valid social security number (see instructions) and were born before January 2, 1961
+  quoted_text: If you have a valid social security number (see instructions) and were born before January 2, 1961,
   ranges:
   - start: 7274
-    end: 7372
+    end: 7373
 - citation_id: cite_span_schedule_1a_2025_0062
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
@@ -282,10 +282,10 @@
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 66
-  quoted_text: Add lines 13, 21, 30, and 37. Enter here and on Form 1040 or 1040-SR, line 13b, or on Form 1040-NR
+  quoted_text: Add lines 13, 21, 30, and 37. Enter here and on Form 1040 or 1040-SR, line 13b, or on Form 1040-NR,
   ranges:
   - start: 7788
-    end: 7886
+    end: 7887
 - citation_id: cite_span_schedule_1a_2025_0065
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025

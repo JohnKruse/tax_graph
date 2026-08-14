@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import subprocess
 
 import pytest
 import yaml
@@ -38,6 +39,36 @@ def _source_slice(citation: dict, source: str) -> str:
             for item in citation.get("ranges") or ()
         )
     )
+
+
+def test_s106_keeps_accepted_quote_text_pinned() -> None:
+    """Range rebinding cannot make a wrong range pass by editing quote text."""
+    baseline: dict[str, object] = {}
+    for path in sorted((ROOT / "graph" / YEAR / "citations").glob("*.yaml")):
+        result = subprocess.run(
+            ["git", "show", f"82962eb:{path.relative_to(ROOT).as_posix()}"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode != 0:
+            continue
+        for item in yaml.safe_load(result.stdout) or []:
+            if item.get("citation_id"):
+                baseline[str(item["citation_id"])] = item.get("quoted_text")
+
+    current = {
+        str(item["citation_id"]): item.get("quoted_text")
+        for path in sorted((ROOT / "graph" / YEAR / "citations").glob("*.yaml"))
+        for item in (yaml.safe_load(path.read_text(encoding="ascii")) or [])
+        if item.get("citation_id")
+    }
+    shared = set(baseline) & set(current)
+    assert shared
+    assert {key: current[key] for key in shared} == {
+        key: baseline[key] for key in shared
+    }
 
 
 def test_core_citations_reconstruct_from_acquired_ranges() -> None:

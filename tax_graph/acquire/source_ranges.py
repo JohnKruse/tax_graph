@@ -56,8 +56,9 @@ class SourceTextIndex:
         wanted = tuple(_token_value(match.group(0)) for match in TOKEN_RE.finditer(quote))
         if not wanted:
             return None
+        wanted_normalized = normalize_source_quote(quote)
         limit = len(self.text) if end is None else end
-        best: tuple[tuple[int, int, int], tuple[int, ...]] | None = None
+        best: tuple[tuple[int, int, int, int], tuple[int, ...]] | None = None
         for first in self.positions.get(wanted[0], ()):
             if self.tokens[first].start < start:
                 continue
@@ -90,7 +91,12 @@ class SourceTextIndex:
                     # especially dangerous in instruction tables, where
                     # repeated words such as "line" and "enter" occur on
                     # many neighbouring rows.
-                    score = (skipped, span, selected[0])
+                    candidate_alignment = SourceAlignment(tuple(selected))
+                    candidate_ranges = self.ranges_for_alignment(candidate_alignment)
+                    exact = int(
+                        self.quote_for_ranges(candidate_ranges) != wanted_normalized
+                    )
+                    score = (exact, skipped, span, selected[0])
                     candidate = (score, tuple(selected))
                     if best is None or candidate[0] < best[0]:
                         best = candidate
@@ -105,7 +111,7 @@ class SourceTextIndex:
         if not indexes:
             return ()
         ranges: list[dict[str, int]] = []
-        range_start = self.tokens[indexes[0]].start
+        range_start = self._token_start_with_punctuation(indexes[0])
         previous = indexes[0]
         for current in indexes[1:]:
             gap = self.text[self.tokens[previous].end : self.tokens[current].start]
@@ -117,7 +123,7 @@ class SourceTextIndex:
                         "end": self._token_end_with_punctuation(previous),
                     }
                 )
-                range_start = self.tokens[current].start
+                range_start = self._token_start_with_punctuation(current)
             previous = current
         ranges.append(
             {
@@ -130,9 +136,44 @@ class SourceTextIndex:
     def _token_end_with_punctuation(self, token_index: int) -> int:
         """Include punctuation attached to a matched source token."""
         end = self.tokens[token_index].end
-        while end < len(self.text) and self.text[end] in ")]};:,":
+        while end < len(self.text) and self.text[end] in ")]};:,!?+-%":
             end += 1
+        if (
+            end < len(self.text)
+            and self.text[end] == "."
+            and not DOT_LEADER_RE.match(self.text, end)
+        ):
+            end += 1
+        # Form rows sometimes render an empty input marker as ``( )``.  It
+        # is part of the stored quote even though parentheses are not lexical
+        # tokens, so retain a punctuation-only balanced suffix after the last
+        # matched word.  Stop at the closing delimiter; do not consume the
+        # following row or a dot leader.
+        cursor = end
+        while cursor < len(self.text) and self.text[cursor].isspace():
+            cursor += 1
+        if cursor < len(self.text) and self.text[cursor] in "([{":
+            closing = cursor
+            while closing < len(self.text):
+                character = self.text[closing]
+                if character.isalnum():
+                    break
+                if character in ")]}":
+                    end = closing + 1
+                    break
+                closing += 1
+        elif cursor < len(self.text) and self.text[cursor] in ")]};:,!?+-%":
+            while cursor < len(self.text) and self.text[cursor] in ")]};:,!?+-%":
+                cursor += 1
+            end = cursor
         return end
+
+    def _token_start_with_punctuation(self, token_index: int) -> int:
+        """Include an opening marker attached to the first source token."""
+        start = self.tokens[token_index].start
+        while start > 0 and self.text[start - 1] in "([{+-":
+            start -= 1
+        return start
 
     def quote_for_ranges(self, ranges: Iterable[Mapping[str, int]]) -> str:
         """Render a normalized quote from source ranges without adding prose."""

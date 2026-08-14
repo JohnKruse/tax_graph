@@ -1,22 +1,16 @@
 - citation_id: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_1
   document_id: multiple_trades_or_businesses_worksheet_keep_for_your_records_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Multiple Trades or
-    Businesses Worksheet - Keep for Your Records;lines=1
-  quoted_text: 1 | (a) Name of your business | (b) Net profit of business from Schedule
-    C, line 31; the total of Schedule E, line 28(g) through 28(k); or Schedule F,
-    line 34 | (c) Other deductions allocable to the trade or business and not reported
-    on Schedule C, Schedule E, or Schedule F (as applicable) | (d) Subtract column
-    (c) from column (b) | (e) Qualified tip amount from *first* Form 1099-NEC, box
-    1; Form 1099-MISC, box 3; or Form 1099-K, box 1a | (f) Qualified tip amount from
-    *second* Form 1099-NEC, box 1; Form 1099-MISC, box 3; or Form 1099-K, box 1a |
-    (g) Qualified tip amount from *third* Form 1099-NEC, box 1; Form 1099-MISC, box
-    3; or Form 1099-K, box 1a | (h) Qualified tip amount from *fourth* Form 1099-NEC,
-    box 1; Form 1099-MISC, box 3; or Form 1099-K, box 1a | (i) Total qualified tip
-    amount. Add columns (e), (f), (g), and (h) | (j) Enter the lesser of column (d)
-    and column (i) | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-    --- | | A | | | | | | | | | | | | B | | | | | | | | | | | | C | | | | | | | |
-    | | | | D | | | | | | | | | | | | E
+  locator: source_document=instructions_form_1040_2025;worksheet=Multiple Trades or Businesses Worksheet - Keep for Your Records;lines=1
+  quoted_text: 1 | (a) Name of your business | (b) Net profit of business from Schedule C, line 31; the total of Schedule
+    E, line 28(g) through 28(k); or Schedule F, line 34 | (c) Other deductions allocable to the trade or business and not
+    reported on Schedule C, Schedule E, or Schedule F (as applicable) | (d) Subtract column (c) from column (b) | (e) Qualified
+    tip amount from *first* Form 1099-NEC, box 1; Form 1099-MISC, box 3; or Form 1099-K, box 1a | (f) Qualified tip amount
+    from *second* Form 1099-NEC, box 1; Form 1099-MISC, box 3; or Form 1099-K, box 1a | (g) Qualified tip amount from *third*
+    Form 1099-NEC, box 1; Form 1099-MISC, box 3; or Form 1099-K, box 1a | (h) Qualified tip amount from *fourth* Form 1099-NEC,
+    box 1; Form 1099-MISC, box 3; or Form 1099-K, box 1a | (i) Total qualified tip amount. Add columns (e), (f), (g), and
+    (h) | (j) Enter the lesser of column (d) and column (i) | | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+    | --- | | A | | | | | | | | | | | | B | | | | | | | | | | | | C | | | | | | | | | | | | D | | | | | | | | | | | | E
   kind: row
   ranges:
   - start: 582851
@@ -24,10 +18,8 @@
 - citation_id: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_2
   document_id: multiple_trades_or_businesses_worksheet_keep_for_your_records_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Multiple Trades or
-    Businesses Worksheet - Keep for Your Records;lines=2
-  quoted_text: 2 | Add lines 1A through 1E, column (j), and enter the total on Schedule
-    1-A, line 5
+  locator: source_document=instructions_form_1040_2025;worksheet=Multiple Trades or Businesses Worksheet - Keep for Your Records;lines=2
+  quoted_text: 2 | Add lines 1A through 1E, column (j), and enter the total on Schedule 1-A, line 5
   kind: row
   ranges:
   - start: 584003

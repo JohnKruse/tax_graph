@@ -1,10 +1,10 @@
 - citation_id: cite_qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_1
   document_id: qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime
-    Compensation From More Than One Employer Worksheet - Keep for Your Records;lines=1
-  quoted_text: 1 | (a) Name of employer | (b) Qualified overtime reported on Form
-    W-2, box 1 | | --- | --- | --- | | A | | | | B | | | | C | | | | D | | | | E
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime Compensation From More Than One Employer
+    Worksheet - Keep for Your Records;lines=1
+  quoted_text: 1 | (a) Name of employer | (b) Qualified overtime reported on Form W-2, box 1 | | --- | --- | --- | | A | |
+    | | B | | | | C | | | | D | | | | E
   kind: row
   ranges:
   - start: 599444
@@ -12,10 +12,9 @@
 - citation_id: cite_qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2
   document_id: qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime
-    Compensation From More Than One Employer Worksheet - Keep for Your Records;lines=2
-  quoted_text: 2 | Add the amounts from lines 1A through 1E, column (b), and enter
-    this amount on Schedule 1-A, line 14a
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime Compensation From More Than One Employer
+    Worksheet - Keep for Your Records;lines=2
+  quoted_text: 2 | Add the amounts from lines 1A through 1E, column (b), and enter this amount on Schedule 1-A, line 14a
   kind: row
   ranges:
   - start: 599618

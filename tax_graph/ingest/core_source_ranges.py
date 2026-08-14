@@ -164,14 +164,29 @@ def _eligible_citation(citation: Mapping[str, Any], core_ids: set[str]) -> bool:
     locator = str(citation.get("locator") or "")
     if not source_id or source_id not in core_ids:
         return False
-    citation_id = str(citation.get("citation_id") or "")
     if not citation.get("quoted_text"):
-        return False
-    if citation.get("ranges") and not citation_id.startswith("cite_1040_"):
         return False
     if HTML_LOCATOR_RE.match(locator) or document_id == LEGACY_RANGE_EXEMPTION:
         return False
     return True
+
+
+def _ranges_match_quote(
+    source: str,
+    quote: str,
+    ranges: Iterable[Mapping[str, Any]],
+) -> bool:
+    """Return whether ranges reproduce the pinned quote without rewriting it."""
+    try:
+        reconstructed = normalize_source_quote(
+            " ".join(
+                source[int(item["start"]) : int(item["end"])]
+                for item in ranges
+            )
+        )
+    except (KeyError, TypeError, ValueError):
+        return False
+    return reconstructed == normalize_source_quote(quote)
 
 
 def _bind_citation(
@@ -182,32 +197,38 @@ def _bind_citation(
     used_starts: set[int],
 ) -> bool:
     citation_id = str(citation.get("citation_id") or "")
+    quote = str(citation.get("quoted_text") or "")
+    existing_ranges = citation.get("ranges") or ()
+    if existing_ranges and _ranges_match_quote(source, quote, existing_ranges):
+        return True
     ranges = _tax_liability_ranges(source, citation_id)
     special_ranges = ranges is not None
     if ranges is None:
         bounds = _line_bounds(source, str(citation.get("locator") or ""))
         ranges = index.ranges_for_quote(
-            str(citation.get("quoted_text") or ""),
+            quote,
             start=bounds[0] if bounds else 0,
             end=bounds[1] if bounds else None,
         )
         if ranges is None and bounds is not None:
-            ranges = index.ranges_for_quote(
-                str(citation.get("quoted_text") or ""),
-            )
+            ranges = index.ranges_for_quote(quote)
+    if ranges is not None and not _ranges_match_quote(source, quote, ranges):
+        ranges = index.ranges_for_quote(quote)
+        special_ranges = False
     if ranges is None:
+        citation.pop("ranges", None)
         return False
     first_start = int(ranges[0]["start"])
     if first_start in used_starts and not special_ranges:
         ranges = index.ranges_for_quote(
-            str(citation.get("quoted_text") or ""),
+            quote,
             start=first_start + 1,
         ) or ranges
+    if not _ranges_match_quote(source, quote, ranges):
+        citation.pop("ranges", None)
+        return False
     used_starts.add(int(ranges[0]["start"]))
     citation["ranges"] = [dict(item) for item in ranges]
-    citation["quoted_text"] = normalize_source_quote(
-        " ".join(source[int(item["start"]) : int(item["end"])] for item in ranges)
-    )
     return True
 
 

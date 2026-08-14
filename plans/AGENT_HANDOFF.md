@@ -95,6 +95,35 @@ The focused `tmp_path` consumer files are therefore unverified in this session; 
 must not be marked `[COMPLETE]` until the ACL-safe verification and the full-suite baseline check
 are performed.
 
+**WORKER STATUS UPDATE (2026-08-14).** The S106 correction restored every shared citation
+`quoted_text` value to the accepted `82962eb` baseline: 607 shared records, zero quote changes.
+`SourceTextIndex` now ranks candidate occurrences by exact reconstruction, retains attached source
+punctuation, and the rebinder never rewrites `quoted_text`. An existing range is kept only when it
+reconstructs the pinned quote; an unreproducible range is removed and reported as a finding rather
+than left as false provenance. The 74 unreachable gap citations remain removed.
+
+RAN: `.venv\Scripts\python.exe -m tax_graph.ingest.core_source_ranges --root . --year 2025` ->
+**rebound 461, generated 0, removed 0, findings 34**. The 34 findings are explicit and remain
+open; they are concentrated in the legacy tax-liability/table-derived quotes and the Schedule D
+worksheet composite quotes whose punctuation or wording is not present as an acquired byte slice.
+No quote was rewritten to make any of them pass.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py -q` -> **1 failed,
+6 passed, 2 warnings in 62.42s**; the guard stops at finding `cite_schedule_d_carryover_line_1_2`,
+so the every-core-citation floor is not met.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py::test_s106_keeps_accepted_quote_text_pinned -q` -> **1 passed, 1 warning in 1.79s**.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_mcp_m2.py::test_get_citation_by_id_and_fts_query tests/test_return_record_m5.py::test_render_memo_matches_golden_fixture tests/test_workbench_cells_m17.py::test_citations_resolve_to_verbatim_text_and_provenance -q` -> **2 passed, 1 setup error**; the MCP test cannot enumerate the poisoned `.test_tmp\pytest-of-devbox` root (`WinError 5`), while the memo and workbench consumer tests pass.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_worksheet_ranges_s105.py::test_promoted_worksheet_citations_reconstruct_from_source_ranges tests/test_worksheet_ranges_s105.py::test_source_extents_preserves_the_worksheet_corpus_partition -q` -> **2 passed, 1 warning in 58.10s**.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -k current_2025_graph_validates -q` -> **1 passed, 13 deselected, 1 warning in 16.53s**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+
+**OPEN FOR ARCHITECT.** The source-owned range mechanism is corrected and the consumer regressions
+are green where the environment permits them, but this is not an accepted phase: 34 exact-source
+findings remain and the core guard is intentionally red. Decide whether those baseline quotes must
+be regenerated upstream from the acquired text, or whether the source artifacts need an explicit
+provenance migration before S106 can satisfy its every-citation floor. No exclusion was added.
+
 **WHY THIS ONE.** S104 measured that the pipeline drops **16,211 to 28,885 characters of
 rule-bearing source**, and it is concentrated in the CORE documents John named: `form_1116` 2,156,
 `schedule_1a` 1,644, `ira_deduction_worksheet` 1,508, `form_1040` 1,393, `form_2441` 1,308,

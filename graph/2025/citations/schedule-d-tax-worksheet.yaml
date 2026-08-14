@@ -2,9 +2,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=1
-  quoted_text: 1. Enter your taxable income from Form 1040, 1040-SR, or 1040-NR, line
-    15. (However, if you are filing Form 2555 (relating to foreign earned income),
-    enter instead the amount from line 3 of the Foreign Earned Income Tax Worksheet
+  quoted_text: 1. Enter your taxable income from Form 1040, 1040-SR, or 1040-NR, line 15. (However, if you are filing Form
+    2555 (relating to foreign earned income), enter instead the amount from line 3 of the Foreign Earned Income Tax Worksheet
     in the instructions for Form 1040, line 16
   kind: row
   ranges:
@@ -14,8 +13,7 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=2
-  quoted_text: 2. Enter your qualified dividends from Form 1040, 1040-SR, or 1040-NR,
-    line 3a
+  quoted_text: 2. Enter your qualified dividends from Form 1040, 1040-SR, or 1040-NR, line 3a
   kind: row
   ranges:
   - start: 81509
@@ -24,8 +22,7 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=3
-  quoted_text: 3. Enter the amount from Form 4952 (used to figure investment interest
-    expense deduction), line 4g
+  quoted_text: 3. Enter the amount from Form 4952 (used to figure investment interest expense deduction), line 4g
   kind: row
   ranges:
   - start: 81595
@@ -133,9 +130,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=15
-  quoted_text: '15. Enter: $48,350 if single or married filing separately; $96,700
-    if married filing jointly or qualifying surviving spouse; or $64,750 if head of
-    household'
+  quoted_text: '15. Enter: $48,350 if single or married filing separately; $96,700 if married filing jointly or qualifying
+    surviving spouse; or $64,750 if head of household'
   kind: row
   ranges:
   - start: 82307
@@ -171,9 +167,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=19
-  quoted_text: '19. Enter the smaller of line 1 or: $197,300 if single or married
-    filing separately; $394,600 if married filing jointly or qualifying surviving
-    spouse; or $197,300 if head of household'
+  quoted_text: '19. Enter the smaller of line 1 or: $197,300 if single or married filing separately; $394,600 if married filing
+    jointly or qualifying surviving spouse; or $197,300 if head of household'
   kind: row
   ranges:
   - start: 82648
@@ -236,9 +231,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=26
-  quoted_text: '26. Enter: $533,400 if single; $300,000 if married filing separately;
-    $600,050 if married filing jointly or qualifying surviving spouse; or $566,700
-    if head of household'
+  quoted_text: '26. Enter: $533,400 if single; $300,000 if married filing separately; $600,050 if married filing jointly or
+    qualifying surviving spouse; or $566,700 if head of household'
   kind: row
   ranges:
   - start: 83317
@@ -400,9 +394,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=44
-  quoted_text: 44. | Figure the tax on the amount on **line 21**. If the amount on
-    line 21 is less than $100,000, use the Tax Table to figure the tax. If the amount
-    on line 21 is $100,000 or more, use the Tax Computation Worksheet
+  quoted_text: 44. | Figure the tax on the amount on **line 21**. If the amount on line 21 is less than $100,000, use the
+    Tax Table to figure the tax. If the amount on line 21 is $100,000 or more, use the Tax Computation Worksheet
   kind: row
   ranges:
   - start: 84940
@@ -420,9 +413,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=46
-  quoted_text: 46. | Figure the tax on the amount on **line 1**. If the amount on
-    line 1 is less than $100,000, use the Tax Table to figure the tax. If the amount
-    on line 1 is $100,000 or more, use the Tax Computation Worksheet
+  quoted_text: 46. | Figure the tax on the amount on **line 1**. If the amount on line 1 is less than $100,000, use the Tax
+    Table to figure the tax. If the amount on line 1 is $100,000 or more, use the Tax Computation Worksheet
   kind: row
   ranges:
   - start: 85225
@@ -431,15 +423,12 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=47
-  quoted_text: 47. | **Tax on all taxable income (including capital gains and qualified
-    dividends).** Enter the **smaller** of line 45 or line 46. Also, include this
-    amount on Form 1040, 1040-SR, or 1040-NR, line 16. (If you are filing Form 2555,
-    don't enter this amount on Form 1040 or 1040-SR, line 16. Instead, enter it on
-    line 4 of the Foreign Earned Income Tax Worksheet in the Instructions for Form
-    1040.) | 47. | | * If applicable, enter instead the smaller amount you entered
-    on the dotted line next to line 4e of Form 4952. ** If you are filing Form 2555,
-    see the footnote in the Foreign Earned Income Tax Worksheet in the Instructions
-    for Form 1040, line 16, before completing this line
+  quoted_text: 47. | **Tax on all taxable income (including capital gains and qualified dividends).** Enter the **smaller**
+    of line 45 or line 46. Also, include this amount on Form 1040, 1040-SR, or 1040-NR, line 16. (If you are filing Form 2555,
+    don't enter this amount on Form 1040 or 1040-SR, line 16. Instead, enter it on line 4 of the Foreign Earned Income Tax
+    Worksheet in the Instructions for Form 1040.) | 47. | | * If applicable, enter instead the smaller amount you entered
+    on the dotted line next to line 4e of Form 4952. ** If you are filing Form 2555, see the footnote in the Foreign Earned
+    Income Tax Worksheet in the Instructions for Form 1040, line 16, before completing this line
   kind: row
   ranges:
   - start: 85453
@@ -448,8 +437,7 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;after=22
-  quoted_text: If lines 1 and 16 are the same, skip lines 23 through 43 and go to
-    line 44. Otherwise, go to line 23.
+  quoted_text: If lines 1 and 16 are the same, skip lines 23 through 43 and go to line 44. Otherwise, go to line 23.
   kind: routing_sentence
   governs:
   - '44'
@@ -461,8 +449,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;after=32
-  quoted_text: '| **If lines 1 and 32 are the same, skip lines 33 through 43 and go
-    to line 44. Otherwise, go to line 33.** | | | |'
+  quoted_text: '| **If lines 1 and 32 are the same, skip lines 33 through 43 and go to line 44. Otherwise, go to line 33.**
+    | | | |'
   kind: routing_sentence
   governs:
   - '44'
@@ -474,8 +462,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;after=34
-  quoted_text: '| **If Schedule D, line 19, is zero or blank, skip lines 35 through
-    40 and go to line 41. Otherwise, go to line 35.** | | | |'
+  quoted_text: '| **If Schedule D, line 19, is zero or blank, skip lines 35 through 40 and go to line 41. Otherwise, go to
+    line 35.** | | | |'
   kind: routing_sentence
   governs:
   - '19'
@@ -488,8 +476,8 @@
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;after=40
-  quoted_text: '| **If Schedule D, line 18, is zero or blank, skip lines 41 through
-    43 and go to line 44. Otherwise, go to line 41.** | | | |'
+  quoted_text: '| **If Schedule D, line 18, is zero or blank, skip lines 41 through 43 and go to line 44. Otherwise, go to
+    line 41.** | | | |'
   kind: routing_sentence
   governs:
   - '18'

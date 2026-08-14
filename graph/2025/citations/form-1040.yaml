@@ -2,23 +2,23 @@
   document_id: form_1040_2025
   source_document_id: form_1040_2025
   locator: page 1, line 8
-  quoted_text: Total amount from Form(s) W-2, box 1 (see instructions
+  quoted_text: Total amount from Form(s) W-2, box 1 (see instructions)
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   retrieved_date: 2026-07-09
   ranges:
   - start: 3007
-    end: 3061
+    end: 3062
 - citation_id: cite_instruction_form_1040_2025_line_1a
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
   locator: page 23, line 1089
   quoted_text: Enter the total amount from Form(s) W-2, box 1. If a joint return, also include your spouse's income from Form(s)
-    W-2, box 1
+    W-2, box 1.
   url: https://www.irs.gov/instructions/i1040
   retrieved_date: 2026-07-09
   ranges:
   - start: 89055
-    end: 89179
+    end: 89180
 - citation_id: cite_span_form_1040_2025_0008
   document_id: form_1040_2025
   source_document_id: form_1040_2025
@@ -33,22 +33,22 @@
   document_id: form_1040_2025
   source_document_id: form_1040_2025
   locator: page 1, line 11
-  quoted_text: Tip income not reported on line 1a (see instructions
+  quoted_text: Tip income not reported on line 1a (see instructions)
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   retrieved_date: 2026-07-09
   ranges:
   - start: 3208
-    end: 3260
+    end: 3261
 - citation_id: cite_span_form_1040_2025_0011
   document_id: form_1040_2025
   source_document_id: form_1040_2025
   locator: page 1, line 12
-  quoted_text: Medicaid waiver payments not reported on Form(s) W-2 (see instructions
+  quoted_text: Medicaid waiver payments not reported on Form(s) W-2 (see instructions)
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   retrieved_date: 2026-07-09
   ranges:
   - start: 3308
-    end: 3378
+    end: 3379
 - citation_id: cite_span_form_1040_2025_0012
   document_id: form_1040_2025
   source_document_id: form_1040_2025
@@ -83,12 +83,12 @@
   document_id: form_1040_2025
   source_document_id: form_1040_2025
   locator: page 1, line 16
-  quoted_text: Other earned income (see instructions). Enter type and amount
+  quoted_text: 'Other earned income (see instructions). Enter type and amount:'
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   retrieved_date: 2026-07-09
   ranges:
   - start: 3721
-    end: 3782
+    end: 3783
 - citation_id: cite_span_form_1040_2025_0017
   document_id: form_1040_2025
   source_document_id: form_1040_2025
@@ -163,22 +163,22 @@
   document_id: form_1040_2025
   source_document_id: form_1040_2025
   locator: page 2, line 37
-  quoted_text: Amount from line 11a (adjusted gross income
+  quoted_text: Amount from line 11a (adjusted gross income)
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   retrieved_date: 2026-07-09
   ranges:
   - start: 5378
-    end: 5421
+    end: 5422
 - citation_id: cite_span_form_1040_2025_0038
   document_id: form_1040_2025
   source_document_id: form_1040_2025
   locator: page 2, line 41
-  quoted_text: Standard deduction or itemized deductions (from Schedule A
+  quoted_text: Standard deduction or itemized deductions (from Schedule A)
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   retrieved_date: 2026-07-09
   ranges:
   - start: 5730
-    end: 5788
+    end: 5789
 - citation_id: cite_span_form_1040_2025_0040
   document_id: form_1040_2025
   source_document_id: form_1040_2025

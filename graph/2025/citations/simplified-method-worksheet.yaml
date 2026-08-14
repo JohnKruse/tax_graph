@@ -1,10 +1,9 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_1
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=1
-  quoted_text: 1. Enter the total pension or annuity payments from Form 1099-R, box
-    1. Also, enter this amount on Form 1040 or 1040-SR, line 5a
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=1
+  quoted_text: 1. Enter the total pension or annuity payments from Form 1099-R, box 1. Also, enter this amount on Form 1040
+    or 1040-SR, line 5a
   kind: row
   ranges:
   - start: 118029
@@ -12,8 +11,7 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_2
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=2
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=2
   quoted_text: 2. Enter your cost in the plan at the annuity starting date
   kind: row
   ranges:
@@ -22,11 +20,9 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_3
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=3
-  quoted_text: 3. Enter the appropriate number from **Table 1** below. **But** if
-    your annuity starting date was **after** 1997 and the payments are for your life
-    and that of your beneficiary, enter the appropriate number from **Table 2** below
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=3
+  quoted_text: 3. Enter the appropriate number from **Table 1** below. **But** if your annuity starting date was **after**
+    1997 and the payments are for your life and that of your beneficiary, enter the appropriate number from **Table 2** below
   kind: row
   ranges:
   - start: 118491
@@ -34,8 +30,7 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_4
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=4
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=4
   quoted_text: 4. Divide line 2 by the number on line 3
   kind: row
   ranges:
@@ -44,11 +39,9 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_5
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=5
-  quoted_text: 5. Multiply line 4 by the number of months for which this year's payments
-    were made. If your annuity starting date was **before** 1987, skip lines 6 and
-    7 and enter this amount on line 8. Otherwise, go to line 6
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=5
+  quoted_text: 5. Multiply line 4 by the number of months for which this year's payments were made. If your annuity starting
+    date was **before** 1987, skip lines 6 and 7 and enter this amount on line 8. Otherwise, go to line 6
   kind: row
   ranges:
   - start: 118810
@@ -56,11 +49,9 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_6
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=6
-  quoted_text: 6. Enter the amount, if any, recovered tax free in years after 1986.
-    If you completed this worksheet last year, enter the amount from line 10 of last
-    year's worksheet
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=6
+  quoted_text: 6. Enter the amount, if any, recovered tax free in years after 1986. If you completed this worksheet last year,
+    enter the amount from line 10 of last year's worksheet
   kind: row
   ranges:
   - start: 119046
@@ -68,8 +59,7 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_7
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=7
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=7
   quoted_text: 7. Subtract line 6 from line 2
   kind: row
   ranges:
@@ -78,8 +68,7 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_8
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=8
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=8
   quoted_text: 8. Enter the **smaller** of line 5 or line 7
   kind: row
   ranges:
@@ -88,14 +77,11 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_9
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=9
-  quoted_text: 9. **Taxable amount.** Subtract line 8 from line 1. Enter the result,
-    but not less than zero. Also, enter this amount on Form 1040 or 1040-SR, line
-    5b. If your Form 1099-R shows a larger amount, use the amount on this line instead
-    of the amount from Form 1099-R. If you are a retired public safety officer, see
-    *Insurance Premiums for Retired Public Safety Officers* before entering an amount
-    on line 5b
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=9
+  quoted_text: 9. **Taxable amount.** Subtract line 8 from line 1. Enter the result, but not less than zero. Also, enter this
+    amount on Form 1040 or 1040-SR, line 5b. If your Form 1099-R shows a larger amount, use the amount on this line instead
+    of the amount from Form 1099-R. If you are a retired public safety officer, see *Insurance Premiums for Retired Public
+    Safety Officers* before entering an amount on line 5b
   kind: row
   ranges:
   - start: 119361
@@ -103,11 +89,9 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_10
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=10
-  quoted_text: 10. Was your annuity starting date before 1987? Yes. ![STOP]() Do not
-    complete the rest of this worksheet No. Add lines 6 and 8. This is the **amount
-    you have recovered tax free** through 2025. You will need this number if you need
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=10
+  quoted_text: 10. Was your annuity starting date before 1987? Yes. ![STOP]() Do not complete the rest of this worksheet No.
+    Add lines 6 and 8. This is the **amount you have recovered tax free** through 2025. You will need this number if you need
     to fill out this worksheet next year 10
   kind: row
   ranges:
@@ -120,11 +104,9 @@
 - citation_id: cite_simplified_method_worksheet_2025_lines_11
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;lines=11
-  quoted_text: 11. **Balance of cost to be recovered.** Subtract line 10 from line
-    2. If zero, you won't have to complete this worksheet next year. The payments
-    you receive next year will generally be fully taxable
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;lines=11
+  quoted_text: 11. **Balance of cost to be recovered.** Subtract line 10 from line 2. If zero, you won't have to complete
+    this worksheet next year. The payments you receive next year will generally be fully taxable
   kind: row
   ranges:
   - start: 120092
@@ -132,11 +114,9 @@
 - citation_id: cite_simplified_method_worksheet_2025_note_after_2_0
   document_id: simplified_method_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method
-    Worksheet;after=2
-  quoted_text: '**Note.** If you completed this worksheet last year, skip line 3 and
-    enter the amount from line 4 of last year''s worksheet on line 4 below (even if
-    the amount of your pension or annuity has changed). Otherwise, go to line 3.'
+  locator: source_document=instructions_form_1040_2025;worksheet=Simplified Method Worksheet;after=2
+  quoted_text: '**Note.** If you completed this worksheet last year, skip line 3 and enter the amount from line 4 of last
+    year''s worksheet on line 4 below (even if the amount of your pension or annuity has changed). Otherwise, go to line 3.'
   kind: note
   governs:
   - '3'

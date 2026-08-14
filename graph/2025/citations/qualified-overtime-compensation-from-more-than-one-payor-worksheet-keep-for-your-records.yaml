@@ -1,11 +1,10 @@
 - citation_id: cite_qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025_lines_1
   document_id: qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime
-    Compensation From More Than One Payor Worksheet - Keep for Your Records;lines=1
-  quoted_text: 1 | (a) Payor's name | (b) Qualified overtime reported on Form 1099-NEC,
-    box 1, or Form 1099-MISC, box 3 | | --- | --- | --- | | A | | | | B | | | | C
-    | | | | D | | | | E
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime Compensation From More Than One Payor
+    Worksheet - Keep for Your Records;lines=1
+  quoted_text: 1 | (a) Payor's name | (b) Qualified overtime reported on Form 1099-NEC, box 1, or Form 1099-MISC, box 3 |
+    | --- | --- | --- | | A | | | | B | | | | C | | | | D | | | | E
   kind: row
   ranges:
   - start: 599830
@@ -13,10 +12,9 @@
 - citation_id: cite_qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025_lines_2
   document_id: qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime
-    Compensation From More Than One Payor Worksheet - Keep for Your Records;lines=2
-  quoted_text: 2 | Add the amounts from lines 1A through 1E, column (b) and enter
-    this amount on Schedule 1-A, line 14b
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Overtime Compensation From More Than One Payor
+    Worksheet - Keep for Your Records;lines=2
+  quoted_text: 2 | Add the amounts from lines 1A through 1E, column (b) and enter this amount on Schedule 1-A, line 14b
   kind: row
   ranges:
   - start: 600031

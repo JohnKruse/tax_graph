@@ -2,10 +2,10 @@
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 37
-  quoted_text: Other taxes. List type and amount
+  quoted_text: 'Other taxes. List type and amount:'
   ranges:
   - start: 1554
-    end: 1587
+    end: 1588
 - citation_id: cite_span_schedule_a_2025_0003
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
@@ -26,26 +26,26 @@
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 7
-  quoted_text: Multiply line 2 by 7.5% (0.075
+  quoted_text: Multiply line 2 by 7.5% (0.075)
   ranges:
   - start: 652
-    end: 682
+    end: 683
 - citation_id: cite_span_schedule_a_2025_0007
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 8
-  quoted_text: Subtract line 3 from line 1. If line 3 is more than line 1, enter -0
+  quoted_text: Subtract line 3 from line 1. If line 3 is more than line 1, enter -0-
   ranges:
   - start: 710
-    end: 778
+    end: 779
 - citation_id: cite_span_schedule_a_2025_0008
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 9
-  quoted_text: State and local taxes (SALT
+  quoted_text: State and local taxes (SALT).
   ranges:
   - start: 810
-    end: 837
+    end: 839
 - citation_id: cite_span_schedule_a_2025_0009
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
@@ -58,10 +58,10 @@
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 11
-  quoted_text: State and local real estate taxes (see instructions
+  quoted_text: State and local real estate taxes (see instructions)
   ranges:
   - start: 1092
-    end: 1143
+    end: 1144
 - citation_id: cite_span_schedule_a_2025_0011
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
@@ -90,10 +90,10 @@
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 15
-  quoted_text: Other taxes. List type and amount
+  quoted_text: 'Other taxes. List type and amount:'
   ranges:
   - start: 1554
-    end: 1587
+    end: 1588
 - citation_id: cite_span_schedule_a_2025_0016
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025

@@ -1,11 +1,9 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_1
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=1
-  quoted_text: 1. | Enter the amount from Form 1040 or 1040-SR, line 15. However,
-    if you are filing Form 2555 (relating to foreign earned income), enter the amount
-    from line 3 of the Foreign Earned Income Tax Worksheet
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=1
+  quoted_text: 1. | Enter the amount from Form 1040 or 1040-SR, line 15. However, if you are filing Form 2555 (relating to
+    foreign earned income), enter the amount from line 3 of the Foreign Earned Income Tax Worksheet
   kind: row
   ranges:
   - start: 156816
@@ -13,8 +11,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_2
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=2
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=2
   quoted_text: 2. | Enter the amount from Form 1040 or 1040-SR, line 3a
   kind: row
   ranges:
@@ -23,11 +20,9 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=3
-  quoted_text: 3. | Are you filing Schedule D?* | | | | | Yes. Enter the smaller of
-    line 15 or line 16 of Schedule D. If either line 15 or line 16 is blank or a loss,
-    enter -0 No. Enter the amount from Form 1040 or 1040-SR, line 7a
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=3
+  quoted_text: 3. | Are you filing Schedule D?* | | | | | Yes. Enter the smaller of line 15 or line 16 of Schedule D. If either
+    line 15 or line 16 is blank or a loss, enter -0 No. Enter the amount from Form 1040 or 1040-SR, line 7a
   kind: row
   ranges:
   - start: 157142
@@ -37,8 +32,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_4
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=4
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=4
   quoted_text: 4. | Add lines 2 and 3
   kind: row
   ranges:
@@ -47,8 +41,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_5
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=5
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=5
   quoted_text: 5. | Subtract line 4 from line 1. If zero or less, enter -0
   kind: row
   ranges:
@@ -57,10 +50,9 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_6
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=6
-  quoted_text: '6. | Enter: $48,350 if single or married filing separately, $96,700
-    if married filing jointly or qualifying surviving spouse, $64,750 if head of household'
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=6
+  quoted_text: '6. | Enter: $48,350 if single or married filing separately, $96,700 if married filing jointly or qualifying
+    surviving spouse, $64,750 if head of household'
   kind: row
   ranges:
   - start: 157525
@@ -68,8 +60,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_7
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=7
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=7
   quoted_text: 7. | Enter the smaller of line 1 or line 6
   kind: row
   ranges:
@@ -78,8 +69,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_8
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=8
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=8
   quoted_text: 8. | Enter the smaller of line 5 or line 7
   kind: row
   ranges:
@@ -88,8 +78,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_9
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=9
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=9
   quoted_text: 9. | Subtract line 8 from line 7. This amount is taxed at 0
   kind: row
   ranges:
@@ -98,8 +87,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_10
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=10
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=10
   quoted_text: 10. | Enter the smaller of line 1 or line 4
   kind: row
   ranges:
@@ -108,8 +96,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_11
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=11
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=11
   quoted_text: 11. | Enter the amount from line 9
   kind: row
   ranges:
@@ -118,8 +105,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_12
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=12
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=12
   quoted_text: 12. | Subtract line 11 from line 10
   kind: row
   ranges:
@@ -128,11 +114,9 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_13
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=13
-  quoted_text: '13. | Enter: $533,400 if single, $300,000 if married filing separately,
-    $600,050 if married filing jointly or qualifying surviving spouse, $566,700 if
-    head of household'
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=13
+  quoted_text: '13. | Enter: $533,400 if single, $300,000 if married filing separately, $600,050 if married filing jointly
+    or qualifying surviving spouse, $566,700 if head of household'
   kind: row
   ranges:
   - start: 158079
@@ -140,8 +124,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_14
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=14
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=14
   quoted_text: 14. | Enter the smaller of line 1 or line 13
   kind: row
   ranges:
@@ -150,8 +133,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_15
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=15
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=15
   quoted_text: 15. | Add lines 5 and 9
   kind: row
   ranges:
@@ -160,8 +142,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_16
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=16
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=16
   quoted_text: 16. | Subtract line 15 from line 14. If zero or less, enter -0
   kind: row
   ranges:
@@ -170,8 +151,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_17
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=17
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=17
   quoted_text: 17. | Enter the smaller of line 12 or line 16
   kind: row
   ranges:
@@ -180,8 +160,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_18
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=18
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=18
   quoted_text: 18. | Multiply line 17 by 15% (0.15
   kind: row
   ranges:
@@ -190,8 +169,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_19
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=19
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=19
   quoted_text: 19. | Add lines 9 and 17
   kind: row
   ranges:
@@ -200,8 +178,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_20
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=20
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=20
   quoted_text: 20. | Subtract line 19 from line 10
   kind: row
   ranges:
@@ -210,8 +187,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_21
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=21
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=21
   quoted_text: 21. | Multiply line 20 by 20% (0.20
   kind: row
   ranges:
@@ -220,11 +196,9 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_22
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=22
-  quoted_text: 22. | Figure the tax on the amount on line 5. If the amount on line
-    5 is less than $100,000, use the Tax Table to figure the tax. If the amount on
-    line 5 is $100,000 or more, use the Tax Computation Worksheet
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=22
+  quoted_text: 22. | Figure the tax on the amount on line 5. If the amount on line 5 is less than $100,000, use the Tax Table
+    to figure the tax. If the amount on line 5 is $100,000 or more, use the Tax Computation Worksheet
   kind: row
   ranges:
   - start: 158743
@@ -232,8 +206,7 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_23
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=23
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=23
   quoted_text: 23. | Add lines 18, 21, and 22
   kind: row
   ranges:
@@ -242,11 +215,9 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_24
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=24
-  quoted_text: 24. | Figure the tax on the amount on line 1. If the amount on line
-    1 is less than $100,000, use the Tax Table to figure the tax. If the amount on
-    line 1 is $100,000 or more, use the Tax Computation Worksheet
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=24
+  quoted_text: 24. | Figure the tax on the amount on line 1. If the amount on line 1 is less than $100,000, use the Tax Table
+    to figure the tax. If the amount on line 1 is $100,000 or more, use the Tax Computation Worksheet
   kind: row
   ranges:
   - start: 159023
@@ -254,14 +225,11 @@
 - citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_25
   document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
   source_document_id: instructions_form_1040_2025
-  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends
-    and Capital Gain Tax Worksheet;lines=25
-  quoted_text: 25. | **Tax on all taxable income.** Enter the smaller of line 23 or
-    line 24. Also include this amount on the entry space on Form 1040 or 1040-SR,
-    line 16. If you are filing Form 2555, don't enter this amount on the entry space
-    on Form 1040 or 1040-SR, line 16. Instead, enter it on line 4 of the Foreign Earned
-    Income Tax Worksheet If you are filing Form 2555, see the footnote in the Foreign
-    Earned Income Tax Worksheet before completing this line
+  locator: source_document=instructions_form_1040_2025;worksheet=Qualified Dividends and Capital Gain Tax Worksheet;lines=25
+  quoted_text: 25. | **Tax on all taxable income.** Enter the smaller of line 23 or line 24. Also include this amount on the
+    entry space on Form 1040 or 1040-SR, line 16. If you are filing Form 2555, don't enter this amount on the entry space
+    on Form 1040 or 1040-SR, line 16. Instead, enter it on line 4 of the Foreign Earned Income Tax Worksheet If you are filing
+    Form 2555, see the footnote in the Foreign Earned Income Tax Worksheet before completing this line
   kind: row
   ranges:
   - start: 159252
