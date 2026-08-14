@@ -3,160 +3,246 @@
   source_document_id: schedule_1_2025
   locator: page 1, line 2
   quoted_text: '1'
+  ranges:
+  - start: 9
+    end: 10
 - citation_id: cite_span_schedule_1_2025_0008
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 9
   quoted_text: Alimony received
+  ranges:
+  - start: 846
+    end: 862
 - citation_id: cite_span_schedule_1_2025_0010
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 11
   quoted_text: Business income or (loss). Attach Schedule C
+  ranges:
+  - start: 995
+    end: 1039
 - citation_id: cite_span_schedule_1_2025_0011
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 12
   quoted_text: 'Other gains or (losses). Check if any from Form(s): 4797 4684'
+  ranges:
+  - start: 1082
+    end: 1143
 - citation_id: cite_span_schedule_1_2025_0012
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 13
-  quoted_text: Rental real estate, royalties, partnerships, S corporations, trusts,
-    etc. Attach Schedule E
+  quoted_text: Rental real estate, royalties, partnerships, S corporations, trusts, etc. Attach Schedule E
+  ranges:
+  - start: 1166
+    end: 1257
 - citation_id: cite_span_schedule_1_2025_0013
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 14
   quoted_text: Farm income or (loss). Attach Schedule F
+  ranges:
+  - start: 1272
+    end: 1312
 - citation_id: cite_span_schedule_1_2025_0014
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 15
-  quoted_text: Unemployment compensation. If you repaid a 2025 overpayment (see instructions),
-    check here and
+  quoted_text: Unemployment compensation. If you repaid a 2025 overpayment (see instructions), check here and
+  ranges:
+  - start: 1357
+    end: 1451
 - citation_id: cite_span_schedule_1_2025_0016
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 17
-  quoted_text: 'Other income:'
+  quoted_text: Other income
+  ranges:
+  - start: 1517
+    end: 1529
 - citation_id: cite_span_schedule_1_2025_0036
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 37
-  quoted_text: or 1d 8s ( )
+  quoted_text: or 1d 8s
+  ranges:
+  - start: 2927
+    end: 2935
 - citation_id: cite_span_schedule_1_2025_0040
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 41
   quoted_text: 8v
+  ranges:
+  - start: 3275
+    end: 3277
 - citation_id: cite_span_schedule_1_2025_0042
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 43
   quoted_text: 8z
+  ranges:
+  - start: 3360
+    end: 3362
 - citation_id: cite_span_schedule_1_2025_0043
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 44
   quoted_text: Total other income. Add lines 8a through 8z
+  ranges:
+  - start: 3365
+    end: 3408
 - citation_id: cite_span_schedule_1_2025_0044
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 1, line 45
-  quoted_text: Combine lines 1 through 7 and 9. This is your additional income. Enter
-    here and on Form 1040,
+  quoted_text: Combine lines 1 through 7 and 9. This is your additional income. Enter here and on Form 1040
+  ranges:
+  - start: 3452
+    end: 3544
 - citation_id: cite_span_schedule_1_2025_0048
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 50
   quoted_text: Educator expenses
+  ranges:
+  - start: 3823
+    end: 3840
 - citation_id: cite_span_schedule_1_2025_0049
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 51
-  quoted_text: Certain business expenses of reservists, performing artists, and fee-basis
-    government officials. Attach
+  quoted_text: Certain business expenses of reservists, performing artists, and fee-basis government officials. Attach
+  ranges:
+  - start: 3901
+    end: 4004
 - citation_id: cite_span_schedule_1_2025_0051
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 53
   quoted_text: Health savings account deduction. Attach Form 8889
+  ranges:
+  - start: 4081
+    end: 4131
 - citation_id: cite_span_schedule_1_2025_0052
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 54
-  quoted_text: Moving expenses for members of the Armed Forces. Attach Form 3903. If
-    claiming only storage fees
+  quoted_text: Moving expenses for members of the Armed Forces. Attach Form 3903. If claiming only storage fees
+  ranges:
+  - start: 4170
+    end: 4266
 - citation_id: cite_span_schedule_1_2025_0053
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 55
   quoted_text: Deductible part of self-employment tax. Attach Schedule SE
+  ranges:
+  - start: 4350
+    end: 4408
 - citation_id: cite_span_schedule_1_2025_0054
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 56
   quoted_text: Self-employed SEP, SIMPLE, and qualified plans
+  ranges:
+  - start: 4443
+    end: 4489
 - citation_id: cite_span_schedule_1_2025_0055
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 57
   quoted_text: Self-employed health insurance deduction
+  ranges:
+  - start: 4532
+    end: 4572
 - citation_id: cite_span_schedule_1_2025_0056
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 58
   quoted_text: Penalty on early withdrawal of savings
+  ranges:
+  - start: 4619
+    end: 4657
 - citation_id: cite_span_schedule_1_2025_0057
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 59
   quoted_text: Alimony paid
+  ranges:
+  - start: 4707
+    end: 4719
 - citation_id: cite_span_schedule_1_2025_0060
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 62
-  quoted_text: IRA deduction. If you are married filing separately and lived apart from
-    your spouse for the entire year
+  quoted_text: IRA deduction. If you are married filing separately and lived apart from your spouse for the entire year
+  ranges:
+  - start: 4920
+    end: 5024
 - citation_id: cite_span_schedule_1_2025_0061
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 63
   quoted_text: Student loan interest deduction
+  ranges:
+  - start: 5108
+    end: 5139
 - citation_id: cite_span_schedule_1_2025_0062
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 64
   quoted_text: Reserved for future use
+  ranges:
+  - start: 5192
+    end: 5215
 - citation_id: cite_span_schedule_1_2025_0063
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 65
   quoted_text: Archer MSA deduction
+  ranges:
+  - start: 5274
+    end: 5294
 - citation_id: cite_span_schedule_1_2025_0064
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 66
-  quoted_text: 'Other adjustments:'
+  quoted_text: Other adjustments
+  ranges:
+  - start: 5353
+    end: 5370
 - citation_id: cite_span_schedule_1_2025_0070
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 72
   quoted_text: 24e
+  ranges:
+  - start: 5879
+    end: 5882
 - citation_id: cite_span_schedule_1_2025_0078
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 80
   quoted_text: 24z
+  ranges:
+  - start: 6580
+    end: 6583
 - citation_id: cite_span_schedule_1_2025_0079
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 81
   quoted_text: Total other adjustments. Add lines 24a through 24z
+  ranges:
+  - start: 6587
+    end: 6637
 - citation_id: cite_span_schedule_1_2025_0080
   document_id: schedule_1_2025
   source_document_id: schedule_1_2025
   locator: page 2, line 82
-  quoted_text: Add lines 11 through 23 and 25. These are your adjustments to income.
-    Enter here and on Form
+  quoted_text: Add lines 11 through 23 and 25. These are your adjustments to income. Enter here and on Form
+  ranges:
+  - start: 6678
+    end: 6770

@@ -18,6 +18,7 @@ import yaml
 from tax_graph.acquire.text_normalize import normalize_punctuation
 from tax_graph.config import get_config_value, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
+from tax_graph.acquire.source_ranges import SourceTextIndex
 from tax_graph.extract.structure import StructureFinding, StructureRow
 from tax_graph.extract.instruction_sections import (
     InstructionSectionsFrame,
@@ -49,6 +50,7 @@ class CandidateSpan:
     section_id: str | None = None
     findings: tuple[dict[str, Any], ...] = ()
     extent: dict[str, Any] = field(default_factory=dict)
+    source_ranges: tuple[dict[str, int], ...] = ()
 
 
 @dataclass
@@ -677,6 +679,8 @@ def span_to_dict(span: CandidateSpan) -> dict[str, Any]:
         data["owner_lines"] = list(span.owner_lines)
     if span.section_id:
         data["section_id"] = span.section_id
+    if span.source_ranges:
+        data["ranges"] = [dict(item) for item in span.source_ranges]
     return data
 
 
@@ -730,11 +734,15 @@ def _spans_for_related_source(source: RelatedSourceInput) -> list[CandidateSpan]
         source_path=source.text_path,
     )
     if frame.sections:
-        return _spans_for_instruction_frame(frame)
+        return _spans_for_instruction_frame(frame, source_text=source.text)
     return _spans_for_text(source.document_id, source.relationship, source.text)
 
 
-def _spans_for_instruction_frame(frame: InstructionSectionsFrame) -> list[CandidateSpan]:
+def _spans_for_instruction_frame(
+    frame: InstructionSectionsFrame,
+    *,
+    source_text: str | None = None,
+) -> list[CandidateSpan]:
     """Project each unique frame section into one evidence span."""
     spans: list[CandidateSpan] = []
     seen: set[str] = set()
@@ -754,6 +762,14 @@ def _spans_for_instruction_frame(frame: InstructionSectionsFrame) -> list[Candid
                 owner_document_id=section.document_id,
                 owner_lines=section.line_tokens,
                 section_id=section.section_id,
+                source_ranges=(
+                    {
+                        "start": section.locator.start_offset,
+                        "end": section.locator.end_offset,
+                    },
+                )
+                if source_text is not None
+                else (),
             )
         )
     return spans
@@ -761,6 +777,8 @@ def _spans_for_instruction_frame(frame: InstructionSectionsFrame) -> list[Candid
 
 def _spans_for_text(document_id: str, relationship: str, text: str) -> list[CandidateSpan]:
     spans: list[CandidateSpan] = []
+    source_index = SourceTextIndex(text)
+    cursor = 0
     page = 1
     index = 1
     source_lines = _assembled_legacy_lines(text) if relationship == "source" else [
@@ -781,8 +799,15 @@ def _spans_for_text(document_id: str, relationship: str, text: str) -> list[Cand
                 relationship=relationship,
                 locator=f"page {page}, line {line_number}",
                 text=line,
+                source_ranges=source_index.ranges_for_quote(
+                    line,
+                    start=cursor,
+                )
+                or (),
             )
         )
+        if spans[-1].source_ranges:
+            cursor = spans[-1].source_ranges[-1]["end"]
         index += 1
     return spans
 

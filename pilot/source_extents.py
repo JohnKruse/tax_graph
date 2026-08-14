@@ -22,6 +22,7 @@ from tax_graph.acquire.manifest import AcquisitionManifest, ManifestEntry, load_
 from tax_graph.config import get_config_value, load_config
 from tax_graph.extract.cells import CellRecord, build_cell_frame_from_document
 from tax_graph.extract.inputs import load_document_input
+from tax_graph.io.loader import load_graph
 
 
 FACE_KINDS = frozenset({"tax_form", "schedule", "source_document"})
@@ -471,8 +472,66 @@ def _add_unclaimed_runs(
     return unclaimed
 
 
-def measure_source_extents(*, root: str | Path, year: str | int = "2025") -> dict[str, Any]:
-    """Measure all manifest-defined rows and return a serializable report."""
+def _subtract_promoted_citations(
+    runs: Iterable[Mapping[str, Any]],
+    *,
+    root: Path,
+    year: str,
+) -> list[dict[str, Any]]:
+    """Remove source intervals already owned by promoted non-row citations."""
+    graph = load_graph(year, root=root, include_extensions=False)
+    covered: dict[str, list[tuple[int, int]]] = defaultdict(list)
+    for citation in graph.items("citations"):
+        if citation.get("kind") == "row":
+            continue
+        source_id = str(citation.get("source_document_id") or "")
+        for item in citation.get("ranges") or ():
+            if isinstance(item, Mapping):
+                covered[source_id].append((int(item["start"]), int(item["end"])))
+
+    remaining: list[dict[str, Any]] = []
+    for run in runs:
+        pieces = [(int(run["start"]), int(run["end"]))]
+        for cover_start, cover_end in sorted(covered.get(str(run["source_document_id"]), ())):
+            next_pieces: list[tuple[int, int]] = []
+            for piece_start, piece_end in pieces:
+                if cover_end <= piece_start or cover_start >= piece_end:
+                    next_pieces.append((piece_start, piece_end))
+                    continue
+                if piece_start < cover_start:
+                    next_pieces.append((piece_start, min(piece_end, cover_start)))
+                if cover_end < piece_end:
+                    next_pieces.append((max(piece_start, cover_end), piece_end))
+            pieces = next_pieces
+        for start, end in pieces:
+            if start >= end:
+                continue
+            item = dict(run)
+            item["start"] = start
+            item["end"] = end
+            piece = _source_text_for_run(root, year, item)
+            if not _meaningful_gap(piece):
+                continue
+            item["text_fingerprint"] = _fingerprint(piece)
+            item["preview"] = _ascii_preview(piece)
+            remaining.append(item)
+    return remaining
+
+
+def _source_text_for_run(root: Path, year: str, run: Mapping[str, Any]) -> str:
+    """Read one measured source slice for promoted-citation subtraction."""
+    source_id = str(run["source_document_id"])
+    source = _source_path(root, year, source_id).read_text(encoding="utf-8")
+    return source[int(run["start"]) : int(run["end"])]
+
+
+def measure_source_extents(
+    *,
+    root: str | Path,
+    year: str | int = "2025",
+    include_promoted_citations: bool = False,
+) -> dict[str, Any]:
+    """Measure manifest rows and optionally subtract promoted source citations."""
     root_path = Path(root).resolve()
     year_text = str(year)
     manifest = load_manifest(root=root_path)
@@ -557,6 +616,12 @@ def measure_source_extents(*, root: str | Path, year: str | int = "2025") -> dic
     }
     row_document_ids = sorted({str(record["document_id"]) for record in records})
     unclaimed = _add_unclaimed_runs(claims, source_texts)
+    if include_promoted_citations:
+        unclaimed = _subtract_promoted_citations(
+            unclaimed,
+            root=root_path,
+            year=year_text,
+        )
     partition_counts = {
         partition: sum(item["partition"] == partition for item in unclaimed)
         for partition in ("scaffolding", "rule_bearing", "undecided")
@@ -595,8 +660,17 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--year", default="2025")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--include-promoted-citations",
+        action="store_true",
+        help="subtract promoted non-row citation ranges from unclaimed runs",
+    )
     args = parser.parse_args()
-    report = measure_source_extents(root=args.root, year=args.year)
+    report = measure_source_extents(
+        root=args.root,
+        year=args.year,
+        include_promoted_citations=args.include_promoted_citations,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         yaml.safe_dump(report, sort_keys=False, allow_unicode=False),

@@ -3,31 +3,46 @@
   source_document_id: schedule_b_2025
   locator: page 1, line 3
   quoted_text: Amount
+  ranges:
+  - start: 323
+    end: 329
 - citation_id: cite_span_schedule_b_2025_0006
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
   locator: page 1, line 7
   quoted_text: Add the amounts on line 1
+  ranges:
+  - start: 830
+    end: 855
 - citation_id: cite_span_schedule_b_2025_0007
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
   locator: page 1, line 8
-  quoted_text: Excludable interest on series EE and I U.S. savings bonds issued after
-    1989.
+  quoted_text: Excludable interest on series EE and I U.S. savings bonds issued after 1989
+  ranges:
+  - start: 898
+    end: 973
 - citation_id: cite_span_schedule_b_2025_0009
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
   locator: page 1, line 10
-  quoted_text: Subtract line 3 from line 2. Enter the result here and on Form 1040 or
-    1040-SR, line 2b
+  quoted_text: Subtract line 3 from line 2. Enter the result here and on Form 1040 or 1040-SR, line 2b
+  ranges:
+  - start: 1040
+    end: 1127
 - citation_id: cite_span_schedule_b_2025_0011
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
   locator: page 1, line 12
-  quoted_text: 'List name of payer:'
+  quoted_text: List name of payer
+  ranges:
+  - start: 330
+    end: 348
 - citation_id: cite_span_schedule_b_2025_0015
   document_id: schedule_b_2025
   source_document_id: schedule_b_2025
   locator: page 1, line 16
-  quoted_text: Add the amounts on line 5. Enter the total here and on Form 1040 or 1040-SR,
-    line 3b
+  quoted_text: Add the amounts on line 5. Enter the total here and on Form 1040 or 1040-SR, line 3b
+  ranges:
+  - start: 1456
+    end: 1540

@@ -2,117 +2,183 @@
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 37
-  quoted_text: 'Other taxes. List type and amount:'
+  quoted_text: Other taxes. List type and amount
+  ranges:
+  - start: 1554
+    end: 1587
 - citation_id: cite_span_schedule_a_2025_0003
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 4
   quoted_text: '2'
+  ranges:
+  - start: 566
+    end: 567
 - citation_id: cite_span_schedule_a_2025_0004
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 5
   quoted_text: 11b
+  ranges:
+  - start: 622
+    end: 625
 - citation_id: cite_span_schedule_a_2025_0006
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 7
-  quoted_text: Multiply line 2 by 7.5% (0.075)
+  quoted_text: Multiply line 2 by 7.5% (0.075
+  ranges:
+  - start: 652
+    end: 682
 - citation_id: cite_span_schedule_a_2025_0007
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 8
-  quoted_text: Subtract line 3 from line 1. If line 3 is more than line 1, enter -0-
+  quoted_text: Subtract line 3 from line 1. If line 3 is more than line 1, enter -0
+  ranges:
+  - start: 710
+    end: 778
 - citation_id: cite_span_schedule_a_2025_0008
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 9
-  quoted_text: State and local taxes (SALT).
+  quoted_text: State and local taxes (SALT
+  ranges:
+  - start: 810
+    end: 837
 - citation_id: cite_span_schedule_a_2025_0009
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 10
   quoted_text: State and local income taxes or general sales taxes. You may
+  ranges:
+  - start: 847
+    end: 907
 - citation_id: cite_span_schedule_a_2025_0010
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 11
-  quoted_text: State and local real estate taxes (see instructions)
+  quoted_text: State and local real estate taxes (see instructions
+  ranges:
+  - start: 1092
+    end: 1143
 - citation_id: cite_span_schedule_a_2025_0011
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 12
   quoted_text: State and local personal property taxes
+  ranges:
+  - start: 1158
+    end: 1197
 - citation_id: cite_span_schedule_a_2025_0012
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 13
   quoted_text: Add lines 5a through 5c
+  ranges:
+  - start: 1219
+    end: 1242
 - citation_id: cite_span_schedule_a_2025_0013
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 14
   quoted_text: Enter the smaller of line 5d or $40,000 ($20,000 if married filing
+  ranges:
+  - start: 1274
+    end: 1340
 - citation_id: cite_span_schedule_a_2025_0014
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 15
-  quoted_text: 'Other taxes. List type and amount:'
+  quoted_text: Other taxes. List type and amount
+  ranges:
+  - start: 1554
+    end: 1587
 - citation_id: cite_span_schedule_a_2025_0016
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 17
   quoted_text: Add lines 5e and 6
+  ranges:
+  - start: 1593
+    end: 1611
 - citation_id: cite_span_schedule_a_2025_0017
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 18
   quoted_text: Home mortgage interest and points. If you didn't use all of your
+  ranges:
+  - start: 1669
+    end: 1733
 - citation_id: cite_span_schedule_a_2025_0022
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 23
   quoted_text: 8c
+  ranges:
+  - start: 2370
+    end: 2372
 - citation_id: cite_span_schedule_a_2025_0025
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 26
   quoted_text: Investment interest. Attach Form 4952 if required. See instructions
+  ranges:
+  - start: 2519
+    end: 2586
 - citation_id: cite_span_schedule_a_2025_0026
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 27
   quoted_text: Add lines 8e and 9
+  ranges:
+  - start: 2592
+    end: 2610
 - citation_id: cite_span_schedule_a_2025_0029
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 30
   quoted_text: Other than by cash or check. If you made any gift of $250 or
+  ranges:
+  - start: 2813
+    end: 2873
 - citation_id: cite_span_schedule_a_2025_0032
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 33
   quoted_text: Carryover from prior year
+  ranges:
+  - start: 2999
+    end: 3024
 - citation_id: cite_span_schedule_a_2025_0033
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 34
   quoted_text: Add lines 11 through 13
+  ranges:
+  - start: 3057
+    end: 3080
 - citation_id: cite_span_schedule_a_2025_0034
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 35
-  quoted_text: Casualty and theft loss(es) from a federally declared disaster (other
-    than net qualified
+  quoted_text: Casualty and theft loss(es) from a federally declared disaster (other than net qualified
+  ranges:
+  - start: 3138
+    end: 3226
 - citation_id: cite_span_schedule_a_2025_0038
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 39
-  quoted_text: Add the amounts in the far right column for lines 4 through 16. Also,
-    enter this amount
+  quoted_text: Add the amounts in the far right column for lines 4 through 16. Also, enter this amount
+  ranges:
+  - start: 3493
+    end: 3580
 - citation_id: cite_span_schedule_a_2025_0039
   document_id: schedule_a_2025
   source_document_id: schedule_a_2025
   locator: page 1, line 40
-  quoted_text: If you elect to itemize deductions even though they are less than your
-    standard
+  quoted_text: If you elect to itemize deductions even though they are less than your standard
+  ranges:
+  - start: 3675
+    end: 3754

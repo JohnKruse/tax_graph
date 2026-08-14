@@ -2,296 +2,440 @@
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 4
-  quoted_text: Subtract Schedule 1-A (Form 1040), line 37, from Form 1040, 1040-SR,
-    or
+  quoted_text: Subtract Schedule 1-A (Form 1040), line 37, from Form 1040, 1040-SR, or
+  ranges:
+  - start: 433
+    end: 504
 - citation_id: cite_span_form_6251_2025_0004
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 5
   quoted_text: 1a
+  ranges:
+  - start: 430
+    end: 432
 - citation_id: cite_span_form_6251_2025_0005
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 6
-  quoted_text: Subtract line 1a from Form 1040, 1040-SR, or 1040-NR, line 11b (if less
-    than zero, enter as a negative
+  quoted_text: Subtract line 1a from Form 1040, 1040-SR, or 1040-NR, line 11b (if less than zero, enter as a negative
+  ranges:
+  - start: 569
+    end: 671
 - citation_id: cite_span_form_6251_2025_0006
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 7
   quoted_text: 1b
+  ranges:
+  - start: 680
+    end: 682
 - citation_id: cite_span_form_6251_2025_0007
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 8
-  quoted_text: If filing Schedule A (Form 1040), enter the taxes from Schedule A, line
-    7; otherwise, enter the amount from
+  quoted_text: If filing Schedule A (Form 1040), enter the taxes from Schedule A, line 7; otherwise, enter the amount from
+  ranges:
+  - start: 749
+    end: 856
 - citation_id: cite_span_form_6251_2025_0009
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 10
-  quoted_text: Investment interest expense (difference between regular tax and AMT)
+  quoted_text: Investment interest expense (difference between regular tax and AMT
+  ranges:
+  - start: 1040
+    end: 1107
 - citation_id: cite_span_form_6251_2025_0010
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 11
-  quoted_text: Depletion (difference between regular tax and AMT)
+  quoted_text: Depletion (difference between regular tax and AMT
+  ranges:
+  - start: 1138
+    end: 1187
 - citation_id: cite_span_form_6251_2025_0011
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 12
-  quoted_text: Net operating loss deduction from Schedule 1 (Form 1040), line 8a. Enter
-    as a positive amount
+  quoted_text: Net operating loss deduction from Schedule 1 (Form 1040), line 8a. Enter as a positive amount
+  ranges:
+  - start: 1230
+    end: 1323
 - citation_id: cite_span_form_6251_2025_0012
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 13
-  quoted_text: Alternative tax net operating loss deduction 2f ( )
+  quoted_text: Alternative tax net operating loss deduction 2f
+  ranges:
+  - start: 1337
+    end: 1384
 - citation_id: cite_span_form_6251_2025_0013
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 14
-  quoted_text: Interest from specified private activity bonds exempt from the regular
-    tax
+  quoted_text: Interest from specified private activity bonds exempt from the regular tax
+  ranges:
+  - start: 1431
+    end: 1505
 - citation_id: cite_span_form_6251_2025_0014
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 15
   quoted_text: Qualified small business stock, see instructions
+  ranges:
+  - start: 1533
+    end: 1581
 - citation_id: cite_span_form_6251_2025_0015
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 16
-  quoted_text: Exercise of incentive stock options (excess of AMT income over regular
-    tax income)
+  quoted_text: Exercise of incentive stock options (excess of AMT income over regular tax income
+  ranges:
+  - start: 1625
+    end: 1706
 - citation_id: cite_span_form_6251_2025_0016
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 17
-  quoted_text: Estates and trusts (amount from Schedule K-1 (Form 1041), box 12, code
-    A)
+  quoted_text: Estates and trusts (amount from Schedule K-1 (Form 1041), box 12, code A
+  ranges:
+  - start: 1729
+    end: 1801
 - citation_id: cite_span_form_6251_2025_0017
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 18
-  quoted_text: Disposition of property (difference between AMT and regular tax gain
-    or loss)
+  quoted_text: Disposition of property (difference between AMT and regular tax gain or loss
+  ranges:
+  - start: 1828
+    end: 1904
 - citation_id: cite_span_form_6251_2025_0018
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 19
-  quoted_text: Depreciation on assets placed in service after 1986 (difference between
-    regular tax and AMT)
+  quoted_text: Depreciation on assets placed in service after 1986 (difference between regular tax and AMT
+  ranges:
+  - start: 1931
+    end: 2022
 - citation_id: cite_span_form_6251_2025_0019
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 20
-  quoted_text: Passive activities (difference between AMT and regular tax income or
-    loss)
+  quoted_text: Passive activities (difference between AMT and regular tax income or loss
+  ranges:
+  - start: 2039
+    end: 2112
 - citation_id: cite_span_form_6251_2025_0020
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 21
-  quoted_text: Loss limitations (difference between AMT and regular tax income or loss)
+  quoted_text: Loss limitations (difference between AMT and regular tax income or loss
+  ranges:
+  - start: 2139
+    end: 2210
 - citation_id: cite_span_form_6251_2025_0021
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 22
-  quoted_text: Circulation costs (difference between regular tax and AMT)
+  quoted_text: Circulation costs (difference between regular tax and AMT
+  ranges:
+  - start: 2239
+    end: 2296
 - citation_id: cite_span_form_6251_2025_0022
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 23
-  quoted_text: Long-term contracts (difference between AMT and regular tax income)
+  quoted_text: Long-term contracts (difference between AMT and regular tax income
+  ranges:
+  - start: 2333
+    end: 2399
 - citation_id: cite_span_form_6251_2025_0023
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 24
-  quoted_text: Mining costs (difference between regular tax and AMT)
+  quoted_text: Mining costs (difference between regular tax and AMT
+  ranges:
+  - start: 2430
+    end: 2482
 - citation_id: cite_span_form_6251_2025_0024
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 25
-  quoted_text: Research and experimental costs (difference between regular tax and AMT)
+  quoted_text: Research and experimental costs (difference between regular tax and AMT
+  ranges:
+  - start: 2523
+    end: 2594
 - citation_id: cite_span_form_6251_2025_0025
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 26
-  quoted_text: Income from certain installment sales before January 1, 1987 2s ( )
+  quoted_text: Income from certain installment sales before January 1, 1987 2s
+  ranges:
+  - start: 2621
+    end: 2684
 - citation_id: cite_span_form_6251_2025_0026
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 27
   quoted_text: Intangible drilling costs preference
+  ranges:
+  - start: 2721
+    end: 2757
 - citation_id: cite_span_form_6251_2025_0028
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 29
-  quoted_text: Alternative minimum taxable income. Combine lines 1b through 3. (If married
-    filing separately and line 4 is
+  quoted_text: Alternative minimum taxable income. Combine lines 1b through 3. (If married filing separately and line 4 is
+  ranges:
+  - start: 2903
+    end: 3010
 - citation_id: cite_span_form_6251_2025_0030
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 31
-  quoted_text: Exemption.
+  quoted_text: Exemption
+  ranges:
+  - start: 3136
+    end: 3145
 - citation_id: cite_span_form_6251_2025_0032
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 33
-  quoted_text: Subtract line 5 from line 4. If more than zero, go to line 7. If zero
-    or less, enter -0- here and on lines 7, 9, and
+  quoted_text: Subtract line 5 from line 4. If more than zero, go to line 7. If zero or less, enter -0- here and on lines
+    7, 9, and
+  ranges:
+  - start: 3530
+    end: 3646
 - citation_id: cite_span_form_6251_2025_0037
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 38
   quoted_text: Tentative minimum tax. Subtract line 8 from line 7
+  ranges:
+  - start: 4482
+    end: 4532
 - citation_id: cite_span_form_6251_2025_0038
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 39
-  quoted_text: Add Form 1040 or 1040-SR, line 16 (minus any tax from Form 4972), and
-    Schedule 2 (Form 1040), line 1z.
+  quoted_text: Add Form 1040 or 1040-SR, line 16 (minus any tax from Form 4972), and Schedule 2 (Form 1040), line 1z
+  ranges:
+  - start: 4574
+    end: 4675
 - citation_id: cite_span_form_6251_2025_0044
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 46
-  quoted_text: Enter the amount from Form 6251, line 6. If you are filing Form 2555,
-    enter the amount from line 3 of the
+  quoted_text: Enter the amount from Form 6251, line 6. If you are filing Form 2555, enter the amount from line 3 of the
+  ranges:
+  - start: 5528
+    end: 5633
 - citation_id: cite_span_form_6251_2025_0045
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 47
-  quoted_text: Enter the amount from line 4 of the Qualified Dividends and Capital Gain
-    Tax Worksheet in the Instructions
+  quoted_text: Enter the amount from line 4 of the Qualified Dividends and Capital Gain Tax Worksheet in the Instructions
+  ranges:
+  - start: 5725
+    end: 5831
 - citation_id: cite_span_form_6251_2025_0051
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 53
   quoted_text: Subtract line 16 from line 12
+  ranges:
+  - start: 6847
+    end: 6876
 - citation_id: cite_span_form_6251_2025_0052
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 54
-  quoted_text: If line 17 is $239,100 or less ($119,550 or less if married filing separately),
-    multiply line 17 by 26% (0.26).
+  quoted_text: If line 17 is $239,100 or less ($119,550 or less if married filing separately), multiply line 17 by 26% (0.26
+  ranges:
+  - start: 6933
+    end: 7042
 - citation_id: cite_span_form_6251_2025_0054
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 56
-  quoted_text: 'Enter: }'
+  quoted_text: enter
+  ranges:
+  - start: 652
+    end: 657
 - citation_id: cite_span_form_6251_2025_0055
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 57
-  quoted_text: Enter the amount from line 5 of the Qualified Dividends and Capital Gain
-    Tax Worksheet or the amount from
+  quoted_text: Enter the amount from line 5 of the Qualified Dividends and Capital Gain Tax Worksheet or the amount from
+  ranges:
+  - start: 7339
+    end: 7444
 - citation_id: cite_span_form_6251_2025_0057
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 59
-  quoted_text: Subtract line 20 from line 19. If zero or less, enter -0-
+  quoted_text: Subtract line 20 from line 19. If zero or less, enter -0
+  ranges:
+  - start: 7771
+    end: 7827
 - citation_id: cite_span_form_6251_2025_0058
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 60
   quoted_text: Enter the smaller of line 12 or line 13
+  ranges:
+  - start: 7869
+    end: 7908
 - citation_id: cite_span_form_6251_2025_0059
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 61
-  quoted_text: Enter the smaller of line 21 or line 22. This amount is taxed at 0%
+  quoted_text: Enter the smaller of line 21 or line 22. This amount is taxed at 0
+  ranges:
+  - start: 7959
+    end: 8025
 - citation_id: cite_span_form_6251_2025_0060
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 62
   quoted_text: Subtract line 23 from line 22
+  ranges:
+  - start: 8059
+    end: 8088
 - citation_id: cite_span_form_6251_2025_0061
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 63
-  quoted_text: 'Enter: }'
+  quoted_text: enter
+  ranges:
+  - start: 783
+    end: 788
 - citation_id: cite_span_form_6251_2025_0062
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 64
   quoted_text: Enter the amount from line 21
+  ranges:
+  - start: 8332
+    end: 8361
 - citation_id: cite_span_form_6251_2025_0063
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 65
-  quoted_text: Enter the amount from line 5 of the Qualified Dividends and Capital Gain
-    Tax Worksheet or the amount from
+  quoted_text: Enter the amount from line 5 of the Qualified Dividends and Capital Gain Tax Worksheet or the amount from
+  ranges:
+  - start: 8418
+    end: 8523
 - citation_id: cite_span_form_6251_2025_0065
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 67
   quoted_text: Add line 26 and line 27
+  ranges:
+  - start: 8850
+    end: 8873
 - citation_id: cite_span_form_6251_2025_0066
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 68
-  quoted_text: Subtract line 28 from line 25. If zero or less, enter -0-
+  quoted_text: Subtract line 28 from line 25. If zero or less, enter -0
+  ranges:
+  - start: 8934
+    end: 8990
 - citation_id: cite_span_form_6251_2025_0067
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 69
   quoted_text: Enter the smaller of line 24 or line 29
+  ranges:
+  - start: 9032
+    end: 9071
 - citation_id: cite_span_form_6251_2025_0068
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 70
-  quoted_text: Multiply line 30 by 15% (0.15)
+  quoted_text: Multiply line 30 by 15% (0.15
+  ranges:
+  - start: 9122
+    end: 9151
 - citation_id: cite_span_form_6251_2025_0069
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 71
   quoted_text: Add lines 23 and 30
+  ranges:
+  - start: 9209
+    end: 9228
 - citation_id: cite_span_form_6251_2025_0071
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 73
   quoted_text: Subtract line 32 from line 22
+  ranges:
+  - start: 9394
+    end: 9423
 - citation_id: cite_span_form_6251_2025_0072
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 74
-  quoted_text: Multiply line 33 by 20% (0.20)
+  quoted_text: Multiply line 33 by 20% (0.20
+  ranges:
+  - start: 9480
+    end: 9509
 - citation_id: cite_span_form_6251_2025_0074
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 76
   quoted_text: Add lines 17, 32, and 33
+  ranges:
+  - start: 9664
+    end: 9688
 - citation_id: cite_span_form_6251_2025_0075
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 77
   quoted_text: Subtract line 35 from line 12
+  ranges:
+  - start: 9747
+    end: 9776
 - citation_id: cite_span_form_6251_2025_0077
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 79
   quoted_text: Add lines 18, 31, 34, and 37
+  ranges:
+  - start: 9916
+    end: 9944
 - citation_id: cite_span_form_6251_2025_0078
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 80
-  quoted_text: If line 12 is $239,100 or less ($119,550 or less if married filing separately),
-    multiply line 12 by 26% (0.26).
+  quoted_text: If line 12 is $239,100 or less ($119,550 or less if married filing separately), multiply line 12 by 26% (0.26
+  ranges:
+  - start: 10001
+    end: 10110
 - citation_id: cite_span_form_6251_2025_0080
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 82
-  quoted_text: Enter the smaller of line 38 or line 39 here and on line 7. If you are
-    filing Form 2555, do not enter this
+  quoted_text: Enter the smaller of line 38 or line 39 here and on line 7. If you are filing Form 2555, do not enter this
+  ranges:
+  - start: 10235
+    end: 10341
 - citation_id: cite_span_form_6251_2025_0034
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 1, line 35
-  quoted_text: of Schedule D (Form 1040) (as refigured for the AMT, if necessary), complete
-    Part III on the
+  quoted_text: of Schedule D (Form 1040) (as refigured for the AMT, if necessary), complete Part III on the
+  ranges:
+  - start: 4000
+    end: 4092
 - citation_id: cite_span_form_6251_2025_0048
   document_id: form_6251_2025
   source_document_id: form_6251_2025
   locator: page 2, line 50
-  quoted_text: If you did not complete a Schedule D Tax Worksheet for the regular tax
-    or the AMT, enter the amount from
+  quoted_text: If you did not complete a Schedule D Tax Worksheet for the regular tax or the AMT, enter the amount from
+  ranges:
+  - start: 6351
+    end: 6455

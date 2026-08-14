@@ -65,6 +65,31 @@ mechanism under it is right.**
 RULES BECOME REACHABLE.**
 **REAL ROUND** - graph writes. **Full-suite floor applies.**
 
+**WORKER STATUS (2026-08-14).** The S106 implementation is in the working tree and the graph
+write is deterministic and idempotent. `core_documents` was used exactly as configured; no
+document was added to the core set. Existing non-HTML core citations now carry reconstructable
+acquired-source ranges, while HTML citations remain on their structural `html#` locators and the
+named Form 8978 legacy exemption remains untouched. The generated artifact contains 74 typed,
+governed source-gap citations at `graph/2025/citations/source-extents-m106.yaml`.
+
+The 731-row source-extents corpus still has zero overlaps. Core source rule-bearing characters
+fell from 13,989 to 0 after promotion. Non-core worksheet owners account for the remaining 2,222
+rule-bearing characters in the all-document report. No graph node or face artifact changed.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py -q` -> **3 passed,
+1 warning**.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_worksheet_ranges_s105.py tests/test_worksheet_storage_s105.py -q` -> **8 passed, 1 warning**.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -k current_2025_graph_validates -q` -> **1 passed, 13 deselected, 1 warning**.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_acquire_citation_check.py -q` -> **9 passed, 9 errors**; the 9 errors are pytest setup `WinError 5` while scanning the poisoned `.test_tmp\pytest-of-devbox` root, before test code runs.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py tests/test_outline_span_resolution_m20.py tests/test_acquire_citation_check.py -q` -> **10 passed, 29 errors**; all 29 errors are the same pytest setup ACL failure.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: `.venv\Scripts\python.exe -m pytest -q` -> full suite is an Architect-side run measured at about 63 minutes, beyond the Worker 600-second cap; the known 18-red baseline remains unchanged and was not re-baselined.
+
+The focused `tmp_path` consumer files are therefore unverified in this session; the implementation
+must not be marked `[COMPLETE]` until the ACL-safe verification and the full-suite baseline check
+are performed.
+
 **WHY THIS ONE.** S104 measured that the pipeline drops **16,211 to 28,885 characters of
 rule-bearing source**, and it is concentrated in the CORE documents John named: `form_1116` 2,156,
 `schedule_1a` 1,644, `ira_deduction_worksheet` 1,508, `form_1040` 1,393, `form_2441` 1,308,
@@ -106,7 +131,11 @@ documents. The information returns. The 8978 heading defect. **Each is a later r
 
 ## Open for Architect
 
-Nothing blocking. **S105 accepted; S106 specced above and needs no decision to start.**
+**S106 verification handoff:** no design decision is blocking. The remaining verification is
+environmental: pytest cannot enumerate the existing `.test_tmp\pytest-of-devbox` directory for
+`tmp_path` tests without violating the repository rule against `--basetemp` or overriding the
+temp-root policy. Full-suite verification is also intentionally deferred to the Architect-side
+run. The source-range guards and graph measurement are green as recorded above.
 
 **Carried, not blocking.** The live nine-row `row_bench.py` leg has still never been spent and must
 not be claimed as run. `stash@{0}` holds the superseded first-pass S105 regression and can be

@@ -1,0 +1,949 @@
+- citation_id: cite_form_1040_2025_source_3146_3201
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=3146:3201
+  quoted_text: 1b . . . . . . . . . . . . . Attach Form(s) W-2 here.
+  ranges:
+  - start: 3146
+    end: 3201
+  kind: table_header
+  governs:
+  - 1b
+  - 1c
+- citation_id: cite_form_1040_2025_source_3260_3308
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=3260:3308
+  quoted_text: ) 1c . . . . . . . . . . . . . . attach Forms d
+  ranges:
+  - start: 3260
+    end: 3308
+  kind: table_header
+  governs:
+  - 1c
+  - 1d
+- citation_id: cite_form_1040_2025_source_3582_3623
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=3582:3623
+  quoted_text: 1f . . . . . . . . . . . If you did not
+  ranges:
+  - start: 3582
+    end: 3623
+  kind: note
+  governs:
+  - 1f
+  - 1g
+- citation_id: cite_form_1040_2025_source_3895_3960
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=3895:3960
+  quoted_text: 1z . . . . . . . . . . . . . . . . . . . . . . Attach Sch. B 2a
+  ranges:
+  - start: 3895
+    end: 3960
+  kind: table_header
+  governs:
+  - 1z
+  - 2a
+- citation_id: cite_form_1040_2025_source_4001_4037
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=4001:4037
+  quoted_text: 2b . . . . . . . . if required. 3a
+  ranges:
+  - start: 4001
+    end: 4037
+  kind: note
+  governs:
+  - 2b
+  - 3a
+- citation_id: cite_form_1040_2025_source_4080_4173
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=4080:4173
+  quoted_text: 3b . . . . . . . . c Check if your child's dividends are included in 1 Line 3a 2 Line 3b 4a
+  ranges:
+  - start: 4080
+    end: 4173
+  kind: table_header
+  governs:
+  - 3a
+  - 3b
+- citation_id: cite_form_1040_2025_source_4210_4296
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=4210:4296
+  quoted_text: 4b . . . . . . . . . . c Check if (see instructions) 1 Rollover 2 QCD 3 . . . . . 5a
+  ranges:
+  - start: 4210
+    end: 4296
+  kind: note
+  governs:
+  - 4b
+  - 5a
+- citation_id: cite_form_1040_2025_source_4338_4420
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=4338:4420
+  quoted_text: 5b . . . . . . . . c Check if (see instructions) 1 Rollover 2 PSO 3 . . . . . 6a
+  ranges:
+  - start: 4338
+    end: 4420
+  kind: note
+  governs:
+  - 5b
+  - 6a
+- citation_id: cite_form_1040_2025_source_4464_4691
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=4464:4691
+  quoted_text: 6b . . . . . . . . c If you elect to use the lump-sum election method, check here (see instructions) . . .
+    . . d If you are married filing separately and lived apart from your spouse the entire year (see inst.), check here 7a
+  ranges:
+  - start: 4464
+    end: 4691
+  kind: note
+  governs:
+  - 6b
+  - 7a
+- citation_id: cite_form_1040_2025_source_4744_4854
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=4744:4854
+  quoted_text: '7a . . . . . . . . . . . . . . b Check if: Schedule D not required Includes child''s capital gain or (loss)
+    8'
+  ranges:
+  - start: 4744
+    end: 4854
+  kind: note
+  governs:
+  - 7a
+  - '8'
+- citation_id: cite_form_1040_2025_source_6664_6742
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=6664:6742
+  quoted_text: 20 . . . . . . . . . . . . . . . . . . . . - If you checked a box on line 21
+  ranges:
+  - start: 6664
+    end: 6742
+  kind: note
+  governs:
+  - '21'
+- citation_id: cite_form_1040_2025_source_7498_7662
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=7498:7662
+  quoted_text: '26 . . . . . . . . . . If you made estimated tax payments with your former spouse in 2025, If you have a enter
+    their SSN (see instructions): qualifying child, 27a'
+  ranges:
+  - start: 7498
+    end: 7662
+  kind: note
+  governs:
+  - '26'
+  - 27a
+- citation_id: cite_form_1040_2025_source_7687_7971
+  document_id: form_1040_2025
+  source_document_id: form_1040_2025
+  locator: source_document=form_1040_2025;range=7687:7971
+  quoted_text: ) 27a . . . . . . . . . . . . . . you may need to attach Sch. EIC. b Clergy filing Schedule SE (see instructions)
+    . . . . . . . . . . . . . . . . c If you do not want to claim the EIC, check here . . . . . . . . . . . . . . . 28 Additional
+    child tax credit (ACTC) from Schedule 8812.
+  ranges:
+  - start: 7687
+    end: 7971
+  kind: note
+  governs:
+  - 27a
+  - '28'
+- citation_id: cite_form_1099_div_2025_source_10880_10950
+  document_id: form_1099_div_2025
+  source_document_id: form_1099_div_2025
+  locator: source_document=form_1099_div_2025;range=10880:10950
+  quoted_text: $ 2a Total capital gain distr. 2b Unrecap. Sec. 1250 gain Copy 2 $ $
+  ranges:
+  - start: 10880
+    end: 10950
+  kind: table_header
+  governs:
+  - 1b
+  - '2'
+- citation_id: cite_form_1099_div_2025_source_11082_11212
+  document_id: form_1099_div_2025
+  source_document_id: form_1099_div_2025
+  locator: source_document=form_1099_div_2025;range=11082:11212
+  quoted_text: ', 2e Section 897 ordinary dividends 2f Section 897 capital gain when required. $ $ RECIPIENT''S name 3 Nondividend
+    distributions 4'
+  ranges:
+  - start: 11082
+    end: 11212
+  kind: note
+  governs:
+  - 2d
+  - '4'
+- citation_id: cite_form_1099_div_2025_source_1694_1738
+  document_id: form_1099_div_2025
+  source_document_id: form_1099_div_2025
+  locator: source_document=form_1099_div_2025;range=1694:1738
+  quoted_text: $ 2a Total capital gain distr. 2b Unrecap.
+  ranges:
+  - start: 1694
+    end: 1738
+  kind: table_header
+  governs:
+  - 1b
+  - 2b
+- citation_id: cite_form_1099_div_2025_source_1875_2014
+  document_id: form_1099_div_2025
+  source_document_id: form_1099_div_2025
+  locator: source_document=form_1099_div_2025;range=1875:2014
+  quoted_text: $ $ 2e Section 897 ordinary dividends 2f Section 897 capital gain File with Form 1096. $ $ RECIPIENT'S name
+    3 Nondividend distributions 4
+  ranges:
+  - start: 1875
+    end: 2014
+  kind: table_header
+  governs:
+  - 2d
+  - '4'
+- citation_id: cite_form_1099_int_2025_source_1830_1972
+  document_id: form_1099_int_2025
+  source_document_id: form_1099_int_2025
+  locator: source_document=form_1099_int_2025;range=1830:1972
+  quoted_text: $ RECIPIENT'S name 4 Federal income tax withheld 5 Investment expenses File with Form 1096. $ $ 6 Foreign tax
+    paid 7 Foreign country or U.S.
+  ranges:
+  - start: 1830
+    end: 1972
+  kind: table_header
+  governs:
+  - '3'
+  - '7'
+- citation_id: cite_form_1099b_2025_source_1831_2081
+  document_id: form_1099b_2025
+  source_document_id: form_1099b_2025
+  locator: source_document=form_1099b_2025;range=1831:2081
+  quoted_text: '$ $ 1f Accrued market discount 1g Wash sale loss disallowed $ $ For RECIPIENT''S name 2 Short-term gain or
+    loss 3 Check if proceeds from: Internal Revenue Long-term gain or loss Collectibles Service Center Ordinary QOF Street
+    address (including apt.'
+  ranges:
+  - start: 1831
+    end: 2081
+  kind: note
+  governs:
+  - 1e
+  - 1g
+- citation_id: cite_form_1099b_2025_source_3881_4402
+  document_id: form_1099b_2025
+  source_document_id: form_1099b_2025
+  locator: source_document=form_1099b_2025;range=3881:4402
+  quoted_text: based on amount in 1d City or town, state or province, country, and ZIP or foreign postal code Gross proceeds
+    Net proceeds 8 Profit or (loss) realized in 9 Unrealized profit or (loss) on 2025 on closed contracts open contracts-12/31/2024
+    Account number (see instructions) $ $ CUSIP number FATCA filing 10 Unrealized profit or (loss) on 11 Aggregate profit
+    or (loss) requirement open contracts-12/31/2025 on contracts 14 State name 15 State identification no. 16 State tax withheld
+    $ $ $ 12 If checked, basis reported 13
+  ranges:
+  - start: 3881
+    end: 4402
+  kind: note
+  governs:
+  - '7'
+  - '13'
+- citation_id: cite_form_1116_2025_source_1060_1618
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=1060:1618
+  quoted_text: '. Part I Taxable Income or Loss From Sources Outside the United States (for category checked above) Foreign
+    Country or U.S. Territory Total A B C (Add cols. A, B, and C.) i Enter the name of the foreign country or U.S. territory
+    . . . . . . . . . . . . . 1a Gross income from sources within country shown above and of the type checked above (see instructions):
+    1a b Check if line 1a is compensation for personal services as an employee, your total compensation from all sources is
+    $250,000 or more, and you used an alternative basis to determine its source.'
+  ranges:
+  - start: 1060
+    end: 1618
+  kind: note
+  governs:
+  - 1a
+- citation_id: cite_form_1116_2025_source_1758_1801
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=1758:1801
+  quoted_text: 1a (attach statement) . . . . . . . . . 3
+  ranges:
+  - start: 1758
+    end: 1801
+  kind: table_header
+  governs:
+  - '2'
+  - '3'
+- citation_id: cite_form_1116_2025_source_2019_2248
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=2019:2248
+  quoted_text: 3b . . . . . . . . . . d Gross foreign source income (see instructions) . e Gross income from all sources (see
+    instructions) . f Divide line 3d by line 3e (see instructions) . . . g Multiply line 3c by line 3f . . . . . . . . 4
+  ranges:
+  - start: 2019
+    end: 2248
+  kind: table_header
+  governs:
+  - 3d
+  - 3e
+  - 3c
+  - 3f
+- citation_id: cite_form_1116_2025_source_2611_3178
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=2611:3178
+  quoted_text: '7 . . . . . . . . . . . Part II Foreign Taxes Paid or Accrued (see instructions) Credit is claimed for taxes
+    Foreign taxes paid or accrued (you must check one) Country (j) Paid In foreign currency In U.S. dollars (k) Accrued Taxes
+    withheld at source on: (p) Other Taxes withheld at source on: (t) Other (u) Total foreign foreign taxes foreign taxes
+    taxes paid or (l) Date paid (m) Dividends (n) Rents (o) Interest paid or (r) Rents paid or accrued (add (q) Dividends
+    (s) Interest or accrued and royalties accrued and royalties accrued cols. (q) through (t)) A B C 8'
+  ranges:
+  - start: 2611
+    end: 3178
+  kind: note
+  governs:
+  - '7'
+  - '8'
+- citation_id: cite_form_1116_2025_source_4721_4939
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=4721:4939
+  quoted_text: '.) 17 . . . . . . . . . . . . . . . . . . . . . 18 Individuals: Enter the sum of (i) Form 1040, 1040-SR, or
+    1040-NR, line 11b, minus Form 1040, 1040-SR, or 1040-NR, line 14, and (ii) Schedule 1-A (Form 1040), line 37.'
+  ranges:
+  - start: 4721
+    end: 4939
+  kind: table_header
+  governs:
+  - 11b
+  - '14'
+  - '37'
+- citation_id: cite_form_1116_2025_source_5420_5640
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=5420:5640
+  quoted_text: '20 . . . . . . . . . . . . . . . . . . . Caution: If you are completing line 20 for separate category g (lump-sum
+    distributions), or, if you file Form 8978, Partner''s Additional Reporting Year Tax, see instructions. 21'
+  ranges:
+  - start: 5420
+    end: 5640
+  kind: note
+  governs:
+  - '20'
+- citation_id: cite_form_1116_2025_source_6018_6224
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=6018:6224
+  quoted_text: 24 Part IV Summary of Separate Credits From Parts III (Enter amounts from Part III, line 24, for each applicable
+    category of income. Don't include taxes paid to sanctioned countries.) See instructions. 25
+  ranges:
+  - start: 6018
+    end: 6224
+  kind: table_header
+  governs:
+  - '24'
+- citation_id: cite_form_1116_2025_source_6979_7094
+  document_id: form_1116_2025
+  source_document_id: form_1116_2025
+  locator: source_document=form_1116_2025;range=6979:7094
+  quoted_text: 34 . . . . . . . 35 Subtract line 34 from line 33. This is your foreign tax credit. Enter here and on Schedule
+    3 (
+  ranges:
+  - start: 6979
+    end: 7094
+  kind: table_header
+  governs:
+  - '34'
+  - '33'
+- citation_id: cite_form_6251_2025_source_3047_3136
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=3047:3136
+  quoted_text: .) 4 . . . . . . . . . . . . . . . . . . . . . . Part II Alternative Minimum Tax (AMT) 5
+  ranges:
+  - start: 3047
+    end: 3136
+  kind: table_header
+  governs: &id001
+  - '4'
+  - '5'
+- citation_id: cite_form_6251_2025_source_3145_3227
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=3145:3227
+  quoted_text: . IF your filing status is... AND line 4 is not over... THEN enter on line 5... }
+  ranges:
+  - start: 3145
+    end: 3227
+  kind: table_header
+  governs: *id001
+- citation_id: cite_form_6251_2025_source_337_430
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=337:430
+  quoted_text: Part I Alternative Minimum Taxable Income (See instructions for how to complete each line.)
+  ranges:
+  - start: 337
+    end: 430
+  kind: table_header
+  governs:
+  - '32'
+  - 1a
+- citation_id: cite_form_6251_2025_source_3416_3530
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=3416:3530
+  quoted_text: 5 . . . . . . . . . . . . . If line 4 is over the amount shown above for your filing status, see instructions.
+    6
+  ranges:
+  - start: 3416
+    end: 3530
+  kind: table_header
+  governs:
+  - '4'
+- citation_id: cite_form_6251_2025_source_4532_4574
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=4532:4574
+  quoted_text: 9 . . . . . . . . . . . . . . . . . . 10
+  ranges:
+  - start: 4532
+    end: 4574
+  kind: table_header
+  governs:
+  - '16'
+- citation_id: cite_form_6251_2025_source_7296_7339
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=7296:7339
+  quoted_text: 19 . . - $64,750 if head of household. 20
+  ranges:
+  - start: 7296
+    end: 7339
+  kind: note
+  governs:
+  - '19'
+  - '20'
+- citation_id: cite_form_6251_2025_source_8215_8332
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=8215:8332
+  quoted_text: ', 25 . . - $600,050 if married filing jointly or qualifying surviving spouse, or - $566,700 if head of household.
+    26'
+  ranges:
+  - start: 8215
+    end: 8332
+  kind: note
+  governs:
+  - '25'
+  - '26'
+- citation_id: cite_form_6251_2025_source_9228_9394
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=9228:9394
+  quoted_text: 32 . . . . . . . . . . . . . . . . . . . . . . . . . . . . If lines 32 and 12 are the same, skip lines 33 through
+    37 and go to line 38. Otherwise, go to line 33. 33
+  ranges:
+  - start: 9228
+    end: 9394
+  kind: routing_sentence
+  governs:
+  - '38'
+  - '33'
+- citation_id: cite_form_6251_2025_source_9509_9664
+  document_id: form_6251_2025
+  source_document_id: form_6251_2025
+  locator: source_document=form_6251_2025;range=9509:9664
+  quoted_text: ) 34 . . . . . . . . . . . . . . . . . . . . . . . . If line 14 is zero or blank, skip lines 35 through 37
+    and go to line 38. Otherwise, go to line 35. 35
+  ranges:
+  - start: 9509
+    end: 9664
+  kind: routing_sentence
+  governs:
+  - '14'
+  - '38'
+  - '35'
+- citation_id: cite_form_w2_2025_source_10249_10329
+  document_id: form_w2_2025
+  source_document_id: form_w2_2025
+  locator: source_document=form_w2_2025;range=10249:10329
+  quoted_text: However, if you were at least age 50 in 2025, your employer may have $200,000.
+  ranges:
+  - start: 10249
+    end: 10329
+  kind: note
+  governs:
+  - '62'
+  - '50'
+- citation_id: cite_form_w2_2025_source_10694_10814
+  document_id: form_w2_2025
+  source_document_id: form_w2_2025
+  locator: source_document=form_w2_2025;range=10694:10814
+  quoted_text: You must file Form 4137 with your income tax return to report at least 60 through 63 as of December 31, 2025,
+    see Pub.
+  ranges:
+  - start: 10694
+    end: 10814
+  kind: note
+  governs:
+  - '50'
+  - '60'
+- citation_id: cite_instructions_form_1040_2025_source_118241_118266
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=118241:118266
+  quoted_text: . . . . . 2. \_\_\_\_\_
+  ranges:
+  - start: 118241
+    end: 118266
+  kind: note
+  governs:
+  - '3'
+  - '4'
+- citation_id: cite_instructions_form_1040_2025_source_134310_134518
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=134310:134518
+  quoted_text: Married filing separately and you lived with your spouse at any time in 2025, skip lines 8 through 15; multiply
+    line 7 by 85% (0.85) and enter the result on line 16. Then, go to line 17 | 8. _____ | | 9.
+  ranges:
+  - start: 134310
+    end: 134518
+  kind: routing_sentence
+  governs:
+  - '7'
+  - '16'
+  - '17'
+- citation_id: cite_instructions_form_1040_2025_source_146949_146988
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=146949:146988
+  quoted_text: . No. Enter $1,350. | ... 2. _____ |
+  ranges:
+  - start: 146949
+    end: 146988
+  kind: table_header
+  governs:
+  - '2'
+  - '3'
+- citation_id: cite_instructions_form_1040_2025_source_519356_519645
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=519356:519645
+  quoted_text: Yes. Subtract the amount on your 2024 Schedule A, line 5e, from the amount of state and local income taxes
+    (or general sales taxes), real estate taxes, and personal property taxes paid in 2024 (generally, this is the amount reported
+    on your 2024 Schedule A, line 5d). 2. \_\_\_\_\_ 3.
+  ranges:
+  - start: 519356
+    end: 519645
+  kind: table_header
+  governs:
+  - 5e
+  - 5d
+- citation_id: cite_instructions_form_1040_2025_source_519745_519801
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=519745:519801
+  quoted_text: . Yes. Subtract line 2 from line 1. 3. \_\_\_\_\_ 4.
+  ranges:
+  - start: 519745
+    end: 519801
+  kind: table_header
+  governs:
+  - '2'
+  - '1'
+- citation_id: cite_instructions_form_1040_2025_source_519872_519890
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=519872:519890
+  quoted_text: . 4. \_\_\_\_\_
+  ranges:
+  - start: 519872
+    end: 519890
+  kind: note
+  governs: &id002
+  - '4'
+  - '8'
+  - '9'
+- citation_id: cite_instructions_form_1040_2025_source_520111_520116
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=520111:520116
+  quoted_text: '5.'
+  ranges:
+  - start: 520111
+    end: 520116
+  kind: note
+  governs: *id002
+- citation_id: cite_instructions_form_1040_2025_source_520665_520904
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=520665:520904
+  quoted_text: ). 6. \_\_\_\_\_ \*If your filing status is married filing separately, you can check the boxes for your spouse
+    only if your spouse had no income, isn't filing a return, and can't be claimed as a dependent on another person's return.
+    7.
+  ranges:
+  - start: 520665
+    end: 520904
+  kind: table_header
+  governs:
+  - '6'
+  - '7'
+- citation_id: cite_instructions_form_1040_2025_source_549376_549399
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=549376:549399
+  quoted_text: '? | 1b. Yes No | |'
+  ranges:
+  - start: 549376
+    end: 549399
+  kind: routing_sentence
+  governs: &id003
+  - 1a
+  - 1b
+  - 7a
+  - 7b
+  - '8'
+  - '2'
+- citation_id: cite_instructions_form_1040_2025_source_549739_549743
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=549739:549743
+  quoted_text: '|'
+  ranges:
+  - start: 549739
+    end: 549743
+  kind: routing_sentence
+  governs: *id003
+- citation_id: cite_instructions_form_1040_2025_source_549974_550273
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=549974:550273
+  quoted_text: . - Married filing jointly, enter $146,000 in both columns. But if you checked "No" on either line 1a or 1b,
+    enter $246,000 for the person who wasn't covered by a plan. - Married filing separately and you lived with your spouse
+    at any time in 2025, enter $10,000. | 2a. _____ | 2b. _____ | | 3.
+  ranges:
+  - start: 549974
+    end: 550273
+  kind: note
+  governs:
+  - 1a
+- citation_id: cite_instructions_form_1040_2025_source_551643_551749
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=551643:551749
+  quoted_text: '97 # Page 98 IRA Deduction WorksheetContinued | | Your IRA | Spouse''s IRA | | --- | --- | --- | |'
+  ranges:
+  - start: 551643
+    end: 551749
+  kind: routing_sentence
+  governs:
+  - '7'
+  - '8'
+- citation_id: cite_instructions_form_1040_2025_source_553521_553826
+  document_id: instructions_form_1040_2025
+  source_document_id: instructions_form_1040_2025
+  locator: source_document=instructions_form_1040_2025;range=553521:553826
+  quoted_text: . | 10. _____ | | | *If married filing jointly and line 10 is less than $14,000 ($15,000 if one spouse is age
+    50 or older at the end of 2025; $16,000 if both spouses are age 50 or older at the end of 2025), **stop here** and use
+    the worksheet in Pub. 590-A to figure your IRA deduction.* | | | |
+  ranges:
+  - start: 553521
+    end: 553826
+  kind: note
+  governs:
+  - '10'
+- citation_id: cite_instructions_schedule_d_2025_source_61314_61329
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=61314:61329
+  quoted_text: '| 4. _____ |'
+  ranges:
+  - start: 61314
+    end: 61329
+  kind: routing_sentence
+  governs: &id004
+  - '7'
+  - '5'
+  - '9'
+- citation_id: cite_instructions_schedule_d_2025_source_61450_61454
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=61450:61454
+  quoted_text: '|'
+  ranges:
+  - start: 61450
+    end: 61454
+  kind: routing_sentence
+  governs: *id004
+- citation_id: cite_instructions_schedule_d_2025_source_61846_61861
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=61846:61861
+  quoted_text: '| 8. _____ |'
+  ranges:
+  - start: 61846
+    end: 61861
+  kind: routing_sentence
+  governs: &id005
+  - '15'
+  - '9'
+- citation_id: cite_instructions_schedule_d_2025_source_61970_61974
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=61970:61974
+  quoted_text: '|'
+  ranges:
+  - start: 61970
+    end: 61974
+  kind: routing_sentence
+  governs: *id005
+- citation_id: cite_instructions_schedule_d_2025_source_83008_83018
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=83008:83018
+  quoted_text: '% ... 22.'
+  ranges:
+  - start: 83008
+    end: 83018
+  kind: routing_sentence
+  governs:
+  - '44'
+  - '23'
+- citation_id: cite_instructions_schedule_d_2025_source_83884_83897
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=83884:83897
+  quoted_text: '| 32. | |'
+  ranges:
+  - start: 83884
+    end: 83897
+  kind: routing_sentence
+  governs:
+  - '44'
+  - '33'
+- citation_id: cite_instructions_schedule_d_2025_source_84110_84124
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=84110:84124
+  quoted_text: ) | 34. | |
+  ranges:
+  - start: 84110
+    end: 84124
+  kind: routing_sentence
+  governs:
+  - '19'
+  - '41'
+  - '35'
+- citation_id: cite_instructions_schedule_d_2025_source_84633_84647
+  document_id: instructions_schedule_d_2025
+  source_document_id: instructions_schedule_d_2025
+  locator: source_document=instructions_schedule_d_2025;range=84633:84647
+  quoted_text: ) | 40. | |
+  ranges:
+  - start: 84633
+    end: 84647
+  kind: routing_sentence
+  governs:
+  - '18'
+  - '44'
+  - '41'
+- citation_id: cite_schedule_1a_2025_source_1454_1458
+  document_id: schedule_1a_2025
+  source_document_id: schedule_1a_2025
+  locator: source_document=schedule_1a_2025;range=1454:1458
+  quoted_text: 4b
+  ranges:
+  - start: 1454
+    end: 1458
+  kind: table_header
+  governs:
+  - 4c
+- citation_id: cite_schedule_1a_2025_source_1766_2197
+  document_id: schedule_1a_2025
+  source_document_id: schedule_1a_2025
+  locator: source_document=schedule_1a_2025;range=1766:2197
+  quoted_text: subject to social security and Medicare taxes 4a . . . . . . . . . . . b Qualified tips included on Form 4137,
+    line 1, row A, column (c). If Form 4137 is not filed, enter -0- 4b . . . . . . . . . . . . . . . . . . . . c If you only
+    received qualified tips as an employee with respect to employment with one employer, enter the larger of line 4a or line
+    4b. Otherwise, see the instructions to determine the amount to enter on line
+  ranges:
+  - start: 1766
+    end: 2197
+  kind: routing_sentence
+  governs:
+  - '1'
+  - 4a
+  - 4b
+- citation_id: cite_schedule_1a_2025_source_3479_3829
+  document_id: schedule_1a_2025
+  source_document_id: schedule_1a_2025
+  locator: source_document=schedule_1a_2025;range=3479:3829
+  quoted_text: '- 13 . . . . . . . . Part III No Tax on Overtime Caution: Fill out Part III only if you received qualified
+    overtime compensation. You and/or your spouse who received the qualified overtime compensation must have a valid social
+    security number to claim this deduction. If married, you must file jointly to claim this deduction. See instructions.
+    14 a'
+  ranges:
+  - start: 3479
+    end: 3829
+  kind: note
+  governs:
+  - '13'
+  - 14a
+- citation_id: cite_schedule_1a_2025_source_6558_6817
+  document_id: schedule_1a_2025
+  source_document_id: schedule_1a_2025
+  locator: source_document=schedule_1a_2025;range=6558:6817
+  quoted_text: '- 30 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . Part V Enhanced Deduction for Seniors Caution:
+    You and/or your spouse must have a valid social security number. If married, you must file jointly to claim this deduction.
+    See instructions. 31'
+  ranges:
+  - start: 6558
+    end: 6817
+  kind: note
+  governs:
+  - '30'
+  - '31'
+- citation_id: cite_schedule_1a_2025_source_868_1337
+  document_id: schedule_1a_2025
+  source_document_id: schedule_1a_2025
+  locator: source_document=schedule_1a_2025;range=868:1337
+  quoted_text: '3 . . . . . . . . . . . . . . . . . . . . . . . . . . . . Part II No Tax on Tips Caution: Fill out Part II
+    only if you received qualified tips. These tips must have been received in an occupation listed at IRS.gov/TippedOccupations.
+    You and/or your spouse who received qualified tips must have a valid social security number to claim the deduction. If
+    married, you must file jointly to claim this deduction. See instructions. 4 Qualified tips received as an employee.'
+  ranges:
+  - start: 868
+    end: 1337
+  kind: note
+  governs:
+  - '3'
+  - '4'
+- citation_id: cite_schedule_2_2025_source_596_598
+  document_id: schedule_2_2025
+  source_document_id: schedule_2_2025
+  locator: source_document=schedule_2_2025;range=596:598
+  quoted_text: )
+  ranges:
+  - start: 596
+    end: 598
+  kind: table_header
+  governs: &id006
+  - 1b
+  - 1d
+- citation_id: cite_schedule_2_2025_source_600_863
+  document_id: schedule_2_2025
+  source_document_id: schedule_2_2025
+  locator: source_document=schedule_2_2025;range=600:863
+  quoted_text: . . . . . . . . . . . . . . . . . . . . . . . . c Repayment of previously owned clean vehicle credit(s) transferred
+    to a registered dealer from Schedule A (Form 8936), Part IV. Attach Form 8936 and Schedule A (Form 8936) 1c . . . . .
+    . . . . . . . . . . . . . d
+  ranges:
+  - start: 600
+    end: 863
+  kind: table_header
+  governs: *id006
+- citation_id: cite_schedule_a_2025_source_2758_2813
+  document_id: schedule_a_2025
+  source_document_id: schedule_a_2025
+  locator: source_document=schedule_a_2025;range=2758:2813
+  quoted_text: '11 . . . . . . . . . . . . . . . . Caution: If you 12'
+  ranges:
+  - start: 2758
+    end: 2813
+  kind: note
+  governs:
+  - '11'
+  - '12'
+- citation_id: cite_schedule_b_2025_source_1631_1902
+  document_id: schedule_b_2025
+  source_document_id: schedule_b_2025
+  locator: source_document=schedule_b_2025;range=1631:1902
+  quoted_text: . Part III You must complete this part if you (a) had over $1,500 of taxable interest or ordinary dividends;
+    (b) had a foreign Foreign account; or (c) received a distribution from, or were a grantor of, or a transferor to, a foreign
+    trust. Accounts Yes No and Trusts 7 a
+  ranges:
+  - start: 1631
+    end: 1902
+  kind: note
+  governs:
+  - '6'
+  - 7a
+- citation_id: cite_schedule_b_2025_source_2158_2905
+  document_id: schedule_b_2025
+  source_document_id: schedule_b_2025
+  locator: source_document=schedule_b_2025;range=2158:2905
+  quoted_text: '. . . . . . . . . . . . . . . . . . . . . . . . file FinCEN Form 114 may result in If "Yes," are you required
+    to file FinCEN Form 114, Report of Foreign Bank and Financial substantial Accounts (FBAR), to report that financial interest
+    or signature authority? See FinCEN Form 114 penalties. and its instructions for filing requirements and exceptions to
+    those requirements . . . . . . Additionally, you may be required b If you are required to file FinCEN Form 114, list the
+    name(s) of the foreign country(-ies) where the to file Form 8938, financial account(s) is (are) located: Statement of
+    Specified Foreign Financial Assets. 8 During 2025, did you receive a distribution from, or were you the grantor of, or
+    transferor to, a See instructions.'
+  ranges:
+  - start: 2158
+    end: 2905
+  kind: note
+  governs:
+  - 7a
+  - '8'
+- citation_id: cite_schedule_d_2025_source_2280_2952
+  document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
+  locator: source_document=schedule_d_2025;range=2280:2952
+  quoted_text: 7 . . . . Part II Long-Term Capital Gains and Losses-Generally Assets Held More Than One Year (see instructions)
+    See instructions for how to figure the amounts to enter on (g) (h) Gain or (loss) the lines below. (d) (e) Adjustments
+    Subtract column (e) Proceeds Cost to gain or loss from from column (d) and This form may be easier to complete if you
+    round off cents (sales price) (or other basis) Form(s) 8949, Part II, combine the result to whole dollars. line 2, column
+    (g) with column (g) 8a Totals for all long-term transactions reported on Form 1099-B or Form 1099-DA for which basis was
+    reported to the IRS and for which you have no adjustments (see instructions).
+  ranges:
+  - start: 2280
+    end: 2952
+  kind: note
+  governs:
+  - '2'
+- citation_id: cite_schedule_d_2025_source_4348_4390
+  document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
+  locator: source_document=schedule_d_2025;range=4348:4390
+  quoted_text: 16 . . . . . . . . . . . . . . . . . . -
+  ranges:
+  - start: 4348
+    end: 4390
+  kind: routing_sentence
+  governs: &id007
+  - '16'
+  - 7a
+  - '17'
+  - '21'
+  - '22'
+- citation_id: cite_schedule_d_2025_source_4484_4759
+  document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
+  locator: source_document=schedule_d_2025;range=4484:4759
+  quoted_text: . Then, go to line 17 below. - If line 16 is a loss, skip lines 17 through 20 below. Then, go to line 21. Also
+    be sure to complete line 22. - If line 16 is zero, skip lines 17 through 21 below and enter -0- on Form 1040, 1040-SR,
+    or 1040-NR, line 7a. Then, go to line 22. 17
+  ranges:
+  - start: 4484
+    end: 4759
+  kind: routing_sentence
+  governs: *id007
+- citation_id: cite_schedule_d_2025_source_5382_5445
+  document_id: schedule_d_2025
+  source_document_id: schedule_d_2025
+  locator: source_document=schedule_d_2025;range=5382:5445
+  quoted_text: for Form 1040, line 16. Don't complete lines 21 and 22 below.
+  ranges:
+  - start: 5382
+    end: 5445
+  kind: table_header
+  governs:
+  - '16'

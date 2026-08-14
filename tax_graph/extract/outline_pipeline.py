@@ -916,6 +916,20 @@ def _dedupe_objects(objects: list[DraftObject]) -> list[DraftObject]:
     return deduped
 
 
+def _citation_data(citation_id: str, span: CandidateSpan) -> dict[str, Any]:
+    """Build a citation from a code-generated span and its source ranges."""
+    data: dict[str, Any] = {
+        "citation_id": citation_id,
+        "document_id": span.document_id,
+        "locator": span.locator,
+        "quoted_text": span.text,
+    }
+    if span.source_ranges:
+        data["source_document_id"] = span.document_id
+        data["ranges"] = [dict(item) for item in span.source_ranges]
+    return data
+
+
 def _line_cue_objects(
     document: SourceDocumentInput,
     nodes: list[OutlineNode],
@@ -935,12 +949,7 @@ def _line_cue_objects(
             objects.append(
                 DraftObject(
                     "citations",
-                    {
-                        "citation_id": citation_id,
-                        "document_id": span.document_id,
-                        "locator": span.locator,
-                        "quoted_text": span.text,
-                    },
+                    _citation_data(citation_id, span),
                     span.text,
                     model,
                     1.0,
@@ -985,12 +994,7 @@ def _simple_line_objects(
             generated.append(
                 DraftObject(
                     "citations",
-                    {
-                        "citation_id": citation_id,
-                        "document_id": span.document_id,
-                        "locator": span.locator,
-                        "quoted_text": span.text,
-                    },
+                    _citation_data(citation_id, span),
                     span.text,
                     model,
                     1.0,
@@ -1032,12 +1036,7 @@ def _write_in_amount_nodes(
             generated.append(
                 DraftObject(
                     "citations",
-                    {
-                        "citation_id": citation_id,
-                        "document_id": span.document_id,
-                        "locator": span.locator,
-                        "quoted_text": span.text,
-                    },
+                    _citation_data(citation_id, span),
                     span.text,
                     model,
                     1.0,
@@ -1124,12 +1123,7 @@ def _outline_structure_objects(
             generated.append(
                 DraftObject(
                     "citations",
-                    {
-                        "citation_id": citation_id,
-                        "document_id": span.document_id,
-                        "locator": span.locator,
-                        "quoted_text": span.text,
-                    },
+                    _citation_data(citation_id, span),
                     span.text,
                     model,
                     1.0,

@@ -3,80 +3,126 @@
   source_document_id: schedule_3_2025
   locator: page 1, line 2
   quoted_text: '3'
+  ranges:
+  - start: 9
+    end: 10
 - citation_id: cite_span_schedule_3_2025_0004
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 5
   quoted_text: Foreign tax credit. Attach Form 1116 if required
+  ranges:
+  - start: 378
+    end: 426
 - citation_id: cite_span_schedule_3_2025_0005
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 6
-  quoted_text: Credit for child and dependent care expenses from Form 2441, line 11.
-    Attach Form 2441
+  quoted_text: Credit for child and dependent care expenses from Form 2441, line 11. Attach Form 2441
+  ranges:
+  - start: 467
+    end: 553
 - citation_id: cite_span_schedule_3_2025_0007
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 8
   quoted_text: Retirement savings contributions credit. Attach Form 8880
+  ranges:
+  - start: 652
+    end: 709
 - citation_id: cite_span_schedule_3_2025_0008
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 9
   quoted_text: Residential clean energy credit from Form 5695, line 15
+  ranges:
+  - start: 743
+    end: 798
 - citation_id: cite_span_schedule_3_2025_0010
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 11
-  quoted_text: 'Other nonrefundable credits:'
+  quoted_text: Other nonrefundable credits
+  ranges:
+  - start: 926
+    end: 953
 - citation_id: cite_span_schedule_3_2025_0025
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 26
   quoted_text: 6z
+  ranges:
+  - start: 1959
+    end: 1961
 - citation_id: cite_span_schedule_3_2025_0026
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 27
   quoted_text: Total other nonrefundable credits. Add lines 6a through 6z
+  ranges:
+  - start: 1964
+    end: 2022
 - citation_id: cite_span_schedule_3_2025_0027
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 28
-  quoted_text: Add lines 1 through 4, 5a, 5b, and 7. Enter here and on Form 1040, 1040-SR,
-    or 1040-NR, line 20
+  quoted_text: Add lines 1 through 4, 5a, 5b, and 7. Enter here and on Form 1040, 1040-SR, or 1040-NR, line 20
+  ranges:
+  - start: 2055
+    end: 2150
 - citation_id: cite_span_schedule_3_2025_0029
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 30
   quoted_text: Net premium tax credit. Attach Form 8962
+  ranges:
+  - start: 2203
+    end: 2243
 - citation_id: cite_span_schedule_3_2025_0030
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 31
-  quoted_text: Amount paid with request for extension to file (see instructions)
+  quoted_text: Amount paid with request for extension to file (see instructions
+  ranges:
+  - start: 2289
+    end: 2353
 - citation_id: cite_span_schedule_3_2025_0032
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 33
   quoted_text: Credit for federal tax on fuels. Attach Form 4136
+  ranges:
+  - start: 2479
+    end: 2528
 - citation_id: cite_span_schedule_3_2025_0033
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 34
-  quoted_text: 'Other payments or refundable credits:'
+  quoted_text: Other payments or refundable credits
+  ranges:
+  - start: 2571
+    end: 2607
 - citation_id: cite_span_schedule_3_2025_0036
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 37
   quoted_text: 13b
+  ranges:
+  - start: 2754
+    end: 2757
 - citation_id: cite_span_schedule_3_2025_0040
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 41
   quoted_text: 13z
+  ranges:
+  - start: 3021
+    end: 3024
 - citation_id: cite_span_schedule_3_2025_0041
   document_id: schedule_3_2025
   source_document_id: schedule_3_2025
   locator: page 1, line 42
   quoted_text: Total other payments or refundable credits. Add lines 13a through 13z
+  ranges:
+  - start: 3028
+    end: 3097

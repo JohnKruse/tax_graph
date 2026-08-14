@@ -2,177 +2,242 @@
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 1
-  quoted_text: Box 1. Enter this amount on the wages line of your tax return.
+  quoted_text: Box 1. Enter this amount on the wages line of your tax return
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 9205
+    end: 9266
 - citation_id: cite_intake_w2_box_labels
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Copy A, box labels
   quoted_text: 1 Wages, tips, other compensation
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 1680
+    end: 1713
 - citation_id: cite_intake_w2_box_2
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 2
-  quoted_text: Box 2. Enter this amount on the federal income tax withheld line of your tax return.
+  quoted_text: Box 2. Enter this amount on the federal income tax withheld line of your tax return
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 9313
+    end: 9385
+  - start: 9457
+    end: 9467
 - citation_id: cite_intake_w2_box_5
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 5
-  quoted_text: Box 5. You may be required to report this amount on Form 8959.
+  quoted_text: Box 5. You may be required to report this amount on Form 8959
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 9607
+    end: 9668
 - citation_id: cite_intake_w2_box_8
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 8
-  quoted_text: Box 8. This amount is not included in box 1, 3, 5, or 7.
+  quoted_text: Box 8. This amount is not included in box 1, 3, 5, or 7
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 10401
+    end: 10456
 - citation_id: cite_intake_w2_box_10
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 10
-  quoted_text: Box 10. This amount includes the total dependent care benefits that your employer paid to you or incurred on your behalf
+  quoted_text: Box 10. This amount includes the total dependent care benefits that your employer paid to you or incurred on
+    your behalf
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 11861
+    end: 11928
+  - start: 12000
+    end: 12052
 - citation_id: cite_intake_w2_box_11
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 11
-  quoted_text: Box 11. This amount is (a) reported in box 1 if it is a distribution made to you from a nonqualified deferred compensation or nongovernmental section 457(b) plan,
+  quoted_text: Box 11. This amount is (a) reported in box 1 if it is a distribution made to you from a nonqualified deferred
+    compensation or nongovernmental section 457(b) plan
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 12359
+    end: 12435
+  - start: 12506
+    end: 12570
+  - start: 12628
+    end: 12647
 - citation_id: cite_intake_w2_box_12
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 12
-  quoted_text: Box 12. The following list explains the codes shown in box 12.
+  quoted_text: Box 12. The following list explains the codes shown in box 12
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 9386
+    end: 9447
 - citation_id: cite_intake_w2_box_13
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 13
-  quoted_text: 'Box 13. If the "Retirement plan" box is checked, special limits may apply to the amount of traditional IRA contributions you may deduct.'
+  quoted_text: Box 13. If the "Retirement plan" box is checked, special limits may apply to the amount of traditional IRA
+    contributions you may deduct
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 16361
+    end: 16496
 - citation_id: cite_intake_w2_box_14
   document_id: form_w2_2025
   source_document_id: form_w2_2025
   locator: Form W-2 2025, Instructions for Employee, Box 14
-  quoted_text: Box 14. Employers may use this box to report information such as state disability insurance taxes withheld, union dues, uniform payments, health insurance premiums deducted, nontaxable income, educational assistance payments, or a member of the clergy's parsonage allowance and utilities.
+  quoted_text: Box 14. Employers may use this box to report information such as state disability insurance taxes withheld,
+    union dues, uniform payments health insurance premiums deducted, nontaxable income, educational assistance payments, or
+    a member of the clergy's parsonage allowance and utilities
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
-
+  ranges:
+  - start: 16608
+    end: 16678
+  - start: 16745
+    end: 16810
+  - start: 16877
+    end: 16943
+  - start: 17012
+    end: 17080
+  - start: 17098
+    end: 17111
 - citation_id: cite_intake_1099_int_box_1
   document_id: form_1099_int_2025
   source_document_id: form_1099_int_2025
   locator: Form 1099-INT 2024, Instructions for Recipient, Box 1
-  quoted_text: Box 1. Shows taxable interest paid to you during the calendar year by the payer.
+  quoted_text: Box 1. Shows taxable interest paid to you during the calendar year by the payer
   url: https://www.irs.gov/pub/irs-pdf/f1099int.pdf
-
+  ranges:
+  - start: 9160
+    end: 9239
 - citation_id: cite_intake_1099_int_box_labels
   document_id: form_1099_int_2025
   source_document_id: form_1099_int_2025
   locator: Form 1099-INT 2024, Copy A, box labels
   quoted_text: 1 Interest income
   url: https://www.irs.gov/pub/irs-pdf/f1099int.pdf
-
+  ranges:
+  - start: 1615
+    end: 1632
 - citation_id: cite_intake_1099_int_box_8
   document_id: form_1099_int_2025
   source_document_id: form_1099_int_2025
   locator: Form 1099-INT 2024, Instructions for Recipient, Box 8
-  quoted_text: Box 8. Shows tax-exempt interest paid to you during the calendar year by the payer.
+  quoted_text: Box 8. Shows tax-exempt interest paid to you during the calendar year by the payer
   url: https://www.irs.gov/pub/irs-pdf/f1099int.pdf
-
+  ranges:
+  - start: 7464
+    end: 7540
+  - start: 7616
+    end: 7621
 - citation_id: cite_intake_1099_div_box_1a
   document_id: form_1099_div_2025
   source_document_id: form_1099_div_2025
   locator: Form 1099-DIV 2024, Instructions for Recipient, Box 1a
-  quoted_text: Box 1a. Shows total ordinary dividends that are taxable.
+  quoted_text: Box 1a. Shows total ordinary dividends that are taxable
   url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
-
+  ranges:
+  - start: 6436
+    end: 6491
 - citation_id: cite_intake_1099_div_box_1b
   document_id: form_1099_div_2025
   source_document_id: form_1099_div_2025
   locator: Form 1099-DIV 2024, Instructions for Recipient, Box 1b
-  quoted_text: Box 1b. Shows the portion of the amount in box 1a that may be eligible for reduced capital gains rates.
+  quoted_text: Box 1b. Shows the portion of the amount in box 1a that may be eligible for reduced capital gains rates
   url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
-
+  ranges:
+  - start: 6793
+    end: 6867
+  - start: 6946
+    end: 6973
 - citation_id: cite_intake_1099_div_box_2a
   document_id: form_1099_div_2025
   source_document_id: form_1099_div_2025
   locator: Form 1099-DIV 2024, Instructions for Recipient, Box 2a
-  quoted_text: Box 2a. Shows total capital gain distributions from a regulated investment company (RIC) or real estate investment trust (REIT).
+  quoted_text: Box 2a. Shows total capital gain distributions from a regulated investment company (RIC) or real estate investment
+    trust (REIT
   url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
-
+  ranges:
+  - start: 7772
+    end: 7846
+  - start: 7927
+    end: 7978
 - citation_id: cite_intake_1099_div_box_labels
   document_id: form_1099_div_2025
   source_document_id: form_1099_div_2025
   locator: Form 1099-DIV 2024, Copy A, box labels
   quoted_text: 1b Qualified dividends
   url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
-
+  ranges:
+  - start: 1634
+    end: 1656
 - citation_id: cite_intake_1099b_recipient
   document_id: form_1099b_2025
   source_document_id: form_1099b_2025
   locator: Form 1099-B 2025, Instructions for Recipient, Box 1d
-  quoted_text: Report this amount on Form 8949 or on Schedule D (Form 1040) (whichever is applicable) as explained in the Instructions for Schedule D (Form 1040).
+  quoted_text: Report this amount on Form 8949 or on Schedule D (Form 1040) (whichever is applicable) as explained in the
+    Instructions for Schedule D (Form 1040
   url: https://www.irs.gov/pub/irs-prior/f1099b--2025.pdf
-
+  ranges:
+  - start: 8592
+    end: 8666
+  - start: 8732
+    end: 8797
+  - start: 8863
+    end: 8867
 - citation_id: cite_intake_1099b_box_labels
   document_id: form_1099b_2025
   source_document_id: form_1099b_2025
   locator: Form 1099-B 2025, Copy A, box labels
   quoted_text: 1d Proceeds
   url: https://www.irs.gov/pub/irs-prior/f1099b--2025.pdf
-
+  ranges:
+  - start: 1790
+    end: 1801
 - citation_id: cite_intake_13614c_quality
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 1
   quoted_text: Complete pages 1-5 of this form.
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
-
 - citation_id: cite_intake_13614c_digital_asset
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 1
   quoted_text: Owners or holders of any digital assets
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
-
 - citation_id: cite_intake_13614c_filing_status
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 1
   quoted_text: As of December 31, 2025, what was your marital status
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
-
 - citation_id: cite_intake_13614c_dependents
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 1 household questions
   quoted_text: List the names below of everyone who lived with you last year
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
-
 - citation_id: cite_intake_13614c_income
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 2 income questions
   quoted_text: 'Received money from any of the following in 2025:'
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
-
 - citation_id: cite_intake_13614c_expenses
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 3 expense questions
   quoted_text: Paid any of the following expenses to itemize in 2025?
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
-
 - citation_id: cite_intake_13614c_events
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025

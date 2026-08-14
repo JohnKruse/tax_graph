@@ -472,14 +472,18 @@ def realize_outbound_flows(
 
 
 def _citation_object(citation_id: str, span: CandidateSpan, model: str) -> DraftObject:
+    data: dict[str, Any] = {
+        "citation_id": citation_id,
+        "document_id": span.document_id,
+        "locator": span.locator,
+        "quoted_text": span.text,
+    }
+    if span.source_ranges:
+        data["source_document_id"] = span.document_id
+        data["ranges"] = [dict(item) for item in span.source_ranges]
     return DraftObject(
         "citations",
-        {
-            "citation_id": citation_id,
-            "document_id": span.document_id,
-            "locator": span.locator,
-            "quoted_text": span.text,
-        },
+        data,
         span.text,
         model,
         1.0,

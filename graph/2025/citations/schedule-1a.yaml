@@ -3,194 +3,294 @@
   source_document_id: schedule_1a_2025
   locator: page 1, line 4
   quoted_text: Enter the amount from Form 1040, 1040-SR, or 1040-NR, line 11b
+  ranges:
+  - start: 393
+    end: 455
 - citation_id: cite_span_schedule_1a_2025_0004
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 5
   quoted_text: Enter any income from Puerto Rico that you excluded
+  ranges:
+  - start: 485
+    end: 536
 - citation_id: cite_span_schedule_1a_2025_0005
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 6
   quoted_text: Enter the amount from Form 2555, line 45
+  ranges:
+  - start: 558
+    end: 598
 - citation_id: cite_span_schedule_1a_2025_0006
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 7
   quoted_text: Enter the amount from Form 2555, line 50
+  ranges:
+  - start: 628
+    end: 668
 - citation_id: cite_span_schedule_1a_2025_0007
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 8
   quoted_text: Enter the amount from Form 4563, line 15
+  ranges:
+  - start: 698
+    end: 738
 - citation_id: cite_span_schedule_1a_2025_0008
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 9
   quoted_text: Add lines 2a, 2b, 2c, and 2d
+  ranges:
+  - start: 768
+    end: 796
 - citation_id: cite_span_schedule_1a_2025_0009
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 10
   quoted_text: Add lines 1 and 2e
+  ranges:
+  - start: 850
+    end: 868
 - citation_id: cite_span_schedule_1a_2025_0012
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 13
-  quoted_text: and see the instructions to determine the amount to enter on line 4c.
-    If you
+  quoted_text: and see the instructions to determine the amount to enter on line 4c. If you
+  ranges:
+  - start: 1458
+    end: 1534
 - citation_id: cite_span_schedule_1a_2025_0013
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 14
-  quoted_text: Enter qualified tips included on Form W-2, box 7, but see the instructions
-    if
+  quoted_text: Enter qualified tips included on Form W-2, box 7, but see the instructions if
+  ranges:
+  - start: 1617
+    end: 1694
 - citation_id: cite_span_schedule_1a_2025_0018
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 19
   quoted_text: Add lines 4c and 5
+  ranges:
+  - start: 2661
+    end: 2679
 - citation_id: cite_span_schedule_1a_2025_0019
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 20
   quoted_text: Enter the smaller of the amount on line 6 or $25,000
+  ranges:
+  - start: 2740
+    end: 2792
 - citation_id: cite_span_schedule_1a_2025_0020
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 21
   quoted_text: Enter the amount from line 3
+  ranges:
+  - start: 2831
+    end: 2859
 - citation_id: cite_span_schedule_1a_2025_0021
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 22
-  quoted_text: Enter $150,000 ($300,000 if married filing jointly)
+  quoted_text: Enter $150,000 ($300,000 if married filing jointly
+  ranges:
+  - start: 2912
+    end: 2962
 - citation_id: cite_span_schedule_1a_2025_0022
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 23
-  quoted_text: Subtract line 9 from line 8. If zero or less, enter the amount from line
-    7 on line 13
+  quoted_text: Subtract line 9 from line 8. If zero or less, enter the amount from line 7 on line 13
+  ranges:
+  - start: 3005
+    end: 3090
 - citation_id: cite_span_schedule_1a_2025_0024
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 25
   quoted_text: Multiply line 11 by $100
+  ranges:
+  - start: 3315
+    end: 3339
 - citation_id: cite_span_schedule_1a_2025_0027
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 28
   quoted_text: Qualified overtime compensation included in Form W-2, box 1. If you received
+  ranges:
+  - start: 3829
+    end: 3905
 - citation_id: cite_span_schedule_1a_2025_0032
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 33
   quoted_text: Enter the amount from line 3
+  ranges:
+  - start: 4326
+    end: 4354
 - citation_id: cite_span_schedule_1a_2025_0033
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 34
-  quoted_text: Enter $150,000 ($300,000 if married filing jointly)
+  quoted_text: Enter $150,000 ($300,000 if married filing jointly
+  ranges:
+  - start: 4409
+    end: 4459
 - citation_id: cite_span_schedule_1a_2025_0034
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 35
-  quoted_text: Subtract line 17 from line 16. If zero or less, enter the amount from
-    line 15 on line 21
+  quoted_text: Subtract line 17 from line 16. If zero or less, enter the amount from line 15 on line 21
+  ranges:
+  - start: 4503
+    end: 4591
 - citation_id: cite_span_schedule_1a_2025_0035
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 36
-  quoted_text: Divide line 18 by $1,000. If the resulting number isn't a whole number,
-    decrease the result to the next
+  quoted_text: Divide line 18 by $1,000. If the resulting number isn't a whole number, decrease the result to the next
+  ranges:
+  - start: 4610
+    end: 4713
 - citation_id: cite_span_schedule_1a_2025_0036
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 1, line 37
   quoted_text: Multiply line 19 by $100
+  ranges:
+  - start: 4814
+    end: 4838
 - citation_id: cite_span_schedule_1a_2025_0041
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 43
-  quoted_text: Applicable passenger vehicle (see instructions). If more than two VINs,
-    see instructions.
+  quoted_text: Applicable passenger vehicle (see instructions). If more than two VINs, see instructions
+  ranges:
+  - start: 5464
+    end: 5552
 - citation_id: cite_span_schedule_1a_2025_0045
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 47
-  quoted_text: Add lines 22a and 22b, column (iii)
+  quoted_text: Add lines 22a and 22b, column (iii
+  ranges:
+  - start: 5699
+    end: 5733
 - citation_id: cite_span_schedule_1a_2025_0046
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 48
   quoted_text: Enter the smaller of the amount on line 23 or $10,000
+  ranges:
+  - start: 5785
+    end: 5838
 - citation_id: cite_span_schedule_1a_2025_0047
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 49
   quoted_text: Enter the amount from line 3
+  ranges:
+  - start: 4326
+    end: 4354
 - citation_id: cite_span_schedule_1a_2025_0048
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 50
-  quoted_text: Enter $100,000 ($200,000 if married filing jointly)
+  quoted_text: Enter $100,000 ($200,000 if married filing jointly
+  ranges:
+  - start: 5960
+    end: 6010
 - citation_id: cite_span_schedule_1a_2025_0049
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 51
-  quoted_text: Subtract line 26 from line 25. If zero or less, enter the amount from
-    line 24 on line 30
+  quoted_text: Subtract line 26 from line 25. If zero or less, enter the amount from line 24 on line 30
+  ranges:
+  - start: 6054
+    end: 6142
 - citation_id: cite_span_schedule_1a_2025_0050
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 52
-  quoted_text: Divide line 27 by $1,000. If the resulting number isn't a whole number,
-    increase the result to the next
+  quoted_text: Divide line 27 by $1,000. If the resulting number isn't a whole number, increase the result to the next
+  ranges:
+  - start: 6161
+    end: 6264
 - citation_id: cite_span_schedule_1a_2025_0051
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 53
   quoted_text: Multiply line 28 by $200
+  ranges:
+  - start: 6366
+    end: 6390
 - citation_id: cite_span_schedule_1a_2025_0055
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 57
   quoted_text: Enter the amount from line 3
+  ranges:
+  - start: 4326
+    end: 4354
 - citation_id: cite_span_schedule_1a_2025_0056
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 58
-  quoted_text: Enter $75,000 ($150,000 if married filing jointly)
+  quoted_text: Enter $75,000 ($150,000 if married filing jointly
+  ranges:
+  - start: 6900
+    end: 6949
 - citation_id: cite_span_schedule_1a_2025_0057
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 59
-  quoted_text: Subtract line 32 from line 31. If zero or less, enter $6,000 on line
-    35
+  quoted_text: Subtract line 32 from line 31. If zero or less, enter $6,000 on line 35
+  ranges:
+  - start: 6993
+    end: 7064
 - citation_id: cite_span_schedule_1a_2025_0058
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 60
-  quoted_text: Multiply line 33 by 6% (0.06)
+  quoted_text: Multiply line 33 by 6% (0.06
+  ranges:
+  - start: 7093
+    end: 7121
 - citation_id: cite_span_schedule_1a_2025_0060
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 62
-  quoted_text: If you have a valid social security number (see instructions) and were
-    born before January 2, 1961,
+  quoted_text: If you have a valid social security number (see instructions) and were born before January 2, 1961
+  ranges:
+  - start: 7274
+    end: 7372
 - citation_id: cite_span_schedule_1a_2025_0062
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 64
   quoted_text: Enhanced deduction for seniors. Add lines 36a and 36b
+  ranges:
+  - start: 7662
+    end: 7715
 - citation_id: cite_span_schedule_1a_2025_0064
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 66
-  quoted_text: Add lines 13, 21, 30, and 37. Enter here and on Form 1040 or 1040-SR,
-    line 13b, or on Form 1040-NR,
+  quoted_text: Add lines 13, 21, 30, and 37. Enter here and on Form 1040 or 1040-SR, line 13b, or on Form 1040-NR
+  ranges:
+  - start: 7788
+    end: 7886
 - citation_id: cite_span_schedule_1a_2025_0065
   document_id: schedule_1a_2025
   source_document_id: schedule_1a_2025
   locator: page 2, line 67
   quoted_text: '38'
+  ranges:
+  - start: 7785
+    end: 7787

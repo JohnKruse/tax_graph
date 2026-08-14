@@ -91,6 +91,45 @@ governs: "4"
 sentence, a table header. `governs` is a printed address, which keeps identity in canonical
 addresses exactly as `docs/canonical-addresses.md` requires.
 
+## M20-S106 promotion stage
+
+The pilot remains read-only by default. The deterministic promotion command reads the manifest,
+the configured `core_documents`, acquired text, and the existing citation artifacts:
+
+```text
+.venv\Scripts\python.exe -m tax_graph.ingest.core_source_ranges --root . --year 2025
+```
+
+It binds ranges to existing non-HTML core citations, preserves HTML citations on their structural
+`html#` locators, leaves the documented Form 8978 legacy exemption untouched, and writes
+source-owned rule-gap citations to `graph/2025/citations/source-extents-m106.yaml`. Running the
+command again is idempotent: it retains prior generated citation ids and appends only new ids.
+
+The M20-S106 measurement used the full 731-row corpus with zero overlaps. Core source rule-bearing
+characters fell from 13,989 to zero after subtracting the promoted ranges. The per-source result
+was:
+
+| Acquired core source | Before | After |
+| --- | ---: | ---: |
+| form_1040_2025 | 1,393 | 0 |
+| form_1099_div_2025 | 383 | 0 |
+| form_1099_int_2025 | 142 | 0 |
+| form_1099b_2025 | 771 | 0 |
+| form_1116_2025 | 2,156 | 0 |
+| form_6251_2025 | 995 | 0 |
+| form_w2_2025 | 200 | 0 |
+| instructions_form_1040_2025 | 2,940 | 0 |
+| instructions_schedule_d_2025 | 850 | 0 |
+| schedule_1a_2025 | 1,644 | 0 |
+| schedule_2_2025 | 267 | 0 |
+| schedule_a_2025 | 84 | 0 |
+| schedule_b_2025 | 1,018 | 0 |
+| schedule_d_2025 | 1,146 | 0 |
+
+The other configured core sources had zero rule-bearing characters before and after. The remaining
+rule-bearing text in the all-document report belongs to non-core worksheet owners and is deliberately
+outside this round's promotion scope.
+
 ## What this makes checkable
 
 These replace pinned counts. A count cannot distinguish an intended change from a regression,
