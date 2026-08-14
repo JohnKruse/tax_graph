@@ -667,11 +667,20 @@ def _format_confidence(confidence: float | None) -> str:
 def _render_citations(citations: list[dict[str, Any]], *, indent: str = "") -> list[str]:
     if not citations:
         return [f"{indent}- No citations recorded."]
-    return [
-        f"{indent}- {citation['citation_id']} ({citation.get('locator', 'unknown locator')}): "
-        f"\"{_collapse_text(citation.get('quoted_text', ''))}\""
-        for citation in citations
-    ]
+    rendered: list[str] = []
+    for citation in citations:
+        text = citation.get("quoted_text")
+        if text:
+            detail = f'"{_collapse_text(text)}"'
+        elif citation.get("derivation"):
+            detail = f"[computed] {_collapse_text(citation['derivation'])}"
+        else:
+            detail = "[no citation text recorded]"
+        rendered.append(
+            f"{indent}- {citation['citation_id']} ({citation.get('locator', 'unknown locator')}): "
+            f"{detail}"
+        )
+    return rendered
 
 
 def _render_trace_entries(entries: list[TraceSummaryEntry]) -> list[str]:

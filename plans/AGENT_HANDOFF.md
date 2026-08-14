@@ -149,6 +149,48 @@ guard must keep one side pinned - after this round the pinned side is the SOURCE
 **OUT OF SCOPE.** Non-core acquired documents. The information returns. The 194 undecided chunks.
 The 8978 heading defect. Making `quoted_text` derived-only across the graph.
 
+**WORKER STATUS (CODEX, 2026-08-14; M20-S107 implementation is in the worktree).** The
+deterministic stage re-extracts the named 30 paraphrases from acquired source ranges and promotes
+the four tax-bracket citations as `computed_table` records with table ranges and derivation text.
+The corrected Markdown-row matcher selects actual table cells, not bold condition markers, and the
+stage reports `findings 0`. The S105 duplicate core guard is removed; the S107 guards pin source
+text and the exact named 30, while computed records are excluded by `kind`, not by id. Citation
+integrity, return-record rendering, and the workbench retain typed provenance instead of treating
+computed records as missing quotes.
+
+Five source-fidelity changes, compared with `d8accca`:
+- `cite_1040_qdcgt_line_1`: the short Form 1040 quote is replaced by the acquired row including
+  Form 1040-SR, Form 2555, and the Foreign Earned Income Tax Worksheet route.
+- `cite_1040_standard_deduction`: the prose summary is replaced by three acquired bullet rows.
+- `cite_schedule_d_carryover_line_1_2`: the hand-authored two-line summary is replaced by two
+  acquired worksheet cells.
+- `cite_sdtw_line_19_breakpoint`: the hand-authored line is replaced by the acquired line and
+  continuation marker.
+- `cite_sdtw_line_23_32`: the hand-authored range summary is replaced by acquired lines 23-32,
+  including continuation-table rows.
+
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.ingest.core_source_ranges --root . --year 2025` ->
+`core source ranges: rebound 491, generated 0, removed 0, findings 0`.
+RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_core_source_ranges_m106.py -q` ->
+`8 passed in 70.21s`; the warning is the known `.pytest_cache` ACL warning.
+RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_worksheet_ranges_s105.py tests\\test_worksheet_storage_s105.py -q`
+-> `7 passed in 69.32s`.
+RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_mcp_m2.py::test_get_citation_by_id_and_fts_query tests\\test_return_record_m5.py::test_render_memo_matches_golden_fixture tests\\test_workbench_cells_m17.py::test_citations_resolve_to_verbatim_text_and_provenance -q`
+-> `3 passed in 9.10s`.
+RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_mcp_m2.py tests\\test_return_record_m5.py tests\\test_workbench_cells_m17.py -q`
+-> `38 passed in 171.19s`.
+RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_workbench_m15.py tests\\test_workbench_cells_m17.py -q`
+-> `15 passed in 22.07s`.
+RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_acquire_citation_check.py -q` -> `10 passed in 0.14s`.
+RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025 --root .` -> graph integrity OK;
+629 citations schema-valid.
+RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`; `git diff --check`
+-> clean. NOT RUN: `node --check workbench/static/river.js` because `node` is unavailable.
+NOT RUN: full `python -m pytest -q` -> required S107 exit gate remains for the Architect-side
+600-second-plus corpus suite. The earlier bare combined consumer attempt had 40 passes and 5 known
+pytest temp-root ACL setup errors; the required consumer files were rerun cleanly with elevated
+filesystem access above.
+
 ## Open for Architect
 
 **NOTHING FROM S106 IS OPEN. The Worker asked whether the 34 baseline quotes must be regenerated

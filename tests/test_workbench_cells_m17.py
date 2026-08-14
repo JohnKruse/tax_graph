@@ -118,11 +118,27 @@ def test_citations_resolve_to_verbatim_text_and_provenance() -> None:
         "url": "https://www.irs.gov/pub/irs-prior/f1040--2025.pdf",
         "retrieved_date": "2026-07-09",
         "source_document_id": "form_1040_2025",
+        "ranges": [{"start": 3007, "end": 3062}],
         "resolved": True,
     }
     assert records[1]["citation_id"] == "missing_citation"
     assert records[1]["quoted_text"] is None
     assert records[1]["resolved"] is False
+
+
+@pytest.mark.m17
+def test_computed_citation_resolves_with_typed_provenance() -> None:
+    citations = _load_citations(ROOT / "graph" / "2025" / "citations")
+    records = _citations(
+        {"citation_refs": ["cite_1040_tax_brackets_single"]},
+        citations,
+    )
+
+    assert records[0]["resolved"] is True
+    assert records[0]["quoted_text"] is None
+    assert records[0]["kind"] == "computed_table"
+    assert records[0]["derivation"]
+    assert records[0]["ranges"]
 
 
 @pytest.mark.m17

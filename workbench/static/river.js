@@ -112,9 +112,14 @@ function instructionMarkup(cell) {
   }
   return instructions.map((citation) => {
     const text = citation.quoted_text === null || citation.quoted_text === undefined
-      ? '<span class="not-authored">not resolved from promoted citation records</span>'
+      ? (citation.derivation
+        ? `<span class="computed-provenance">computed from the cited table</span>`
+        : '<span class="not-authored">not resolved from promoted citation records</span>')
       : `<blockquote>${escapeHtml(citation.quoted_text)}</blockquote>`;
-    return `<article class="instruction-record">${text}` +
+    const derivation = citation.derivation
+      ? `<p><strong>Derivation:</strong> ${escapeHtml(citation.derivation)}</p>`
+      : "";
+    return `<article class="instruction-record">${text}${derivation}` +
       `<p><strong>Locator:</strong> ${authored(citation.locator)}</p>` +
       `<p><strong>Source:</strong> ${authored(citation.source_document_id)}</p></article>`;
   }).join("");
@@ -166,11 +171,16 @@ function citationMarkup(citations) {
   }
   return citations.map((citation) => {
     const text = citation.quoted_text === null || citation.quoted_text === undefined
-      ? '<span class="not-authored">not resolved from promoted citation records</span>'
+      ? (citation.derivation
+        ? `<span class="computed-provenance">computed from the cited table</span>`
+        : '<span class="not-authored">not resolved from promoted citation records</span>')
       : `<blockquote>${escapeHtml(citation.quoted_text)}</blockquote>`;
+    const derivation = citation.derivation
+      ? `<p><strong>Derivation:</strong> ${escapeHtml(citation.derivation)}</p>`
+      : "";
     return `<article class="citation-record">` +
       `<p><strong>Citation</strong> ${authored(citation.citation_id)}</p>` +
-      `<p><strong>Quoted text:</strong> ${text}</p>` +
+      `<p><strong>Quoted text:</strong> ${text}</p>${derivation}` +
       `<p><strong>Locator:</strong> ${authored(citation.locator)}</p>` +
       `<p><strong>Source document:</strong> ${authored(citation.source_document_id)}</p>` +
       `<p><strong>Source URL:</strong> ${authored(citation.url)}</p>` +

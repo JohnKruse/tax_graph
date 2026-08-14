@@ -20,11 +20,59 @@ import yaml
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.acquire.source_ranges import SourceTextIndex, normalize_source_quote
 from tax_graph.config import get_config_value, load_config
+from tax_graph.ingest.worksheet_harvest import (
+    QDCGT_WORKSHEET_TARGET,
+    _source_ranges_for_lines,
+    _source_text_rows_for_target,
+)
 
 
 HTML_LOCATOR_RE = re.compile(r"^html#", re.IGNORECASE)
 LINE_LOCATOR_RE = re.compile(r"^page\s+[0-9]+,\s+line\s+([0-9]+)$", re.IGNORECASE)
 LEGACY_RANGE_EXEMPTION = "negative_form_8978_adjustment_worksheet_schedule_2_2025"
+COMPUTED_TABLE_KIND = "computed_table"
+COMPUTED_TABLE_CITATION_IDS = frozenset(
+    {
+        "cite_1040_tax_brackets_single",
+        "cite_1040_tax_brackets_joint_qss",
+        "cite_1040_tax_brackets_mfs",
+        "cite_1040_tax_brackets_hoh",
+    }
+)
+PARAPHRASE_CITATION_IDS = frozenset(
+    {
+        "cite_1040_line_16_tax_methods",
+        "cite_1040_qdcgt_line_1",
+        "cite_1040_qdcgt_line_10_12",
+        "cite_1040_qdcgt_line_13_17",
+        "cite_1040_qdcgt_line_18_21",
+        "cite_1040_qdcgt_line_2",
+        "cite_1040_qdcgt_line_22",
+        "cite_1040_qdcgt_line_23_25",
+        "cite_1040_qdcgt_line_24",
+        "cite_1040_qdcgt_line_25",
+        "cite_1040_qdcgt_line_3",
+        "cite_1040_qdcgt_line_5",
+        "cite_1040_qdcgt_line_6_9",
+        "cite_1040_standard_deduction",
+        "cite_1040_tax_table",
+        "cite_schedule_d_carryover_line_1_2",
+        "cite_schedule_d_carryover_line_3_4",
+        "cite_schedule_d_carryover_line_5_8",
+        "cite_schedule_d_carryover_line_8",
+        "cite_schedule_d_carryover_line_9_13",
+        "cite_sdtw_line_11_14",
+        "cite_sdtw_line_15_22",
+        "cite_sdtw_line_19_breakpoint",
+        "cite_sdtw_line_1_6",
+        "cite_sdtw_line_23_32",
+        "cite_sdtw_line_33_34",
+        "cite_sdtw_line_35_40",
+        "cite_sdtw_line_41_44",
+        "cite_sdtw_line_45_47",
+        "cite_sdtw_line_7_10",
+    }
+)
 
 
 def _raw_root(root: Path, year: str) -> Path:
@@ -118,6 +166,186 @@ def _tax_table_section_ranges(
     return tuple(ranges) or None
 
 
+def _tax_table_section_extent(
+    source: str,
+    *,
+    section: str,
+) -> tuple[dict[str, int], ...] | None:
+    """Return the complete acquired rate-table section for a computed citation."""
+    heading = re.search(
+        rf"\*\*Section {re.escape(section)}Use if your filing status is .*?\*\*",
+        source,
+        re.IGNORECASE,
+    )
+    if heading is None:
+        return None
+    next_heading = re.search(r"\*\*Section [A-D]Use if", source[heading.end() :], re.I)
+    next_page = re.search(r"\n# Page [0-9]+\s*\n", source[heading.end() :])
+    boundaries = [
+        heading.end() + match.start()
+        for match in (next_heading, next_page)
+        if match is not None
+    ]
+    end = min(boundaries) if boundaries else len(source)
+    return ({"start": heading.start(), "end": end},)
+
+
+def _source_quote(source: str, ranges: Iterable[Mapping[str, int]]) -> str:
+    """Render a new quote only from the acquired ranges that own it."""
+    return normalize_source_quote(
+        " ".join(source[int(item["start"]) : int(item["end"])] for item in ranges)
+    )
+
+
+def _qdcgt_ranges(source: str, lines: Iterable[str]) -> tuple[dict[str, int], ...] | None:
+    """Find QDCGT row ranges using the established worksheet row parser."""
+    lines = tuple(lines)
+    rows = _source_text_rows_for_target(source, QDCGT_WORKSHEET_TARGET)
+    by_line, _ = _source_ranges_for_lines(source, rows, lines)
+    ranges: list[dict[str, int]] = []
+    for line in lines:
+        ranges.extend(by_line.get(line, ()))
+    return tuple(ranges) or None
+
+
+def _markdown_row_ranges(
+    source: str,
+    *,
+    title: str,
+    lines: Iterable[str],
+) -> tuple[dict[str, int], ...] | None:
+    """Return the prose cell of each numbered Markdown worksheet row."""
+    lines = tuple(lines)
+    title_start = source.find(title)
+    if title_start < 0:
+        return None
+    ranges: list[dict[str, int]] = []
+    for line in lines:
+        match = re.search(rf"(?m)^\|\s*{re.escape(line)}\.(?!\*)\s*", source[title_start:])
+        if match is None:
+            return None
+        row_start = title_start + match.start()
+        number_start = source.find(str(line), row_start, title_start + match.end())
+        if number_start < 0:
+            return None
+        first_separator = source.find("|", number_start + len(str(line)) + 1)
+        if first_separator < 0:
+            return None
+        after_number = source[number_start + len(str(line)) + 1 : first_separator]
+        separator = (
+            source.find("|", first_separator + 1)
+            if not after_number.strip()
+            else first_separator
+        )
+        if separator < 0:
+            return None
+        ranges.append({"start": number_start, "end": separator})
+    return tuple(ranges) or None
+
+
+def _plain_worksheet_ranges(
+    source: str,
+    *,
+    title: str,
+    lines: Iterable[str],
+) -> tuple[dict[str, int], ...] | None:
+    """Return exact line-to-marker spans from a rendered worksheet."""
+    lines = tuple(lines)
+    title_start = source.find(title)
+    if title_start < 0:
+        return None
+    ranges: list[dict[str, int]] = []
+    for line in lines:
+        match = re.search(rf"(?m)^{re.escape(line)}\.\s", source[title_start:])
+        if match is None:
+            return None
+        start = title_start + match.start()
+        marker = re.search(rf"\.\.\.\s*{re.escape(line)}\.", source[title_start + match.end() :])
+        if marker is None:
+            return None
+        end = title_start + match.end() + marker.end()
+        ranges.append({"start": start, "end": end})
+    return tuple(ranges) or None
+
+
+def _sdtw_ranges(source: str, lines: Iterable[str]) -> tuple[dict[str, int], ...] | None:
+    """Combine the prose and continuation-table halves of Schedule D's worksheet."""
+    selected = tuple(lines)
+    first_lines = tuple(line for line in selected if int(line) <= 30)
+    continuation_lines = tuple(line for line in selected if int(line) > 30)
+    ranges: list[dict[str, int]] = []
+    if first_lines:
+        plain = _plain_worksheet_ranges(
+            source,
+            title="Schedule D Tax Worksheet",
+            lines=first_lines,
+        )
+        if plain is None:
+            return None
+        ranges.extend(plain)
+    if continuation_lines:
+        continued = _markdown_row_ranges(
+            source,
+            title="Schedule D Tax WorksheetContinued",
+            lines=continuation_lines,
+        )
+        if continued is None:
+            return None
+        ranges.extend(continued)
+    return tuple(ranges) or None
+
+
+def _paraphrase_ranges(source: str, citation_id: str) -> tuple[dict[str, int], ...] | None:
+    """Locate the acquired source span that replaces one A9 paraphrase."""
+    if citation_id.startswith("cite_1040_qdcgt_"):
+        match = re.search(r"_line_(\d+)(?:_(\d+))?$", citation_id)
+        if match is None:
+            return None
+        first = int(match.group(1))
+        last = int(match.group(2) or first)
+        return _qdcgt_ranges(source, (str(value) for value in range(first, last + 1)))
+    if citation_id.startswith("cite_schedule_d_carryover_"):
+        match = re.search(r"_line_(\d+)(?:_(\d+))?$", citation_id)
+        if match is None:
+            return None
+        first = int(match.group(1))
+        last = int(match.group(2) or first)
+        return _markdown_row_ranges(
+            source,
+            title="Capital Loss Carryover WorksheetLines 6 and 14",
+            lines=(str(value) for value in range(first, last + 1)),
+        )
+    if citation_id.startswith("cite_sdtw_"):
+        if citation_id == "cite_sdtw_line_19_breakpoint":
+            lines = ("19",)
+        else:
+            match = re.search(r"_line_(\d+)(?:_(\d+))?$", citation_id)
+            if match is None:
+                return None
+            first = int(match.group(1))
+            last = int(match.group(2) or first)
+            lines = tuple(str(value) for value in range(first, last + 1))
+        return _sdtw_ranges(source, lines)
+    if citation_id == "cite_1040_standard_deduction":
+        start = source.find("**Standard deduction amount increased.**")
+        if start < 0:
+            return None
+        ranges: list[dict[str, int]] = []
+        for pattern in (r"^-\s+\$15,750", r"^-\s+\$31,500", r"^-\s+\$23,625"):
+            line_range = _line_range(source, pattern, start=start)
+            if line_range is None:
+                return None
+            ranges.extend(line_range)
+        return tuple(ranges)
+    if citation_id in {"cite_1040_line_16_tax_methods", "cite_1040_tax_table"}:
+        start = source.find("**Tax Table or Tax Computation Worksheet.**")
+        if start < 0:
+            return None
+        end = source.find("\n\n", start)
+        return ({"start": start, "end": end if end >= 0 else len(source)},)
+    return None
+
+
 def _tax_liability_ranges(source: str, citation_id: str) -> tuple[dict[str, int], ...] | None:
     """Map the legacy liability citations to the current source table rows."""
     worksheet_title = "# Qualified Dividends and Capital Gain Tax Worksheet"
@@ -151,10 +379,10 @@ def _tax_liability_ranges(source: str, citation_id: str) -> tuple[dict[str, int]
         "mfs": ("C", ("250,525", "375,800")),
         "hoh": ("D", ("250,500", "626,350")),
     }
-    for suffix, (section, terms) in section_terms.items():
+    for suffix, (section, _terms) in section_terms.items():
         if not citation_id.endswith(f"tax_brackets_{suffix}"):
             continue
-        return _tax_table_section_ranges(source, section=section, terms=terms)
+        return _tax_table_section_extent(source, section=section)
     return None
 
 
@@ -164,10 +392,61 @@ def _eligible_citation(citation: Mapping[str, Any], core_ids: set[str]) -> bool:
     locator = str(citation.get("locator") or "")
     if not source_id or source_id not in core_ids:
         return False
+    if citation.get("kind") == COMPUTED_TABLE_KIND:
+        return False
     if not citation.get("quoted_text"):
         return False
     if HTML_LOCATOR_RE.match(locator) or document_id == LEGACY_RANGE_EXEMPTION:
         return False
+    return True
+
+
+def _prepare_computed_table_citation(
+    citation: dict[str, Any],
+    *,
+    source: str,
+) -> bool:
+    """Record rate-table provenance without presenting the synthesis as a quote."""
+    citation_id = str(citation.get("citation_id") or "")
+    if citation_id not in COMPUTED_TABLE_CITATION_IDS:
+        return False
+    ranges = _tax_liability_ranges(source, citation_id)
+    if ranges is None:
+        raise ValueError(f"rate-table section not found for {citation_id}")
+    sections = {
+        "single": "Section A (Single)",
+        "joint_qss": "Section B (Married filing jointly or Qualifying surviving spouse)",
+        "mfs": "Section C (Married filing separately)",
+        "hoh": "Section D (Head of household)",
+    }
+    suffix = next(
+        suffix for suffix in sections if citation_id.endswith(f"tax_brackets_{suffix}")
+    )
+    citation["kind"] = COMPUTED_TABLE_KIND
+    citation.pop("quoted_text", None)
+    citation["ranges"] = [dict(item) for item in ranges]
+    citation["derivation"] = (
+        f"Computed from the acquired {sections[suffix]} rate table: use each row's "
+        "marginal rate and subtraction amount to derive the cumulative tax at the "
+        "filing-status bracket boundaries."
+    )
+    return True
+
+
+def _reextract_paraphrase_citation(
+    citation: dict[str, Any],
+    *,
+    source: str,
+) -> bool:
+    """Replace one A9 paraphrase with the exact source-owned text and ranges."""
+    citation_id = str(citation.get("citation_id") or "")
+    if citation_id not in PARAPHRASE_CITATION_IDS:
+        return False
+    ranges = _paraphrase_ranges(source, citation_id)
+    if ranges is None:
+        raise ValueError(f"source span not found for paraphrase citation {citation_id}")
+    citation["quoted_text"] = _source_quote(source, ranges)
+    citation["ranges"] = [dict(item) for item in ranges]
     return True
 
 
@@ -278,19 +557,34 @@ def rebind_core_source_ranges(
     )
     sources = _source_texts(root_path, year_text, source_ids)
     indexes = {source_id: SourceTextIndex(text) for source_id, text in sources.items()}
+    for path, records in records_by_path.items():
+        for citation in records:
+            source_id = str(citation.get("source_document_id") or "")
+            if source_id in sources:
+                _prepare_computed_table_citation(citation, source=sources[source_id])
     eligible_paths = {
         path
         for path, records in records_by_path.items()
-        if any(_eligible_citation(item, core_ids) for item in records)
+        if any(
+            _eligible_citation(item, core_ids)
+            or item.get("kind") == COMPUTED_TABLE_KIND
+            for item in records
+        )
     }
     changed = 0
     findings: list[str] = []
     used_starts: dict[str, set[int]] = defaultdict(set)
     for path, records in records_by_path.items():
         for citation in records:
+            source_id = str(citation.get("source_document_id") or "")
+            if source_id in sources and _reextract_paraphrase_citation(
+                citation,
+                source=sources[source_id],
+            ):
+                changed += 1
+                continue
             if not _eligible_citation(citation, core_ids):
                 continue
-            source_id = str(citation["source_document_id"])
             if _bind_citation(
                 citation,
                 source=sources[source_id],

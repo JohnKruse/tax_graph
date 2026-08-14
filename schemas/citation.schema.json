@@ -2,10 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "citation.schema.json",
   "title": "Tax Graph Citation",
-  "description": "A span-level, quotable pointer to authoritative source text. Captured once at extraction time and reused at runtime so an agent can show the filer the exact passage instead of re-fetching a PDF.",
+  "description": "A span-level pointer to authoritative source text, carrying either a verbatim quote or typed computation provenance. Captured once at extraction time and reused at runtime so an agent can show the filer the exact passage instead of re-fetching a PDF.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["citation_id", "document_id", "quoted_text"],
+  "required": ["citation_id", "document_id"],
   "properties": {
     "citation_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
     "document_id": {
@@ -27,6 +27,11 @@
       "minLength": 1,
       "description": "The verbatim source passage, stored so the agent need not re-fetch."
     },
+    "derivation": {
+      "type": "string",
+      "minLength": 1,
+      "description": "How a computed result was derived from the cited source table."
+    },
     "ranges": {
       "type": "array",
       "description": "Ordered half-open character ranges into source_document_id.",
@@ -43,7 +48,7 @@
     },
     "kind": {
       "type": "string",
-      "enum": ["row", "note", "routing_sentence", "table_header"]
+      "enum": ["row", "note", "routing_sentence", "table_header", "computed_table"]
     },
     "governs": {
       "type": "array",
@@ -61,5 +66,20 @@
       "enum": ["project", "user"],
       "description": "Orthogonal provenance axis: who stood at the promotion gate."
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["kind"],
+        "properties": { "kind": { "const": "computed_table" } }
+      },
+      "then": {
+        "required": ["source_document_id", "kind", "ranges", "derivation"],
+        "not": { "required": ["quoted_text"] }
+      },
+      "else": {
+        "required": ["quoted_text"]
+      }
+    }
+  ]
 }

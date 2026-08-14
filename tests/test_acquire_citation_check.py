@@ -31,6 +31,26 @@ def test_citation_integrity_accepts_matching_quote_with_normalized_whitespace(tm
     assert report.mismatches == []
 
 
+def test_citation_integrity_skips_computed_table_without_quote(tmp_path):
+    (tmp_path / "instructions_form_1040_2025.txt").write_text("rate table", encoding="utf-8")
+    report = check_citation_integrity(
+        [
+            {
+                "citation_id": "cite_computed_table",
+                "document_id": "instructions_form_1040_2025",
+                "kind": "computed_table",
+                "ranges": [{"start": 10, "end": 20}],
+                "derivation": "Apply the rate table rows to the filing-status bracket.",
+            }
+        ],
+        text_dir=tmp_path,
+    )
+
+    assert report.checked == 1
+    assert report.ok
+    assert report.mismatches == []
+
+
 @pytest.mark.m3
 def test_citation_integrity_flags_doctored_quote(tmp_path):
     text_dir = tmp_path / "2025"

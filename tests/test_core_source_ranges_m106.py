@@ -13,7 +13,12 @@ from tax_graph.extract.inputs import load_document_input
 from pilot.source_extents import measure_source_extents
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.acquire.source_ranges import normalize_source_quote
-from tax_graph.ingest.core_source_ranges import LEGACY_RANGE_EXEMPTION
+from tax_graph.ingest.core_source_ranges import (
+    COMPUTED_TABLE_CITATION_IDS,
+    COMPUTED_TABLE_KIND,
+    LEGACY_RANGE_EXEMPTION,
+    PARAPHRASE_CITATION_IDS,
+)
 from tax_graph.io.loader import load_graph
 
 
@@ -41,8 +46,16 @@ def _source_slice(citation: dict, source: str) -> str:
     )
 
 
-def test_s106_keeps_accepted_quote_text_pinned() -> None:
-    """Range rebinding cannot make a wrong range pass by editing quote text."""
+def _citation_records() -> dict[str, dict]:
+    return {
+        str(item["citation_id"]): item
+        for path in sorted((ROOT / "graph" / YEAR / "citations").glob("*.yaml"))
+        for item in (yaml.safe_load(path.read_text(encoding="ascii")) or [])
+        if item.get("citation_id")
+    }
+
+
+def _baseline_quote_text() -> dict[str, object]:
     baseline: dict[str, object] = {}
     for path in sorted((ROOT / "graph" / YEAR / "citations").glob("*.yaml")):
         result = subprocess.run(
@@ -58,17 +71,38 @@ def test_s106_keeps_accepted_quote_text_pinned() -> None:
             if item.get("citation_id"):
                 baseline[str(item["citation_id"])] = item.get("quoted_text")
 
-    current = {
-        str(item["citation_id"]): item.get("quoted_text")
-        for path in sorted((ROOT / "graph" / YEAR / "citations").glob("*.yaml"))
-        for item in (yaml.safe_load(path.read_text(encoding="ascii")) or [])
-        if item.get("citation_id")
+    return baseline
+
+
+def test_s107_reextracts_exactly_the_named_paraphrases() -> None:
+    """Only the 30 named A9 paraphrases may change their quote text."""
+    baseline = _baseline_quote_text()
+    current = _citation_records()
+    changed = {
+        citation_id
+        for citation_id, item in current.items()
+        if citation_id in baseline
+        and citation_id not in COMPUTED_TABLE_CITATION_IDS
+        and item.get("quoted_text") != baseline[citation_id]
     }
-    shared = set(baseline) & set(current)
-    assert shared
-    assert {key: current[key] for key in shared} == {
-        key: baseline[key] for key in shared
-    }
+    assert changed == set(PARAPHRASE_CITATION_IDS)
+    assert len(changed) == 30
+    assert all(
+        citation_id in current and current[citation_id].get("quoted_text")
+        for citation_id in PARAPHRASE_CITATION_IDS
+    )
+
+
+def test_s107_types_computed_bracket_citations_without_quote_text() -> None:
+    """Bracket results carry typed table provenance rather than synthetic prose."""
+    current = _citation_records()
+    assert set(COMPUTED_TABLE_CITATION_IDS) <= set(current)
+    for citation_id in COMPUTED_TABLE_CITATION_IDS:
+        citation = current[citation_id]
+        assert citation["kind"] == COMPUTED_TABLE_KIND
+        assert citation["ranges"]
+        assert citation["derivation"]
+        assert "quoted_text" not in citation
 
 
 def test_core_citations_reconstruct_from_acquired_ranges() -> None:
@@ -95,6 +129,9 @@ def test_core_citations_reconstruct_from_acquired_ranges() -> None:
             0 <= int(item["start"]) < int(item["end"]) <= len(source)
             for item in ranges
         )
+        if citation.get("kind") == COMPUTED_TABLE_KIND:
+            assert citation.get("derivation")
+            continue
         assert _source_slice(citation, source) == normalize_source_quote(
             str(citation["quoted_text"])
         ), citation["citation_id"]

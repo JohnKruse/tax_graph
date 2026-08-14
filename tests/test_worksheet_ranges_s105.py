@@ -58,40 +58,6 @@ def test_source_extents_preserves_the_worksheet_corpus_partition() -> None:
     assert report["counts"]["overlaps"] == 0
 
 
-def test_promoted_core_citations_reconstruct_from_source_ranges() -> None:
-    """Every Markdown-backed core citation is reconstructed from acquired bytes."""
-    tiers = yaml.safe_load(
-        (ROOT / "config" / "document_tiers.yaml").read_text(encoding="ascii")
-    )
-    core_ids = set(tiers["core_documents"])
-    graph = load_graph("2025", root=ROOT, include_extensions=False)
-    schema = json.loads(
-        (ROOT / "schemas" / "citation.schema.json").read_text(encoding="ascii")
-    )
-    validator = jsonschema.Draft202012Validator(schema)
-    raw_root = ROOT / ".cache" / "raw" / "2025"
-    citations = [
-        item
-        for item in graph.items("citations")
-        if item.get("source_document_id") in core_ids
-        and not str(item.get("locator") or "").casefold().startswith("html#")
-        and item.get("document_id") != LEGACY_RANGE_EXEMPTION
-    ]
-
-    assert citations
-    for citation in citations:
-        validator.validate({key: value for key, value in citation.items() if key != "gate"})
-        source_id = str(citation["source_document_id"])
-        source = (raw_root / f"{source_id}.txt").read_text(encoding="utf-8")
-        ranges = citation.get("ranges") or []
-        assert ranges, citation["citation_id"]
-        assert all(0 <= item["start"] < item["end"] <= len(source) for item in ranges)
-        reconstructed = _normalize(
-            " ".join(source[item["start"] : item["end"]] for item in ranges)
-        )
-        assert _normalize(citation["quoted_text"]) == reconstructed, citation["citation_id"]
-
-
 def test_core_source_gaps_remain_outside_worksheet_promotion() -> None:
     """Worksheet range promotion does not claim unrelated core source gaps."""
     path = ROOT / "graph" / "2025" / "citations" / "source-extents-m106.yaml"

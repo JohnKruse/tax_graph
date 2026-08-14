@@ -411,6 +411,9 @@ def _load_citations(directory: Path) -> dict[str, dict[str, Any]]:
                 "retrieved_date": _date_text(item.get("retrieved_date")),
                 "source_document_id": item.get("source_document_id") or item.get("document_id"),
             }
+            for key in ("kind", "derivation", "ranges"):
+                if item.get(key) is not None:
+                    record[key] = item[key]
             if item.get("semantic_title"):
                 record["semantic_title"] = item["semantic_title"]
             result[citation_id] = record

@@ -104,6 +104,20 @@ def check_citation_integrity(
             )
             continue
 
+        if citation.get("kind") == "computed_table":
+            # A computed-table citation proves the source table and records
+            # the derivation, but it must not impersonate a verbatim quote.
+            if not citation.get("ranges") or not citation.get("derivation"):
+                mismatches.append(
+                    CitationMismatch(
+                        citation_id=citation["citation_id"],
+                        document_id=document_id,
+                        source_document_id=source_document_id,
+                        reason="computed citation missing ranges or derivation",
+                    )
+                )
+            continue
+
         text = text_path.read_text(encoding="utf-8")
         undecorated = _undecorated_text(text)
         if _contains_normalized(undecorated, citation["quoted_text"]):
