@@ -187,7 +187,7 @@ def _load_region_document_input(
                 quote = str(citation.get("quoted_text") or "").strip()
                 if citation.get("kind", "row") == "row":
                     html_face = html_faces.get(node_id, "")
-                    if html_face:
+                    if html_face and citation.get("ranges"):
                         # The node id is the deterministic HTML row selected
                         # for these ranges.  The range projection trims only
                         # source chunks that bleed into a neighboring row;
@@ -225,16 +225,6 @@ def _load_region_document_input(
             note_text = str(note.get("quoted_text") or "").strip()
             if not note_text:
                 continue
-            projected_note = re.sub(
-                r"^\s*\*{0,2}note\.\*{0,2}\s*",
-                "",
-                note_text,
-                flags=re.IGNORECASE,
-            )
-            if quote.startswith('"'):
-                quote = '"' + projected_note + " " + quote[1:]
-            else:
-                quote = projected_note + " " + quote
             note_provenance.append(
                 {
                     "source_line": str(note.get("locator") or "").split("after=", 1)[-1],
@@ -390,6 +380,21 @@ def _worksheet_face_from_ranges(
         return html_face
     if re.fullmatch(rf"{re.escape(line)}[a-z]", first) or first in {"no", "yes"}:
         return html_face
+    if not re.search(r"\bnote\b", tail, flags=re.IGNORECASE):
+        # Preserve deterministic output controls and routing continuations;
+        # the existing cell-face cleaner removes their repeated markers.
+        return html_face
+    note_match = re.search(r"\bnote\b", tail, flags=re.IGNORECASE)
+    if note_match is not None:
+        # Keep the row's printed output marker when it precedes a separate
+        # note. The marker gives the extent cleaner the same bounded cell it
+        # had before the note became its own citation.
+        bounded = html_face[: last_end + note_match.start()].rstrip()
+        if bounded.startswith('"'):
+            content = bounded[1:].rstrip(" .\"")
+            punctuation = "" if content.endswith((".", "?", "!")) else "."
+            return f'"{content}{punctuation}" field'
+        return bounded
     repeated_marker = re.search(
         rf"\s+{re.escape(line)}\s*$",
         trimmed,

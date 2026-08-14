@@ -83,6 +83,25 @@ def test_simplified_method_note_is_its_own_governed_citation() -> None:
     assert note["ranges"] == [{"start": 118266, "end": 118490}]
 
 
+def test_simplified_method_line_ten_claims_both_branches() -> None:
+    result = _real_harvest("Simplified Method Worksheet", "instructions_form_1040_2025")
+    line_ten = next(
+        citation.as_dict()
+        for citation in result.citations
+        if citation.data["locator"].endswith("lines=10")
+    )
+
+    assert "Yes." in line_ten["quoted_text"]
+    assert "No. Add lines 6 and 8." in line_ten["quoted_text"]
+
+    node = next(
+        node
+        for node in result.nodes
+        if node.data["node_id"].endswith("_line_10")
+    )
+    assert "No. Add lines 6 and 8." in node.source_quote
+
+
 def test_capital_loss_routing_rows_are_not_claimed_by_line_citations() -> None:
     result = _real_harvest("Capital Loss Carryover Worksheet", "instructions_schedule_d_2025")
     rows = {

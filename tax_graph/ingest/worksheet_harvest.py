@@ -2331,6 +2331,11 @@ def _source_ranges_for_lines(
                 break
         if not aligned:
             continue
+        aligned = _extend_source_ranges_over_continuations(
+            source_text,
+            source_rows,
+            aligned,
+        )
         line_ranges = aligned
         span_start = aligned[0]["start"]
         span_end = aligned[-1]["end"]
@@ -2419,6 +2424,40 @@ def _source_ranges_for_lines(
         seen_gaps.add(key)
         unique_gaps.append(gap)
     return by_line, tuple(unique_gaps)
+
+
+def _extend_source_ranges_over_continuations(
+    source_text: str,
+    source_rows: tuple[_RawRow, ...],
+    ranges: tuple[dict[str, int], ...],
+) -> tuple[dict[str, int], ...]:
+    """Keep an unnumbered yes/no branch attached to its preceding printed row."""
+    if not ranges:
+        return ranges
+    last_end = max(int(item["end"]) for item in ranges)
+    row_index = next(
+        (
+            index
+            for index, row in enumerate(source_rows)
+            if row.start < last_end <= row.end
+        ),
+        None,
+    )
+    if row_index is None:
+        return ranges
+    branch_row = re.compile(r"\s*(?:yes|no)\b", re.IGNORECASE)
+    if not branch_row.match(source_rows[row_index].text):
+        next_row = source_rows[row_index + 1] if row_index + 1 < len(source_rows) else None
+        if next_row is None or not branch_row.match(next_row.text):
+            return ranges
+    extended = [dict(item) for item in ranges]
+    for row in source_rows[row_index + 1 :]:
+        if _source_row_line(row) is not None:
+            break
+        if not row.text.strip():
+            continue
+        extended.extend(_source_ranges_for_fragment(source_text, row.start, row.end))
+    return tuple(extended)
 
 
 def _governed_source_row(row: _RawRow) -> tuple[str, list[str]] | None:
@@ -2725,10 +2764,11 @@ def _build_line_nodes(
         first, last = rows[0], rows[-1]
         face_end = last.end
         fragment = source_text[first.start:face_end]
-        if "<table" in fragment.lower() and "</table>" in fragment.lower():
-            nested_end = source_text.find("</table>", first.start)
+        if "<table" in fragment.lower():
+            nested_start = source_text.find("<table", first.start)
+            nested_end = source_text.find("</table>", nested_start)
             outer_end = source_text.find("</tr>", nested_end)
-            if nested_end >= 0 and outer_end >= 0:
+            if nested_start >= 0 and nested_end >= 0 and outer_end >= 0:
                 face_end = outer_end + len("</tr>")
         quote = _visible_text(source_text[first.start:face_end])
         citation = citation_for_line.get(line)
@@ -2751,8 +2791,8 @@ def _build_line_nodes(
                 data=data,
                 source_quote=quote,
                 source_start=first.start,
-                source_end=last.end,
-                source_spans=((first.start, last.end),),
+                source_end=face_end,
+                source_spans=((first.start, face_end),),
             )
         )
     return nodes

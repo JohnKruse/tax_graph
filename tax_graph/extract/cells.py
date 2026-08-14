@@ -337,6 +337,23 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
             {"span_id": section.section_id, "text": section.text}
             for section in sections
         )
+        governed_notes = list(
+            (document.fields or {})
+            .get("governed_note_provenance", {})
+            .get(line, [])
+        )
+        # Keep the row evidence span source-owned and clean. The separately
+        # governed note remains available on the cell face for prior-year
+        # operand checks and retains its citation provenance in metadata.
+        for note in governed_notes:
+            note_text = re.sub(
+                r"^\s*\*{0,2}note\.\*{0,2}\s*",
+                "",
+                str(note.get("text") or ""),
+                flags=re.IGNORECASE,
+            ).strip()
+            if note_text:
+                form_face_text = f"{note_text} {form_face_text}".strip()
         rows.append(
             CellRecord(
                 form=document.document_id,
@@ -2981,6 +2998,14 @@ def _canonical_external_operand_id(form: str, line: str, column: str = "") -> st
 
 def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
     """Return input-owned span ids whose source contains the returned quote."""
+    if row.metadata.get("governed_note_provenance"):
+        form_span_id = str(row.metadata.get("form_face_span_id") or "")
+        if form_span_id and _contains_verbatim(row.form_face_text, quote):
+            # The displayed face is an assembled packet: its row span is kept
+            # clean, while the governed note remains separately traceable in
+            # metadata. Accept the packet quote without fusing those source
+            # chunks in the persisted citation.
+            return [(form_span_id, row.form_face_text)]
     evidence_spans = row.metadata.get("evidence_spans")
     if evidence_spans:
         if isinstance(evidence_spans, Mapping):
