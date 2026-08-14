@@ -135,6 +135,49 @@ documents. The information returns. The 8978 heading defect. **Each is a later r
 
 ## Open for Architect
 
+**ARCHITECT REVIEW OF THE S106 REWORK (2026-08-14). REJECTED. IT SILENTLY CORRUPTED 122 CITATIONS,
+AND BOTH THE WORKER'S GUARD AND MY OWN VERIFICATION GAVE A FALSE GREEN FOR THE SAME REASON.**
+
+**FULL SUITE: 21 failed, 971 passed, 8 skipped, 1 xfailed in 1:07:02. THREE NEW REDS against the
+18-red baseline, and all three are CITATION CONSUMERS:**
+`test_mcp_m2::test_get_citation_by_id_and_fts_query`,
+`test_return_record_m5::test_render_memo_matches_golden_fixture`,
+`test_workbench_cells_m17::test_citations_resolve_to_verbatim_text_and_provenance`.
+**Those three guards did exactly what they exist for.**
+
+**THE DEFECT: S106 REWROTE `quoted_text` ON 122 CITATIONS INSTEAD OF BINDING RANGES TO IT.**
+Diffed every citation against `82962eb` (S105 accepted, pre-S106):
+- **122 citations changed**, spread across the core set: `form_6251` 25, `instructions_form_1040`
+  21, `instructions_schedule_d` 20, `schedule_1a` 9, `form_w2` 8, `form_1040` 6, `schedule_2` 6,
+  `schedule_a` 6.
+- **The text was TRUNCATED**: 30 lost a closing `)`, 23 lost a trailing `.`, 9 a `:`, 7 a `).`,
+  4 a `,`. `column (f).` became `column (f`; `...combine the result with column (g).` became
+  `...with column (g`.
+- **20 are NOT clean truncations at all** - the text changed mid-string. Those are the worst of the
+  122 because nothing about them reads as a trimming rule.
+
+**WHY EVERY GREEN CHECK MISSED IT, AND THIS IS THE LESSON WORTH KEEPING.** The invariant is
+*"`quoted_text` equals the source slice at its ranges."* **That can be satisfied two ways: find the
+right range, or corrupt `quoted_text` to match a wrong one.** S106 did the second, 122 times, so the
+guard passed trivially. **My own verification reported "290 with ranges, 0 reconstruction failures"
+and was worthless for the same reason** - I checked the relationship between two fields that had
+both moved. **An invariant over two mutable fields proves nothing unless one side is pinned.**
+
+**THE FIX.**
+1. **Ranges are found FOR the existing `quoted_text`. The text is never edited to fit a range.** If
+   no range reproduces a citation's text, that is a FINDING to report, not a licence to rewrite it.
+2. **Restore the 122 citations to their `82962eb` text.** `git show 82962eb:graph/2025/citations/<file>`
+   is the reference.
+3. **The guard must pin the text side.** Compare `quoted_text` against its pre-S106 value, or hold
+   the text fixed and assert a range reproduces it. **A guard both of whose sides the round may
+   rewrite is not a guard.**
+4. **The three consumer tests must go green** - they are the real acceptance signal here, not the
+   range count.
+
+**WHAT SURVIVES.** Removing the 74 unreachable gap citations was correct and stays. The three
+demonstrated packet paths still reach their rows. The region citations from S105 are untouched:
+225 with ranges, zero reconstruction failures, faces unchanged, prior-year gate intact.
+
 **ARCHITECT REVIEW OF S106 (2026-08-14). NOT ACCEPTED, AND THE HEADLINE NUMBER IS AN ARTIFACT OF
 MY OWN SPEC. THE ROUND NEEDS REWORK; THE MECHANISM IS SALVAGEABLE.**
 
