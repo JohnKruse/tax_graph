@@ -113,6 +113,22 @@ Global project canary: **Ledger Llama**.
   tests (~150s) also fit comfortably. STILL Architect-side regardless of the cap: full local
   partitions and Tier 3 shakedowns (CI's test job alone is ~47 min). If a command still does
   not fit, the honest `NOT RUN:` line above is the answer - never a guess.
+- **ANY command expected to run longer than 5 MINUTES gets a projected finish time in JOHN'S LOCAL
+  CLOCK, stated BEFORE it starts (John, 2026-08-14).** He needs to know when to come back and sit
+  down, not how many seconds something takes. Say **"starting the full suite now, expect it back
+  around 08:55"** - an actual wall-clock time, not "in about an hour". The machine clock is the
+  source of truth (`date` reports local time and the UTC offset; git stamps the same offset).
+  **This is a SWAG and must stay cheap.** Round to five minutes, do not measure to validate the
+  guess, and never delay the run to produce a better estimate. If a run lands more than ~20% off,
+  update the anchor below and move on. **Anchors measured on this machine, use them instead of
+  thinking:**
+  - **Full suite (`python -m pytest -q`): ~63 min.** Two independent runs: 1:02:47 and 1:03:55.
+  - **A corpus derivation run over the three-document dev set: ~1 hour** (and it is the run John
+    has said must not be spent to check a handful of rows).
+  - **A worksheet/pilot corpus measurement (`pilot/source_extents.py`): ~1 min.**
+  - **A focused pytest file: seconds to ~3 min**; the combined S105 focused set measured ~3 min.
+  - **Real preflight ~138s, manifest-building tests ~150s, workbench API+e2e together ~319s.**
+  **Under 5 minutes, say nothing** - the rule exists to protect his time, not to narrate.
 - **Fix your own defects, do not let them be silently patched.** When the Architect's verification
   finds a defect in your work, it is recorded in the Worker defect ledger below. Read the ledger
   BEFORE declaring a step and name, in your session-start checkpoint, which entries apply to what
