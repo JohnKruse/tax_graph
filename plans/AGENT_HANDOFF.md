@@ -131,6 +131,57 @@ documents. The information returns. The 8978 heading defect. **Each is a later r
 
 ## Open for Architect
 
+**ARCHITECT REVIEW OF S106 (2026-08-14). NOT ACCEPTED, AND THE HEADLINE NUMBER IS AN ARTIFACT OF
+MY OWN SPEC. THE ROUND NEEDS REWORK; THE MECHANISM IS SALVAGEABLE.**
+
+**"CORE RULE-BEARING CHARACTERS 13,989 -> 0" DOES NOT MEAN THE RULES BECAME REACHABLE.** The metric
+counts rule-bearing characters sitting in UNCLAIMED runs. **Minting a citation over each run makes
+it claimed, so the number goes to zero BY CONSTRUCTION** whether or not anything can use the text.
+Three checks, all failing:
+1. **NOTHING CONSUMES THE CITATIONS. 0 of 74 are referenced by any node** (`citation_refs` across
+   all of `graph/2025/nodes`), and the only readers of
+   `graph/2025/citations/source-extents-m106.yaml` are the writer that produces it and its own
+   tests. **No derivation path reads it.**
+2. **THE GOVERNING TEXT DOES NOT REACH THE ROW IT CLAIMS TO GOVERN.** `cite_form_1040_2025_source_3146_3201`
+   governs `['1b','1c']`, and neither row's face nor instruction packet contains its text. The rows
+   are byte-identical to before the round. **The hole S104 measured is exactly as deep as it was.**
+3. **50 OF THE 74 QUOTES ARE SCAFFOLDING, now carrying typed semantic labels.** A `note` governing
+   lines 4, 8 and 9 whose entire quote is `5.`; a `routing_sentence` governing 15 and 9 whose quote
+   is `| 8. _____ |`; a `table_header` whose quote is `1b . . . . . . . . . . . . . Attach Form(s)
+   W-2 here.` **`governs` is asserted on text that cannot govern anything.** That is worse than
+   inert - it is noise wearing a semantic label, in the graph.
+
+**THIS IS MY SPEC'S FAULT AND I AM RECORDING IT AS SUCH.** I wrote *"The measured drop falls ... That
+number is the round's headline and it must go down."* **A number that goes down when you relabel
+gaps is not a floor, it is a target, and Codex hit exactly the target I named - honestly and
+efficiently.** `AGENTS.md` already warns that measured numbers in a spec body become constants in
+the code; this is the same failure one level up. **The Worker did not overreach; the Architect
+specced the wrong thing.**
+
+**WHAT IS GENUINELY GOOD AND MUST NOT BE THROWN AWAY.** The promotion command is deterministic and
+idempotent, `core_documents` was used exactly as configured with nothing added, HTML citations were
+correctly left on their structural locators, the 8978 exemption was respected rather than widened,
+and the range-reconstruction invariant still holds for the region citations. **The binding of ranges
+to EXISTING core citations is the good half of this round.**
+
+**THE REWORK, AND THE FLOOR IS BEHAVIOURAL THIS TIME - NO CHARACTER COUNT IS THE HEADLINE.**
+1. **Remove `graph/2025/citations/source-extents-m106.yaml` and the 74 generated citations.** They
+   are unreferenced and mostly scaffolding. **The Worker removes them** - `AGENTS.md` says a Worker
+   fixes its own defects rather than having them silently patched.
+2. **KEEP the range binding on existing core citations**, with its guard.
+3. **Promotion needs a STRICTER bar than measurement.** S104's `rule_bearing` classifier was accepted
+   as a measurement aid with an explicit warning that **it must not graduate into extraction
+   policy**; S106 graduated it. A chunk may only be promoted if its quote survives scaffolding
+   removal as real prose AND its `governs` target is justified by the text naming that line.
+4. **THE NEW FLOOR: pick 3 to 5 rows where a governing chunk genuinely carries the rule, and show
+   the text REACHES the row's derivation packet.** Name them, show the packet before and after.
+   **If a row's derivation previously failed for want of that text, show what it does now** - a
+   different failure is progress; an unchanged failure is not. **One row proven reachable is worth
+   more than 13,989 characters relabelled.**
+
+**NOT RUN, DELIBERATELY.** No full suite. The graph artifact is about to be removed, so an hour
+spent validating this state buys nothing; the suite belongs on the reworked round.
+
 **S106 verification handoff:** no design decision is blocking. The remaining verification is
 environmental: pytest cannot enumerate the existing `.test_tmp\pytest-of-devbox` directory for
 `tmp_path` tests without violating the repository rule against `--basetemp` or overriding the
