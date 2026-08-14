@@ -186,10 +186,11 @@ RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025 --root .` -> gra
 629 citations schema-valid.
 RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`; `git diff --check`
 -> clean. NOT RUN: `node --check workbench/static/river.js` because `node` is unavailable.
-NOT RUN: full `python -m pytest -q` -> required S107 exit gate remains for the Architect-side
-600-second-plus corpus suite. The earlier bare combined consumer attempt had 40 passes and 5 known
-pytest temp-root ACL setup errors; the required consumer files were rerun cleanly with elevated
-filesystem access above.
+RAN: `.venv\\Scripts\\python.exe -m pytest -q` -> `16 failed, 612 passed, 6 skipped, 1 xfailed,
+369 errors in 1704.78s (0:28:24)`. The 369 errors are the known `.test_tmp\\pytest-of-devbox`
+ACL setup failures. The seven named non-e2e baseline IDs separately produced 4 assertion failures
+and 3 of the same ACL setup errors; no S107 test failed. The S107-focused guard set passed, including
+the retained core range guard and the removed S105 duplicate.
 
 ## Open for Architect
 
