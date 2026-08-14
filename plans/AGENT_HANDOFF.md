@@ -161,11 +161,13 @@ failures. No exclusion was added and none should have been.
 **Twenty stale `.test_tmp_s*` scratch directories remain ACL-blocked** and still emit `git status`
 warnings; nothing walks them today. They are removable at John's discretion, not by an agent.
 
-**Open for JOHN, not blocking, and NOT yet answered.** During bootstrap, "every cell receives
-meaningful human approval before use" and "a human does not read every new cell" cannot both hold.
-The pipeline can eliminate RE-review - approve once against stable semantics, fingerprint the
-clauses, carry the verdict while nothing changes - but not first review. **That decision shapes
-S53.** (Carried forward through the 2026-08-14 prune; it is recorded nowhere else.)
+**CLOSED 2026-08-14 BY JOHN. The bootstrap-review "contradiction" was never real and the question
+should not have survived this long.** Review is **per form, cell by cell, by the person adding the
+form, and a form does not circulate until every cell is approved.** Recipients read no cells because
+what ships is already approved. Expected shape is **~95% box-checking, ~5% comments** that explain
+the instruction so the pipeline gets it right next pass, and **a cell that cannot be brought to
+approval is a CODE BUG to fix in the pipeline**, not a cell to hand-correct or exempt. **Pinned into
+`../AGENTS.md` under the consequences that bind every round.** It does not gate S53.
 
 **Carried, not blocking.** The live nine-row `row_bench.py` leg has still never been spent and must
 not be claimed as run. `stash@{0}` holds the superseded first-pass S105 regression and can be

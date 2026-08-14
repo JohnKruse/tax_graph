@@ -28,6 +28,21 @@ it is the wrong change.
 - **Churn in the review contract has a real cost: it destroys the human's incentive to review at
   all.** Nobody invests judgement in a moving target. Stability of the review contract is a
   feature, and is prerequisite to asking John for review effort.
+- **Review is PER FORM and PRE-CIRCULATION** (John, 2026-08-14). A form is reviewed cell by cell by
+  the person adding it, and **does not enter the circulated repo until every cell is approved.**
+  Downstream consumers read no cells because what ships is already approved. **There is no tension
+  between "every cell is approved" and "a human does not read every cell"** - the first is the form
+  author's job, the second is the recipient's experience. Anyone adding a form is expected to work
+  the same way.
+- **Review should be ~95% box-checking and ~5% comments** (John, 2026-08-14). *"None of these is a
+  treasure map; the instructions are MEANT to be understood and no cell is so complicated."* The 5%
+  is explaining the instruction so the pipeline AI gets it right next pass. **If review starts
+  feeling like archaeology, that is a signal the pipeline is wrong - not that the reviewer needs
+  better tooling for deciphering cells.**
+- **A cell that CANNOT be brought to approval is a CODE BUG** (John, 2026-08-14). It goes back as a
+  defect to fix in the pipeline. **It is not a cell to hand-correct, annotate around, or exempt.**
+  This is the same rule as "a stored comment that fixes a cell is hand-authoring in disguise",
+  stated from the reviewer's side.
 
 Standing instructions for any agent working in this repository. **Read this first**, then the
 master plan at `docs/engineering-plan.md`. This file is canonical for roles, the Worker directive,
