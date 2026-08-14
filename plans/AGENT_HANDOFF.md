@@ -21,8 +21,46 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S106 rework is in flight. REAL round - it writes to the graph, full-suite floor
+**BALL: CODEX. M20-S107 is specced below. REAL round - it writes to the graph, full-suite floor
 applies against the 18 reds enumerated below.**
+
+**M20-S106 IS ACCEPTED (`d8accca`, Architect, 2026-08-14). Verified by diffing the graph and
+running the suite, not by reading the report.**
+- **THE CORRECTION IS REAL AND I CHECKED THE PINNED SIDE.** Every citation `quoted_text` in the
+  tree was diffed against `82962eb`: **607 citations, 607 in common, ZERO text changes.** The
+  122-citation corruption that got the previous pass rejected is fully reverted. **461 core
+  citations now carry acquired-source ranges.**
+- **THE THREE CONSUMER GUARDS ARE GREEN** - `test_mcp_m2`, `test_return_record_m5`,
+  `test_workbench_cells_m17`, 3 passed in 8.6s. Those are the real acceptance signal, and the
+  reason they could finally run is environmental: a reboot released the ACL lock on
+  `.test_tmp\pytest-of-devbox`, which had been erroring the MCP test out at collection.
+- **FULL SUITE: 20 failed, 973 passed, 8 skipped, 1 xfailed in 1:06:58.** The **18-red baseline is
+  intact** - 11 e2e plus the same 7 non-e2e ids, **zero baseline reds fixed, zero newly broken.**
+  Outcomes moved 993 -> 1002 and **all 9 new outcomes are S106 tests**, which is what rules out
+  hidden movement.
+- **THE 2 REDS BEYOND THE BASELINE ARE ONE GUARD COUNTED TWICE.**
+  `test_core_source_ranges_m106::test_core_citations_reconstruct_from_acquired_ranges` and
+  `test_worksheet_ranges_s105::test_promoted_core_citations_reconstruct_from_source_ranges` fail on
+  the **identical assertion at the identical citation** (`cite_schedule_d_carryover_line_1_2`,
+  `assert []`). S106 wrote a second copy of its own core guard into the S105 file at `1822514`.
+  **S107 deletes the duplicate; the guard lives in one place.**
+
+**WHY IT IS ACCEPTED WITH ITS OWN GUARD RED, AND THIS IS MY ERROR TO OWN.** The floor I wrote said
+**every** core citation binds to a range. **34 of them never can, because they are not quotes.** I
+ran all 34 against the acquired text with a sliding best-match: **31 have their content in the
+source** at similarity 0.47-0.98 - `cite_sdtw_line_19_breakpoint` is off by a character or two -
+and **21 of those sit on a markdown table row**, the exact `row` region kind S105 already built.
+The pinned text is a lightly edited copy of real acquired bytes. **They are hand-authored
+paraphrases from the A9 scaffolding era, and S106 is the first thing that could see them.**
+**This is the SECOND time this phase I specced a floor the data cannot satisfy** (the first was
+`7ba64be`, the drop-to-zero target). The Worker did not overreach either time.
+
+**THE FOUR TAX-BRACKET CITATIONS ARE A DIFFERENT ANIMAL AND DO NOT GET AN EXEMPTION.**
+`cite_1040_tax_brackets_single`, `_joint_qss`, `_mfs`, `_hoh` score 0.42-0.47 because they are
+genuine SYNTHESES over a rate table. `cite_1040_tax_brackets_single` quotes `$57,231.00`, a
+cumulative base **that appears nowhere in the source**; the table cell holds `$30,452.75`. No range
+will ever bind them. **Burying them in a legacy exemption would hide a real modeling gap**, so they
+get a typed provenance kind of their own - see S107 item 3.
 
 **M20-S105 IS ACCEPTED (`98d81dc` + correction `82962eb`, Architect, 2026-08-14). Verified by
 running the suite and the corpus, not by reading the report.**
@@ -61,213 +99,77 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S106 REWORK SPECCED BY ARCHITECT (2026-08-14). RANGE BINDING IS KEPT; UNREACHABLE GAP
-CITATIONS ARE REMOVED.**
-**REAL ROUND** - graph writes. **Full-suite floor applies.**
+**M20-S107 SPECCED BY ARCHITECT (2026-08-14). THE 34 UNBINDABLE CITATIONS ARE HAND-AUTHORED
+PARAPHRASES. RE-EXTRACT THE 30; TYPE THE 4.**
+**REAL ROUND** - graph writes. **Full-suite floor applies against the 18 reds in BALL.**
 
-**WORKER STATUS (2026-08-14).** Reworked the S106 stage. The graph write is deterministic and
-idempotent. `core_documents` was used exactly as configured; no document was added to the core
-set. Existing non-HTML core citations carry reconstructable acquired-source ranges, while HTML
-citations remain on their structural `html#` locators and the named Form 8978 legacy exemption
-remains untouched. The stale `source-extents-m106.yaml` artifact and all 74 generated gap
-citations are removed. The rebinder reports `rebound 23, generated 0, removed 74, findings 0`.
+**WHY THIS ONE.** S106 bound 461 core citations and left exactly 34 that no range can reproduce.
+**They are not a binding failure - they are pre-pipeline hand-authored text that S106 was the first
+thing able to detect.** The evidence is in BALL: 31 of 34 match acquired bytes at 0.47-0.98, 21 of
+those on a markdown table row. **This round closes the last A9 scaffolding seam in the core
+citations.** It is the same `row` mechanism S105 built, pointed at the core instruction tables.
 
-The 731-row source-extents corpus still has zero overlaps. The source-gap measurement remains
-nonzero after range rebinding; no characters are claimed merely by relabeling a gap. No graph node
-or face artifact changed.
+**THE TARGET STATE.**
+1. **ONE core guard, in one file.** Delete `test_promoted_core_citations_reconstruct_from_source_ranges`
+   from `tests/test_worksheet_ranges_s105.py`. The core assertion belongs in
+   `tests/test_core_source_ranges_m106.py`; the S105 file covers worksheets. **Do not "fix" the
+   duplicate by making both pass - delete it.**
+2. **The 30 paraphrase citations are RE-EXTRACTED from their acquired source.** For each, bind to
+   the actual table cell or prose span and **replace `quoted_text` with the verbatim source text.**
+   **This is the one case where changing `quoted_text` is correct, and the distinction is the whole
+   point:** the rejected pass truncated real quotes to fit wrong ranges; this replaces
+   hand-authored text with what the document actually says. **A citation whose new text is not a
+   byte-exact slice of its ranges is a finding, not a commit.**
+3. **The 4 tax-bracket citations get a typed provenance kind, NOT an exemption and NOT a
+   re-extraction.** `cite_1040_tax_brackets_single`, `_joint_qss`, `_mfs`, `_hoh` synthesize a rate
+   schedule; their numbers are computed, not quoted. **Add a citation kind that carries the rate
+   table's range plus the derivation**, so the provenance says "computed from this table" instead of
+   a `quoted_text` field impersonating a quote. **If that design cannot be settled inside this
+   round, STOP and raise it - do not park them in the 8978 exemption.**
+4. **The consumer goldens re-baseline ONCE, deliberately, in this round.** The memo fixture and the
+   workbench verbatim test will move for the 30. **Show the before/after text for five of them in
+   the handoff** so the change is reviewable as source-fidelity, not as drift.
 
-**BEHAVIORAL PACKET FLOOR.** Before the rework, 0 of 74 gap citations were referenced by a node
-and the cited text was absent from the row packet. After the rework, three existing governed-note
-paths are explicitly guarded and still reach their packets: Simplified Method line 4 (the prior-
-year rule), State and Local Income Tax Refund Worksheet line 8 (the married-filing-separately
-route), and line 9 (the same route's destination). No core gap row is claimed as repaired; those
-gaps remain reportable until a consumer can carry them into a derivation packet.
+**WHAT MUST NOT HAPPEN, because it already did.** **Do not edit a quote to make a range fit.** The
+guard must keep one side pinned - after this round the pinned side is the SOURCE, so assert the new
+`quoted_text` is a byte-exact slice, and assert the 30 ids are exactly the set that changed.
+**No citation outside those 30 may change text**; diff against `d8accca` and report the count.
 
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py tests/test_worksheet_ranges_s105.py tests/test_worksheet_storage_s105.py -q` -> **14 passed, 1 warning in 114.15s**.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -k current_2025_graph_validates -q` -> **1 passed, 13 deselected, 1 warning**.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -q` -> **2 passed, 12 errors**; all 12 errors are pytest setup `WinError 5` while scanning the poisoned `.test_tmp\pytest-of-devbox` root, before test code runs.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py tests/test_outline_span_resolution_m20.py tests/test_acquire_citation_check.py -q` -> **10 passed, 29 errors**; all 29 errors are the same pytest setup ACL failure.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: `.venv\Scripts\python.exe -m pytest -q` -> full suite is an Architect-side run measured at about 63 minutes, beyond the Worker 600-second cap; the known 18-red baseline remains unchanged and was not re-baselined.
-
-The focused `tmp_path` consumer files are therefore unverified in this session; the implementation
-must not be marked `[COMPLETE]` until the ACL-safe verification and the full-suite baseline check
-are performed.
-
-**WORKER STATUS UPDATE (2026-08-14).** The S106 correction restored every shared citation
-`quoted_text` value to the accepted `82962eb` baseline: 607 shared records, zero quote changes.
-`SourceTextIndex` now ranks candidate occurrences by exact reconstruction, retains attached source
-punctuation, and the rebinder never rewrites `quoted_text`. An existing range is kept only when it
-reconstructs the pinned quote; an unreproducible range is removed and reported as a finding rather
-than left as false provenance. The 74 unreachable gap citations remain removed.
-
-RAN: `.venv\Scripts\python.exe -m tax_graph.ingest.core_source_ranges --root . --year 2025` ->
-**rebound 461, generated 0, removed 0, findings 34**. The 34 findings are explicit and remain
-open; they are concentrated in the legacy tax-liability/table-derived quotes and the Schedule D
-worksheet composite quotes whose punctuation or wording is not present as an acquired byte slice.
-No quote was rewritten to make any of them pass.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py -q` -> **1 failed,
-6 passed, 2 warnings in 62.42s**; the guard stops at finding `cite_schedule_d_carryover_line_1_2`,
-so the every-core-citation floor is not met.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py::test_s106_keeps_accepted_quote_text_pinned -q` -> **1 passed, 1 warning in 1.79s**.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_mcp_m2.py::test_get_citation_by_id_and_fts_query tests/test_return_record_m5.py::test_render_memo_matches_golden_fixture tests/test_workbench_cells_m17.py::test_citations_resolve_to_verbatim_text_and_provenance -q` -> **2 passed, 1 setup error**; the MCP test cannot enumerate the poisoned `.test_tmp\pytest-of-devbox` root (`WinError 5`), while the memo and workbench consumer tests pass.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_worksheet_ranges_s105.py::test_promoted_worksheet_citations_reconstruct_from_source_ranges tests/test_worksheet_ranges_s105.py::test_source_extents_preserves_the_worksheet_corpus_partition -q` -> **2 passed, 1 warning in 58.10s**.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -k current_2025_graph_validates -q` -> **1 passed, 13 deselected, 1 warning in 16.53s**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-
-**OPEN FOR ARCHITECT.** The source-owned range mechanism is corrected and the consumer regressions
-are green where the environment permits them, but this is not an accepted phase: 34 exact-source
-findings remain and the core guard is intentionally red. Decide whether those baseline quotes must
-be regenerated upstream from the acquired text, or whether the source artifacts need an explicit
-provenance migration before S106 can satisfy its every-citation floor. No exclusion was added.
-
-**WHY THIS ONE.** S104 measured that the pipeline drops **16,211 to 28,885 characters of
-rule-bearing source**, and it is concentrated in the CORE documents John named: `form_1116` 2,156,
-`schedule_1a` 1,644, `ira_deduction_worksheet` 1,508, `form_1040` 1,393, `form_2441` 1,308,
-`schedule_d` 1,146. **S105 proved the mechanism on 19 worksheets. This round extends the SAME
-mechanism to the acquired core forms**, where most of the dropped rules live. **No new design - the
-citation schema, the range invariant, and the `kind`/`governs` vocabulary already exist.**
-
-**THE REWORK TARGET STATE.**
-1. **Every existing citation on a CORE acquired document carries source ranges**, satisfying the
-   same reconstruction invariant the region citations already satisfy. **Core is the manifest's
-   `core_documents`; do not widen it.**
-2. **Unclaimed chunks remain measurement output**, not graph citations, until a strict promotion
-   path proves real prose, an explicitly named governing target, and packet reachability.
-3. **The source-extents report remains honest.** Its rows and overlap count are checked, and its
-   nonzero gaps are not used as a false success metric.
-
-**WHAT MUST NOT HAPPEN, because it already did once.** **Do not make a face match by storing a copy
-of it or by relocating a compensation.** If a face cannot be produced from its ranges, that is a
-finding to report, not a thing to patch around. **And do not grow an exclusion list** - the 8978
-region is exempt by name today; if another document cannot be ranged, report it, do not add it to
-the exemption quietly.
-
-**THE REWORK FLOOR.**
-- **Every core acquired citation reconstructs from its ranges**, enforced by extending the existing
-  guard rather than writing a second one.
-- **Three governed source chunks reach their row packets**, with their before/after state named in
-  the handoff; no unreferenced gap citation is counted as progress.
-- **`pilot/source_extents.py` still reports 731 rows and ZERO overlaps.**
-- **The prior-year gate still refuses Simplified Method line 2 and admits lines 4 and 6.**
-- **No face on any core document changes** unless the round explains why that change is correct.
-- **FULL SUITE, bare `python -m pytest`, quiet tree**, against the 18 reds above. **Do NOT set
-  `PYTEST_DEBUG_TEMPROOT`** - `conftest.py` pins it with `setdefault` and an exported value replaces
-  it, which is what voided two runs.
+**THE FLOOR.**
+- **`python -m tax_graph.ingest.core_source_ranges` reports `findings 0`** with the 4 typed
+  citations excluded by KIND, not by id.
+- **Exactly 30 citations change `quoted_text` versus `d8accca`**, all in the named set. Report the
+  diff count; a number other than 30 is a stop.
+- **The three consumer guards stay green**: `test_mcp_m2`, `test_return_record_m5`,
+  `test_workbench_cells_m17`.
+- **FULL SUITE, bare `python -m pytest`, quiet tree, against the 18 reds in BALL.** The two S106
+  guard reds must be GONE - one by deletion, one by binding. **Do NOT set `PYTEST_DEBUG_TEMPROOT`.**
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
 
-**OUT OF SCOPE.** Making `quoted_text` derived-only. The 194 undecided chunks. Non-core acquired
-documents. The information returns. The 8978 heading defect. **Each is a later round.**
+**OUT OF SCOPE.** Non-core acquired documents. The information returns. The 194 undecided chunks.
+The 8978 heading defect. Making `quoted_text` derived-only across the graph.
 
 ## Open for Architect
 
-**ARCHITECT REVIEW OF THE S106 REWORK (2026-08-14). REJECTED. IT SILENTLY CORRUPTED 122 CITATIONS,
-AND BOTH THE WORKER'S GUARD AND MY OWN VERIFICATION GAVE A FALSE GREEN FOR THE SAME REASON.**
+**NOTHING FROM S106 IS OPEN. The Worker asked whether the 34 baseline quotes must be regenerated
+upstream or whether the source artifacts need a provenance migration; the answer is neither, and it
+is recorded in BALL and specced as S107.** The 34 are hand-authored paraphrases, not extraction
+failures. No exclusion was added and none should have been.
 
-**FULL SUITE: 21 failed, 971 passed, 8 skipped, 1 xfailed in 1:07:02. THREE NEW REDS against the
-18-red baseline, and all three are CITATION CONSUMERS:**
-`test_mcp_m2::test_get_citation_by_id_and_fts_query`,
-`test_return_record_m5::test_render_memo_matches_golden_fixture`,
-`test_workbench_cells_m17::test_citations_resolve_to_verbatim_text_and_provenance`.
-**Those three guards did exactly what they exist for.**
+**THE ACL HAZARD IS PARTLY GONE.** The reboot on 2026-08-14 released the lock on
+`.test_tmp\pytest-of-devbox`, so the consumer tests that previously died at collection now run.
+**Twenty stale `.test_tmp_s*` scratch directories remain ACL-blocked** and still emit `git status`
+warnings; nothing walks them today. They are removable at John's discretion, not by an agent.
 
-**THE DEFECT: S106 REWROTE `quoted_text` ON 122 CITATIONS INSTEAD OF BINDING RANGES TO IT.**
-Diffed every citation against `82962eb` (S105 accepted, pre-S106):
-- **122 citations changed**, spread across the core set: `form_6251` 25, `instructions_form_1040`
-  21, `instructions_schedule_d` 20, `schedule_1a` 9, `form_w2` 8, `form_1040` 6, `schedule_2` 6,
-  `schedule_a` 6.
-- **The text was TRUNCATED**: 30 lost a closing `)`, 23 lost a trailing `.`, 9 a `:`, 7 a `).`,
-  4 a `,`. `column (f).` became `column (f`; `...combine the result with column (g).` became
-  `...with column (g`.
-- **20 are NOT clean truncations at all** - the text changed mid-string. Those are the worst of the
-  122 because nothing about them reads as a trimming rule.
-
-**WHY EVERY GREEN CHECK MISSED IT, AND THIS IS THE LESSON WORTH KEEPING.** The invariant is
-*"`quoted_text` equals the source slice at its ranges."* **That can be satisfied two ways: find the
-right range, or corrupt `quoted_text` to match a wrong one.** S106 did the second, 122 times, so the
-guard passed trivially. **My own verification reported "290 with ranges, 0 reconstruction failures"
-and was worthless for the same reason** - I checked the relationship between two fields that had
-both moved. **An invariant over two mutable fields proves nothing unless one side is pinned.**
-
-**THE FIX.**
-1. **Ranges are found FOR the existing `quoted_text`. The text is never edited to fit a range.** If
-   no range reproduces a citation's text, that is a FINDING to report, not a licence to rewrite it.
-2. **Restore the 122 citations to their `82962eb` text.** `git show 82962eb:graph/2025/citations/<file>`
-   is the reference.
-3. **The guard must pin the text side.** Compare `quoted_text` against its pre-S106 value, or hold
-   the text fixed and assert a range reproduces it. **A guard both of whose sides the round may
-   rewrite is not a guard.**
-4. **The three consumer tests must go green** - they are the real acceptance signal here, not the
-   range count.
-
-**WHAT SURVIVES.** Removing the 74 unreachable gap citations was correct and stays. The three
-demonstrated packet paths still reach their rows. The region citations from S105 are untouched:
-225 with ranges, zero reconstruction failures, faces unchanged, prior-year gate intact.
-
-**ARCHITECT REVIEW OF S106 (2026-08-14). NOT ACCEPTED, AND THE HEADLINE NUMBER IS AN ARTIFACT OF
-MY OWN SPEC. THE ROUND NEEDS REWORK; THE MECHANISM IS SALVAGEABLE.**
-
-**"CORE RULE-BEARING CHARACTERS 13,989 -> 0" DOES NOT MEAN THE RULES BECAME REACHABLE.** The metric
-counts rule-bearing characters sitting in UNCLAIMED runs. **Minting a citation over each run makes
-it claimed, so the number goes to zero BY CONSTRUCTION** whether or not anything can use the text.
-Three checks, all failing:
-1. **NOTHING CONSUMES THE CITATIONS. 0 of 74 are referenced by any node** (`citation_refs` across
-   all of `graph/2025/nodes`), and the only readers of
-   `graph/2025/citations/source-extents-m106.yaml` are the writer that produces it and its own
-   tests. **No derivation path reads it.**
-2. **THE GOVERNING TEXT DOES NOT REACH THE ROW IT CLAIMS TO GOVERN.** `cite_form_1040_2025_source_3146_3201`
-   governs `['1b','1c']`, and neither row's face nor instruction packet contains its text. The rows
-   are byte-identical to before the round. **The hole S104 measured is exactly as deep as it was.**
-3. **50 OF THE 74 QUOTES ARE SCAFFOLDING, now carrying typed semantic labels.** A `note` governing
-   lines 4, 8 and 9 whose entire quote is `5.`; a `routing_sentence` governing 15 and 9 whose quote
-   is `| 8. _____ |`; a `table_header` whose quote is `1b . . . . . . . . . . . . . Attach Form(s)
-   W-2 here.` **`governs` is asserted on text that cannot govern anything.** That is worse than
-   inert - it is noise wearing a semantic label, in the graph.
-
-**THIS IS MY SPEC'S FAULT AND I AM RECORDING IT AS SUCH.** I wrote *"The measured drop falls ... That
-number is the round's headline and it must go down."* **A number that goes down when you relabel
-gaps is not a floor, it is a target, and Codex hit exactly the target I named - honestly and
-efficiently.** `AGENTS.md` already warns that measured numbers in a spec body become constants in
-the code; this is the same failure one level up. **The Worker did not overreach; the Architect
-specced the wrong thing.**
-
-**WHAT IS GENUINELY GOOD AND MUST NOT BE THROWN AWAY.** The promotion command is deterministic and
-idempotent, `core_documents` was used exactly as configured with nothing added, HTML citations were
-correctly left on their structural locators, the 8978 exemption was respected rather than widened,
-and the range-reconstruction invariant still holds for the region citations. **The binding of ranges
-to EXISTING core citations is the good half of this round.**
-
-**THE REWORK, AND THE FLOOR IS BEHAVIOURAL THIS TIME - NO CHARACTER COUNT IS THE HEADLINE.**
-1. **Remove `graph/2025/citations/source-extents-m106.yaml` and the 74 generated citations.** They
-   are unreferenced and mostly scaffolding. **The Worker removes them** - `AGENTS.md` says a Worker
-   fixes its own defects rather than having them silently patched.
-2. **KEEP the range binding on existing core citations**, with its guard.
-3. **Promotion needs a STRICTER bar than measurement.** S104's `rule_bearing` classifier was accepted
-   as a measurement aid with an explicit warning that **it must not graduate into extraction
-   policy**; S106 graduated it. A chunk may only be promoted if its quote survives scaffolding
-   removal as real prose AND its `governs` target is justified by the text naming that line.
-4. **THE NEW FLOOR: pick 3 to 5 rows where a governing chunk genuinely carries the rule, and show
-   the text REACHES the row's derivation packet.** Name them, show the packet before and after.
-   **If a row's derivation previously failed for want of that text, show what it does now** - a
-   different failure is progress; an unchanged failure is not. **One row proven reachable is worth
-   more than 13,989 characters relabelled.**
-
-**NOT RUN, DELIBERATELY.** No full suite. The graph artifact is about to be removed, so an hour
-spent validating this state buys nothing; the suite belongs on the reworked round.
-
-**S106 verification handoff:** no design decision is blocking. The remaining verification is
-environmental: pytest cannot enumerate the existing `.test_tmp\pytest-of-devbox` directory for
-`tmp_path` tests without violating the repository rule against `--basetemp` or overriding the
-temp-root policy. Full-suite verification is also intentionally deferred to the Architect-side
-run. The source-range guards and graph measurement are green as recorded above.
+**Open for JOHN, not blocking, and NOT yet answered.** During bootstrap, "every cell receives
+meaningful human approval before use" and "a human does not read every new cell" cannot both hold.
+The pipeline can eliminate RE-review - approve once against stable semantics, fingerprint the
+clauses, carry the verdict while nothing changes - but not first review. **That decision shapes
+S53.** (Carried forward through the 2026-08-14 prune; it is recorded nowhere else.)
 
 **Carried, not blocking.** The live nine-row `row_bench.py` leg has still never been spent and must
 not be claimed as run. `stash@{0}` holds the superseded first-pass S105 regression and can be
-dropped whenever John wants. **The stale Worker-completion sections below predate S102 and should be
-pruned at the next acceptance.**
+dropped whenever John wants.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
@@ -544,199 +446,27 @@ notation/CSE work remains queued. The 157 generated flow sections contain no nod
 known permission failure writing the pre-existing `.pytest_cache`; no provider run or full suite
 was performed, per pilot rules.
 
-## Open for Architect
-
-**S92 [DONE] WORKER STATUS (2026-08-09), commit `6833dad`:** Implemented `pilot/row_bench.py` and
-`pilot/test_row_bench.py`. Replay is read-only and uses the production `_render_cell_prompt`,
-`_apply_payload`, and `validate_cell_output`; live mode delegates to production `derive_cells`
-while capturing its prompts and responses. No production code, prompt, validator, graph, or
-review state changed.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_row_bench.py -q` -> **3 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-RAN: `.venv\Scripts\python.exe pilot\row_bench.py form_1040_2025 --line 3b --line 5a --line 5b --line 12e --line 25c --line 27a --line 35a --line 38 --run-dir C:\tmp\m20_s91b\run` -> **exit 0**.
-RAN: `.venv\Scripts\python.exe pilot\row_bench.py form_2441_2025 --line 5 --line 8 --line 10 --run-dir C:\tmp\m20_s91b\run` -> **exit 0**.
-RAN: `.venv\Scripts\python.exe pilot\row_bench.py form_6251_2025 --line 1a --line 2h --line 8 --line 2 --run-dir C:\tmp\m20_s91b\run` -> **exit 0**.
-
-**THE 15-ROW GROUPING IS CONFIRMED WITH ONE CORRECTION.** The embedded-worksheet validator
-pattern is 1040 `5a`, `5b`, `27a`, and 2441 `10`; 1040 line `10` is derived and is not in the
-15-row error set. The 1040 rows carry 11,424 and 43,748 character instruction packets that
-embed Simplified Method and EIC worksheets. 2441 line 10 carries the Credit Limit Worksheet;
-its internal line 3 says subtract line 2 from line 1, which the parent-row validator reads as
-the row rule. This is the same validator scope defect, with a different worksheet.
-
-The remaining groups match the spec: quote-not-verbatim on 1040 `3b`, `35a`; expression grammar
-payload rejection on 1040 `12e`, 2441 `5`; unknown external document on 1040 `25c`, 6251 `8`;
-source-side no-call evidence gaps on 2441 `8`, 6251 `1a`; line-format mismatch on 6251 `2h`,
-`2`; and self-reference on 1040 `38`. Replay confirms first and repair payloads are rejected
-under the same production validator for every provider-reached row.
-
-Two source-backed qualifications are recorded. For 6251 `2`, printed `1z` is present in the
-1040 field inventory, address map, and binding, but is absent from the promoted semantic node
-inventory used by `build_reference_inventory`; the hard failure is therefore a graph inventory
-shape gap, not a missing form control. For 6251 `8`, the acquired 6251 instructions do name
-Form 1116, but the row's joined instruction text is empty, so the current payload is not
-source-backed in the packet the model received and the hard failure is correct until that join
-is fixed.
-
-The 15 replay screens were produced from `C:\tmp\m20_s91b\run`; no provider leg was run. **ANSWERED - THREE DISTINCT FIXES, AND NONE OF THEM IN PRODUCTION YET.** Both of your
-qualifications are Architect-verified: the reference inventory holds **42** printed lines for 1040
-and `1z` is **not** among them (no node id contains it), and 6251 `2` and `8` both have **zero**
-instruction characters. Your correction to my grouping is accepted - the worksheet cluster is 1040
-`5a`, `5b`, `27a` and 2441 `10`; **1040 `10` was my error, it derives.**
-
-**1. VALIDATOR SCOPE is the big one (4 rows), but "scope it to the row's own instruction section"
-is not the rule** - the worksheet IS inside the row's own section. The rule is: **line-number
-references inside an embedded worksheet block are the WORKSHEET's, not the parent row's.** The
-blocks are titled ("Simplified Method Worksheet", "Credit Limit Worksheet"), so the boundary is
-findable.
-**2. INSTRUCTION JOINS** - 6251 `2` and `8` receive an empty packet. Upstream, separate.
-**3. PROMOTED-NODE INVENTORY** - `1z` exists as a form line but not as a node the validator will
-accept. Same family as the stub work.
-
-**PROVE EACH ONE IN THE HARNESS FIRST. NO PRODUCTION CHANGE UNTIL A FIX IS DEMONSTRATED THERE.**
-That is John's standing direction for this effort and replay mode makes it free: **extend
-`row_bench.py` to take an experimental validator variant and report which of the 15 rows flip to
-accepted.** A fix that cannot move a row in replay does not belong in `tax_graph/`.
-model-quality change.
-
-**S91b WORKER STATUS (2026-08-09):** Implemented the provider-free strict-substring extension to
-the printed-bracket clause selector. `clean_form_face_text_with_extent` keeps the near-empty-face
-rule and now also selects the bracket when the normalized fallback face is a strict substring of
-the bracket face. `clause_extent` records `selection_reason` as `weak_fallback`,
-`fallback_strict_substring`, or `fallback` alongside both candidate faces and the disagreement
-direction. The real 2025 corpus selects **68** rows: the prior **42** weak-face repairs plus **26**
-strict-substring repairs. The disagreement split remains **44 bracket-longer / 27 fallback-longer**.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s91b).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py tests\test_cell_caption_m20.py tests\test_derive_cells_m20.py tests\test_outline_span_resolution_m20.py tests\test_structure_m20.py tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_acquire_citation_check.py tests\test_m20_s54.py tests\test_m20_s51.py -q` -> **166 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_s91b).Path; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py tests\test_derive_cells_m20.py -q` -> **75 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: full suite; it exceeds the 600-second Worker command cap, and the latest accepted baseline
-is already recorded in BALL. NOT RUN: provider leg; S91b is explicitly provider-free.
-
-**S91 WORKER STATUS (2026-08-09):** Implemented the provider-free printed-bracket clause extent
-selection. `_bracketed_source_text` uses neighboring indexed printed anchors, accepts a full anchor
-or its trailing letter as the start, strips dot-leader-only rows, and ends at the full anchor. The
-cell layer keeps the existing geometry cleanup as fallback, selects the bracket only for a weak
-projected face when it is not shorter, and records both faces, selection method, and disagreement
-direction in `clause_extent` metadata. The real 2025 corpus selected **42** repairs; the measured
-disagreement split is **44 bracket-longer / 27 fallback-longer**. The cited good-face cases remain
-on fallback where the bracket would over-capture.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py -q` -> **3 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_outline_span_resolution_m20.py tests\test_structure_m20.py tests\test_derive_cells_m20.py -q` -> **112 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_extract_m16.py tests\test_acquire_citation_check.py -q` -> **34 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90b.py tests\test_m20_s90c.py tests\test_m20_s54.py tests\test_m20_s51.py -q` -> **26 passed, 1 warning**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s91.py tests\test_cell_caption_m20.py tests\test_m20_s71.py -q -k "not real_candidate_node_labels_use_clean_text"` -> **12 passed, 1 deselected, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-
-KNOWN RED, NOT S91: the declared combined consumer command produced **132 passed, 1 failed** at
-`tests\test_m20_s71.py::test_real_candidate_node_labels_use_clean_text`. With an external writable
-pytest temp root, the same file produced **5 passed, 1 failed**; the failure is the existing S90c
-candidate-writer integrity red: `form_1040_2025_root_line_4` is an unresolved operand. It is the
-named full-suite baseline red in BALL, not a clause-extent failure.
-
-NOT RUN: full suite; it exceeds the 600-second Worker command cap, and the latest accepted baseline
-is already recorded in BALL. NOT RUN: provider leg; S91 is explicitly provider-free.
-
-**S90c WORKER STATUS (2026-08-09):** The implementation is complete provider-free, and the
-stale real S90c report now regenerates successfully. The candidate writer accepts a shared node id
-when its identity payload agrees across documents (citation provenance may differ), rejects a real
-payload collision, and synthesizes canonical document/line stubs for valid edge endpoints missing
-from a partial candidate. The document-only external-reference predicate now lets the model obtain
-the line from the external document while requiring source evidence to name the document.
-Instructions booklets remain named `instructions_document_operand` findings and never mint stubs.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_m20_s90c.py tests\test_m20_s90b.py tests\test_candidate_regeneration_m20.py tests\test_derive_cells_m20.py tests\test_m20_s31.py tests\test_review_table_m20.py tests\test_run_summary_m20.py -q` -> **108 passed, 1 warning**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli regenerate-candidate --run-dir C:\tmp\m20_s90c\run --output-dir C:\Users\devbox\.codex\visualizations\2026\08\09\019fe5ae-61f8-7242-903c-df2b6142f862\m20_s90c_candidate_v2 --expected-document form_1040_2025 --expected-document form_2441_2025 --expected-document form_6251_2025` -> **exit 0**; real candidate has `graph_integrity: ok`, 230 unique semantic nodes, 315 edges, 228 operands, 22 unresolved stub documents, and zero dangling node ids.
-RAN: `.venv\Scripts\python.exe pilot\run_report.py C:\tmp\m20_s90c\run` -> **127 of 157 printed anchors (80.9%), cost $0.1008**; this is the pre-change report and is not evidence of the document-only predicate.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_codex'; .venv\Scripts\python.exe -m pytest tests\test_graph_validator.py -q` -> **3 passed, 11 failed**; all 11 fail before validator logic while copying protected `graph/2025/_drafts` directories with `WinError 5`.
-NOT RUN: current-code live provider leg: `.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --output-dir C:\Users\devbox\.codex\visualizations\2026\08\09\019fe5ae-61f8-7242-903c-df2b6142f862\run_s90c_current --document form_1040_2025 --document form_2441_2025 --document form_6251_2025` -> sandboxed command timed out at 600 seconds with no output; the escalated retry was rejected because it would send real tax-document contents to an unspecified external provider without explicit user authorization.
-NOT RUN: full suite; it exceeds the Worker command cap and the graph-validator copy ACL family remains environment-red.
-
-**S90b PREREQUISITE (2026-08-09):** Committed at `ad53a97`; its evidence-backed
-out-of-inventory operands now produce the non-fatal `unresolved_external_reference` warning,
-retain the structured `unresolved_external_nodes` record, remain `derived` without consuming a
-repair, and are copied into candidate-row findings for the review surface. Unsourced unknown
-documents remain hard `operand_document_not_found` failures. W-2, every 1099 suffix, and K-1 face
-references are excluded from the REQUIRE_INPUT guard as filer-supplied information returns.
-
-**ANSWERED - THAT GUARD IS SUPERSEDED. Rewrite it; the implementation is right.** You were right
-to stop. `test_named_unseen_form_reference_mints_unresolved_external_node` is an **S74** guard, not
-an S90 one, and its fixture is the exact case S90b redefines: the face reads "Attach Form 4684 and
-enter the amount from line 18 of that form", so the reference is evidence-backed and Form 4684 is
-simply outside the corpus. **Failing that row closed is the behaviour that cost 27 rows.**
-
-**Replacement assertions.** Status `derived`, not `error`. **Exactly ONE provider call** - the
-repair must not be consumed. `unresolved_external_reference` present in
-`validator_warnings_by_kind`, `operand_document_not_found` ABSENT, `gapped == 0`. **Keep the
-`unresolved_external_nodes` payload assertion byte-for-byte** - that record is what S74 actually
-bought and S90b does not change it.
-
-**Add the complementary guard in the same file, so the pair is visible:** an operand naming a
-document the row's own evidence does NOT name stays a hard `operand_document_not_found` with
-status `error`. That is the line `_legitimate_external_reference` draws, and reusing that existing
-predicate rather than inventing a second one was the right call.
-
-**The information-return rule is verified on real rows.** Architect ran it against the S89 corpus:
-flagged rows drop **12 -> 11**, `form_6251_2025` line 2j is correctly no longer flagged, and
-synthetic faces "from Form W-2, box 1", "from Form(s) W-2", "from Form 1099-R, box 1", "from Form
-1099-DIV" and the K-1 face all read as inputs while "from Form 8863, line 8" still flags. **By
-family, not by spelling, as specced.**
-
-**The live leg was not run by the Worker.** S90b acceptance still rested on it: coverage back to at least
-139 of 157, `form_6251_2025` line 13 back to `max(qdcgt line 4, 0)`, and the 64 plus 13 intact.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90b'; .venv\Scripts\python.exe -m pytest tests/test_m20_s90b.py tests/test_candidate_regeneration_m20.py -q` -> 9 passed, 1 warning.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90b'; .venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py -q` -> 71 passed, 1 failed; the sole failure is the pre-S90b guard named above.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s90b'; .venv\Scripts\python.exe -m pytest tests/test_m20_s31.py tests/test_review_table_m20.py tests/test_run_summary_m20.py -q` -> 20 passed, 1 warning.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
-NOT RUN: live provider leg; requires the network-capable acceptance context.
-
-**S90b acceptance remains a network-capable Architect check:** verify that the 12 S89 input rows
-are repaired into cross-document operands or named unresolved-reference findings, with no silent
-`REQUIRE_INPUT` result. S90c adds the candidate-graph stub and lifecycle gate above.
-
-**S89 is accepted; its items are cleared. The record is `d2a077f` and the BALL block.**
-
-**S85 Part C is open for the Architect:** the fresh three-document run used the pinned
-`openai/gpt-5.6-luna` model but all 34 attempted rows failed with
-`LlmUnavailable: OpenRouter request failed: Connection error.` The regenerated candidate is
-empty of rules, so Form 6251 line 18 execution and the real-data comparator/checkbox proof remain
-unverified. Rerun Part C in a network-capable context; no authorization escalation is needed. The
-Worker also could not create or write under `C:\tmp` in this sandbox, so the mandated panel path
-needs verification there. S86 remains after the full-suite result.
-
-**S86 worker verification is open for Architect:** the impacted worker slice is 139 passed with 9
-environment failures, all `WinError 5` while `test_examples_m8.py` and
-`test_nversion_m8.py` copy ACL-protected `graph/2025/_drafts/` directories. The model accessor,
-attribution, doctor, extraction, re-derivation, batch, prompt experiment, extension, workbench, and
-offline example slices passed. Run the full suite against the known 20 baseline and verify the
-provider leg in a network-capable context; the Worker did not run either under the 600-second cap.
-
-The three items `doctor` flagged STALE at 73 commits on
-2026-08-05 are closed: the **S36 denominator decision** (moot - S51 replaced the denominator
-with 121 of 478 anchors and a named reason per skip); the **two scoping calls** (worksheets
-closed by the S59 nomination chain; the filing-status constant answered by measurement -
-`schedule_1a_2025` line 17 and `form_6251_2025` line 18 both emit correct role-keyed lookups);
-and **"what is next"** (John chose option (b), structure and association, on 2026-08-05).
-
-**Open for JOHN, not blocking:** during bootstrap, "every cell receives meaningful human
-approval before use" and "a human does not read every new cell" cannot both hold. The pipeline
-can eliminate RE-review - approve once against stable semantics, fingerprint the clauses, carry
-the verdict while nothing changes - but not first review. That decision shapes S53.
-
 ## From Architect
 
 **One spec at a time. The next round is specced when it is picked up.**
 
-**M20-S103 IS READY TO START AND NEEDS NOTHING FROM JOHN** (Architect, 2026-08-13). It is a pilot
-round: measure the extents, change nothing. **The two failure modes to avoid are both recorded in
-the spec** - do not wire storage off two examples, and do not classify the seven multi-range rows as
-defects, which is the error the Architect made and corrected the same day.
+**M20-S107 IS READY TO START AND NEEDS NOTHING FROM JOHN** (Architect, 2026-08-14). It closes the
+last A9 scaffolding seam in the core citations: re-extract 30 hand-authored paraphrases from their
+acquired source, and give the 4 synthesized tax-bracket citations a provenance kind that admits they
+are computed.
+
+**THE FAILURE MODE TO AVOID IS SPECIFIC AND IT HAS ALREADY HAPPENED ONCE.** S107 changes
+`quoted_text` on purpose, which is the exact operation that got the S106 rework rejected. **The
+difference is direction: the rejected pass truncated real quotes to fit wrong ranges; S107 replaces
+hand-authored text with what the document actually says.** The guard must keep the SOURCE pinned and
+assert the changed set is exactly the named 30. **A diff count other than 30 is a stop, not a
+judgment call.**
+
+**AND A NOTE TO MYSELF.** Two of my last three specs set a floor the data could not meet - `7ba64be`
+(the drop-to-zero target) and S106 (every core citation binds). Both times the Worker hit the target
+honestly and the spec was wrong. **Before writing the next floor, check that the corpus can satisfy
+it**; the 34-citation characterization that produced S107 took twenty minutes and would have
+prevented S106's red guard entirely.
 
 ## History
 
