@@ -1,14 +1,14 @@
-"""M20-S106 guards for acquired core citation ranges and source-owned gaps."""
+"""M20-S106 guards for acquired core citation ranges and packet reachability."""
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
-import jsonschema
 import pytest
 import yaml
 
+from tax_graph.extract.cells import build_cell_frame_from_document
+from tax_graph.extract.inputs import load_document_input
 from pilot.source_extents import measure_source_extents
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.acquire.source_ranges import normalize_source_quote
@@ -67,34 +67,26 @@ def test_core_citations_reconstruct_from_acquired_ranges() -> None:
         assert _source_slice(citation, source) == normalize_source_quote(
             str(citation["quoted_text"])
         ), citation["citation_id"]
-    assert checked >= 500
+    # The rework removes the 74 unreferenced source-gap records. The invariant
+    # applies to every citation that remains, rather than to the old artifact's
+    # record count.
+    assert checked > 0
 
 
-def test_core_gap_citations_enumerate_the_external_contract() -> None:
-    """Promoted rule gaps use only the citation schema's typed vocabulary."""
-    core_ids = _core_ids()
+def test_unclaimed_core_gaps_are_not_promoted_without_a_reachable_consumer() -> None:
+    """The measurement aid cannot become a graph citation by itself."""
+    graph = load_graph(YEAR, root=ROOT, include_extensions=False)
     path = ROOT / "graph" / YEAR / "citations" / "source-extents-m106.yaml"
-    citations = yaml.safe_load(path.read_text(encoding="ascii")) or []
-    schema = json.loads(
-        (ROOT / "schemas" / "citation.schema.json").read_text(encoding="ascii")
+    assert not path.exists()
+    assert not any(
+        str(item.get("citation_id") or "").startswith("cite_")
+        and "_source_" in str(item.get("citation_id") or "")
+        for item in graph.items("citations")
     )
-    validator = jsonschema.Draft202012Validator(schema)
-    raw_root = ROOT / ".cache" / "raw" / YEAR
-
-    assert citations
-    assert all(item["source_document_id"] in core_ids for item in citations)
-    assert all(item["document_id"] == item["source_document_id"] for item in citations)
-    assert all(item["kind"] in {"note", "routing_sentence", "table_header"} for item in citations)
-    assert all(item["governs"] for item in citations)
-    assert len({item["citation_id"] for item in citations}) == len(citations)
-    for citation in citations:
-        validator.validate(citation)
-        source = (raw_root / f"{citation['source_document_id']}.txt").read_text(encoding="ascii")
-        assert _source_slice(citation, source) == citation["quoted_text"]
 
 
-def test_promoted_measurement_preserves_rows_and_clears_core_rule_gaps() -> None:
-    """Promotion reduces core rule-bearing source text without changing row coverage."""
+def test_source_gap_measurement_remains_nonzero_after_range_rebinding() -> None:
+    """Range binding must not claim source gaps merely by relabeling them."""
     report = measure_source_extents(
         root=ROOT,
         year=YEAR,
@@ -109,4 +101,37 @@ def test_promoted_measurement_preserves_rows_and_clears_core_rule_gaps() -> None
     )
     assert report["counts"]["rows"] == 731
     assert report["counts"]["overlaps"] == 0
-    assert remaining == 0
+    assert remaining > 0
+
+
+@pytest.mark.parametrize(
+    ("document_id", "line", "required_text"),
+    (
+        ("simplified_method_worksheet_2025", "4", "last year's worksheet on line 4"),
+        ("state_and_local_income_tax_refund_worksheet_2025", "8", "married filing separately"),
+        ("state_and_local_income_tax_refund_worksheet_2025", "9", "married filing separately"),
+    ),
+)
+def test_existing_governed_chunks_reach_row_derivation_packets(
+    document_id: str,
+    line: str,
+    required_text: str,
+) -> None:
+    """A governed source chunk is useful only when the row packet receives it."""
+    document = load_document_input(document_id, year=YEAR, root=ROOT)
+    frame = build_cell_frame_from_document(document)
+    row = next(item for item in frame.rows if item.line == line)
+    provenance = row.metadata.get("governed_note_provenance") or []
+    assert provenance
+    packet = " ".join(
+        (
+            row.form_face_text,
+            row.instruction_text,
+            " ".join(str(item.get("text") or "") for item in provenance),
+        )
+    ).casefold()
+    assert required_text.casefold() in packet
+    assert any(
+        required_text.casefold() in str(item.get("text") or "").casefold()
+        for item in provenance
+    )

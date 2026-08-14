@@ -92,21 +92,7 @@ def test_promoted_core_citations_reconstruct_from_source_ranges() -> None:
         assert _normalize(citation["quoted_text"]) == reconstructed, citation["citation_id"]
 
 
-def test_core_source_gap_citations_are_typed_and_governed() -> None:
-    """Rule-bearing promoted gaps retain their source range and line ownership."""
-    tiers = yaml.safe_load(
-        (ROOT / "config" / "document_tiers.yaml").read_text(encoding="ascii")
-    )
-    core_ids = set(tiers["core_documents"])
-    citations = yaml.safe_load(
-        (ROOT / "graph" / "2025" / "citations" / "source-extents-m106.yaml").read_text(
-            encoding="ascii"
-        )
-    )
-
-    assert citations
-    assert all(item["source_document_id"] in core_ids for item in citations)
-    assert all(item["document_id"] == item["source_document_id"] for item in citations)
-    assert all(item["kind"] in {"note", "routing_sentence", "table_header"} for item in citations)
-    assert all(item["governs"] for item in citations)
-    assert len({item["citation_id"] for item in citations}) == len(citations)
+def test_core_source_gaps_remain_outside_worksheet_promotion() -> None:
+    """Worksheet range promotion does not claim unrelated core source gaps."""
+    path = ROOT / "graph" / "2025" / "citations" / "source-extents-m106.yaml"
+    assert not path.exists()

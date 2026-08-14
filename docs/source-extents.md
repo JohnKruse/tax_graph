@@ -91,44 +91,54 @@ governs: "4"
 sentence, a table header. `governs` is a printed address, which keeps identity in canonical
 addresses exactly as `docs/canonical-addresses.md` requires.
 
-## M20-S106 promotion stage
+## M20-S106 range-rebinding stage
 
-The pilot remains read-only by default. The deterministic promotion command reads the manifest,
-the configured `core_documents`, acquired text, and the existing citation artifacts:
+The pilot remains read-only. The deterministic range-rebinding command reads the manifest, the
+configured `core_documents`, acquired text, and the existing citation artifacts:
 
 ```text
 .venv\Scripts\python.exe -m tax_graph.ingest.core_source_ranges --root . --year 2025
 ```
 
 It binds ranges to existing non-HTML core citations, preserves HTML citations on their structural
-`html#` locators, leaves the documented Form 8978 legacy exemption untouched, and writes
-source-owned rule-gap citations to `graph/2025/citations/source-extents-m106.yaml`. Running the
-command again is idempotent: it retains prior generated citation ids and appends only new ids.
+`html#` locators, and leaves the documented Form 8978 legacy exemption untouched. It does not
+write citations for unclaimed gaps. The former `source-extents-m106.yaml` artifact was removed
+because no derivation path consumed its records; a measured gap is not a reachable rule.
 
-The M20-S106 measurement used the full 731-row corpus with zero overlaps. Core source rule-bearing
-characters fell from 13,989 to zero after subtracting the promoted ranges. The per-source result
-was:
+The S106 measurement recorded 13,989 rule-bearing characters in configured core documents. The
+rework deliberately leaves those gaps reportable instead of making the number fall by relabeling
+text. A future promotion stage must require all of the following before it writes a citation:
 
-| Acquired core source | Before | After |
+- the quote remains real prose after layout scaffolding is removed;
+- every `governs` target is explicitly named by the source chunk; and
+- the citation is attached to a row and reaches that row's derivation packet.
+
+The first two checks alone are not a consumer. Until the third check exists, source-gap promotion
+is out of scope.
+
+The M20-S106 measurement used the full 731-row corpus with zero overlaps. Its per-source
+measurement was:
+
+| Acquired core source | Rule-bearing characters |
 | --- | ---: | ---: |
-| form_1040_2025 | 1,393 | 0 |
-| form_1099_div_2025 | 383 | 0 |
-| form_1099_int_2025 | 142 | 0 |
-| form_1099b_2025 | 771 | 0 |
-| form_1116_2025 | 2,156 | 0 |
-| form_6251_2025 | 995 | 0 |
-| form_w2_2025 | 200 | 0 |
-| instructions_form_1040_2025 | 2,940 | 0 |
-| instructions_schedule_d_2025 | 850 | 0 |
-| schedule_1a_2025 | 1,644 | 0 |
-| schedule_2_2025 | 267 | 0 |
-| schedule_a_2025 | 84 | 0 |
-| schedule_b_2025 | 1,018 | 0 |
-| schedule_d_2025 | 1,146 | 0 |
+| form_1040_2025 | 1,393 |
+| form_1099_div_2025 | 383 |
+| form_1099_int_2025 | 142 |
+| form_1099b_2025 | 771 |
+| form_1116_2025 | 2,156 |
+| form_6251_2025 | 995 |
+| form_w2_2025 | 200 |
+| instructions_form_1040_2025 | 2,940 |
+| instructions_schedule_d_2025 | 850 |
+| schedule_1a_2025 | 1,644 |
+| schedule_2_2025 | 267 |
+| schedule_a_2025 | 84 |
+| schedule_b_2025 | 1,018 |
+| schedule_d_2025 | 1,146 |
 
-The other configured core sources had zero rule-bearing characters before and after. The remaining
-rule-bearing text in the all-document report belongs to non-core worksheet owners and is deliberately
-outside this round's promotion scope.
+The other configured core sources had zero rule-bearing characters in this measurement. The
+remaining rule-bearing text in the all-document report belongs to non-core worksheet owners and is
+deliberately outside this round's scope.
 
 ## What this makes checkable
 
@@ -153,8 +163,9 @@ holds independently of any measured number.
    around it.**
 2. **Ranges belonging to one document do not overlap.** Bleed becomes arithmetic. Line 2 claiming
    characters past 118265 is visible without any regex hunting for the word `Note`.
-3. **Every chunk of a harvested region is claimed.** An unclaimed run of source text is the
-   unnumbered block we keep mis-filing, and it is reportable instead of silently absorbed.
+3. **An unclaimed source run remains reportable.** It is not silently absorbed into a citation or
+   promoted merely because a classifier called it rule-bearing. The run becomes a citation only
+   when the quote, governing target, and row-packet consumer are all proven.
 4. **The measured corpus equals the core set.** No document may be excluded from a measurement
    while still being changed by the code under measurement. `FACE_EXTENT_EXCLUSIONS` removing
    `form_2441_2025` from the S102 face report hid three separate failures on that document.

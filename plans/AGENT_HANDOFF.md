@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S106 is specced below. REAL round - it writes to the graph, full-suite floor
+**BALL: CODEX. M20-S106 rework is in flight. REAL round - it writes to the graph, full-suite floor
 applies against the 18 reds enumerated below.**
 
 **M20-S105 IS ACCEPTED (`98d81dc` + correction `82962eb`, Architect, 2026-08-14). Verified by
@@ -61,26 +61,31 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S106 SPECCED BY ARCHITECT (2026-08-14). THE ACQUIRED CORE FORMS GET RANGES, AND THE DROPPED
-RULES BECOME REACHABLE.**
+**M20-S106 REWORK SPECCED BY ARCHITECT (2026-08-14). RANGE BINDING IS KEPT; UNREACHABLE GAP
+CITATIONS ARE REMOVED.**
 **REAL ROUND** - graph writes. **Full-suite floor applies.**
 
-**WORKER STATUS (2026-08-14).** The S106 implementation is in the working tree and the graph
-write is deterministic and idempotent. `core_documents` was used exactly as configured; no
-document was added to the core set. Existing non-HTML core citations now carry reconstructable
-acquired-source ranges, while HTML citations remain on their structural `html#` locators and the
-named Form 8978 legacy exemption remains untouched. The generated artifact contains 74 typed,
-governed source-gap citations at `graph/2025/citations/source-extents-m106.yaml`.
+**WORKER STATUS (2026-08-14).** Reworked the S106 stage. The graph write is deterministic and
+idempotent. `core_documents` was used exactly as configured; no document was added to the core
+set. Existing non-HTML core citations carry reconstructable acquired-source ranges, while HTML
+citations remain on their structural `html#` locators and the named Form 8978 legacy exemption
+remains untouched. The stale `source-extents-m106.yaml` artifact and all 74 generated gap
+citations are removed. The rebinder reports `rebound 23, generated 0, removed 74, findings 0`.
 
-The 731-row source-extents corpus still has zero overlaps. Core source rule-bearing characters
-fell from 13,989 to 0 after promotion. Non-core worksheet owners account for the remaining 2,222
-rule-bearing characters in the all-document report. No graph node or face artifact changed.
+The 731-row source-extents corpus still has zero overlaps. The source-gap measurement remains
+nonzero after range rebinding; no characters are claimed merely by relabeling a gap. No graph node
+or face artifact changed.
 
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py -q` -> **3 passed,
-1 warning**.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_worksheet_ranges_s105.py tests/test_worksheet_storage_s105.py -q` -> **8 passed, 1 warning**.
+**BEHAVIORAL PACKET FLOOR.** Before the rework, 0 of 74 gap citations were referenced by a node
+and the cited text was absent from the row packet. After the rework, three existing governed-note
+paths are explicitly guarded and still reach their packets: Simplified Method line 4 (the prior-
+year rule), State and Local Income Tax Refund Worksheet line 8 (the married-filing-separately
+route), and line 9 (the same route's destination). No core gap row is claimed as repaired; those
+gaps remain reportable until a consumer can carry them into a derivation packet.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_core_source_ranges_m106.py tests/test_worksheet_ranges_s105.py tests/test_worksheet_storage_s105.py -q` -> **14 passed, 1 warning in 114.15s**.
 RAN: `.venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -k current_2025_graph_validates -q` -> **1 passed, 13 deselected, 1 warning**.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_outline_span_resolution_m20.py tests/test_acquire_citation_check.py -q` -> **9 passed, 9 errors**; the 9 errors are pytest setup `WinError 5` while scanning the poisoned `.test_tmp\pytest-of-devbox` root, before test code runs.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_graph_validator.py -q` -> **2 passed, 12 errors**; all 12 errors are pytest setup `WinError 5` while scanning the poisoned `.test_tmp\pytest-of-devbox` root, before test code runs.
 RAN: `.venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py tests/test_outline_span_resolution_m20.py tests/test_acquire_citation_check.py -q` -> **10 passed, 29 errors**; all 29 errors are the same pytest setup ACL failure.
 RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
 RAN: `git diff --check` -> **clean**.
@@ -97,15 +102,14 @@ rule-bearing source**, and it is concentrated in the CORE documents John named: 
 mechanism to the acquired core forms**, where most of the dropped rules live. **No new design - the
 citation schema, the range invariant, and the `kind`/`governs` vocabulary already exist.**
 
-**THE TARGET STATE.**
-1. **Every citation on a CORE acquired document carries source ranges**, satisfying the same
-   reconstruction invariant the region citations already satisfy. **Core is the manifest's
+**THE REWORK TARGET STATE.**
+1. **Every existing citation on a CORE acquired document carries source ranges**, satisfying the
+   same reconstruction invariant the region citations already satisfy. **Core is the manifest's
    `core_documents`; do not widen it.**
-2. **Rule-bearing unclaimed chunks on those documents become citations** with `kind` and `governs`,
-   the way the worksheet notes and routing sentences did.
-3. **The measured drop falls.** Re-run `pilot/source_extents.py` and report the rule-bearing
-   unclaimed character count per document **before and after**. **That number is the round's
-   headline and it must go down.**
+2. **Unclaimed chunks remain measurement output**, not graph citations, until a strict promotion
+   path proves real prose, an explicitly named governing target, and packet reachability.
+3. **The source-extents report remains honest.** Its rows and overlap count are checked, and its
+   nonzero gaps are not used as a false success metric.
 
 **WHAT MUST NOT HAPPEN, because it already did once.** **Do not make a face match by storing a copy
 of it or by relocating a compensation.** If a face cannot be produced from its ranges, that is a
@@ -113,11 +117,11 @@ finding to report, not a thing to patch around. **And do not grow an exclusion l
 region is exempt by name today; if another document cannot be ranged, report it, do not add it to
 the exemption quietly.
 
-**THE FLOOR.**
+**THE REWORK FLOOR.**
 - **Every core acquired citation reconstructs from its ranges**, enforced by extending the existing
   guard rather than writing a second one.
-- **The per-document rule-bearing unclaimed characters are reported before and after**, and the
-  total drops. **State the new number plainly even if the drop is smaller than hoped.**
+- **Three governed source chunks reach their row packets**, with their before/after state named in
+  the handoff; no unreferenced gap citation is counted as progress.
 - **`pilot/source_extents.py` still reports 731 rows and ZERO overlaps.**
 - **The prior-year gate still refuses Simplified Method line 2 and admits lines 4 and 6.**
 - **No face on any core document changes** unless the round explains why that change is correct.

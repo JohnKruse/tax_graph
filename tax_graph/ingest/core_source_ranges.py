@@ -1,8 +1,10 @@
-"""Rebind promoted core citations and promote rule-bearing source gaps.
+"""Rebind promoted core citations to acquired source ranges.
 
 This stage is deterministic.  It reads the acquired text and the existing
 promoted graph, then writes regenerated citation artifacts.  It never invents
-prose or claims a human review decision.
+prose or claims a human review decision.  Unclaimed source gaps remain a
+read-only measurement until a consumer can carry their provenance into a row
+packet; measuring a gap is not enough to promote it.
 """
 
 from __future__ import annotations
@@ -18,8 +20,6 @@ import yaml
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.acquire.source_ranges import SourceTextIndex, normalize_source_quote
 from tax_graph.config import get_config_value, load_config
-from tax_graph.io.loader import load_graph
-from pilot.source_extents import measure_source_extents
 
 
 HTML_LOCATOR_RE = re.compile(r"^html#", re.IGNORECASE)
@@ -211,120 +211,18 @@ def _bind_citation(
     return True
 
 
-def _gap_kind(run: Mapping[str, Any], source_text: str) -> str:
-    kind = str(run.get("kind") or "")
-    if kind == "note":
-        return "note"
-    if kind == "routing_sentence":
-        return "routing_sentence"
-    if kind == "table_or_header":
-        return "table_header"
-    text = source_text[int(run["start"]) : int(run["end"])]
-    if re.search(r"\b(?:go\s+to|skip\s+lines?|otherwise|then)\b", text, re.IGNORECASE):
-        return "routing_sentence"
-    if re.search(r"\b(?:note|caution|must|only\s+if|if|unless|when)\b", text, re.IGNORECASE):
-        return "note"
-    return "table_header"
-
-
-def _gap_governs(run: Mapping[str, Any]) -> list[str]:
-    governs = [str(value).lower() for value in run.get("governs") or [] if str(value)]
-    if governs:
-        return list(dict.fromkeys(governs))
-    result: list[str] = []
-    for owner in run.get("between") or []:
-        match = re.search(r":([0-9]+[a-z]?)$", str(owner), re.IGNORECASE)
-        if match:
-            result.append(match.group(1).lower())
-    return list(dict.fromkeys(result))
-
-
-def _subtract_ranges(
-    start: int,
-    end: int,
-    covered: Iterable[Mapping[str, int]],
-) -> tuple[dict[str, int], ...]:
-    pieces = [(start, end)]
-    for item in sorted(covered, key=lambda value: int(value["start"])):
-        cover_start = int(item["start"])
-        cover_end = int(item["end"])
-        next_pieces: list[tuple[int, int]] = []
-        for piece_start, piece_end in pieces:
-            if cover_end <= piece_start or cover_start >= piece_end:
-                next_pieces.append((piece_start, piece_end))
-                continue
-            if piece_start < cover_start:
-                next_pieces.append((piece_start, min(piece_end, cover_start)))
-            if cover_end < piece_end:
-                next_pieces.append((max(piece_start, cover_end), piece_end))
-        pieces = next_pieces
-    return tuple(
-        {"start": piece_start, "end": piece_end}
-        for piece_start, piece_end in pieces
-        if piece_start < piece_end
-    )
-
-
-def _new_gap_citations(
-    report: Mapping[str, Any],
-    *,
-    core_ids: set[str],
-    sources: Mapping[str, str],
-    existing: Iterable[Mapping[str, Any]],
-) -> list[dict[str, Any]]:
-    covered: dict[str, list[dict[str, int]]] = defaultdict(list)
-    existing_ids: set[str] = set()
-    for citation in existing:
-        existing_ids.add(str(citation.get("citation_id") or ""))
-        source_id = str(citation.get("source_document_id") or "")
-        if source_id not in core_ids or citation.get("kind") == "row":
-            continue
-        covered[source_id].extend(
-            dict(item)
-            for item in citation.get("ranges") or ()
-            if isinstance(item, Mapping)
-        )
-
-    generated: list[dict[str, Any]] = []
-    for run in report.get("unclaimed_runs") or ():
-        source_id = str(run.get("source_document_id") or "")
-        if source_id not in core_ids or run.get("partition") != "rule_bearing":
-            continue
-        governs = _gap_governs(run)
-        if not governs:
-            continue
-        source = sources[source_id]
-        ranges = _subtract_ranges(int(run["start"]), int(run["end"]), covered[source_id])
-        for item in ranges:
-            citation_id = f"cite_{source_id}_source_{item['start']}_{item['end']}"
-            if citation_id in existing_ids:
-                continue
-            quote = normalize_source_quote(source[item["start"] : item["end"]])
-            if not quote:
-                continue
-            generated.append(
-                {
-                    "citation_id": citation_id,
-                    "document_id": source_id,
-                    "source_document_id": source_id,
-                    "locator": f"source_document={source_id};range={item['start']}:{item['end']}",
-                    "quoted_text": quote,
-                    "ranges": [item],
-                    "kind": _gap_kind(run, source),
-                    "governs": governs,
-                }
-            )
-            existing_ids.add(citation_id)
-            covered[source_id].append(item)
-    return generated
-
-
 def rebind_core_source_ranges(
     *,
     root: str | Path,
     year: str | int = "2025",
 ) -> dict[str, Any]:
-    """Regenerate core text citations and source-owned rule-gap citations."""
+    """Regenerate existing core citations without promoting measured gaps.
+
+    Source-extents measurement identifies candidate gaps, but this stage does
+    not turn those candidates into graph citations.  A future promotion stage
+    must first prove a real prose chunk, a line-specific governing relation,
+    and a consumer that places the citation in the row's derivation packet.
+    """
     root_path = Path(root).resolve()
     year_text = str(year)
     manifest = load_manifest(root=root_path)
@@ -334,14 +232,19 @@ def rebind_core_source_ranges(
         if entry.document_id in set(_load_core_document_ids(root_path))
     }
     citation_root = root_path / "graph" / year_text / "citations"
+    generated_path = citation_root / "source-extents-m106.yaml"
+    removed_gap_citations = 0
+    if generated_path.exists():
+        payload = yaml.safe_load(generated_path.read_text(encoding="ascii")) or []
+        removed_gap_citations = len(payload) if isinstance(payload, list) else 0
     records_by_path: dict[Path, list[dict[str, Any]]] = {}
-    all_records: list[dict[str, Any]] = []
     source_ids: set[str] = set()
     for path in sorted(citation_root.glob("*.yaml")):
+        if path == generated_path:
+            continue
         payload = yaml.safe_load(path.read_text(encoding="ascii")) or []
         records = [dict(item) for item in payload]
         records_by_path[path] = records
-        all_records.extend(records)
         source_ids.update(
             str(item.get("source_document_id") or "")
             for item in records
@@ -377,56 +280,6 @@ def rebind_core_source_ranges(
             else:
                 findings.append(str(citation.get("citation_id") or ""))
 
-    report = measure_source_extents(root=root_path, year=year_text)
-    generated = _new_gap_citations(
-        report,
-        core_ids=core_ids,
-        sources=sources,
-        existing=[
-            item
-            for path, records in records_by_path.items()
-            if path != citation_root / "source-extents-m106.yaml"
-            for item in records
-        ],
-    )
-    generated_path = citation_root / "source-extents-m106.yaml"
-    current_rule_runs = [
-        (
-            str(run.get("source_document_id") or ""),
-            int(run["start"]),
-            int(run["end"]),
-        )
-        for run in report.get("unclaimed_runs") or ()
-        if run.get("partition") == "rule_bearing"
-    ]
-
-    def _is_current_generated(item: Mapping[str, Any]) -> bool:
-        ranges = item.get("ranges") or ()
-        if len(ranges) != 1:
-            return False
-        item_range = ranges[0]
-        item_source = str(item.get("source_document_id") or "")
-        item_start = int(item_range.get("start", -1))
-        item_end = int(item_range.get("end", -1))
-        return any(
-            item_source == source_id and item_start >= start and item_end <= end
-            for source_id, start, end in current_rule_runs
-        )
-
-    prior_generated = [
-        item
-        for item in records_by_path.get(generated_path, [])
-        if str(item.get("citation_id") or "").startswith("cite_")
-        and _is_current_generated(item)
-    ]
-    generated.extend(prior_generated)
-    generated_by_id = {
-        str(item.get("citation_id")): item for item in prior_generated
-    }
-    generated_by_id.update(
-        {str(item.get("citation_id")): item for item in generated}
-    )
-    generated_records = [generated_by_id[key] for key in sorted(generated_by_id)]
     for path, records in records_by_path.items():
         if path not in eligible_paths:
             continue
@@ -435,22 +288,15 @@ def rebind_core_source_ranges(
             encoding="ascii",
             newline="\n",
         )
-    generated_path.write_text(
-        yaml.safe_dump(
-            generated_records,
-            sort_keys=False,
-            allow_unicode=False,
-            width=120,
-        ),
-        encoding="ascii",
-        newline="\n",
-    )
+    if generated_path.exists():
+        generated_path.unlink()
     return {
         "core_documents": sorted(core_ids),
         "rebound": changed,
         "findings": sorted(findings),
-        "generated_gap_citations": len(generated_records),
-        "generated_path": str(generated_path),
+        "generated_gap_citations": 0,
+        "removed_gap_citations": removed_gap_citations,
+        "generated_path": None,
     }
 
 
@@ -470,6 +316,7 @@ def main() -> int:
         "core source ranges: "
         f"rebound {result['rebound']}, "
         f"generated {result['generated_gap_citations']}, "
+        f"removed {result['removed_gap_citations']}, "
         f"findings {len(result['findings'])}"
     )
     if result["findings"]:
