@@ -144,6 +144,24 @@ RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py -q` -> 27 pass
 The full `tests\test_background_m20.py -q` run remains 1 failed, 8 passed: its existing prompt-bench
 fixture omits the `line_anchors` metadata required by the current span resolver.
 
+**WORKER STATUS (CODEX, 2026-08-15): S108 ITEMS 2 AND 3 IMPLEMENTED.** Item 2 no longer applies
+document- or property-level findings as blanket batch flags. The issue identity now flags only the
+implicated object; a regression proves an unrelated object routes to `accepted`. Commit `c2dc0d8`.
+Item 3 now resolves 8949 outbound sources against both legacy and geometry-derived section ids, and
+`extract_year` records a document failure and continues through the manifest. The CLI prints the
+per-document status and accepted/review/issues counts. Commit `4377c30`.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py -q` -> 6 passed.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new';
+.venv\Scripts\python.exe -m pytest tests\test_m20_s108.py -q` -> 2 passed.
+RAN: same temp-root command with `tests\test_batch_extraction_m10.py -q` -> 2 passed in 98.26s.
+RAN: same temp-root command with `tests\test_background_m20.py -k
+'explicit_printed_constant or printed_constant_pair or constant_multiplier_escape_hatch' -q` ->
+3 passed, 6 deselected. `tools/check_ascii.py` on changed source/tests -> ASCII check OK;
+`git diff --check` -> clean.
+NOT RUN: live model or corpus re-derivation; Architect owns the 11-case before/after gap report,
+per-document accepted/review measurement, and the full-year derivation report.
+
 **CONTEXT, BECAUSE IT REFRAMES EVERYTHING.** Derivation produced nothing between 2026-08-01 and
 2026-08-15. The cause was ONE packet-assembly bug, fixed at `4990f20`: the evidence packet handed
 every anchored line the form's cover page, and the model - which answered CORRECTLY - was rejected
