@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-import re
+import math
 from typing import Any
 
 from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
@@ -58,6 +58,20 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                             "properties": {
                                 "form": {"type": "string", "minLength": 1},
                                 "line": {"type": "string", "minLength": 1},
+                                "role": {"type": "string", "minLength": 1},
+                            },
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["constant"],
+                            "properties": {
+                                "constant": {"type": "number"},
+                                "role": {"type": "string", "minLength": 1},
+                                "value_type": {
+                                    "type": "string",
+                                    "enum": ["currency", "integer", "percentage"],
+                                },
                             },
                         },
                     ],
@@ -141,7 +155,7 @@ def validate_formula_plan(
     root: str | Path | None = None,
     outline_node: OutlineNode | None = None,
 ) -> None:
-    """Validate a human-language answer or a legacy test-plan response."""
+    """Validate a human-language answer with line or printed-constant operands."""
     allowed_operations = set(closed_operations(root=root))
     allowed_spans = {span.span_id for span in spans}
     if "operation_plan" not in plan:
@@ -156,17 +170,15 @@ def validate_formula_plan(
                 if not source_line.strip():
                     raise MicroExtractionError("source_lines contains an empty line")
             elif isinstance(source_line, dict):
-                if not str(source_line.get("form", "")).strip() or not str(source_line.get("line", "")).strip():
+                if "constant" in source_line:
+                    _validate_printed_constant(source_line)
+                elif not str(source_line.get("form", "")).strip() or not str(source_line.get("line", "")).strip():
                     raise MicroExtractionError("cross-form source line requires form and line")
             else:
-                raise MicroExtractionError("source_lines item must be a line string or form/line object")
-        if not (
-            str(operation) == "MULTIPLY"
-            and len(source_lines) == 1
-            and outline_node is not None
-            and _constant_multiplier_from_label(outline_node.label) is not None
-        ):
-            _validate_source_line_arity(str(operation), len(source_lines))
+                raise MicroExtractionError(
+                    "source_lines item must be a line string, form/line object, or constant object"
+                )
+        _validate_source_line_arity(str(operation), len(source_lines))
         quote = plan.get("quote")
         if not isinstance(quote, str) or not quote.strip():
             raise MicroExtractionError("quote must be a non-empty string")
@@ -249,6 +261,9 @@ def _formula_prompt(
             "Which printed lines does this line use, and what operation combines them?",
             "Return operation, source_lines, and quote.",
             "Use the form's printed line numbers in source_lines, never internal ids.",
+            "For a printed numeric constant, include {\"constant\": number} in source_lines, not a fake line number.",
+            "Set value_type to currency for dollar amounts and percentage for rates or decimal factors.",
+            "For lookup branches, include the branch role on the constant object; use default for an unqualified branch and full filing-status names otherwise.",
             "For SUBTRACT and DIVIDE, source_lines are in computation order: the value being reduced comes first.",
             "",
             f"target line label: {outline_node.label}",
@@ -320,15 +335,17 @@ def _quote_matches(quote: str, source: str) -> bool:
     return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
 
 
-def _constant_multiplier_from_label(label: str) -> float | None:
-    """Extract a printed percentage multiplier from a form-line label."""
-    parenthesized = re.search(r"\(\s*(0?\.\d+)\s*\)", str(label))
-    if parenthesized:
-        return float(parenthesized.group(1))
-    percentage = re.search(r"(?<![\w.])(\d+(?:\.\d+)?)\s*%", str(label))
-    if percentage:
-        return float(percentage.group(1)) / 100.0
-    return None
+def _validate_printed_constant(source_line: dict[str, Any]) -> None:
+    """Validate one explicit numeric constant operand from the printed form."""
+    value = source_line.get("constant")
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(float(value)):
+        raise MicroExtractionError("printed constant must be a finite number")
+    role = source_line.get("role")
+    if role is not None and (not isinstance(role, str) or not role.strip()):
+        raise MicroExtractionError("printed constant role must be a non-empty string")
+    value_type = source_line.get("value_type")
+    if value_type is not None and value_type not in {"currency", "integer", "percentage"}:
+        raise MicroExtractionError("printed constant value_type is unsupported")
 
 
 def _validate_source_line_arity(operation: str, count: int) -> None:

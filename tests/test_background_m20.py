@@ -223,7 +223,7 @@ def test_prompt_bench_command_prints_exact_prompt_response_and_decision(
     assert "span_form_1040_2025_0001" in output
 
 
-def test_multiplier_constant_is_recovered_from_the_printed_line(tmp_path: Path) -> None:
+def test_explicit_printed_constant_becomes_a_cited_parameter_node(tmp_path: Path) -> None:
     document = SourceDocumentInput(
         document_id="schedule_a_2025",
         kind="schedule",
@@ -247,7 +247,7 @@ def test_multiplier_constant_is_recovered_from_the_printed_line(tmp_path: Path) 
     )
     plan = {
         "operation": "MULTIPLY",
-        "source_lines": ["2"],
+        "source_lines": ["2", {"constant": 0.075}],
         "quote": "Multiply line 2 by 7.5% (0.075)",
     }
 
@@ -264,7 +264,73 @@ def test_multiplier_constant_is_recovered_from_the_printed_line(tmp_path: Path) 
     literal = next(item for item in batch.items("nodes") if "constant_value" in item.data)
     edge = next(item for item in batch.items("edges") if item.data["role"] == "multiplier")
     assert literal.data["constant_value"] == 0.075
+    assert literal.data["node_type"] == "parameter"
+    assert literal.data["value_type"] == "percentage"
+    assert literal.data["citation_refs"] == ["cite_span_form"]
     assert edge.data["source"] == literal.data["node_id"]
+
+
+def test_printed_constant_pair_keeps_lookup_roles_and_shared_citation(tmp_path: Path) -> None:
+    document = SourceDocumentInput(
+        document_id="schedule_1a_2025",
+        kind="schedule",
+        year="2025",
+        url="https://example.test/schedule-1a.pdf",
+        text="9 Enter $150,000 ($300,000 if married filing jointly) 9\n",
+        text_path=tmp_path / "schedule_1a.txt",
+    )
+    node = OutlineNode(
+        "section_1_line_9",
+        "line",
+        "Enter $150,000 ($300,000 if married filing jointly)",
+        line_anchor="9",
+    )
+    span = CandidateSpan(
+        "span_form",
+        document.document_id,
+        "source",
+        "page 1, line 9",
+        "Enter $150,000 ($300,000 if married filing jointly)",
+    )
+    plan = {
+        "operation": "LOOKUP_TABLE",
+        "source_lines": [
+            {"constant": 150000, "role": "default", "value_type": "currency"},
+            {"constant": 300000, "role": "married_filing_jointly", "value_type": "currency"},
+        ],
+        "quote": "Enter $150,000 ($300,000 if married filing jointly)",
+    }
+
+    validate_formula_plan(plan, spans=[span], root=ROOT, outline_node=node)
+    batch = assemble_formula_plan(document, node, plan, [span], root=ROOT)
+
+    parameters = [item for item in batch.items("nodes") if "constant_value" in item.data]
+    assert [item.data["constant_value"] for item in parameters] == [150000, 300000]
+    assert all(item.data["value_type"] == "currency" for item in parameters)
+    assert all(item.data["citation_refs"] == ["cite_span_form"] for item in parameters)
+    assert [edge.data["role"] for edge in batch.items("edges")] == [
+        "single",
+        "married_filing_separately",
+        "head_of_household",
+        "qualifying_surviving_spouse",
+        "married_filing_jointly",
+    ]
+
+
+def test_constant_multiplier_escape_hatch_is_removed(tmp_path: Path) -> None:
+    node = OutlineNode("line_3", "line", "Multiply line 2 by 7.5% (0.075)", line_anchor="3")
+    span = CandidateSpan("span_form", "schedule_a_2025", "source", "page 1", node.label)
+    with pytest.raises(ValueError, match="MULTIPLY requires exactly 2"):
+        validate_formula_plan(
+            {
+                "operation": "MULTIPLY",
+                "source_lines": ["2"],
+                "quote": node.label,
+            },
+            spans=[span],
+            root=ROOT,
+            outline_node=node,
+        )
 
 
 def test_explicit_form_range_skips_unprinted_optional_children(tmp_path: Path) -> None:

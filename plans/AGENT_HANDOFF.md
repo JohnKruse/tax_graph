@@ -125,6 +125,25 @@ true linchpin of this whole project"*). **THREE ITEMS, EACH ONE MECHANISM.**
 **REAL ROUND** - graph writes. **NO live model call is required of the Worker**; the Architect runs
 re-derivation and reports the numbers.
 
+**WORKER STATUS (CODEX, 2026-08-15): S108 ITEM 1 IMPLEMENTED.** Formula responses now carry
+printed numeric operands as explicit constant objects. Assembly mints cited `parameter` nodes,
+keeps percentage versus currency typing, preserves lookup roles, expands an unqualified `default`
+branch across the existing non-MFJ filing-status roles, and keeps the shared citation on every
+parameter. The operation-specific `_constant_multiplier_from_label` escape hatch is deleted; a
+missing constant is now a typed arity finding. The outline batch now retains these parameter nodes
+in its graph draft. No source-range or citation text was changed.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new;
+.venv\Scripts\python.exe -m pytest tests\test_background_m20.py -k 'printed_constant or
+constant_multiplier_escape_hatch' -q` -> 3 passed, 6 deselected.
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s102.py tests\test_m20_s91.py
+tests\test_outline_span_resolution_m20.py tests\test_extract_outline_m4.py -q` -> 41 passed.
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py -q` -> 27 passed;
+`tests\test_m20_s85_comparator.py -q` -> 5 passed. `tools/check_ascii.py` -> ASCII check OK;
+`git diff --check` -> clean. NOT RUN: live model or corpus re-derivation; Architect owns that leg.
+The full `tests\test_background_m20.py -q` run remains 1 failed, 8 passed: its existing prompt-bench
+fixture omits the `line_anchors` metadata required by the current span resolver.
+
 **CONTEXT, BECAUSE IT REFRAMES EVERYTHING.** Derivation produced nothing between 2026-08-01 and
 2026-08-15. The cause was ONE packet-assembly bug, fixed at `4990f20`: the evidence packet handed
 every anchored line the form's cover page, and the model - which answered CORRECTLY - was rejected

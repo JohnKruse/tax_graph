@@ -6,7 +6,6 @@ from pathlib import Path
 import re
 from typing import Any
 
-from tax_graph.extract.micro import _constant_multiplier_from_label
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.outline import (
     CandidateSpan,
@@ -17,6 +16,14 @@ from tax_graph.extract.outline import (
 )
 from tax_graph.extract.prompts import closed_operations
 from tax_graph.operation_registry import OPERATION_SPECS, operation_roles, operation_spec
+
+
+_LOOKUP_DEFAULT_ROLES = (
+    "single",
+    "married_filing_separately",
+    "head_of_household",
+    "qualifying_surviving_spouse",
+)
 
 
 class FormulaAssemblyFinding(ValueError):
@@ -161,10 +168,11 @@ def assemble_formula_plan(
                         model,
                         computed=False,
                         constant_value=literal_value,
+                        constant_value_type=input_item.get("constant_value_type"),
                     )
                 )
                 emitted_nodes.add(source_id)
-            role = str(input_item.get("role") or _default_role(operation, input_index))
+            roles = _edge_roles(operation, input_item, input_index)
             if human_answer and source_id == target_id:
                 raise FormulaAssemblyFinding(
                     {
@@ -174,23 +182,24 @@ def assemble_formula_plan(
                         "reason": "source line resolves to the target cell",
                     }
                 )
-            objects.append(
-                DraftObject(
-                    "edges",
-                    {
-                        "edge_id": f"e_{_slug(source_id)}_to_{_slug(target_id)}_{_slug(role)}",
-                        "source": source_id,
-                        "target": target_id,
-                        "relationship": "CALCULATES",
-                        "rule_id": rule_id,
-                        "role": role,
-                        "citation_refs": citation_refs,
-                    },
-                    _source_span_text(span_ids, spans_by_id),
-                    model,
-                    1.0,
+            for role in roles:
+                objects.append(
+                    DraftObject(
+                        "edges",
+                        {
+                            "edge_id": f"e_{_slug(source_id)}_to_{_slug(target_id)}_{_slug(role)}",
+                            "source": source_id,
+                            "target": target_id,
+                            "relationship": "CALCULATES",
+                            "rule_id": rule_id,
+                            "role": role,
+                            "citation_refs": citation_refs,
+                        },
+                        _source_span_text(span_ids, spans_by_id),
+                        model,
+                        1.0,
+                    )
                 )
-            )
 
     return ExtractionBatch(document_id=document.document_id, year=document.year, objects=objects)
 
@@ -206,7 +215,7 @@ def _steps_for_plan(
     line_children: dict[Any, list[str]] | None,
     resolution_events: list[dict[str, Any]] | None,
 ) -> list[dict[str, Any]]:
-    """Translate line-number output into one deterministic operation step."""
+    """Translate line and printed-constant output into one operation step."""
     if "operation_plan" in plan:
         return list(plan.get("operation_plan", []))
 
@@ -214,6 +223,22 @@ def _steps_for_plan(
     inputs: list[dict[str, Any]] = []
     operation = str(plan.get("operation", ""))
     for source_line in source_lines:
+        if isinstance(source_line, dict) and "constant" in source_line:
+            value = source_line["constant"]
+            inputs.append(
+                {
+                    "name": str(value),
+                    "literal_value": value,
+                    "constant_value_type": source_line.get("value_type")
+                    or _constant_value_type(outline_node.label, value),
+                    **(
+                        {"role": str(source_line["role"])}
+                        if source_line.get("role") is not None
+                        else {}
+                    ),
+                }
+            )
+            continue
         source_id = _resolve_source_line(document, source_line, line_index=line_index)
         source_key = _line_reference_key(document, source_line)
         candidates = _line_ref_candidates(
@@ -267,11 +292,6 @@ def _steps_for_plan(
                 }
             )
         inputs.append({"name": source_id})
-
-    if operation == "MULTIPLY" and len(source_lines) == 1:
-        multiplier = _constant_multiplier_from_label(outline_node.label)
-        if multiplier is not None:
-            inputs.append({"name": str(multiplier), "literal_value": multiplier})
 
     quote = str(plan.get("quote", ""))
     citation_span_ids = [
@@ -500,6 +520,7 @@ def _node_object(
     *,
     computed: bool,
     constant_value: Any | None = None,
+    constant_value_type: str | None = None,
 ) -> DraftObject:
     data: dict[str, Any] = {
         "node_id": node_id,
@@ -511,7 +532,7 @@ def _node_object(
     if constant_value is not None:
         data.update({
             "node_type": "parameter",
-            "value_type": "percentage",
+            "value_type": constant_value_type or "currency",
             "constant_value": constant_value,
         })
     if citation_refs:
@@ -528,6 +549,14 @@ def _default_role(operation: str, input_index: int) -> str:
     if roles and input_index <= len(roles):
         return roles[input_index - 1]
     return roles[-1] if roles else "addend"
+
+
+def _edge_roles(operation: str, input_item: dict[str, Any], input_index: int) -> tuple[str, ...]:
+    """Return edge roles, expanding a filing-status default branch safely."""
+    role = str(input_item.get("role") or _default_role(operation, input_index))
+    if operation == "LOOKUP_TABLE" and role == "default":
+        return _LOOKUP_DEFAULT_ROLES
+    return (role,)
 
 
 def _validate_operation_inputs(operation: str, inputs: Any) -> None:
@@ -647,6 +676,19 @@ def _node_id(document_id: str, outline_id: str, name: str) -> str:
 def _literal_id(document: SourceDocumentInput, outline_node: OutlineNode, value: str) -> str:
     """Return a stable node id for a deterministic literal operand."""
     return _node_id(document.document_id, outline_node.outline_id, f"literal_{value}")
+
+
+def _constant_value_type(label: str, value: Any) -> str:
+    """Infer a printed constant's schema type from the source wording."""
+    text = " ".join(str(label).lower().split())
+    value_text = str(value).lower()
+    if re.search(rf"(?<![\w.]){re.escape(value_text)}\s*%", text):
+        return "percentage"
+    if re.search(rf"\(\s*{re.escape(value_text)}\s*\)", text):
+        return "percentage"
+    if float(value) < 1 and "decimal amount" in text:
+        return "percentage"
+    return "currency"
 
 
 def _label(name: str) -> str:

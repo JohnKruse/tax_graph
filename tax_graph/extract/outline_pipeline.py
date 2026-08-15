@@ -250,6 +250,7 @@ def generate_outline_first_drafts(
                 obj.kind == "nodes"
                 and (
                     outline_node.kind in {"transaction_table", "totals"}
+                    or obj.data.get("node_type") == "parameter"
                     or ("operation_plan" not in plan and obj.data.get("node_type") == "computed")
                 )
             )
