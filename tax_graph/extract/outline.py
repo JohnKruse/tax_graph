@@ -1192,21 +1192,32 @@ def _preferred_source_section(target_line: str) -> str | None:
 
 
 def _find_totals_outline(nodes: list[OutlineNode], *, preferred_section: str | None) -> str | None:
-    for node in nodes:
-        if preferred_section and node.outline_id != preferred_section:
-            continue
-        for child in node.children:
-            if child.kind == "totals" and (not child.columns or "h" in child.columns):
-                return child.outline_id
     if preferred_section:
+        for node in nodes:
+            if not _matches_preferred_section(node, preferred_section):
+                continue
+            found = _find_totals_outline(node.children, preferred_section=None)
+            if found:
+                return found
         return None
     for node in nodes:
-        if node.kind == "totals" and (not node.columns or "h" in node.columns):
+        if node.kind in {"totals", "outbound_flow_cue"} and (not node.columns or "h" in node.columns):
             return node.outline_id
         found = _find_totals_outline(node.children, preferred_section=None)
         if found:
             return found
     return None
+
+
+def _matches_preferred_section(node: OutlineNode, preferred_section: str) -> bool:
+    """Match legacy and geometry section ids for an outbound-flow half."""
+    token = str(preferred_section).lower()
+    outline_id = str(node.outline_id).lower()
+    label = " ".join(str(node.label).lower().split())
+    return outline_id == token or token in outline_id or re.search(
+        rf"\bpart\s+{re.escape(token.removeprefix('part_'))}\b",
+        label,
+    ) is not None
 
 
 def _schedule_d_targets(text: str) -> list[str]:

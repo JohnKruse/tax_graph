@@ -18,7 +18,7 @@ from tax_graph.extract.llm_client import LlmClient, build_llm_client
 from tax_graph.extract.observability import extraction_run
 from tax_graph.extract.outline_pipeline import generate_outline_first_drafts
 from tax_graph.extract.route import route_drafts, write_routed_drafts
-from tax_graph.extract.models import RoutedDrafts
+from tax_graph.extract.models import CheckIssue, RoutedDrafts
 from tax_graph.verify.properties import check_draft_batch_properties
 from tax_graph.verify.tiers import TierInputs, collect_covered_nodes
 
@@ -171,23 +171,42 @@ def extract_year(
     max_docs = int(get_config_value(settings, "extraction.max_docs_per_run", len(extract_entries)))
     routed: list[RoutedDrafts] = []
     for entry in extract_entries[:max_docs]:
-        routed_batch = extract_document(
-            entry.document_id,
-            year=year,
-            root=root_path,
-            client=llm_client,
-            config=settings,
-        )
-        _write_batch_verification_sidecars(
-            document_id=entry.document_id,
-            year=year,
-            root=root_path,
-            draft_dir=routed_batch.output_dir,
-            config=settings,
-            primary_client=llm_client,
-            secondary_client=secondary_client,
-            example_client=example_client or llm_client,
-        )
+        try:
+            routed_batch = extract_document(
+                entry.document_id,
+                year=year,
+                root=root_path,
+                client=llm_client,
+                config=settings,
+            )
+            _write_batch_verification_sidecars(
+                document_id=entry.document_id,
+                year=year,
+                root=root_path,
+                draft_dir=routed_batch.output_dir,
+                config=settings,
+                primary_client=llm_client,
+                secondary_client=secondary_client,
+                example_client=example_client or llm_client,
+            )
+        except Exception as exc:
+            routed_batch = RoutedDrafts(
+                accepted=[],
+                review=[],
+                issues=[
+                    CheckIssue(
+                        "document",
+                        entry.document_id,
+                        f"extraction failed: {type(exc).__name__}: {exc}",
+                    )
+                ],
+                micro_stats={
+                    "status": "failed",
+                    "document_id": entry.document_id,
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                },
+            )
         routed.append(routed_batch)
     return routed
 

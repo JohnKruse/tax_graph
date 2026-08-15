@@ -1522,6 +1522,19 @@ def extract_command(
     print("=== extraction review ===")
     print(f"  year: {year}")
     print(f"  documents: {len(routed_year)}")
+    print("  per_document:")
+    for item in routed_year:
+        if item.output_dir is not None:
+            document_id = item.output_dir.name
+        elif item.issues:
+            document_id = item.issues[0].object_id
+        else:
+            document_id = "unknown"
+        status = "failed" if item.micro_stats.get("status") == "failed" else "completed"
+        print(
+            f"    {document_id}: {status}; accepted={len(item.accepted)}; "
+            f"review={len(item.review)}; issues={len(item.issues)}"
+        )
     print(f"  auto_accepted: {sum(len(item.accepted) for item in routed_year)}")
     print(f"  human_review: {sum(len(item.review) for item in routed_year)}")
     print(f"  deterministic_issues: {sum(len(item.issues) for item in routed_year)}")
