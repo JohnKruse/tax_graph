@@ -54,6 +54,16 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                         {
                             "type": "object",
                             "additionalProperties": False,
+                            "required": ["line", "role", "branch"],
+                            "properties": {
+                                "line": {"type": "string", "minLength": 1},
+                                "role": {"type": ["string", "null"], "minLength": 1},
+                                "branch": {"type": ["string", "null"], "minLength": 1},
+                            },
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": False,
                             "required": ["form", "line", "role", "branch"],
                             "properties": {
                                 "form": {"type": "string", "minLength": 1},
@@ -175,8 +185,10 @@ def validate_formula_plan(
             elif isinstance(source_line, dict):
                 if "constant" in source_line:
                     _validate_printed_constant(source_line)
-                elif not str(source_line.get("form", "")).strip() or not str(source_line.get("line", "")).strip():
-                    raise MicroExtractionError("cross-form source line requires form and line")
+                elif not str(source_line.get("line", "")).strip():
+                    raise MicroExtractionError("source line requires a printed line")
+                elif "form" in source_line and not str(source_line.get("form", "")).strip():
+                    raise MicroExtractionError("cross-form source line requires a non-empty form")
                 _validate_source_metadata(source_line)
                 role, _ = _source_role_and_branch(str(operation), source_line)
                 observed_roles.append(role)
@@ -270,6 +282,8 @@ def _formula_prompt(
             "Return operation, source_lines, and quote.",
             "Use the form's printed line numbers in source_lines, never internal ids.",
             "For a printed numeric constant, include {\"constant\": number} in source_lines, not a fake line number.",
+            "For a line on this form, use {\"line\": \"9\", \"role\": \"minuend\", \"branch\": null} and omit form.",
+            "Only include form for a source in a different document; form is a document name, never a line number.",
             "Set value_type to currency for dollar amounts and percentage for rates or decimal factors.",
             "role means operand position, such as condition, threshold, when_true, when_false, amount, or brackets.",
             "branch is separate from role and means branch selection; use default for an unqualified branch and full filing-status names otherwise.",

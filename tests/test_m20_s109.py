@@ -52,10 +52,15 @@ def _constant(value: int | float, role: str, branch: str) -> dict[str, object]:
 def test_formula_schema_separates_operand_role_from_branch_selection() -> None:
     schema = formula_micro_schema(root=ROOT)
     alternatives = schema["properties"]["source_lines"]["items"]["anyOf"]
-    line_schema = next(item for item in alternatives if "form" in item.get("properties", {}))
+    same_form_schema = next(
+        item
+        for item in alternatives
+        if "line" in item.get("properties", {}) and "form" not in item.get("properties", {})
+    )
+    cross_form_schema = next(item for item in alternatives if "form" in item.get("properties", {}))
     constant_schema = next(item for item in alternatives if "constant" in item.get("properties", {}))
 
-    for item in (line_schema, constant_schema):
+    for item in (same_form_schema, cross_form_schema, constant_schema):
         assert "role" in item["required"]
         assert "branch" in item["required"]
         assert item["properties"]["role"]["type"] == ["string", "null"]
@@ -63,6 +68,45 @@ def test_formula_schema_separates_operand_role_from_branch_selection() -> None:
 
     edge_schema = json.loads((ROOT / "schemas" / "edge.schema.json").read_text(encoding="ascii"))
     assert edge_schema["properties"]["branch"]["type"] == "string"
+
+
+def test_same_form_role_bearing_line_resolves_in_current_document() -> None:
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form-1040.pdf",
+        text="",
+        text_path=Path("unused-form-1040.txt"),
+    )
+    node = OutlineNode("line_11a", "line", "formula", line_anchor="11a")
+    span = _span()
+    plan = {
+        "operation": "SUBTRACT",
+        "source_lines": [
+            {"line": "9", "role": "minuend", "branch": None},
+            {"line": "10", "role": "subtrahend", "branch": None},
+        ],
+        "quote": span.text,
+    }
+
+    _validate("SUBTRACT", plan["source_lines"])
+    batch = assemble_formula_plan(
+        document,
+        node,
+        plan,
+        [span],
+        root=ROOT,
+        line_index={
+            ("form_1040_2025", "9"): "form_1040_2025_line_9",
+            ("form_1040_2025", "10"): "form_1040_2025_line_10",
+        },
+    )
+    edges = [item.data for item in batch.items("edges")]
+    assert [(edge["source"], edge["role"]) for edge in edges] == [
+        ("form_1040_2025_line_9", "minuend"),
+        ("form_1040_2025_line_10", "subtrahend"),
+    ]
 
 
 def test_threshold_conditional_accepts_repeated_role_with_distinct_branches() -> None:

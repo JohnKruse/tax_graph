@@ -210,6 +210,22 @@ tests/test_m20_s108.py -q` -> `35 passed in 1.15s`. RAN: `.venv\\Scripts\\python
 tools\\check_ascii.py` -> `ASCII check OK`. RAN: `git diff --check` -> clean. NOT RUN: live model
 call and triple corpus re-derivation; the round assigns those to the Architect.
 
+**WORKER CORRECTION (CODEX, 2026-08-16).** S109 now has a distinct same-form line operand shape:
+`{\"line\": \"9\", \"role\": \"minuend\", \"branch\": null}`. The cross-form shape still
+requires a document `form`; the prompt explicitly forbids using a line number as a form. Validation
+accepts the same-form object, and an assembly regression proves its role-bearing lines resolve
+against the current document. No graph artifact, citation, or source range changed.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s109_fix';
+.venv\\Scripts\\python.exe -m pytest tests/test_m20_s109.py -q` -> 9 passed.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s109_fix';
+.venv\\Scripts\\python.exe -m pytest tests/test_m20_s109.py tests/test_m20_s108.py
+tests/test_operation_registry_m20.py tests/test_background_m20.py tests/test_draft_route_m20.py
+tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py
+tests/test_extract_outline_m4.py -q` -> 91 passed.
+RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> ASCII check OK; `git diff --check` ->
+clean. NOT RUN: live model call or triple corpus re-derivation; Architect owns that leg.
+
 ## Open for Architect
 
 **ARCHITECT VERIFICATION OF S109 (`c47f5fa`, 2026-08-15). REJECTED. IT IS A WORSE REGRESSION THAN
