@@ -326,6 +326,52 @@ report before any prompt guidance is wired.
 
 ## Open for Architect
 
+**ARCHITECT VERIFICATION OF `b96fc59` (2026-08-15). ITEM 1 IS ACCEPTED FOR PLAIN CONSTANTS. THE
+REMAINDER WAS MIS-CLASSED BY ME AND IS RE-SCOPED, NOT RE-RUN.**
+
+**IT ADDS DERIVATION NOW - IT IS NO LONGER FLAT.** Corpus re-derive, 17 documents, bare
+`extract --year 2025`, verified by running:
+
+| metric | pre-S108 | `7580a4d` | `b96fc59` | floor |
+| --- | --- | --- | --- | --- |
+| rules | 103 | 103 | **107** | `> 103` MET |
+| edges | 337 | 354 | **363** | `> 354` MET |
+| gaps | 38 | 38 | **34** | `<= 38` MET |
+| computation-order gaps | 0 | 6 | **2** | 0 NOT met |
+| constant cases | - | 4/11 | **5/11** | 9/11 NOT met |
+
+Nullable `role` was the right call: the class it created went **6 -> 2**. Bare targeted set
+**59 passed**. **46 parameter nodes** are minted.
+
+**EVERY PLAIN CONSTANT NOW WORKS.** `schedule_1a` 9, 12, 26, 29 and 35 all resolve - the
+`Enter $150,000 ($300,000 if MFJ)`, `Multiply line N by $100/$200`, and
+`Subtract line 34 from $6,000` shapes. **That is the mechanism the ruling asked for, and it is
+done.**
+
+**THE 6 REMAINING "CONSTANT" CASES ARE NOT CONSTANT-OPERAND FAILURES, AND THAT IS MY ERROR.** I
+bundled three different shapes under one label and the floor inherited the mistake:
+- `form_6251` 18 and 39 -> `IF_ELSE requires exactly 4 source line(s)`. These are **threshold
+  conditionals** (26% / 28% either side of `$239,100`). They need branch-operand modelling, not a
+  parameter node.
+- `form_2441` 8 -> `LOOKUP_BRACKET requires exactly 2 source line(s)`. A **printed band table**;
+  the ruling itself said this one wants `LOOKUP_BRACKET` over a harvested table, NOT a parameter.
+- `form_6251` 4 and `schedule_1a` 20 -> **class E**, outline index.
+- `form_2441` 21 -> the last computation-order case.
+
+**"9 of 11" WAS AN UNSATISFIABLE FLOOR FOR A ROUND SCOPED TO PARAMETER NODES.** That is the fourth
+floor I have written that the work could not meet as specified. **Do not re-run Item 1 against it.**
+
+**RE-SCOPED, FOR A LATER ROUND - NOT NOW.** Arity modelling for conditional and table-driven lines
+(`form_6251` 18/39, `form_2441` 8) becomes its own item alongside the 3 alternation cases, which
+still await the Architect ruling on expressing *"whichever applies"*. The 2 remaining
+computation-order cases and the 16 class-E index gaps stay queued.
+
+**UNCHANGED AND STILL TRUE.** 5 `400`s remain out of scope (`form_2441` 3 and 30, `schedule_a` 17,
+`schedule_b` 2 and 6). **The face lint still reports the same 2 silent-wrong rules** - `form_1040`
+35a and 36, both `Amount of line 34 you want ...` derived as `COPY` - plus 1 known false positive on
+`schedule_d` 7. Neither was in scope; both are still wrong in the graph.
+
+
 **CURRENT STATE (2026-08-15): S108 ITEM 1 WORKER FIX IS APPLIED; LIVE CORPUS VERIFICATION IS
 PENDING.** Commit `b96fc59` keeps `role` and `value_type` in the strict schema `required` arrays
 while making them nullable, so positional operands do not invent lookup roles. No graph artifact,
