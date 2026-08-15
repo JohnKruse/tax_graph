@@ -11,7 +11,7 @@ from tax_graph.extract.llm_client import LlmClient
 from tax_graph.extract.outline import CandidateSpan, OutlineNode
 from tax_graph.extract.observability import llm_call_target
 from tax_graph.extract.prompts import closed_operations
-from tax_graph.operation_registry import operation_roles, operation_spec
+from tax_graph.operation_registry import assign_operation_roles, operation_spec
 
 
 class MicroExtractionError(ValueError):
@@ -54,23 +54,25 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                         {
                             "type": "object",
                             "additionalProperties": False,
-                            "required": ["form", "line", "role"],
+                            "required": ["form", "line", "role", "branch"],
                             "properties": {
                                 "form": {"type": "string", "minLength": 1},
                                 "line": {"type": "string", "minLength": 1},
                                 "role": {"type": ["string", "null"], "minLength": 1},
+                                "branch": {"type": ["string", "null"], "minLength": 1},
                             },
                         },
                         {
                             "type": "object",
                             "additionalProperties": False,
-                            "required": ["constant", "role", "value_type"],
+                            "required": ["constant", "role", "branch", "value_type"],
                             "properties": {
                                 "constant": {"type": "number"},
                                 "role": {"type": ["string", "null"], "minLength": 1},
+                                "branch": {"type": ["string", "null"], "minLength": 1},
                                 "value_type": {
                                     "type": ["string", "null"],
-                                    "enum": ["currency", "integer", "percentage"],
+                                    "enum": ["currency", "integer", "percentage", None],
                                 },
                             },
                         },
@@ -165,6 +167,7 @@ def validate_formula_plan(
         source_lines = plan.get("source_lines")
         if not isinstance(source_lines, list) or not source_lines:
             raise MicroExtractionError("source_lines must be a non-empty list")
+        observed_roles: list[str | None] = []
         for source_line in source_lines:
             if isinstance(source_line, str):
                 if not source_line.strip():
@@ -174,11 +177,16 @@ def validate_formula_plan(
                     _validate_printed_constant(source_line)
                 elif not str(source_line.get("form", "")).strip() or not str(source_line.get("line", "")).strip():
                     raise MicroExtractionError("cross-form source line requires form and line")
+                _validate_source_metadata(source_line)
+                role, _ = _source_role_and_branch(str(operation), source_line)
+                observed_roles.append(role)
             else:
                 raise MicroExtractionError(
                     "source_lines item must be a line string, form/line object, or constant object"
                 )
-        _validate_source_line_arity(str(operation), len(source_lines))
+            if isinstance(source_line, str):
+                observed_roles.append(None)
+        _validate_source_line_arity(str(operation), observed_roles)
         quote = plan.get("quote")
         if not isinstance(quote, str) or not quote.strip():
             raise MicroExtractionError("quote must be a non-empty string")
@@ -263,7 +271,9 @@ def _formula_prompt(
             "Use the form's printed line numbers in source_lines, never internal ids.",
             "For a printed numeric constant, include {\"constant\": number} in source_lines, not a fake line number.",
             "Set value_type to currency for dollar amounts and percentage for rates or decimal factors.",
-            "For lookup branches, include the branch role on the constant object; use default for an unqualified branch and full filing-status names otherwise.",
+            "role means operand position, such as condition, threshold, when_true, when_false, amount, or brackets.",
+            "branch is separate from role and means branch selection; use default for an unqualified branch and full filing-status names otherwise.",
+            "For repeated filing-status values or table rows, repeat the operand role and set branch for each row.",
             "For SUBTRACT and DIVIDE, source_lines are in computation order: the value being reduced comes first.",
             "",
             f"target line label: {outline_node.label}",
@@ -340,21 +350,59 @@ def _validate_printed_constant(source_line: dict[str, Any]) -> None:
     value = source_line.get("constant")
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(float(value)):
         raise MicroExtractionError("printed constant must be a finite number")
-    role = source_line.get("role")
-    if role is not None and (not isinstance(role, str) or not role.strip()):
-        raise MicroExtractionError("printed constant role must be a non-empty string")
+    _validate_source_metadata(source_line)
     value_type = source_line.get("value_type")
     if value_type is not None and value_type not in {"currency", "integer", "percentage"}:
         raise MicroExtractionError("printed constant value_type is unsupported")
 
 
-def _validate_source_line_arity(operation: str, count: int) -> None:
+def _validate_source_metadata(source_line: dict[str, Any]) -> None:
+    """Validate the two independent operand metadata axes."""
+    for key in ("role", "branch"):
+        value = source_line.get(key)
+        if value is not None and (not isinstance(value, str) or not value.strip()):
+            raise MicroExtractionError(f"printed source {key} must be a non-empty string")
+
+
+def _source_role_and_branch(operation: str, source_line: dict[str, Any]) -> tuple[str | None, str | None]:
+    """Read new metadata while tolerating the prior lookup-role spelling."""
+    role = source_line.get("role")
+    branch = source_line.get("branch")
+    if operation != "LOOKUP_TABLE" and branch is None and _looks_like_branch(role):
+        return None, str(role)
+    return (str(role) if role is not None else None, str(branch) if branch is not None else None)
+
+
+def _looks_like_branch(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    normalized = "_".join(value.lower().split())
+    return normalized in {
+        "default",
+        "single",
+        "married_filing_separately",
+        "married_filing_jointly",
+        "head_of_household",
+        "qualifying_surviving_spouse",
+    }
+
+
+def _validate_source_line_arity(operation: str, observed_roles: list[str | None]) -> None:
     spec = operation_spec(operation)
     if spec is None:
         raise MicroExtractionError(f"unsupported operation: {operation}")
-    if not spec.accepts_count(count):
-        wording = "exactly" if spec.max_args == spec.min_args else "at least"
-        raise MicroExtractionError(f"{operation} requires {wording} {spec.min_args} source line(s)")
+    if spec.named_leaf_roles:
+        if len(observed_roles) < spec.min_args:
+            wording = "exactly" if spec.max_args == spec.min_args else "at least"
+            raise MicroExtractionError(f"{operation} requires {wording} {spec.min_args} source line(s)")
+        return
+    assigned = assign_operation_roles(operation, observed_roles)
+    if assigned is None:
+        count = len(observed_roles)
+        if count < spec.min_args and not spec.role_variants:
+            wording = "exactly" if spec.max_args == spec.min_args else "at least"
+            raise MicroExtractionError(f"{operation} requires {wording} {spec.min_args} source line(s)")
+        raise MicroExtractionError(f"{operation} operand roles do not preserve computation order")
 
 
 def _validate_operation_inputs(operation: str, inputs: Any) -> None:
@@ -363,20 +411,20 @@ def _validate_operation_inputs(operation: str, inputs: Any) -> None:
     spec = operation_spec(operation)
     if spec is None:
         raise MicroExtractionError(f"unsupported operation: {operation}")
-    if not spec.accepts_count(len(inputs)):
-        wording = "exactly" if spec.max_args == spec.min_args else "at least"
-        raise MicroExtractionError(f"{operation} requires {wording} {spec.min_args} operand(s)")
-    if spec.named_leaf_roles or len(spec.roles) <= 1:
+    if spec.named_leaf_roles:
+        if len(inputs) < spec.min_args:
+            wording = "exactly" if spec.max_args == spec.min_args else "at least"
+            raise MicroExtractionError(f"{operation} requires {wording} {spec.min_args} operand(s)")
         return
-    roles = operation_roles(operation, len(inputs))
-    observed = []
+    observed: list[str | None] = []
     for index, item in enumerate(inputs, 1):
         if not isinstance(item, dict):
             raise MicroExtractionError("operation input must be an object")
-        observed.append(str(item.get("role") or roles[index - 1]))
-    if observed != list(roles):
+        role = item.get("role")
+        observed.append(str(role) if role is not None else None)
+    if assign_operation_roles(operation, observed) is None:
         raise MicroExtractionError(
-            f"{operation} operand roles must be {', '.join(roles)} in computation order"
+            f"{operation} operand roles do not preserve computation order"
         )
 
 

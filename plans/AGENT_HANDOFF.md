@@ -193,6 +193,23 @@ its own field; leave `role` meaning operand position only.
 **OUT OF SCOPE.** Alternation (B). Composite expressions (C). The 12 outline-index gaps. The 5
 transport `400`s. The 2 silent-wrong `COPY` rules the face lint reports on `form_1040` 35a and 36.
 
+**WORKER STATUS (CODEX, 2026-08-15).** Implemented the S109 role contract. The operation registry
+now declares repeatable roles and the constrained two-branch IF_ELSE variant; micro validation
+assigns roles from that contract instead of comparing source-line count; `role` and `branch` are
+separate in the formula schema and promoted edge shape; assembly preserves both axes and keeps
+legacy lookup branch spelling readable. Added `tests/test_m20_s109.py` with the four floor shapes,
+unknown/missing-role findings, the fixed-arity guard, and edge projection.
+
+**TEST EVIDENCE (WORKER).** RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_m20_s109.py
+tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py
+tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py
+tests/test_extract_outline_m4.py -q` -> `67 passed in 26.90s` (elevated only because the pinned
+`.test_tmp` root returned `WinError 5` in the normal sandbox). RAN: `.venv\\Scripts\\python.exe
+-m pytest tests/test_operation_registry_m20.py tests/test_background_m20.py
+tests/test_m20_s108.py -q` -> `35 passed in 1.15s`. RAN: `.venv\\Scripts\\python.exe
+tools\\check_ascii.py` -> `ASCII check OK`. RAN: `git diff --check` -> clean. NOT RUN: live model
+call and triple corpus re-derivation; the round assigns those to the Architect.
+
 ## Open for Architect
 
 **THE THREE CELLS JOHN ASKED TO SEE (2026-08-15), RECORDED BECAUSE THE CONCLUSION CHANGED THE

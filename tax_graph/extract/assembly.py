@@ -15,7 +15,7 @@ from tax_graph.extract.outline import (
     node_type_for_outline,
 )
 from tax_graph.extract.prompts import closed_operations
-from tax_graph.operation_registry import OPERATION_SPECS, operation_roles, operation_spec
+from tax_graph.operation_registry import OPERATION_SPECS, assign_operation_roles, operation_roles, operation_spec
 
 
 _LOOKUP_DEFAULT_ROLES = (
@@ -65,12 +65,13 @@ def assemble_formula_plan(
     node_ids_by_name: dict[str, str] = {}
     emitted_nodes: set[str] = set()
     emitted_citations: set[str] = set()
+    emitted_edge_ids: set[str] = set()
 
     for step_index, step in enumerate(steps, 1):
         operation = str(step.get("operation", ""))
         if operation not in allowed_operations:
             raise ValueError(f"unsupported operation: {operation}")
-        inputs = step.get("inputs", [])
+        inputs = _normalize_operation_inputs(operation, step.get("inputs", []))
         _validate_operation_inputs(operation, inputs)
 
         span_ids = [str(span_id) for span_id in step.get("citation_span_ids", [])]
@@ -139,6 +140,15 @@ def assemble_formula_plan(
             literal_value = input_item.get("literal_value")
             if literal_value is not None:
                 source_id = _literal_id(document, outline_node, input_name)
+                if source_id in emitted_nodes:
+                    source_id = _literal_id(
+                        document,
+                        outline_node,
+                        input_name,
+                        role=input_item.get("role"),
+                        branch=input_item.get("branch"),
+                        input_index=input_index,
+                    )
             else:
                 source_id = input_name if human_answer else node_ids_by_name.get(input_name)
             if source_id is None:
@@ -183,18 +193,25 @@ def assemble_formula_plan(
                     }
                 )
             for role in roles:
+                edge_id = f"e_{_slug(source_id)}_to_{_slug(target_id)}_{_slug(role)}"
+                if edge_id in emitted_edge_ids:
+                    edge_id = f"{edge_id}_{input_index}"
+                emitted_edge_ids.add(edge_id)
+                edge_data = {
+                    "edge_id": edge_id,
+                    "source": source_id,
+                    "target": target_id,
+                    "relationship": "CALCULATES",
+                    "rule_id": rule_id,
+                    "role": role,
+                    "citation_refs": citation_refs,
+                }
+                if input_item.get("branch") is not None:
+                    edge_data["branch"] = str(input_item["branch"])
                 objects.append(
                     DraftObject(
                         "edges",
-                        {
-                            "edge_id": f"e_{_slug(source_id)}_to_{_slug(target_id)}_{_slug(role)}",
-                            "source": source_id,
-                            "target": target_id,
-                            "relationship": "CALCULATES",
-                            "rule_id": rule_id,
-                            "role": role,
-                            "citation_refs": citation_refs,
-                        },
+                        edge_data,
                         _source_span_text(span_ids, spans_by_id),
                         model,
                         1.0,
@@ -236,6 +253,11 @@ def _steps_for_plan(
                         if source_line.get("role") is not None
                         else {}
                     ),
+                    **(
+                        {"branch": str(source_line["branch"])}
+                        if source_line.get("branch") is not None
+                        else {}
+                    ),
                 }
             )
             continue
@@ -250,7 +272,8 @@ def _steps_for_plan(
         is_heading = bool(source_key and line_kinds and line_kinds.get(source_key) == "heading")
         expand = bool(candidates) and (source_id is None or is_heading)
         if expand and (len(candidates) == 1 or (is_heading and operation in _EXPANDABLE_OPERATIONS)):
-            inputs.extend({"name": candidate} for candidate in candidates)
+            metadata = _source_metadata(operation, source_line)
+            inputs.extend({"name": candidate, **metadata} for candidate in candidates)
             if resolution_events is not None:
                 resolution_events.append(
                     {
@@ -291,7 +314,7 @@ def _steps_for_plan(
                     ),
                 }
             )
-        inputs.append({"name": source_id})
+        inputs.append({"name": source_id, **_source_metadata(operation, source_line)})
 
     quote = str(plan.get("quote", ""))
     citation_span_ids = [
@@ -553,14 +576,17 @@ def _default_role(operation: str, input_index: int) -> str:
 
 def _edge_roles(operation: str, input_item: dict[str, Any], input_index: int) -> tuple[str, ...]:
     """Return edge roles, expanding a filing-status default branch safely."""
-    role = str(input_item.get("role") or _default_role(operation, input_index))
+    if operation == "LOOKUP_TABLE":
+        role = str(input_item.get("branch") or input_item.get("role") or _default_role(operation, input_index))
+    else:
+        role = str(input_item.get("role") or _default_role(operation, input_index))
     if operation == "LOOKUP_TABLE" and role == "default":
         return _LOOKUP_DEFAULT_ROLES
     return (role,)
 
 
-def _validate_operation_inputs(operation: str, inputs: Any) -> None:
-    """Fail closed when an expression cannot preserve operand meaning."""
+def _normalize_operation_inputs(operation: str, inputs: Any) -> list[dict[str, Any]]:
+    """Assign positional roles and move legacy branch labels to ``branch``."""
     if not isinstance(inputs, list):
         raise FormulaAssemblyFinding(
             {"code": "invalid_operand_shape", "operation": operation, "reason": "operation inputs must be a list"}
@@ -570,40 +596,82 @@ def _validate_operation_inputs(operation: str, inputs: Any) -> None:
         raise FormulaAssemblyFinding(
             {"code": "unsupported_operation", "operation": operation, "reason": f"unsupported operation {operation}"}
         )
-    if not spec.accepts_count(len(inputs)):
-        expected = spec.min_args
-        wording = "exactly" if spec.max_args == spec.min_args else "at least"
-        raise FormulaAssemblyFinding(
-            {
-                "code": "invalid_operand_arity",
-                "operation": operation,
-                "observed": len(inputs),
-                "expected": expected,
-                "reason": f"{operation} requires {wording} {expected} operand(s)",
-            }
-        )
+    normalized: list[dict[str, Any]] = []
+    observed: list[str | None] = []
+    for item in inputs:
+        if not isinstance(item, dict):
+            raise FormulaAssemblyFinding(
+                {"code": "invalid_operand_shape", "operation": operation, "reason": "operation input must be an object"}
+            )
+        copied = dict(item)
+        role = copied.get("role")
+        if operation != "LOOKUP_TABLE" and copied.get("branch") is None and _looks_like_branch(role):
+            copied["branch"] = str(role)
+            copied.pop("role", None)
+            role = None
+        observed.append(str(role) if role is not None else None)
+        normalized.append(copied)
     if spec.named_leaf_roles:
-        return
-    roles = set(spec.roles)
-    if roles is None:
-        return
-    observed = {
-        str(item.get("role") or _default_role(operation, index))
-        for index, item in enumerate(inputs, 1)
-        if isinstance(item, dict)
-    }
-    if operation in {"MIN", "MAX", "AND", "OR"}:
-        valid = observed == roles
-    else:
-        valid = observed == roles
-    if not valid:
+        return normalized
+    assigned = assign_operation_roles(operation, observed)
+    if assigned is None:
         raise FormulaAssemblyFinding(
             {
                 "code": "invalid_operand_roles",
                 "operation": operation,
-                "observed": sorted(observed),
-                "expected": sorted(roles),
+                "observed": sorted({role for role in observed if role is not None}),
+                "expected": list(spec.roles),
                 "reason": f"{operation} operand roles do not preserve computation order",
+            }
+        )
+    for item, role in zip(normalized, assigned, strict=True):
+        item["role"] = role
+    return normalized
+
+
+def _source_metadata(operation: str, source_line: Any) -> dict[str, str]:
+    """Carry role and branch metadata from a structured printed reference."""
+    if not isinstance(source_line, dict):
+        return {}
+    metadata: dict[str, str] = {}
+    if source_line.get("role") is not None:
+        role = source_line["role"]
+        if not (operation != "LOOKUP_TABLE" and source_line.get("branch") is None and _looks_like_branch(role)):
+            metadata["role"] = str(role)
+    if source_line.get("branch") is not None:
+        metadata["branch"] = str(source_line["branch"])
+    elif operation != "LOOKUP_TABLE" and _looks_like_branch(source_line.get("role")):
+        metadata["branch"] = str(source_line["role"])
+    return metadata
+
+
+def _looks_like_branch(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    normalized = "_".join(value.lower().split())
+    return normalized in {
+        "default",
+        "single",
+        "married_filing_separately",
+        "married_filing_jointly",
+        "head_of_household",
+        "qualifying_surviving_spouse",
+    }
+
+
+def _validate_operation_inputs(operation: str, inputs: Any) -> None:
+    """Fail closed when an expression cannot preserve operand meaning."""
+    normalized = _normalize_operation_inputs(operation, inputs)
+    spec = operation_spec(operation)
+    assert spec is not None
+    if spec.named_leaf_roles and len(normalized) < spec.min_args:
+        raise FormulaAssemblyFinding(
+            {
+                "code": "invalid_operand_arity",
+                "operation": operation,
+                "observed": len(normalized),
+                "expected": spec.min_args,
+                "reason": f"{operation} requires at least {spec.min_args} operand(s)",
             }
         )
 
@@ -673,9 +741,24 @@ def _node_id(document_id: str, outline_id: str, name: str) -> str:
     return _slug(f"{document_id}_{outline_id}_{name}")
 
 
-def _literal_id(document: SourceDocumentInput, outline_node: OutlineNode, value: str) -> str:
+def _literal_id(
+    document: SourceDocumentInput,
+    outline_node: OutlineNode,
+    value: str,
+    *,
+    role: Any = None,
+    branch: Any = None,
+    input_index: int | None = None,
+) -> str:
     """Return a stable node id for a deterministic literal operand."""
-    return _node_id(document.document_id, outline_node.outline_id, f"literal_{value}")
+    suffix = f"literal_{value}"
+    if role is not None:
+        suffix += f"_{role}"
+    if branch is not None:
+        suffix += f"_{branch}"
+    if input_index is not None:
+        suffix += f"_{input_index}"
+    return _node_id(document.document_id, outline_node.outline_id, suffix)
 
 
 def _constant_value_type(label: str, value: Any) -> str:
