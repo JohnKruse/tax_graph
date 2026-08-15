@@ -21,8 +21,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S107 is specced below. REAL round - it writes to the graph, full-suite floor
-applies against the 18 reds enumerated below.**
+**BALL: CODEX. M20-S108 is specced below. DERIVATION IS THE ONLY PRIORITY (John, 2026-08-15).**
+**The Worker needs NO live model call; the Architect runs re-derivation and reports the numbers.**
+
+**PRIORITY RESET, 2026-08-15.** John: *"I want to just concentrate on the derivation. It is the
+true linchpin of this whole project."* **The S102-S107 provenance line is PARKED.** It was real
+work and it found real fabrications, but fifteen rounds of it ran while derivation produced nothing
+since 2026-08-01, and the Architect never put that in front of John. **Do not open another
+citation/source-range round without an explicit instruction.**
+
+**M20-S107 IS DELIVERED, NOT ACCEPTED** (`5c3f91b` + `f63ec79` + `ffc9cdd`, Codex, 2026-08-14). Its
+full-suite evidence is unusable - `16 failed, 612 passed, 369 errors`, where the 369 are
+`.test_tmp\pytest-of-devbox` ACL setup failures and 612 passed against a clean run's 973, so most of
+the suite never executed. **Re-verification is deferred behind derivation and is NOT a blocker.**
+
+**THE 1040 IS DERIVING AGAIN** (Architect, 2026-08-15, `4990f20`). One packet-assembly bug had
+zeroed the whole phase; corpus is now **103 rules / 337 edges / 38 gaps**, and the failure class
+that accounted for all of form_1040's rejections is at **zero corpus-wide**.
 
 **M20-S106 IS ACCEPTED (`d8accca`, Architect, 2026-08-14). Verified by diffing the graph and
 running the suite, not by reading the report.**
@@ -99,98 +114,76 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S107 SPECCED BY ARCHITECT (2026-08-14). THE 34 UNBINDABLE CITATIONS ARE HAND-AUTHORED
-PARAPHRASES. RE-EXTRACT THE 30; TYPE THE 4.**
-**REAL ROUND** - graph writes. **Full-suite floor applies against the 18 reds in BALL.**
+**M20-S108 SPECCED BY ARCHITECT (2026-08-15). DERIVATION IS THE ONLY PRIORITY NOW (John,
+2026-08-15: "It is the true linchpin of this whole project"). FIX OPERAND RESOLUTION.**
+**REAL ROUND** - graph writes. Verification needs a live model run, which the Architect performs.
 
-**WHY THIS ONE.** S106 bound 461 core citations and left exactly 34 that no range can reproduce.
-**They are not a binding failure - they are pre-pipeline hand-authored text that S106 was the first
-thing able to detect.** The evidence is in BALL: 31 of 34 match acquired bytes at 0.47-0.98, 21 of
-those on a markdown table row. **This round closes the last A9 scaffolding seam in the core
-citations.** It is the same `row` mechanism S105 built, pointed at the core instruction tables.
+**WHAT CHANGED, AND WHY THIS ROUND EXISTS.** Derivation had produced nothing since 2026-08-01. The
+cause was ONE packet-assembly bug, fixed at `4990f20`: `_span_for_line` resolved the correct span
+and `_spans_for_outline_node` threw it away (the span is REBUILT, so identity and equality lookups
+against `spans` both missed), leaving `selected` empty and falling through to `spans[:20]` - the
+form cover page. Every anchored line was handed evidence for a different line, answered CORRECTLY
+anyway, and was rejected for not quoting what it was shown.
 
-**THE TARGET STATE.**
-1. **ONE core guard, in one file.** Delete `test_promoted_core_citations_reconstruct_from_source_ranges`
-   from `tests/test_worksheet_ranges_s105.py`. The core assertion belongs in
-   `tests/test_core_source_ranges_m106.py`; the S105 file covers worksheets. **Do not "fix" the
-   duplicate by making both pass - delete it.**
-2. **The 30 paraphrase citations are RE-EXTRACTED from their acquired source.** For each, bind to
-   the actual table cell or prose span and **replace `quoted_text` with the verbatim source text.**
-   **This is the one case where changing `quoted_text` is correct, and the distinction is the whole
-   point:** the rejected pass truncated real quotes to fit wrong ranges; this replaces
-   hand-authored text with what the document actually says. **A citation whose new text is not a
-   byte-exact slice of its ranges is a finding, not a commit.**
-3. **The 4 tax-bracket citations get a typed provenance kind, NOT an exemption and NOT a
-   re-extraction.** `cite_1040_tax_brackets_single`, `_joint_qss`, `_mfs`, `_hoh` synthesize a rate
-   schedule; their numbers are computed, not quoted. **Add a citation kind that carries the rate
-   table's range plus the derivation**, so the provenance says "computed from this table" instead of
-   a `quoted_text` field impersonating a quote. **If that design cannot be settled inside this
-   round, STOP and raise it - do not park them in the 8978 exemption.**
-4. **The consumer goldens re-baseline ONCE, deliberately, in this round.** The memo fixture and the
-   workbench verbatim test will move for the 30. **Show the before/after text for five of them in
-   the handoff** so the change is reviewable as source-fidelity, not as drift.
+**CORPUS RESULT AFTER THE FIX** (16 of 17 documents, `openai/gpt-5.6-luna`, ~$3, ~10 min):
+**103 rules, 337 edges over 735 nodes, and 38 review gaps total.** The dominant failure class,
+`quote does not match the supplied form or instruction evidence`, now occurs **ZERO times corpus
+wide.** form_1040 went 1 rule -> 17, 16 gaps -> 0.
 
-**WHAT MUST NOT HAPPEN, because it already did.** **Do not edit a quote to make a range fit.** The
-guard must keep one side pinned - after this round the pinned side is the SOURCE, so assert the new
-`quoted_text` is a byte-exact slice, and assert the 30 ids are exactly the set that changed.
-**No citation outside those 30 may change text**; diff against `d8accca` and report the count.
+**THIS ROUND TAKES THE 18 GAPS REPORTING `source line is not present in the deterministic outline
+index`. THEY ARE NOT ONE DEFECT.** Classified by label; counts are exact:
+
+- **A. CONSTANT OPERAND, 5.** The "source line" is a printed dollar amount, not a line.
+  `form_2441` 21 *"Enter $5,000 ($2,500 if married filing separately...)"*, `schedule_1a` 9
+  *"Enter $150,000 ($300,000 if married filing jointly)"*, `schedule_1a` 26 *"Enter $100,000..."*,
+  `schedule_1a` 35 *"Subtract line 34 from $6,000"*, `form_6251` 4. **The model is RIGHT and the
+  resolver is looking for a line that was never a line.** The graph already has `parameter` nodes
+  (51 of them) and filing-status-keyed lookups; a literal must resolve to one of those, not fail.
+- **B. RANGE REFERENCE, 2.** `schedule_2` 1z *"Add lines 1a through 1y"*, `form_1116` 8
+  *"Add lines A through C"*. The range needs expanding against the index before resolution.
+- **C. COLUMN-QUALIFIED REFERENCE, 1.** `schedule_1a` 23 *"Add lines 22a and 22b, column (iii)"*.
+- **D. CROSS-DOCUMENT REFERENCE, 1.** `form_6251` 13 *"line 4 of the Qualified Dividends and
+  Capital Gain Tax Worksheet"* - a worksheet that IS in the graph.
+- **E. INDEX GAP OR ROW MIS-SEGMENTATION, 9.** `form_6251` 33 *"Subtract line 32 from line 22"* and
+  35, `form_1116` 6 and 21, `form_2441` 24 and 25 are ordinary references whose operand is absent
+  from the index. `form_1116` 3b is anchored `3b` but its label is **"c Add lines 3a and 3b"** - the
+  row is line 3c wearing the wrong anchor. `form_1099_div` 2d fuses lines 2c and 2d plus
+  `PAYER'S TIN`. `schedule_a` 15 carries a leading section word, *"Casualty 15 Casualty and..."*.
+  **Determine per case which of the two it is; do not assume.**
+
+**START WITH A AND E.** A is 5 gaps with a single clear mechanism. E is the largest and is the true
+index defect. B, C, D are one or two cases each and can follow.
+
+**WHAT MUST NOT HAPPEN.** **Do not widen an operand until it resolves.** If a literal cannot be
+tied to a parameter node, or a referenced line genuinely is not on the form, that is a FINDING to
+report, not a licence to invent a node. **Do not re-baseline any expected-count fixture to match
+new output** - that is what got the S106 rework rejected, and
+`tests/test_workbench_cells_api_m17.py::test_documents_api_lists_forms` is ALREADY disagreeing
+(decision_required 52->42, user_entered 63->73) because the drafts were regenerated. Leave it; the
+Architect decides when it re-baselines.
+
+**ALSO IN SCOPE, because it blocks measurement.** `extract --year 2025` **aborts the entire corpus
+in 2 seconds** on `form_8949_2025`: `OutlineArtifactError: outbound_flows: flow_form_8949_2025_...
+source outline missing` x6. One stale document prevents every other document from being derived,
+which is why no full re-run has ever been cheap. **Fix the 8949 artifacts AND make the year batch
+isolate a failing document instead of aborting.** form_8949 is the one document still carrying a
+July `google/gemini-3.6-flash` draft.
 
 **THE FLOOR.**
-- **`python -m tax_graph.ingest.core_source_ranges` reports `findings 0`** with the 4 typed
-  citations excluded by KIND, not by id.
-- **Exactly 30 citations change `quoted_text` versus `d8accca`**, all in the named set. Report the
-  diff count; a number other than 30 is a stop.
-- **The three consumer guards stay green**: `test_mcp_m2`, `test_return_record_m5`,
-  `test_workbench_cells_m17`.
-- **FULL SUITE, bare `python -m pytest`, quiet tree, against the 18 reds in BALL.** The two S106
-  guard reds must be GONE - one by deletion, one by binding. **Do NOT set `PYTEST_DEBUG_TEMPROOT`.**
+- **Report gap counts per class before and after**, from `review_gaps.yaml` across all drafts.
+  Class A must reach 0. Class E must be resolved case by case with a named cause for each of the 9.
+- **`extract --year 2025` completes** and reports every document, including a failing one.
+- **No expected-count fixture edited.**
+- **Targeted tests green**: `tests/test_m20_s102.py tests/test_m20_s91.py
+  tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py` (41 passed at
+  `4990f20`).
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
+- **NO live model call is required of the Worker.** Re-derivation is the Architect's step; report
+  what the deterministic resolver does against the CURRENT drafts.
 
-**OUT OF SCOPE.** Non-core acquired documents. The information returns. The 194 undecided chunks.
-The 8978 heading defect. Making `quoted_text` derived-only across the graph.
-
-**WORKER STATUS (CODEX, 2026-08-14; M20-S107 scoped implementation committed as `5c3f91b`).** The
-deterministic stage re-extracts the named 30 paraphrases from acquired source ranges and promotes
-the four tax-bracket citations as `computed_table` records with table ranges and derivation text.
-The corrected Markdown-row matcher selects actual table cells, not bold condition markers, and the
-stage reports `findings 0`. The S105 duplicate core guard is removed; the S107 guards pin source
-text and the exact named 30, while computed records are excluded by `kind`, not by id. Citation
-integrity, return-record rendering, and the workbench retain typed provenance instead of treating
-computed records as missing quotes.
-
-Five source-fidelity changes, compared with `d8accca`:
-- `cite_1040_qdcgt_line_1`: the short Form 1040 quote is replaced by the acquired row including
-  Form 1040-SR, Form 2555, and the Foreign Earned Income Tax Worksheet route.
-- `cite_1040_standard_deduction`: the prose summary is replaced by three acquired bullet rows.
-- `cite_schedule_d_carryover_line_1_2`: the hand-authored two-line summary is replaced by two
-  acquired worksheet cells.
-- `cite_sdtw_line_19_breakpoint`: the hand-authored line is replaced by the acquired line and
-  continuation marker.
-- `cite_sdtw_line_23_32`: the hand-authored range summary is replaced by acquired lines 23-32,
-  including continuation-table rows.
-
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.ingest.core_source_ranges --root . --year 2025` ->
-`core source ranges: rebound 491, generated 0, removed 0, findings 0`.
-RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_core_source_ranges_m106.py -q` ->
-`8 passed in 70.21s`; the warning is the known `.pytest_cache` ACL warning.
-RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_worksheet_ranges_s105.py tests\\test_worksheet_storage_s105.py -q`
--> `7 passed in 69.32s`.
-RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_mcp_m2.py::test_get_citation_by_id_and_fts_query tests\\test_return_record_m5.py::test_render_memo_matches_golden_fixture tests\\test_workbench_cells_m17.py::test_citations_resolve_to_verbatim_text_and_provenance -q`
--> `3 passed in 9.10s`.
-RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_mcp_m2.py tests\\test_return_record_m5.py tests\\test_workbench_cells_m17.py -q`
--> `38 passed in 171.19s`.
-RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_workbench_m15.py tests\\test_workbench_cells_m17.py -q`
--> `15 passed in 22.07s`.
-RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_acquire_citation_check.py -q` -> `10 passed in 0.14s`.
-RAN: `.venv\\Scripts\\python.exe -m tax_graph.cli validate 2025 --root .` -> graph integrity OK;
-629 citations schema-valid.
-RAN: `.venv\\Scripts\\python.exe tools/check_ascii.py` -> `ASCII check OK`; `git diff --check`
--> clean. NOT RUN: `node --check workbench/static/river.js` because `node` is unavailable.
-RAN: `.venv\\Scripts\\python.exe -m pytest -q` -> `16 failed, 612 passed, 6 skipped, 1 xfailed,
-369 errors in 1704.78s (0:28:24)`. The 369 errors are the known `.test_tmp\\pytest-of-devbox`
-ACL setup failures. The seven named non-e2e baseline IDs separately produced 4 assertion failures
-and 3 of the same ACL setup errors; no S107 test failed. The S107-focused guard set passed, including
-the retained core range guard and the removed S105 duplicate.
+**OUT OF SCOPE.** The 10 operation-arity violations (Architect is building a diagnostic table on
+those now). The 5 `LlmUnavailable` 400s on form_2441. The 4 self-reference gaps. Citations,
+source ranges, and anything in the S102-S107 provenance line.
 
 ## Open for Architect
 
