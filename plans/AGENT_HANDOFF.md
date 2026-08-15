@@ -21,8 +21,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S108 is specced below. DERIVATION IS THE ONLY PRIORITY (John, 2026-08-15).**
-**The Worker needs NO live model call; the Architect runs re-derivation and reports the numbers.**
+**BALL: CODEX. M20-S108 is specced below - THREE ITEMS, each one mechanism. DERIVATION IS THE ONLY
+PRIORITY (John, 2026-08-15).** **The Worker needs NO live model call; the Architect runs
+re-derivation and reports the numbers.**
+
+**ITEM 2 IS THE ONE THAT MATTERS MOST.** `accepted` has been 0 on every document forever because a
+single property-level check flags **every object in the batch**. Even flawless derivation yields
+nothing acceptable while that stands, so the review phase cannot begin at all. **Do not treat it as
+the small one because it is second.**
 
 **PRIORITY RESET, 2026-08-15.** John: *"I want to just concentrate on the derivation. It is the
 true linchpin of this whole project."* **The S102-S107 provenance line is PARKED.** It was real
@@ -114,104 +120,135 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S108 SPECCED BY ARCHITECT (2026-08-15). DERIVATION IS THE ONLY PRIORITY NOW (John,
-2026-08-15: "It is the true linchpin of this whole project"). FIX OPERAND RESOLUTION.**
-**REAL ROUND** - graph writes. Verification needs a live model run, which the Architect performs.
+**M20-S108 SPECCED BY ARCHITECT (2026-08-15). DERIVATION IS THE ONLY PRIORITY** (John: *"It is the
+true linchpin of this whole project"*). **THREE ITEMS, EACH ONE MECHANISM.**
+**REAL ROUND** - graph writes. **NO live model call is required of the Worker**; the Architect runs
+re-derivation and reports the numbers.
 
-**WHAT CHANGED, AND WHY THIS ROUND EXISTS.** Derivation had produced nothing since 2026-08-01. The
-cause was ONE packet-assembly bug, fixed at `4990f20`: `_span_for_line` resolved the correct span
-and `_spans_for_outline_node` threw it away (the span is REBUILT, so identity and equality lookups
-against `spans` both missed), leaving `selected` empty and falling through to `spans[:20]` - the
-form cover page. Every anchored line was handed evidence for a different line, answered CORRECTLY
-anyway, and was rejected for not quoting what it was shown.
+**CONTEXT, BECAUSE IT REFRAMES EVERYTHING.** Derivation produced nothing between 2026-08-01 and
+2026-08-15. The cause was ONE packet-assembly bug, fixed at `4990f20`: the evidence packet handed
+every anchored line the form's cover page, and the model - which answered CORRECTLY - was rejected
+for not quoting what it was shown. After the fix, corpus is **103 rules / 337 edges / 38 gaps**, and
+the class that accounted for 100% of form_1040's failures is at **zero corpus-wide**.
 
-**CORPUS RESULT AFTER THE FIX** (16 of 17 documents, `openai/gpt-5.6-luna`, ~$3, ~10 min):
-**103 rules, 337 edges over 735 nodes, and 38 review gaps total.** The dominant failure class,
-`quote does not match the supplied form or instruction evidence`, now occurs **ZERO times corpus
-wide.** form_1040 went 1 rule -> 17, 16 gaps -> 0.
+**THE PATTERN WORTH NAMING: BOTH BUGS IN THIS ROUND ARE THE SAME SHAPE AS THAT ONE.** A specific
+failure is silently widened into a blanket substitution - wrong evidence for a missing span, a
+whole-batch flag for one bad check. **`AGENTS.md` calls this out as "one accessor, no fallbacks".
+Absence must be typed, never papered over.**
 
-**THIS ROUND TAKES THE 18 GAPS REPORTING `source line is not present in the deterministic outline
-index`. THEY ARE NOT ONE DEFECT.** Classified by label; counts are exact:
+---
 
-- **A. CONSTANT OPERAND, 5.** The "source line" is a printed dollar amount, not a line.
-  `form_2441` 21 *"Enter $5,000 ($2,500 if married filing separately...)"*, `schedule_1a` 9
-  *"Enter $150,000 ($300,000 if married filing jointly)"*, `schedule_1a` 26 *"Enter $100,000..."*,
-  `schedule_1a` 35 *"Subtract line 34 from $6,000"*, `form_6251` 4. **The model is RIGHT and the
-  resolver is looking for a line that was never a line.** The graph already has `parameter` nodes
-  (51 of them) and filing-status-keyed lookups; a literal must resolve to one of those, not fail.
-- **B. RANGE REFERENCE, 2.** `schedule_2` 1z *"Add lines 1a through 1y"*, `form_1116` 8
-  *"Add lines A through C"*. The range needs expanding against the index before resolution.
-- **C. COLUMN-QUALIFIED REFERENCE, 1.** `schedule_1a` 23 *"Add lines 22a and 22b, column (iii)"*.
-- **D. CROSS-DOCUMENT REFERENCE, 1.** `form_6251` 13 *"line 4 of the Qualified Dividends and
-  Capital Gain Tax Worksheet"* - a worksheet that IS in the graph.
-- **E. INDEX GAP OR ROW MIS-SEGMENTATION, 9.** `form_6251` 33 *"Subtract line 32 from line 22"* and
-  35, `form_1116` 6 and 21, `form_2441` 24 and 25 are ordinary references whose operand is absent
-  from the index. `form_1116` 3b is anchored `3b` but its label is **"c Add lines 3a and 3b"** - the
-  row is line 3c wearing the wrong anchor. `form_1099_div` 2d fuses lines 2c and 2d plus
-  `PAYER'S TIN`. `schedule_a` 15 carries a leading section word, *"Casualty 15 Casualty and..."*.
-  **Determine per case which of the two it is; do not assume.**
+### Item 1 - A PRINTED CONSTANT BECOMES A CITED `parameter` NODE (~11 gaps)
 
-**RULING ON CLASS A - A CONSTANT BECOMES A CITED `parameter` NODE, NOT A LITERAL AND NOT A ONE-ROW
-TABLE** (John + Architect, 2026-08-15). **The mechanism already exists and is already in use.**
-`schedule_d_2025_capital_loss_limit_default` carries `node_type: parameter`, `constant_value: 3000`,
-and a `citation_refs` entry; its MFS twin carries 1500 and **the same citation**; `lookup_capital_
-loss_limit` / `lookup_selected_value` (42 edges already) selects between them by filing status.
-- **Why not a literal inside the rule.** It is not addressable, so it is not a reviewable cell - and
-  review is cell-atomic. It also carries no citation, which is exactly how `$57,231` came to sit in
-  `tax-liability.yaml` with nothing deriving it.
-- **Why not a one-row lookup table.** A table is right when the FORM prints a table. Forcing a
-  scalar into one invents a dimension the document does not have and makes every consumer know to
-  read row zero - the improvising-consumer failure the one-accessor rule exists to stop.
-- **THE PRINTED FORM DECIDES THE SHAPE.** Scalar printed (`Multiply line 11 by $100`) -> one
-  parameter node. Filing-status pair printed (`$150,000 ($300,000 if married filing jointly)`) ->
-  two parameter nodes sharing ONE citation, selected by the existing role-keyed rule. A real printed
-  band table (`form_2441` line 8, AGI bands against decimal amounts) -> `LOOKUP_BRACKET` over a
-  harvested table, NOT a parameter.
-- **CONSEQUENCE: `_constant_multiplier_from_label` SHOULD DIE, NOT WIDEN.** The arity escape hatch
-  at `micro.py:163` exists only because there was nowhere to put the number. It fires only for
-  `MULTIPLY` with exactly one source line and a parenthesized decimal like `(0.26)`, which is why
-  `Multiply line 11 by $100` fails and why `form_6251` 18/39 fail as `IF_ELSE` despite printing
-  `(0.26)`. **Do not add `$100` to its regex.** Mint the parameter node and point the edge at it.
+**THE MECHANISM ALREADY EXISTS AND IS ALREADY IN USE.** `schedule_d_2025_capital_loss_limit_default`
+carries `node_type: parameter`, `constant_value: 3000`, and a `citation_refs` entry; its MFS twin
+carries `1500` and **the same citation**; `lookup_capital_loss_limit` / `lookup_selected_value`
+(42 edges already) selects between them by filing status. **Do not invent a new shape.**
 
-**CLASS A IS BIGGER THAN 5 - IT IS ABOUT 11.** The Architect's arity diagnostic (2026-08-15) shows
-6 of the 10 operation-arity violations are the SAME constant-operand defect: `schedule_1a` 12/20/29
-(`Multiply line N by $100/$200`), `form_6251` 18/39 (26%/28% either side of a `$239,100 ($119,550
-if MFS)` threshold, less `$4,782 ($2,391 if MFS)`), and `form_2441` 8 (printed decimal band table).
-**Fixing class A properly closes those too.** Report them together.
+**RULING (John + Architect, 2026-08-15).** A literal inside a rule is not addressable, so it is not
+a reviewable cell - and review is cell-atomic. It also carries no citation, which is exactly how
+`$57,231` came to sit in `tax-liability.yaml` with nothing deriving it. **A one-row lookup table is
+also wrong**: a table is right when the FORM prints a table; forcing a scalar into one invents a
+dimension the document does not have and makes every consumer read row zero.
 
-**START WITH A AND E.** A is 5 gaps with a single clear mechanism. E is the largest and is the true
-index defect. B, C, D are one or two cases each and can follow.
+**THE PRINTED FORM DECIDES THE SHAPE.**
+- Scalar printed (`Multiply line 11 by $100`) -> **one parameter node**, cited to the line printing it.
+- Filing-status pair (`$150,000 ($300,000 if married filing jointly)`) -> **two parameter nodes
+  sharing ONE citation**, selected by the existing role-keyed rule.
+- A real printed band table (`form_2441` line 8: AGI bands against decimal amounts) ->
+  **`LOOKUP_BRACKET` over a harvested table, NOT a parameter.**
 
-**WHAT MUST NOT HAPPEN.** **Do not widen an operand until it resolves.** If a literal cannot be
-tied to a parameter node, or a referenced line genuinely is not on the form, that is a FINDING to
-report, not a licence to invent a node. **Do not re-baseline any expected-count fixture to match
-new output** - that is what got the S106 rework rejected, and
-`tests/test_workbench_cells_api_m17.py::test_documents_api_lists_forms` is ALREADY disagreeing
-(decision_required 52->42, user_entered 63->73) because the drafts were regenerated. Leave it; the
-Architect decides when it re-baselines.
+**`_constant_multiplier_from_label` SHOULD DIE, NOT WIDEN.** The arity escape hatch at
+`micro.py:163` fires only for `MULTIPLY`, exactly one source line, and a parenthesized decimal like
+`(0.26)`. That is why `Multiply line 11 by $100` fails, and why `form_6251` 18/39 fail as `IF_ELSE`
+despite printing `(0.26)` - the hatch is keyed to an OPERATION when the real condition is *the
+operand is a printed constant*. **Do not add `$100` to its regex.** It exists only because there was
+nowhere to put the number, and now there is.
 
-**ALSO IN SCOPE, because it blocks measurement.** `extract --year 2025` **aborts the entire corpus
-in 2 seconds** on `form_8949_2025`: `OutlineArtifactError: outbound_flows: flow_form_8949_2025_...
-source outline missing` x6. One stale document prevents every other document from being derived,
-which is why no full re-run has ever been cheap. **Fix the 8949 artifacts AND make the year batch
-isolate a failing document instead of aborting.** form_8949 is the one document still carrying a
-July `google/gemini-3.6-flash` draft.
+**THE 11 CASES.** Class A gaps: `form_2441` 21, `schedule_1a` 9, `schedule_1a` 26, `schedule_1a` 35,
+`form_6251` 4. Arity violations with the same root cause: `schedule_1a` 12/20/29
+(`Multiply line N by $100/$200`), `form_6251` 18/39 (26%/28% either side of a
+`$239,100 ($119,550 if MFS)` threshold, less `$4,782 ($2,391 if MFS)`), `form_2441` 8 (band table).
+
+---
+
+### Item 2 - ONE BAD CHECK MUST NOT FLAG THE WHOLE DOCUMENT
+
+**THIS IS WHY `accepted` IS 0 ON EVERY DOCUMENT, ALWAYS - AND IT IS WORTH MORE THAN ALL 38 GAPS.**
+`checks.py:157-163`:
+
+```
+if any(issue.kind == "document" for issue in issues):
+    for obj in batch.objects:
+        obj.flag("document-level deterministic check failed")
+if any(issue.kind == "properties" for issue in issues):
+    for obj in batch.objects:
+        obj.flag("property check failed")
+```
+
+`route_drafts` then sends **every flagged object to review**, so a single property issue anywhere in
+a document routes all of it. form_1040 measures `flags_by_layer: {properties: 174, other: 173,
+field_grid: 121}` against `routing: {accepted: 0, review: 173}` - **174 objects carry the blanket
+property flag and not one object is ever accepted.** `require_critic_agreement` is already `false`,
+so the critic is NOT the gate; this is.
+
+**CONSEQUENCE: THE ACCEPTED/REVIEW SPLIT CARRIES NO INFORMATION TODAY.** Perfect derivation would
+still yield `accepted: 0`. The review phase cannot begin, and 1,324 candidates sitting at T0 have
+been read as "the model produced nothing usable" when the real cause is a blanket flag.
+
+**WHAT TO DO.** A document- or property-level issue must flag **the objects it actually implicates**
+- carry the issue's own identity through - and objects it does not implicate must stay clean.
+**Report `accepted` / `review` per document before and after.** If a check genuinely cannot name its
+objects, that is a FINDING to report, not a licence to keep flagging everything.
+
+---
+
+### Item 3 - THE YEAR BATCH MUST NOT ABORT ON ONE DOCUMENT
+
+`extract --year 2025` **dies in 2 seconds** on `form_8949_2025` with
+`OutlineArtifactError: outbound_flows: flow_form_8949_2025_..._source outline missing` x6. One stale
+document prevents every other document from being derived, which is why no full re-run was ever
+cheap - the Architect only got corpus numbers by looping per document. **Fix the 8949 outbound_flow
+artifacts AND make the year batch record a failing document and continue.** form_8949 is the one
+document still carrying a July `google/gemini-3.6-flash` draft.
+
+---
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not widen an operand, a regex, or an exemption until something resolves.** Unresolvable is a
+  FINDING.
+- **Do not re-baseline any expected-count fixture.**
+  `tests/test_workbench_cells_api_m17.py::test_documents_api_lists_forms` is ALREADY disagreeing
+  (`decision_required` 52->42, `user_entered` 63->73) because the drafts were regenerated. **Leave
+  it.** The Architect decides when it re-baselines. Editing an expected number to match new output
+  is what got the S106 rework rejected.
+- **Do not touch citations, source ranges, or anything in the parked S102-S107 provenance line.**
 
 **THE FLOOR.**
-- **Report gap counts per class before and after**, from `review_gaps.yaml` across all drafts.
-  Class A must reach 0. Class E must be resolved case by case with a named cause for each of the 9.
-- **`extract --year 2025` completes** and reports every document, including a failing one.
-- **No expected-count fixture edited.**
+- **Class A gaps reach 0**, and the 6 constant-rooted arity violations resolve with them. Report the
+  11 by id, before and after, from `review_gaps.yaml`.
+- **`accepted` is greater than 0 on at least one document**, with the per-document accepted/review
+  split reported. **A number is required, not a claim.**
+- **`extract --year 2025` completes and reports every document**, including a failing one.
 - **Targeted tests green**: `tests/test_m20_s102.py tests/test_m20_s91.py
   tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py` (41 passed at
   `4990f20`).
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **NO live model call is required of the Worker.** Re-derivation is the Architect's step; report
-  what the deterministic resolver does against the CURRENT drafts.
+- **No expected-count fixture edited.**
 
-**OUT OF SCOPE.** The 10 operation-arity violations (Architect is building a diagnostic table on
-those now). The 5 `LlmUnavailable` 400s on form_2441. The 4 self-reference gaps. Citations,
-source ranges, and anything in the S102-S107 provenance line.
+**OUT OF SCOPE, AND DELIBERATELY SO - these are named so they are not lost, NOT so they are done.**
+Class E (9 gaps: index gap vs row mis-segmentation, needs per-case diagnosis - `form_1116` 3b is
+anchored `3b` while its label reads *"c Add lines 3a and 3b"*). Class B ranges (2), C column-
+qualified (1), D cross-document (1). The 3 alternation cases (`form_6251` 12/20/27, *"whichever
+applies"*) - **the schema cannot express alternation and the Architect owes a ruling before anyone
+codes it**; those lines also return a DIFFERENT operation run to run. The 5 structured-output
+`400`s on `form_2441`. The 1 genuine model error (`form_2441` 15, *"Combine lines 12 through 14"*
+-> `SUBTRACT`).
+
+**ARCHITECT'S OWN WORK, NOT THE WORKER'S.** Measure the silent-wrong rate among the **103 rules that
+DID derive** - form_1040 line 36 came out as a `COPY` of line 34, is wrong (it is a filer election),
+and registered as **no gap at all**. Rule on alternation. Produce the verb-to-operation disagreement
+report before any prompt guidance is wired.
 
 ## Open for Architect
 
