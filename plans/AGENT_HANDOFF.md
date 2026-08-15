@@ -326,8 +326,25 @@ report before any prompt guidance is wired.
 
 ## Open for Architect
 
+**CURRENT STATE (2026-08-15): S108 ITEM 1 WORKER FIX IS APPLIED; LIVE CORPUS VERIFICATION IS
+PENDING.** Commit `b96fc59` keeps `role` and `value_type` in the strict schema `required` arrays
+while making them nullable, so positional operands do not invent lookup roles. No graph artifact,
+citation, or source range changed.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\AppData\Local\Temp\tgpt_s108_0815';
+.venv\Scripts\python.exe -m pytest tests\test_m20_s108.py -q` -> **3 passed**.
+RAN: same temp-root command with `tests\test_m20_s102.py tests\test_m20_s91.py
+tests\test_outline_span_resolution_m20.py tests\test_extract_outline_m4.py -q` -> **41 passed** in
+24.98s.
+RAN: same temp-root command with `tests\test_background_m20.py -k
+'explicit_printed_constant or printed_constant_pair or constant_multiplier_escape_hatch' -q` ->
+**3 passed, 6 deselected**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**; `git diff --check` ->
+clean. The run emitted only the known `.pytest_cache` ACL warning. NOT RUN: live provider validation
+or corpus re-derivation; Architect owns that leg.
+
 **ARCHITECT VERIFICATION OF THE S108 SCHEMA FIX (2026-08-15). THE REGRESSION IS REPAIRED. ITEM 1 IS
-STILL NOT ACCEPTED - IT IS NET FLAT AND IT INTRODUCED A NEW FAILURE CLASS.**
+STILL NOT ACCEPTED - THIS IS THE PRE-FIX VERIFICATION RECORD, NOT THE CURRENT RESULT.**
 
 **REPAIRED, AND VERIFIED BY RUNNING.** `7580a4d` restores the strict schema on both branches and
 adds a recursive contract test. Bare targeted set **59 passed**. Corpus re-derive, all 17 documents,
@@ -355,7 +372,7 @@ invent a role on every operand, including plain positional ones**, and the inven
 preserve computation order. **`schedule_1a` 20 and 35 are constant cases that merely traded one
 failure for another.**
 
-**THE FIX.** `role` (and `value_type` on the constant branch) stay in `required` and become
+**THE FIX, NOW APPLIED IN `b96fc59`.** `role` (and `value_type` on the constant branch) stay in `required` and become
 **nullable** - `{"type": ["string", "null"]}` - so the model supplies a role only where a lookup
 branch genuinely exists and positional order governs otherwise. **Keep the schema-contract test**;
 extend it to assert that an optional key is nullable rather than merely present.
@@ -730,9 +747,12 @@ was performed, per pilot rules.
 
 ## From Architect
 
-**One spec at a time. The next round is specced when it is picked up.**
+**NO NEW WORKER IMPLEMENTATION SLICE IS SPECCED AFTER M20-S108 ITEM 1.** The next action is
+Architect-owned live re-derivation against the corrected schema, followed by the reported corpus
+numbers and constant-case ids. The Worker has completed the offline correction and guard evidence
+above; do not start a new provenance or citation round.
 
-**M20-S107 IS READY TO START AND NEEDS NOTHING FROM JOHN** (Architect, 2026-08-14). It closes the
+**HISTORICAL S107 NOTE - SUPERSEDED.** M20-S107 closed the
 last A9 scaffolding seam in the core citations: re-extract 30 hand-authored paraphrases from their
 acquired source, and give the 4 synthesized tax-bracket citations a provenance kind that admits they
 are computed.
