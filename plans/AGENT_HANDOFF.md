@@ -307,6 +307,49 @@ report before any prompt guidance is wired.
 
 ## Open for Architect
 
+**ARCHITECT VERIFICATION OF THE S108 SCHEMA FIX (2026-08-15). THE REGRESSION IS REPAIRED. ITEM 1 IS
+STILL NOT ACCEPTED - IT IS NET FLAT AND IT INTRODUCED A NEW FAILURE CLASS.**
+
+**REPAIRED, AND VERIFIED BY RUNNING.** `7580a4d` restores the strict schema on both branches and
+adds a recursive contract test. Bare targeted set **59 passed**. Corpus re-derive, all 17 documents,
+7m28s: **rules 0 -> 103, edges 0 -> 354, gaps 141 -> 38.** The 140 blanket 400s are gone.
+
+**FLOOR RESULT.** `rules >= 103` **met exactly (103)**. `edges >= 337` **met (354)**.
+`gaps <= 38` **met exactly (38)**. **`zero gaps carrying Error code: 400` NOT met - 5 remain.**
+**`the 11 constant cases resolve` NOT met - 4 of 11.**
+
+**THE MECHANISM IS RIGHT AND WORTH KEEPING. 42 parameter nodes are minted**, and four constant cases
+genuinely resolve: `form_2441` 21, `schedule_1a` 9, 12, 26 - the plain `Enter $X` and
+`Multiply line N by $100` shapes.
+
+**BUT THE ROUND IS NET FLAT AND THE CAUSE IS THE `role` CONTRACT.** Same 103 rules and same 38 gaps
+as before the round. Four constant failures and four index failures closed; **six NEW failures
+appeared in a class that did not exist**:
+`MULTIPLY operand roles do not preserve computation order` (`form_6251` 34 and 37, `schedule_1a` 20
+and 34, `schedule_a` 3) and `SUBTRACT operand roles do not preserve computation order`
+(`schedule_1a` 35).
+
+**`role` WAS MADE REQUIRED WHEN IT SHOULD BE NULLABLE.** The rejection note said strict structured
+output expresses an optional key by putting it in `required` **with a nullable type**, not by making
+it a mandatory string. `7580a4d` made it `required` alongside `minLength: 1`, so **the model must
+invent a role on every operand, including plain positional ones**, and the invented roles do not
+preserve computation order. **`schedule_1a` 20 and 35 are constant cases that merely traded one
+failure for another.**
+
+**THE FIX.** `role` (and `value_type` on the constant branch) stay in `required` and become
+**nullable** - `{"type": ["string", "null"]}` - so the model supplies a role only where a lookup
+branch genuinely exists and positional order governs otherwise. **Keep the schema-contract test**;
+extend it to assert that an optional key is nullable rather than merely present.
+
+**FLOOR, UNCHANGED EXCEPT WHERE MET.** `rules > 103` and `edges > 354` - **strictly greater now, the
+round must add derivation rather than trade it.** **Zero gaps carrying `computation order`.** At
+least **9 of the 11** constant cases resolved, by id. The schema-contract test green.
+
+**NOT A REGRESSION, BUT NOTE IT.** The 5 remaining `400`s are the same count as before and remain out
+of scope, but they are no longer confined to one document: `form_2441` 3 and 30, `schedule_a` 17,
+`schedule_b` 2 and 6.
+
+
 **ARCHITECT VERIFICATION OF S108 (2026-08-15). ITEMS 2 AND 3 ACCEPTED. ITEM 1 REJECTED - IT TOOK
 DERIVATION FROM 103 RULES TO ZERO, CORPUS WIDE.**
 
