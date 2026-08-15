@@ -54,7 +54,7 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                         {
                             "type": "object",
                             "additionalProperties": False,
-                            "required": ["form", "line"],
+                            "required": ["form", "line", "role"],
                             "properties": {
                                 "form": {"type": "string", "minLength": 1},
                                 "line": {"type": "string", "minLength": 1},
@@ -64,7 +64,7 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                         {
                             "type": "object",
                             "additionalProperties": False,
-                            "required": ["constant"],
+                            "required": ["constant", "role", "value_type"],
                             "properties": {
                                 "constant": {"type": "number"},
                                 "role": {"type": "string", "minLength": 1},

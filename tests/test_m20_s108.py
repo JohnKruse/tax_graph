@@ -9,12 +9,42 @@ import pytest
 
 import tax_graph.extract.pipeline as pipeline
 from tax_graph.extract.models import RoutedDrafts
+from tax_graph.extract.micro import formula_micro_schema
 from tax_graph.extract.outline import build_candidate_spans, build_outline_tree, build_outbound_flows
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.inputs import load_document_input
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.m20
+def test_formula_micro_schema_matches_strict_structured_output_contract() -> None:
+    """Guard every formula response object against the provider schema contract."""
+    schema = formula_micro_schema(root=ROOT)
+    forbidden = {"allOf", "if", "then", "else", "not", "$ref"}
+
+    def visit(value: object, path: str, *, root: bool = False) -> None:
+        assert isinstance(value, dict), path
+        assert not (set(value) & forbidden), path
+        if root:
+            assert value.get("type") == "object", path
+        properties = value.get("properties")
+        if isinstance(properties, dict):
+            required = value.get("required")
+            assert isinstance(required, list), path
+            assert set(properties) == set(required), path
+            for name, child in properties.items():
+                visit(child, f"{path}.properties.{name}")
+        items = value.get("items")
+        if isinstance(items, dict):
+            visit(items, f"{path}.items")
+        alternatives = value.get("anyOf")
+        if isinstance(alternatives, list):
+            for index, child in enumerate(alternatives):
+                visit(child, f"{path}.anyOf[{index}]")
+
+    visit(schema, "schema", root=True)
 
 
 @pytest.mark.m20

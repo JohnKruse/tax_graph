@@ -144,6 +144,22 @@ RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py -q` -> 27 pass
 The full `tests\test_background_m20.py -q` run remains 1 failed, 8 passed: its existing prompt-bench
 fixture omits the `line_anchors` metadata required by the current span resolver.
 
+**WORKER CORRECTION (CODEX, 2026-08-15): S108 ITEM 1 SCHEMA DEFECT FIXED [DONE].** The formula
+micro schema now lists every key in each object branch's `required` array: `form`, `line`, and
+`role` for cross-form operands; `constant`, `role`, and `value_type` for printed constants. A
+recursive regression enumerates the strict structured-output contract and rejects forbidden schema
+composition keywords. No graph artifact, citation, or source range changed.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_item1';
+.venv\Scripts\python.exe -m pytest tests\test_m20_s108.py -q` -> 3 passed.
+RAN: same temp-root command with `tests\test_m20_s102.py tests\test_m20_s91.py
+tests\test_outline_span_resolution_m20.py tests\test_extract_outline_m4.py -q` -> 41 passed.
+RAN: same temp-root command with `tests\test_background_m20.py -k 'explicit_printed_constant or
+printed_constant_pair or constant_multiplier_escape_hatch' -q` -> 3 passed, 6 deselected.
+RAN: same temp-root command with `tests\test_extract_m4.py -q` -> 27 passed.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK; `git diff --check` ->
+clean. NOT RUN: live provider validation or corpus re-derivation; Architect owns that external leg.
+
 **WORKER STATUS (CODEX, 2026-08-15): S108 ITEMS 2 AND 3 IMPLEMENTED.** Item 2 no longer applies
 document- or property-level findings as blanket batch flags. The issue identity now flags only the
 implicated object; a regression proves an unrelated object routes to `accepted`. Commit `c2dc0d8`.
