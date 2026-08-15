@@ -212,37 +212,56 @@ call and triple corpus re-derivation; the round assigns those to the Architect.
 
 ## Open for Architect
 
-**THE THREE CELLS JOHN ASKED TO SEE (2026-08-15), RECORDED BECAUSE THE CONCLUSION CHANGED THE
-PRIORITY.** He asked whether these failures are even understandable from a human reviewer's seat.
-**They are, and in all three the MODEL WAS RIGHT.**
+**ARCHITECT VERIFICATION OF S109 (`c47f5fa`, 2026-08-15). REJECTED. IT IS A WORSE REGRESSION THAN
+THE S108 SCHEMA BUG - DERIVATION FELL FROM 107-109 RULES TO 16-19.**
 
-1. **`form_6251` line 18.** Face and instruction both state the whole rule. Model returned `IF_ELSE`
-   over line 17 plus six constants, each correctly tagged `default` / `married filing separately`.
-   **Rejected: `IF_ELSE requires exactly 4 source line(s)`.**
-2. **`form_6251` line 13.** Face: *"Enter the amount from line 4 of the QDCGT Worksheet ... or the
-   amount from line 13 of the Schedule D Tax Worksheet ... whichever applies"*. Model returned
-   `COPY` naming both. **Rejected: `COPY requires exactly 1`.** **AND ITS INSTRUCTION PACKET IS
-   WRONG** - it carries sections for lines 18, 19, 20, 25, 27 and 39, and nothing for line 13.
-3. **`schedule_2` line 1z.** Face: *"z Add lines 1a through 1y"*. Model returned `SUM` over the full
-   run and prompt-bench ACCEPTED it; the corpus failed it because 19 of those operands are not in
-   the outline at all.
+**TRIPLE CORPUS RUN, MEASURED AS A RANGE PER THE FLOOR.**
 
-**THE CONCLUSION.** None failed for lack of comprehension. They failed on a rigid operand-count
-contract, a missing alternation concept, and an upstream extraction hole. **If John reviewed these
-three cells today he would approve the model's answer in all three, and the pipeline still would not
-accept them.** The bottleneck is the vocabulary we give the model to answer in, not its reading of
-the form.
+| metric | baseline (pre-S109) | after `c47f5fa` |
+| --- | --- | --- |
+| rules | 107 / 108 / 109 | **16 / 19 / 16** |
+| edges | 365 / 366 / 370 | **53 / 69 / 65** |
+| gaps | 32 / 33 / 34 | **125 / 122 / 125** |
 
-**ARCHITECT RULING STILL OWED: ALTERNATION.** *"Whichever applies"* (`form_6251` 12, 13, 20) has no
-representation. **The likely answer is already in the graph** - `graph/2025/decisions/` exists,
-`route.py` already forces decision objects to human review, and the MCP contract says to present the
-options and the escape hatch at a decision node rather than choose. **Not written yet; it gates a
-later round, not S109.**
+**`form_1040` DROPPED TO 1-3 RULES.** Even line 11a, plain *"Subtract line 10 from line 9"*, fails.
+Bare targeted set was **90 passed** - the tests do not exercise this.
 
-**STILL WRONG IN THE GRAPH, NOT IN SCOPE ANYWHERE YET.** The face lint (`pilot/face_lint.py`)
-reports `form_1040` 35a and 36 both deriving as `COPY` when both are filer elections
-(*"Amount of line 34 you want refunded to you"* / *"you want applied to your 2026 estimated tax"*).
-**Neither registers as a gap.** Silent-wrong rate is at least 2 of ~107.
+**THE FAILURE IS THE ROLE CONTRACT REJECTING EVERYTHING**: `SUM operand roles` 50, `MIN` 13,
+`MULTIPLY` 10, `SUBTRACT` 9, `IF_ELSE` 8, `COPY` 5.
+
+**ROOT CAUSE - THE SCHEMA CANNOT ATTACH A ROLE TO A PLAIN LINE.** Opened `form_1040` 11a end to end.
+The model now returns:
+
+```
+{"form": "9",  "line": "9",  "role": "minuend",    "branch": null}
+{"form": "10", "line": "10", "role": "subtrahend", "branch": null}
+```
+
+**`form` names a DOCUMENT** (*"Schedule D Tax Worksheet"*), **and it is being filled with the line
+number.** Before S109 these operands were bare strings `"9"` and `"10"`.
+**The string variant in `anyOf` carries no `role` field; only the object variants do.** So the moment
+roles became REQUIRED for arity validation, every operand had to become an object, and every object
+demands a `form`. The model supplies the only token it has. **Operand resolution then reads
+`form: "9"` as a foreign document and the rule dies.**
+
+**THE FIX.** Give a same-form line operand a role-bearing shape: either `{"line": "9", "role": ...}`
+with **no** `form` key, or keep one object variant whose `form` is **nullable and means "this
+form"**. **Then the arity-by-role mechanism is sound** - it is the operand shape that is wrong, not
+the idea.
+
+**PATTERN WORTH NAMING - THIS IS THE SECOND TIME IN TWO ROUNDS.** S108 item 1 and S109 both changed
+the response schema and both took derivation to near zero, and **both passed their targeted tests**.
+`tests/` exercises the validator against hand-written payloads; **nothing in the suite asserts that a
+real model response still resolves end to end.** The floor caught both only because the Architect ran
+the corpus. **A schema change is not verifiable offline, whatever the unit tests say.**
+
+**`prompt-bench` ACCEPTED 11a while the corpus rejected it**, again - it stops before operand
+resolution. **Its verdict is not evidence.** That divergence has now misled twice and should be
+closed in its own round.
+
+**THE FLOOR IS UNCHANGED.** `rules` bottom-of-range **>= 110**, measured over THREE runs. Zero
+`operand roles do not preserve computation order`. `form_6251` 18 and 39, `form_2441` 8 and 5 all
+derive, reported by id.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
