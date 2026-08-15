@@ -34,6 +34,12 @@ def test_formula_micro_schema_matches_strict_structured_output_contract() -> Non
             required = value.get("required")
             assert isinstance(required, list), path
             assert set(properties) == set(required), path
+            for optional_name in ("role", "value_type"):
+                if optional_name in properties:
+                    optional_schema = properties[optional_name]
+                    assert isinstance(optional_schema, dict), path
+                    optional_types = optional_schema.get("type")
+                    assert isinstance(optional_types, list) and "null" in optional_types, path
             for name, child in properties.items():
                 visit(child, f"{path}.properties.{name}")
         items = value.get("items")

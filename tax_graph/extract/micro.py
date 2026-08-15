@@ -58,7 +58,7 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                             "properties": {
                                 "form": {"type": "string", "minLength": 1},
                                 "line": {"type": "string", "minLength": 1},
-                                "role": {"type": "string", "minLength": 1},
+                                "role": {"type": ["string", "null"], "minLength": 1},
                             },
                         },
                         {
@@ -67,9 +67,9 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                             "required": ["constant", "role", "value_type"],
                             "properties": {
                                 "constant": {"type": "number"},
-                                "role": {"type": "string", "minLength": 1},
+                                "role": {"type": ["string", "null"], "minLength": 1},
                                 "value_type": {
-                                    "type": "string",
+                                    "type": ["string", "null"],
                                     "enum": ["currency", "integer", "percentage"],
                                 },
                             },
