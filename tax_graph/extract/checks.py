@@ -150,16 +150,19 @@ def _property_issues(batch: ExtractionBatch, *, root: str | Path | None) -> list
 
 def _apply_issues(batch: ExtractionBatch, issues: list[CheckIssue]) -> None:
     by_identity = batch.by_identity()
+    by_object_id: dict[str, list[DraftObject]] = {}
+    for obj in batch.objects:
+        by_object_id.setdefault(obj.object_id, []).append(obj)
     for issue in issues:
         obj = by_identity.get((issue.kind, issue.object_id))
-        if obj:
+        if obj is not None:
             obj.flag(issue.reason)
-    if any(issue.kind == "document" for issue in issues):
-        for obj in batch.objects:
-            obj.flag("document-level deterministic check failed")
-    if any(issue.kind == "properties" for issue in issues):
-        for obj in batch.objects:
-            obj.flag("property check failed")
+            continue
+        # Property checks use their reporting layer as ``kind`` while their
+        # object_id names the graph object that failed.  Preserve that
+        # identity without turning the issue into a batch-wide flag.
+        for obj in by_object_id.get(issue.object_id, ()):
+            obj.flag(issue.reason)
 
 
 def _raw_line_anchors(text: str) -> list[str]:

@@ -4,9 +4,56 @@ from pathlib import Path
 
 import pytest
 
-from tax_graph.extract.models import DraftObject, ExtractionBatch, RoutedDrafts
+from tax_graph.extract.checks import _apply_issues
+from tax_graph.extract.models import CheckIssue, DeterministicReport, DraftObject, ExtractionBatch, RoutedDrafts
 from tax_graph.extract import route
-from tax_graph.extract.route import _swap_staged_draft_contents, write_routed_drafts
+from tax_graph.extract.route import _swap_staged_draft_contents, route_drafts, write_routed_drafts
+
+
+@pytest.mark.m20
+def test_deterministic_issue_flags_only_the_implicated_object():
+    batch = ExtractionBatch(
+        document_id="form_1040_2025",
+        year="2025",
+        objects=[
+            DraftObject(
+                "documents",
+                {"document_id": "form_1040_2025"},
+                "",
+                "test",
+                1.0,
+            ),
+            DraftObject(
+                "nodes",
+                {"node_id": "node_clean"},
+                "",
+                "test",
+                1.0,
+            ),
+            DraftObject(
+                "nodes",
+                {"node_id": "node_bad"},
+                "",
+                "test",
+                1.0,
+            ),
+        ],
+    )
+    issues = [
+        CheckIssue("document", "form_1040_2025", "field grid: document issue"),
+        CheckIssue("properties", "node_bad", "property_execution: node issue"),
+    ]
+
+    _apply_issues(batch, issues)
+    routed = route_drafts(
+        batch,
+        DeterministicReport(issues=issues),
+        config={"extraction": {"require_critic_agreement": False}},
+    )
+
+    assert {obj.object_id for obj in routed.review} == {"form_1040_2025", "node_bad"}
+    assert [obj.object_id for obj in routed.accepted] == ["node_clean"]
+    assert batch.by_identity()[("nodes", "node_clean")].flags == []
 
 
 @pytest.mark.m20
