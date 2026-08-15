@@ -21,14 +21,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S108 is specced below - THREE ITEMS, each one mechanism. DERIVATION IS THE ONLY
-PRIORITY (John, 2026-08-15).** **The Worker needs NO live model call; the Architect runs
-re-derivation and reports the numbers.**
+**BALL: CODEX. M20-S109 is specced below - ONE mechanism, four cases.**
+**The Worker needs NO live model call; the Architect runs re-derivation and reports the numbers.**
 
-**ITEM 2 IS THE ONE THAT MATTERS MOST.** `accepted` has been 0 on every document forever because a
-single property-level check flags **every object in the batch**. Even flawless derivation yields
-nothing acceptable while that stands, so the review phase cannot begin at all. **Do not treat it as
-the small one because it is second.**
+**M20-S108 IS ACCEPTED** (`c2dc0d8` + `e2d0180` + `4377c30` + `7bfb9e8` + `7580a4d` + `b96fc59`,
+Architect, 2026-08-15). `extract --year` completes all 17 documents; `accepted` moved 0 -> ~1670;
+46 parameter nodes are minted and every plain printed constant now derives.
+
+**STABILITY IS MEASURED NOW - USE RANGES, NOT SINGLE NUMBERS.** Triple corpus run, 2026-08-15:
+**gaps 32 / 33 / 34, rules 109 / 108 / 107, edges 370 / 365 / 366.** Of a 36-gap union, **31 are
+STABLE (3 of 3), 1 flaky, 4 appear once.** So **86% of failures are real defects, not noise** - and
+**the corpus output itself varies +/-2 rules run to run**, concentrated in `form_1116`, `form_2441`
+and `schedule_1a`. **A single-run delta smaller than that is not evidence.**
+
+**`prompt-bench` AND THE CORPUS PATH DISAGREE.** `schedule_2` 1z is *accepted* by prompt-bench and
+fails in the corpus, because prompt-bench stops at micro-extraction and the corpus then resolves
+operands against the outline. **Use prompt-bench to see the prompt and the response; do NOT use its
+verdict as the corpus verdict.**
 
 **PRIORITY RESET, 2026-08-15.** John: *"I want to just concentrate on the derivation. It is the
 true linchpin of this whole project."* **The S102-S107 provenance line is PARKED.** It was real
@@ -120,401 +129,103 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S108 SPECCED BY ARCHITECT (2026-08-15). DERIVATION IS THE ONLY PRIORITY** (John: *"It is the
-true linchpin of this whole project"*). **THREE ITEMS, EACH ONE MECHANISM.**
-**REAL ROUND** - graph writes. **NO live model call is required of the Worker**; the Architect runs
-re-derivation and reports the numbers.
+**M20-S109 SPECCED BY ARCHITECT (2026-08-15). ARITY IS VALIDATED AGAINST OPERATION ROLES, NOT A
+FIXED OPERAND COUNT.** **REAL ROUND** - graph writes. **No live model call is required of the
+Worker**; the Architect runs re-derivation.
 
-**WORKER STATUS (CODEX, 2026-08-15): S108 ITEM 1 IMPLEMENTED.** Formula responses now carry
-printed numeric operands as explicit constant objects. Assembly mints cited `parameter` nodes,
-keeps percentage versus currency typing, preserves lookup roles, expands an unqualified `default`
-branch across the existing non-MFJ filing-status roles, and keeps the shared citation on every
-parameter. The operation-specific `_constant_multiplier_from_label` escape hatch is deleted; a
-missing constant is now a typed arity finding. The outline batch now retains these parameter nodes
-in its graph draft. No source-range or citation text was changed.
+**THIS SPEC WAS WRITTEN AFTER OPENING ALL TEN FAILURES END TO END**, per the hard rule added to
+`../AGENTS.md` on 2026-08-15. **The bucket is five causes, not one, and S109 takes exactly one of
+them.**
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT = C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new;
-.venv\Scripts\python.exe -m pytest tests\test_background_m20.py -k 'printed_constant or
-constant_multiplier_escape_hatch' -q` -> 3 passed, 6 deselected.
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s102.py tests\test_m20_s91.py
-tests\test_outline_span_resolution_m20.py tests\test_extract_outline_m4.py -q` -> 41 passed.
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py -q` -> 27 passed;
-`tests\test_m20_s85_comparator.py -q` -> 5 passed. `tools/check_ascii.py` -> ASCII check OK;
-`git diff --check` -> clean. NOT RUN: live model or corpus re-derivation; Architect owns that leg.
-The full `tests\test_background_m20.py -q` run remains 1 failed, 8 passed: its existing prompt-bench
-fixture omits the `line_anchors` metadata required by the current span resolver.
+**WHAT THE TEN ACTUALLY ARE** (prompt, packet, response and rejecting stage read for each):
 
-**WORKER CORRECTION (CODEX, 2026-08-15): S108 ITEM 1 SCHEMA DEFECT FIXED [DONE].** The formula
-micro schema now lists every key in each object branch's `required` array: `form`, `line`, and
-`role` for cross-form operands; `constant`, `role`, and `value_type` for printed constants. A
-recursive regression enumerates the strict structured-output contract and rejects forbidden schema
-composition keywords. No graph artifact, citation, or source range changed.
+| cause | n | cases |
+| --- | --- | --- |
+| **A. threshold conditional with printed constants** | 2 | `form_6251` 18, 39 |
+| **B. alternation - "whichever applies"** | 3 | `form_6251` 12, 13, 20 |
+| **C. composite expression** | 1 | `form_2441` 15 |
+| **D. printed band table** | 1 | `form_2441` 8 |
+| **E. conditional on a cross-form value** | 1 | `form_2441` 5 |
+| **F. passes on re-run (variance)** | 2 | `form_1116` 19, `form_1099_div` 2d |
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_item1';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s108.py -q` -> 3 passed.
-RAN: same temp-root command with `tests\test_m20_s102.py tests\test_m20_s91.py
-tests\test_outline_span_resolution_m20.py tests\test_extract_outline_m4.py -q` -> 41 passed.
-RAN: same temp-root command with `tests\test_background_m20.py -k 'explicit_printed_constant or
-printed_constant_pair or constant_multiplier_escape_hatch' -q` -> 3 passed, 6 deselected.
-RAN: same temp-root command with `tests\test_extract_m4.py -q` -> 27 passed.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK; `git diff --check` ->
-clean. NOT RUN: live provider validation or corpus re-derivation; Architect owns that external leg.
+**S109 IS A, D AND E ONLY - FOUR CASES, ONE MECHANISM.**
 
-**WORKER CORRECTION (CODEX, 2026-08-15): S108 ROLE CONTRACT FIXED [DONE].** The formula micro
-schema keeps `role` and `value_type` in `required` for strict structured output, but makes them
-nullable so positional operands do not invent lookup roles. The schema regression now asserts that
-these optional metadata fields include `null` in their type union. No graph artifact, citation, or
-source range changed.
+**THE DEFECT.** `_validate_source_line_arity` compares `len(source_lines)` against a fixed number
+per operation. **That count assumes every operand is a line.** It is not: a printed constant is an
+operand, and so is a threshold. `form_6251` 18 prints *"If line 17 is $239,100 or less ($119,550 or
+less if married filing separately), multiply line 17 by 26% (0.26). Otherwise, multiply line 17 by
+28% (0.28) and subtract $4,782 ($2,391 if married filing separately)"*. **The model returns exactly
+that** - one line plus six correctly role-tagged constants - and is rejected because `IF_ELSE`
+wants 4. `form_6251` 39 is the same rule on line 12, returning 9. `form_2441` 8 returns **48
+operands**: one line plus the entire printed AGI decimal band table.
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s108.py -q` -> 3 passed.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new';
-.venv\Scripts\python.exe -m pytest tests\test_background_m20.py -k 'explicit_printed_constant or
-printed_constant_pair or constant_multiplier_escape_hatch' -q` -> 3 passed, 6 deselected.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new';
-.venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py -q` -> 21 passed.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s102.py tests\test_m20_s91.py
-tests\test_outline_span_resolution_m20.py tests\test_extract_outline_m4.py -q` -> 41 passed.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK; `git diff --check` ->
-clean. NOT RUN: live provider validation or corpus re-derivation; Architect owns that external leg.
+**THE TARGET STATE.** **Arity is checked against the operation's ROLE SET from
+`operation_registry.operation_roles`, not a raw length.** A plan satisfies the contract when every
+REQUIRED role is filled exactly once and no unknown role appears. **A repeated role is legal where
+the registry says the role is repeatable** - band rows, filing-status variants.
 
-**WORKER STATUS (CODEX, 2026-08-15): S108 ITEMS 2 AND 3 IMPLEMENTED.** Item 2 no longer applies
-document- or property-level findings as blanket batch flags. The issue identity now flags only the
-implicated object; a regression proves an unrelated object routes to `accepted`. Commit `c2dc0d8`.
-Item 3 now resolves 8949 outbound sources against both legacy and geometry-derived section ids, and
-`extract_year` records a document failure and continues through the manifest. The CLI prints the
-per-document status and accepted/review/issues counts. Commits `4377c30` and `7bfb9e8`. The live
-ignored `form_8949_2025/outbound_flows.yaml` was regenerated deterministically and now passes the
-outline artifact check with all six current geometry source outlines.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py -q` -> 6 passed.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s108.py -q` -> 2 passed.
-RAN: same temp-root command with `tests\test_batch_extraction_m10.py -q` -> 2 passed in 98.26s.
-RAN: same temp-root command with `tests\test_background_m20.py -k
-'explicit_printed_constant or printed_constant_pair or constant_multiplier_escape_hatch' -q` ->
-3 passed, 6 deselected. `tools/check_ascii.py` on changed source/tests -> ASCII check OK;
-`git diff --check` -> clean.
-NOT RUN: live model or corpus re-derivation; Architect owns the 11-case before/after gap report,
-per-document accepted/review measurement, and the full-year derivation report.
-
-**CONTEXT, BECAUSE IT REFRAMES EVERYTHING.** Derivation produced nothing between 2026-08-01 and
-2026-08-15. The cause was ONE packet-assembly bug, fixed at `4990f20`: the evidence packet handed
-every anchored line the form's cover page, and the model - which answered CORRECTLY - was rejected
-for not quoting what it was shown. After the fix, corpus is **103 rules / 337 edges / 38 gaps**, and
-the class that accounted for 100% of form_1040's failures is at **zero corpus-wide**.
-
-**THE PATTERN WORTH NAMING: BOTH BUGS IN THIS ROUND ARE THE SAME SHAPE AS THAT ONE.** A specific
-failure is silently widened into a blanket substitution - wrong evidence for a missing span, a
-whole-batch flag for one bad check. **`AGENTS.md` calls this out as "one accessor, no fallbacks".
-Absence must be typed, never papered over.**
-
----
-
-### Item 1 - A PRINTED CONSTANT BECOMES A CITED `parameter` NODE (~11 gaps)
-
-**THE MECHANISM ALREADY EXISTS AND IS ALREADY IN USE.** `schedule_d_2025_capital_loss_limit_default`
-carries `node_type: parameter`, `constant_value: 3000`, and a `citation_refs` entry; its MFS twin
-carries `1500` and **the same citation**; `lookup_capital_loss_limit` / `lookup_selected_value`
-(42 edges already) selects between them by filing status. **Do not invent a new shape.**
-
-**RULING (John + Architect, 2026-08-15).** A literal inside a rule is not addressable, so it is not
-a reviewable cell - and review is cell-atomic. It also carries no citation, which is exactly how
-`$57,231` came to sit in `tax-liability.yaml` with nothing deriving it. **A one-row lookup table is
-also wrong**: a table is right when the FORM prints a table; forcing a scalar into one invents a
-dimension the document does not have and makes every consumer read row zero.
-
-**THE PRINTED FORM DECIDES THE SHAPE.**
-- Scalar printed (`Multiply line 11 by $100`) -> **one parameter node**, cited to the line printing it.
-- Filing-status pair (`$150,000 ($300,000 if married filing jointly)`) -> **two parameter nodes
-  sharing ONE citation**, selected by the existing role-keyed rule.
-- A real printed band table (`form_2441` line 8: AGI bands against decimal amounts) ->
-  **`LOOKUP_BRACKET` over a harvested table, NOT a parameter.**
-
-**`_constant_multiplier_from_label` SHOULD DIE, NOT WIDEN.** The arity escape hatch at
-`micro.py:163` fires only for `MULTIPLY`, exactly one source line, and a parenthesized decimal like
-`(0.26)`. That is why `Multiply line 11 by $100` fails, and why `form_6251` 18/39 fail as `IF_ELSE`
-despite printing `(0.26)` - the hatch is keyed to an OPERATION when the real condition is *the
-operand is a printed constant*. **Do not add `$100` to its regex.** It exists only because there was
-nowhere to put the number, and now there is.
-
-**THE 11 CASES.** Class A gaps: `form_2441` 21, `schedule_1a` 9, `schedule_1a` 26, `schedule_1a` 35,
-`form_6251` 4. Arity violations with the same root cause: `schedule_1a` 12/20/29
-(`Multiply line N by $100/$200`), `form_6251` 18/39 (26%/28% either side of a
-`$239,100 ($119,550 if MFS)` threshold, less `$4,782 ($2,391 if MFS)`), `form_2441` 8 (band table).
-
----
-
-### Item 2 - ONE BAD CHECK MUST NOT FLAG THE WHOLE DOCUMENT
-
-**THIS IS WHY `accepted` IS 0 ON EVERY DOCUMENT, ALWAYS - AND IT IS WORTH MORE THAN ALL 38 GAPS.**
-`checks.py:157-163`:
-
-```
-if any(issue.kind == "document" for issue in issues):
-    for obj in batch.objects:
-        obj.flag("document-level deterministic check failed")
-if any(issue.kind == "properties" for issue in issues):
-    for obj in batch.objects:
-        obj.flag("property check failed")
-```
-
-`route_drafts` then sends **every flagged object to review**, so a single property issue anywhere in
-a document routes all of it. form_1040 measures `flags_by_layer: {properties: 174, other: 173,
-field_grid: 121}` against `routing: {accepted: 0, review: 173}` - **174 objects carry the blanket
-property flag and not one object is ever accepted.** `require_critic_agreement` is already `false`,
-so the critic is NOT the gate; this is.
-
-**CONSEQUENCE: THE ACCEPTED/REVIEW SPLIT CARRIES NO INFORMATION TODAY.** Perfect derivation would
-still yield `accepted: 0`. The review phase cannot begin, and 1,324 candidates sitting at T0 have
-been read as "the model produced nothing usable" when the real cause is a blanket flag.
-
-**WHAT TO DO.** A document- or property-level issue must flag **the objects it actually implicates**
-- carry the issue's own identity through - and objects it does not implicate must stay clean.
-**Report `accepted` / `review` per document before and after.** If a check genuinely cannot name its
-objects, that is a FINDING to report, not a licence to keep flagging everything.
-
----
-
-### Item 3 - THE YEAR BATCH MUST NOT ABORT ON ONE DOCUMENT
-
-`extract --year 2025` **dies in 2 seconds** on `form_8949_2025` with
-`OutlineArtifactError: outbound_flows: flow_form_8949_2025_..._source outline missing` x6. One stale
-document prevents every other document from being derived, which is why no full re-run was ever
-cheap - the Architect only got corpus numbers by looping per document. **Fix the 8949 outbound_flow
-artifacts AND make the year batch record a failing document and continue.** form_8949 is the one
-document still carrying a July `google/gemini-3.6-flash` draft.
-
----
+**AND SEPARATE THE TWO MEANINGS OF `role`, WHICH ARE CURRENTLY FUSED.** The schema's `role` is
+carrying both **operand position** (`minuend`, `subtrahend`, `condition`, `if_true`) and **branch
+selection** (`default`, `married filing separately`). **They are different axes** and the collision
+is what produces `MULTIPLY operand roles do not preserve computation order`. Give the branch axis
+its own field; leave `role` meaning operand position only.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not widen an operand, a regex, or an exemption until something resolves.** Unresolvable is a
-  FINDING.
+- **Do not widen an arity number to make a case pass.** If a rule needs a role the registry does not
+  have, that is a FINDING - report it, do not invent the role silently.
+- **Do not touch causes B, C or F.** Alternation needs an Architect ruling that is not written yet;
+  composite expressions are a larger design change; F is run variance, not a defect.
 - **Do not re-baseline any expected-count fixture.**
-  `tests/test_workbench_cells_api_m17.py::test_documents_api_lists_forms` is ALREADY disagreeing
-  (`decision_required` 52->42, `user_entered` 63->73) because the drafts were regenerated. **Leave
-  it.** The Architect decides when it re-baselines. Editing an expected number to match new output
-  is what got the S106 rework rejected.
-- **Do not touch citations, source ranges, or anything in the parked S102-S107 provenance line.**
 
 **THE FLOOR.**
-- **Class A gaps reach 0**, and the 6 constant-rooted arity violations resolve with them. Report the
-  11 by id, before and after, from `review_gaps.yaml`.
-- **`accepted` is greater than 0 on at least one document**, with the per-document accepted/review
-  split reported. **A number is required, not a claim.**
-- **`extract --year 2025` completes and reports every document**, including a failing one.
-- **Targeted tests green**: `tests/test_m20_s102.py tests/test_m20_s91.py
-  tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py` (41 passed at
-  `4990f20`).
+- **`form_6251` 18 and 39, `form_2441` 8 and 5 all derive.** Report each by id, before and after.
+- **Corpus `rules` and `edges` measured over THREE runs**, reported as a range, not one number.
+  **Baseline is `rules` 107-109 and `edges` 365-370** (triple run, 2026-08-15). **The bottom of the
+  new range must exceed the top of the old** - `rules >= 110`. **A single-run number is not
+  evidence; the corpus varies +/-2 run to run.**
+- **Zero `operand roles do not preserve computation order` gaps** (currently 0-2 depending on run).
+- **Targeted set green**, bare, no `PYTEST_DEBUG_TEMPROOT`: `tests/test_m20_s108.py
+  tests/test_background_m20.py tests/test_draft_route_m20.py tests/test_m20_s102.py
+  tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py`
+  (59 passed at `40d0489`).
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **No expected-count fixture edited.**
 
-**OUT OF SCOPE, AND DELIBERATELY SO - these are named so they are not lost, NOT so they are done.**
-Class E (9 gaps: index gap vs row mis-segmentation, needs per-case diagnosis - `form_1116` 3b is
-anchored `3b` while its label reads *"c Add lines 3a and 3b"*). Class B ranges (2), C column-
-qualified (1), D cross-document (1). The 3 alternation cases (`form_6251` 12/20/27, *"whichever
-applies"*) - **the schema cannot express alternation and the Architect owes a ruling before anyone
-codes it**; those lines also return a DIFFERENT operation run to run. The 5 structured-output
-`400`s on `form_2441`. The 1 genuine model error (`form_2441` 15, *"Combine lines 12 through 14"*
--> `SUBTRACT`).
-
-**ARCHITECT'S OWN WORK, NOT THE WORKER'S.** Measure the silent-wrong rate among the **103 rules that
-DID derive** - form_1040 line 36 came out as a `COPY` of line 34, is wrong (it is a filer election),
-and registered as **no gap at all**. Rule on alternation. Produce the verb-to-operation disagreement
-report before any prompt guidance is wired.
+**OUT OF SCOPE.** Alternation (B). Composite expressions (C). The 12 outline-index gaps. The 5
+transport `400`s. The 2 silent-wrong `COPY` rules the face lint reports on `form_1040` 35a and 36.
 
 ## Open for Architect
 
-**ARCHITECT VERIFICATION OF `b96fc59` (2026-08-15). ITEM 1 IS ACCEPTED FOR PLAIN CONSTANTS. THE
-REMAINDER WAS MIS-CLASSED BY ME AND IS RE-SCOPED, NOT RE-RUN.**
+**THE THREE CELLS JOHN ASKED TO SEE (2026-08-15), RECORDED BECAUSE THE CONCLUSION CHANGED THE
+PRIORITY.** He asked whether these failures are even understandable from a human reviewer's seat.
+**They are, and in all three the MODEL WAS RIGHT.**
 
-**IT ADDS DERIVATION NOW - IT IS NO LONGER FLAT.** Corpus re-derive, 17 documents, bare
-`extract --year 2025`, verified by running:
+1. **`form_6251` line 18.** Face and instruction both state the whole rule. Model returned `IF_ELSE`
+   over line 17 plus six constants, each correctly tagged `default` / `married filing separately`.
+   **Rejected: `IF_ELSE requires exactly 4 source line(s)`.**
+2. **`form_6251` line 13.** Face: *"Enter the amount from line 4 of the QDCGT Worksheet ... or the
+   amount from line 13 of the Schedule D Tax Worksheet ... whichever applies"*. Model returned
+   `COPY` naming both. **Rejected: `COPY requires exactly 1`.** **AND ITS INSTRUCTION PACKET IS
+   WRONG** - it carries sections for lines 18, 19, 20, 25, 27 and 39, and nothing for line 13.
+3. **`schedule_2` line 1z.** Face: *"z Add lines 1a through 1y"*. Model returned `SUM` over the full
+   run and prompt-bench ACCEPTED it; the corpus failed it because 19 of those operands are not in
+   the outline at all.
 
-| metric | pre-S108 | `7580a4d` | `b96fc59` | floor |
-| --- | --- | --- | --- | --- |
-| rules | 103 | 103 | **107** | `> 103` MET |
-| edges | 337 | 354 | **363** | `> 354` MET |
-| gaps | 38 | 38 | **34** | `<= 38` MET |
-| computation-order gaps | 0 | 6 | **2** | 0 NOT met |
-| constant cases | - | 4/11 | **5/11** | 9/11 NOT met |
+**THE CONCLUSION.** None failed for lack of comprehension. They failed on a rigid operand-count
+contract, a missing alternation concept, and an upstream extraction hole. **If John reviewed these
+three cells today he would approve the model's answer in all three, and the pipeline still would not
+accept them.** The bottleneck is the vocabulary we give the model to answer in, not its reading of
+the form.
 
-Nullable `role` was the right call: the class it created went **6 -> 2**. Bare targeted set
-**59 passed**. **46 parameter nodes** are minted.
+**ARCHITECT RULING STILL OWED: ALTERNATION.** *"Whichever applies"* (`form_6251` 12, 13, 20) has no
+representation. **The likely answer is already in the graph** - `graph/2025/decisions/` exists,
+`route.py` already forces decision objects to human review, and the MCP contract says to present the
+options and the escape hatch at a decision node rather than choose. **Not written yet; it gates a
+later round, not S109.**
 
-**EVERY PLAIN CONSTANT NOW WORKS.** `schedule_1a` 9, 12, 26, 29 and 35 all resolve - the
-`Enter $150,000 ($300,000 if MFJ)`, `Multiply line N by $100/$200`, and
-`Subtract line 34 from $6,000` shapes. **That is the mechanism the ruling asked for, and it is
-done.**
-
-**THE 6 REMAINING "CONSTANT" CASES ARE NOT CONSTANT-OPERAND FAILURES, AND THAT IS MY ERROR.** I
-bundled three different shapes under one label and the floor inherited the mistake:
-- `form_6251` 18 and 39 -> `IF_ELSE requires exactly 4 source line(s)`. These are **threshold
-  conditionals** (26% / 28% either side of `$239,100`). They need branch-operand modelling, not a
-  parameter node.
-- `form_2441` 8 -> `LOOKUP_BRACKET requires exactly 2 source line(s)`. A **printed band table**;
-  the ruling itself said this one wants `LOOKUP_BRACKET` over a harvested table, NOT a parameter.
-- `form_6251` 4 and `schedule_1a` 20 -> **class E**, outline index.
-- `form_2441` 21 -> the last computation-order case.
-
-**"9 of 11" WAS AN UNSATISFIABLE FLOOR FOR A ROUND SCOPED TO PARAMETER NODES.** That is the fourth
-floor I have written that the work could not meet as specified. **Do not re-run Item 1 against it.**
-
-**RE-SCOPED, FOR A LATER ROUND - NOT NOW.** Arity modelling for conditional and table-driven lines
-(`form_6251` 18/39, `form_2441` 8) becomes its own item alongside the 3 alternation cases, which
-still await the Architect ruling on expressing *"whichever applies"*. The 2 remaining
-computation-order cases and the 16 class-E index gaps stay queued.
-
-**UNCHANGED AND STILL TRUE.** 5 `400`s remain out of scope (`form_2441` 3 and 30, `schedule_a` 17,
-`schedule_b` 2 and 6). **The face lint still reports the same 2 silent-wrong rules** - `form_1040`
-35a and 36, both `Amount of line 34 you want ...` derived as `COPY` - plus 1 known false positive on
-`schedule_d` 7. Neither was in scope; both are still wrong in the graph.
-
-
-**CURRENT STATE (2026-08-15): S108 ITEM 1 WORKER FIX IS APPLIED; LIVE CORPUS VERIFICATION IS
-PENDING.** Commit `b96fc59` keeps `role` and `value_type` in the strict schema `required` arrays
-while making them nullable, so positional operands do not invent lookup roles. No graph artifact,
-citation, or source range changed.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\AppData\Local\Temp\tgpt_s108_0815';
-.venv\Scripts\python.exe -m pytest tests\test_m20_s108.py -q` -> **3 passed**.
-RAN: same temp-root command with `tests\test_m20_s102.py tests\test_m20_s91.py
-tests\test_outline_span_resolution_m20.py tests\test_extract_outline_m4.py -q` -> **41 passed** in
-24.98s.
-RAN: same temp-root command with `tests\test_background_m20.py -k
-'explicit_printed_constant or printed_constant_pair or constant_multiplier_escape_hatch' -q` ->
-**3 passed, 6 deselected**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**; `git diff --check` ->
-clean. The run emitted only the known `.pytest_cache` ACL warning. NOT RUN: live provider validation
-or corpus re-derivation; Architect owns that leg.
-
-**ARCHITECT VERIFICATION OF THE S108 SCHEMA FIX (2026-08-15). THE REGRESSION IS REPAIRED. ITEM 1 IS
-STILL NOT ACCEPTED - THIS IS THE PRE-FIX VERIFICATION RECORD, NOT THE CURRENT RESULT.**
-
-**REPAIRED, AND VERIFIED BY RUNNING.** `7580a4d` restores the strict schema on both branches and
-adds a recursive contract test. Bare targeted set **59 passed**. Corpus re-derive, all 17 documents,
-7m28s: **rules 0 -> 103, edges 0 -> 354, gaps 141 -> 38.** The 140 blanket 400s are gone.
-
-**FLOOR RESULT.** `rules >= 103` **met exactly (103)**. `edges >= 337` **met (354)**.
-`gaps <= 38` **met exactly (38)**. **`zero gaps carrying Error code: 400` NOT met - 5 remain.**
-**`the 11 constant cases resolve` NOT met - 4 of 11.**
-
-**THE MECHANISM IS RIGHT AND WORTH KEEPING. 42 parameter nodes are minted**, and four constant cases
-genuinely resolve: `form_2441` 21, `schedule_1a` 9, 12, 26 - the plain `Enter $X` and
-`Multiply line N by $100` shapes.
-
-**BUT THE ROUND IS NET FLAT AND THE CAUSE IS THE `role` CONTRACT.** Same 103 rules and same 38 gaps
-as before the round. Four constant failures and four index failures closed; **six NEW failures
-appeared in a class that did not exist**:
-`MULTIPLY operand roles do not preserve computation order` (`form_6251` 34 and 37, `schedule_1a` 20
-and 34, `schedule_a` 3) and `SUBTRACT operand roles do not preserve computation order`
-(`schedule_1a` 35).
-
-**`role` WAS MADE REQUIRED WHEN IT SHOULD BE NULLABLE.** The rejection note said strict structured
-output expresses an optional key by putting it in `required` **with a nullable type**, not by making
-it a mandatory string. `7580a4d` made it `required` alongside `minLength: 1`, so **the model must
-invent a role on every operand, including plain positional ones**, and the invented roles do not
-preserve computation order. **`schedule_1a` 20 and 35 are constant cases that merely traded one
-failure for another.**
-
-**THE FIX, NOW APPLIED IN `b96fc59`.** `role` (and `value_type` on the constant branch) stay in `required` and become
-**nullable** - `{"type": ["string", "null"]}` - so the model supplies a role only where a lookup
-branch genuinely exists and positional order governs otherwise. **Keep the schema-contract test**;
-extend it to assert that an optional key is nullable rather than merely present.
-
-**FLOOR, UNCHANGED EXCEPT WHERE MET.** `rules > 103` and `edges > 354` - **strictly greater now, the
-round must add derivation rather than trade it.** **Zero gaps carrying `computation order`.** At
-least **9 of the 11** constant cases resolved, by id. The schema-contract test green.
-
-**NOT A REGRESSION, BUT NOTE IT.** The 5 remaining `400`s are the same count as before and remain out
-of scope, but they are no longer confined to one document: `form_2441` 3 and 30, `schedule_a` 17,
-`schedule_b` 2 and 6.
-
-
-**ARCHITECT VERIFICATION OF S108 (2026-08-15). ITEMS 2 AND 3 ACCEPTED. ITEM 1 REJECTED - IT TOOK
-DERIVATION FROM 103 RULES TO ZERO, CORPUS WIDE.**
-
-**ITEMS 2 AND 3 ARE REAL AND VERIFIED BY RUNNING, NOT BY READING.** `extract --year 2025` **now
-completes all 17 documents in 7m47s**, including `form_8949_2025`, which killed the entire batch in
-2 seconds before. Per-document accepted/review is printed. **`accepted` moved 0 -> 1164 and the
-blanket property flag is gone.** Item 3's isolation and Item 2's scoping both do exactly what the
-spec asked.
-
-**ITEM 1 IS A REGRESSION AND THE FLOOR NUMBER HID IT.** `objects_by_kind` for form_1040 is now
-`{citations: 50, documents: 1, nodes: 56}` - **no `edges`, no `rules`. `rules.yaml` and `edges.yaml`
-do not exist.** Corpus total is **0 rules, down from 103**. Gaps went **38 -> 141**, and **140 of
-the 141 are the same error**:
-
-```
-LlmUnavailable: OpenRouter structured-output request failed: Error code: 400
-Invalid schema for response_format 'tax_graph_micro_formula':
-In context=('properties','source_lines','items','anyOf','1'),
-'required' is required to be supplied and to be an array including every key in
-properties. Missing 'role'.
-```
-
-**THE CAUSE IS FOUR LINES IN `micro.py:52-76`.** Item 1 added `role` to the cross-form branch and
-`role` + `value_type` to the new constant branch, but did not add them to that branch's `required`
-array. **OpenAI strict structured output requires `required` to list EVERY key in `properties`**;
-optional keys are expressed by making the type nullable, not by omitting them.
-- `anyOf[1]`: `required: ["form","line"]`, properties `form,line,role` -> **missing `role`.** This is
-  the branch the 400 names.
-- `anyOf[2]`: `required: ["constant"]`, properties `constant,role,value_type` -> **missing both.**
-  This one has not even been reached yet; it fails next.
-
-**EVERY FORMULA CALL IN THE CORPUS 400s BEFORE THE MODEL SEES IT.** This is also the same error
-family as the 5 pre-existing `form_2441` 400s recorded as out of scope - that was the latent form of
-this defect, and Item 1 generalised it to every document.
-
-**WHY THE WORKER FIXES THIS AND WHY IT DOES NOT NEED EGRESS.** `AGENTS.md` says a Worker repairs its
-own defect rather than having it silently patched, and **this one is fully catchable offline**: a
-pure-Python test over the schema dict asserting that, for every object branch in every
-`response_format` schema, `set(required) == set(properties)`, fails today and passes after the fix.
-**That test is the floor.** No live model call is required to write it, run it, or prove it.
-
-**AND THE FLOOR I WROTE WAS BAD - THIS IS THE THIRD TIME.** *"`accepted` is greater than 0 on at
-least one document"* was satisfied 1164 times over while the phase it exists to serve produced
-nothing. `7ba64be` (drop-to-zero), S106 (every core citation binds), and now this. **A floor that a
-broken mechanism can satisfy is a target, not a floor.** The corrected floor for Item 1 is stated in
-rules and edges, not in acceptance counts:
-- **Corpus `rules` >= 103 and `edges` >= 337** (the measured pre-S108 values at `4990f20`), reported
-  per document from `objects_by_kind`.
-- **Corpus gaps <= 38**, and **zero gaps carrying `Error code: 400`.**
-- **The 11 constant cases resolve**, reported by id.
-- **The schema-validity test above is green.**
-
-**ONE UNRELATED FIX LANDED IN THE ARCHITECT'S LANE, RECORDED HERE.** `4990f20`'s fail-closed
-condition was too strict: it suppressed the document-prefix fallback for ANY anchored line, but a
-document may legitimately carry no anchor index at all (`_span_for_line` names
-`form_13614_c_2025`). Without an index there is nothing to scope against. Now gated on
-`_packet_can_be_scoped` - both a line anchor AND an index. An anchored line in an INDEXED document
-that still resolves to nothing continues to fail closed. `tests/test_background_m20.py::
-test_prompt_bench_uses_formula_cell_prompt_path` was the report; it is green, and the bare targeted
-set is **58 passed**.
-
-
-**NOTHING FROM S106 IS OPEN. The Worker asked whether the 34 baseline quotes must be regenerated
-upstream or whether the source artifacts need a provenance migration; the answer is neither, and it
-is recorded in BALL and specced as S107.** The 34 are hand-authored paraphrases, not extraction
-failures. No exclusion was added and none should have been.
-
-**THE ACL HAZARD IS PARTLY GONE.** The reboot on 2026-08-14 released the lock on
-`.test_tmp\pytest-of-devbox`, so the consumer tests that previously died at collection now run.
-**Twenty stale `.test_tmp_s*` scratch directories remain ACL-blocked** and still emit `git status`
-warnings; nothing walks them today. They are removable at John's discretion, not by an agent.
-
-**CLOSED 2026-08-14 BY JOHN. The bootstrap-review "contradiction" was never real and the question
-should not have survived this long.** Review is **per form, cell by cell, by the person adding the
-form, and a form does not circulate until every cell is approved.** Recipients read no cells because
-what ships is already approved. Expected shape is **~95% box-checking, ~5% comments** that explain
-the instruction so the pipeline gets it right next pass, and **a cell that cannot be brought to
-approval is a CODE BUG to fix in the pipeline**, not a cell to hand-correct or exempt. **Pinned into
-`../AGENTS.md` under the consequences that bind every round.** It does not gate S53.
-
-**Carried, not blocking.** The live nine-row `row_bench.py` leg has still never been spent and must
-not be claimed as run. `stash@{0}` holds the superseded first-pass S105 regression and can be
-dropped whenever John wants.
+**STILL WRONG IN THE GRAPH, NOT IN SCOPE ANYWHERE YET.** The face lint (`pilot/face_lint.py`)
+reports `form_1040` 35a and 36 both deriving as `COPY` when both are filer elections
+(*"Amount of line 34 you want refunded to you"* / *"you want applied to your 2026 estimated tax"*).
+**Neither registers as a gap.** Silent-wrong rate is at least 2 of ~107.
 
 ## Queued (ONE LINE each - do not spec ahead)
 

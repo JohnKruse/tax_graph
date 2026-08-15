@@ -71,6 +71,28 @@ coordination in committed text files - no hidden side channels.
 Global project canary: **Ledger Llama**.
 
 ## Hard rules (do not violate)
+- **OPEN THE INDIVIDUAL FAILURES BEFORE YOU NAME A CLASS (John, 2026-08-15).** Before speccing any
+  round against a group of failures, **read at least three of them END TO END** - the actual prompt,
+  the evidence packet the model was handed, its full response, and the stage that rejected it.
+  **Never from labels, counts, or the error string alone.**
+  - **An error string names the stage that RAISED, not the cause.** On 2026-08-15, 18 gaps all
+    reporting *"source line is not present in the deterministic outline index"* turned out to be
+    five unrelated defects - constant operands, range references, column-qualified references,
+    cross-document references, and row mis-segmentation. A round aimed at "the 18" would have
+    fixed a phantom.
+  - **A bucket named by its error message is a HYPOTHESIS, not a class.** Say so in the spec until
+    individual instances confirm it.
+  - **This has cost real rounds.** Same day: 11 "constant cases" were three different shapes, so the
+    floor was unsatisfiable and the round could not pass as written; 16 gaps were called noise on
+    one re-run when a triple run proved 86% of failures stable; and three cells opened end to end
+    showed **the model was RIGHT in all three** and the failures were a rigid operand-count
+    contract, a missing alternation concept, and an upstream extraction hole - none of them the
+    "comprehension" problem the aggregates implied.
+  - **John's words, and the reason this is a hard rule:** *"If you don't slow down and really look,
+    you just waste cycles on non-solutions."* Aggregate classification feels faster and is not: it
+    produces a spec the Worker implements faithfully and which repairs nothing, then a verification
+    cycle to discover that, then a re-spec. **Looking at three real instances costs twenty minutes
+    and has changed the diagnosis every single time it has been done.**
 - **Work out of the local-disk clone** (John names the path at session start). That is the
   canonical working copy - the `.venv` and reliable `.git` live there. An SMB-mapped network
   drive (Mac share) is NOT for dev work: it goes stale and git over SMB is unreliable (proven
