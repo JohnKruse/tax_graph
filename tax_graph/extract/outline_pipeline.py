@@ -795,10 +795,15 @@ def _spans_for_outline_node(
     if node.line_anchor:
         instruction_hits: list[CandidateSpan] = []
         source_span = _span_for_line(document, node, spans)
+        # ``_span_for_line`` REBUILDS the span - it replaces the text with the
+        # geometry-assembled row and attaches the clause extent - so the object it
+        # returns is neither identical to nor equal to any member of ``spans``.
+        # Carry it directly; matching it back into the list drops the line's own
+        # face and leaves ``selected`` empty, which used to fall through to the
+        # first spans in the document (the form header).
+        if source_span is not None:
+            selected.append(source_span)
         for span in spans:
-            if span is source_span:
-                selected.append(span)
-                continue
             if span.relationship == "source":
                 continue
             if _instruction_span_belongs_to_line(
@@ -810,7 +815,16 @@ def _spans_for_outline_node(
                 instruction_hits.append(span)
         if source_span is not None:
             source_spans = [span for span in spans if span.relationship == "source"]
-            source_index = source_spans.index(source_span) if source_span in source_spans else -1
+            # Locate the anchor row positionally, not by identity or equality.
+            anchor_line = _locator_line_number(source_span.locator)
+            source_index = next(
+                (
+                    index
+                    for index, span in enumerate(source_spans)
+                    if _locator_line_number(span.locator) == anchor_line
+                ),
+                -1,
+            )
             if source_index >= 0:
                 context = source_spans[max(0, source_index - 20): source_index + 21]
                 selected.extend(span for span in context if span not in selected)
@@ -826,7 +840,11 @@ def _spans_for_outline_node(
                 column_hits.append(span)
         column_limit = 4 if document_id.startswith("schedule_d_") else 8
         selected.extend(column_hits[:column_limit])
-    if not selected:
+    if not selected and not node.line_anchor:
+        # No line anchor means there is nothing to scope the packet to; a document
+        # prefix is the only available evidence.  An ANCHORED line that resolves to
+        # nothing must NOT be given the document head - that hands the model evidence
+        # for a different line and then rejects its answer for not quoting it.
         selected = spans[:20]
     limit = 12 if document_id.startswith("schedule_d_") else 80
     return selected[:limit]
