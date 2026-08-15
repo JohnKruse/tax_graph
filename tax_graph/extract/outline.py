@@ -1214,7 +1214,10 @@ def _matches_preferred_section(node: OutlineNode, preferred_section: str) -> boo
     token = str(preferred_section).lower()
     outline_id = str(node.outline_id).lower()
     label = " ".join(str(node.label).lower().split())
-    return outline_id == token or token in outline_id or re.search(
+    return outline_id == token or re.search(
+        rf"(^|_){re.escape(token)}(?:_|$)",
+        outline_id,
+    ) is not None or re.search(
         rf"\bpart\s+{re.escape(token.removeprefix('part_'))}\b",
         label,
     ) is not None
