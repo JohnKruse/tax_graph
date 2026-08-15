@@ -151,6 +151,34 @@ index`. THEY ARE NOT ONE DEFECT.** Classified by label; counts are exact:
   `PAYER'S TIN`. `schedule_a` 15 carries a leading section word, *"Casualty 15 Casualty and..."*.
   **Determine per case which of the two it is; do not assume.**
 
+**RULING ON CLASS A - A CONSTANT BECOMES A CITED `parameter` NODE, NOT A LITERAL AND NOT A ONE-ROW
+TABLE** (John + Architect, 2026-08-15). **The mechanism already exists and is already in use.**
+`schedule_d_2025_capital_loss_limit_default` carries `node_type: parameter`, `constant_value: 3000`,
+and a `citation_refs` entry; its MFS twin carries 1500 and **the same citation**; `lookup_capital_
+loss_limit` / `lookup_selected_value` (42 edges already) selects between them by filing status.
+- **Why not a literal inside the rule.** It is not addressable, so it is not a reviewable cell - and
+  review is cell-atomic. It also carries no citation, which is exactly how `$57,231` came to sit in
+  `tax-liability.yaml` with nothing deriving it.
+- **Why not a one-row lookup table.** A table is right when the FORM prints a table. Forcing a
+  scalar into one invents a dimension the document does not have and makes every consumer know to
+  read row zero - the improvising-consumer failure the one-accessor rule exists to stop.
+- **THE PRINTED FORM DECIDES THE SHAPE.** Scalar printed (`Multiply line 11 by $100`) -> one
+  parameter node. Filing-status pair printed (`$150,000 ($300,000 if married filing jointly)`) ->
+  two parameter nodes sharing ONE citation, selected by the existing role-keyed rule. A real printed
+  band table (`form_2441` line 8, AGI bands against decimal amounts) -> `LOOKUP_BRACKET` over a
+  harvested table, NOT a parameter.
+- **CONSEQUENCE: `_constant_multiplier_from_label` SHOULD DIE, NOT WIDEN.** The arity escape hatch
+  at `micro.py:163` exists only because there was nowhere to put the number. It fires only for
+  `MULTIPLY` with exactly one source line and a parenthesized decimal like `(0.26)`, which is why
+  `Multiply line 11 by $100` fails and why `form_6251` 18/39 fail as `IF_ELSE` despite printing
+  `(0.26)`. **Do not add `$100` to its regex.** Mint the parameter node and point the edge at it.
+
+**CLASS A IS BIGGER THAN 5 - IT IS ABOUT 11.** The Architect's arity diagnostic (2026-08-15) shows
+6 of the 10 operation-arity violations are the SAME constant-operand defect: `schedule_1a` 12/20/29
+(`Multiply line N by $100/$200`), `form_6251` 18/39 (26%/28% either side of a `$239,100 ($119,550
+if MFS)` threshold, less `$4,782 ($2,391 if MFS)`), and `form_2441` 8 (printed decimal band table).
+**Fixing class A properly closes those too.** Report them together.
+
 **START WITH A AND E.** A is 5 gaps with a single clear mechanism. E is the largest and is the true
 index defect. B, C, D are one or two cases each and can follow.
 
