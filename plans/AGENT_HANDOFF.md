@@ -149,7 +149,9 @@ document- or property-level findings as blanket batch flags. The issue identity 
 implicated object; a regression proves an unrelated object routes to `accepted`. Commit `c2dc0d8`.
 Item 3 now resolves 8949 outbound sources against both legacy and geometry-derived section ids, and
 `extract_year` records a document failure and continues through the manifest. The CLI prints the
-per-document status and accepted/review/issues counts. Commit `4377c30`.
+per-document status and accepted/review/issues counts. Commits `4377c30` and `7bfb9e8`. The live
+ignored `form_8949_2025/outbound_flows.yaml` was regenerated deterministically and now passes the
+outline artifact check with all six current geometry source outlines.
 
 RAN: `.venv\Scripts\python.exe -m pytest tests\test_draft_route_m20.py -q` -> 6 passed.
 RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s108_new';
