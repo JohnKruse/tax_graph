@@ -1,0 +1,41 @@
+# Face-language lints. Each rule reads the PRINTED line face and says which
+# operations are implausible for it. A hit is a review flag, never a correction.
+- id: filer-election-is-not-a-copy
+  face_matches: "you want|you elect|you choose|if you elect"
+  must_not_be: [COPY, SUM, SUBTRACT, MULTIPLY, MIN, MAX]
+  message: "printed as a filer election; expected REQUIRE_INPUT"
+
+- id: add-and-combine-are-sums
+  face_matches: "^(add|combine)\\b"
+  must_be: [SUM]
+  message: "face says add/combine; expected SUM"
+
+- id: subtract-is-subtract
+  face_matches: "^subtract\\b"
+  must_be: [SUBTRACT]
+  message: "face says subtract; expected SUBTRACT"
+
+- id: multiply-is-multiply
+  face_matches: "^multiply\\b"
+  must_be: [MULTIPLY]
+  message: "face says multiply; expected MULTIPLY"
+
+- id: smaller-of-is-min
+  face_matches: "smaller of|smallest of|not more than"
+  must_be: [MIN, IF_ELSE]
+  message: "face says smaller/smallest; expected MIN"
+
+- id: larger-of-is-max
+  face_matches: "larger of|largest of|greater of|at least"
+  must_be: [MAX, IF_ELSE]
+  message: "face says larger/greater; expected MAX"
+
+- id: enter-amount-from-is-a-copy
+  face_matches: "^enter the amount from (line|form|schedule)"
+  must_be: [COPY, REQUIRE_INPUT]
+  message: "face copies a named source; expected COPY"
+
+- id: conditional-face-needs-a-branch
+  face_matches: "\\bif\\b.{0,80}\\botherwise\\b"
+  must_be: [IF_ELSE, LOOKUP_BRACKET, LOOKUP_TABLE]
+  message: "face states a condition and an alternative; expected a branching operation"
