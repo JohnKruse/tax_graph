@@ -291,6 +291,68 @@ report before any prompt guidance is wired.
 
 ## Open for Architect
 
+**ARCHITECT VERIFICATION OF S108 (2026-08-15). ITEMS 2 AND 3 ACCEPTED. ITEM 1 REJECTED - IT TOOK
+DERIVATION FROM 103 RULES TO ZERO, CORPUS WIDE.**
+
+**ITEMS 2 AND 3 ARE REAL AND VERIFIED BY RUNNING, NOT BY READING.** `extract --year 2025` **now
+completes all 17 documents in 7m47s**, including `form_8949_2025`, which killed the entire batch in
+2 seconds before. Per-document accepted/review is printed. **`accepted` moved 0 -> 1164 and the
+blanket property flag is gone.** Item 3's isolation and Item 2's scoping both do exactly what the
+spec asked.
+
+**ITEM 1 IS A REGRESSION AND THE FLOOR NUMBER HID IT.** `objects_by_kind` for form_1040 is now
+`{citations: 50, documents: 1, nodes: 56}` - **no `edges`, no `rules`. `rules.yaml` and `edges.yaml`
+do not exist.** Corpus total is **0 rules, down from 103**. Gaps went **38 -> 141**, and **140 of
+the 141 are the same error**:
+
+```
+LlmUnavailable: OpenRouter structured-output request failed: Error code: 400
+Invalid schema for response_format 'tax_graph_micro_formula':
+In context=('properties','source_lines','items','anyOf','1'),
+'required' is required to be supplied and to be an array including every key in
+properties. Missing 'role'.
+```
+
+**THE CAUSE IS FOUR LINES IN `micro.py:52-76`.** Item 1 added `role` to the cross-form branch and
+`role` + `value_type` to the new constant branch, but did not add them to that branch's `required`
+array. **OpenAI strict structured output requires `required` to list EVERY key in `properties`**;
+optional keys are expressed by making the type nullable, not by omitting them.
+- `anyOf[1]`: `required: ["form","line"]`, properties `form,line,role` -> **missing `role`.** This is
+  the branch the 400 names.
+- `anyOf[2]`: `required: ["constant"]`, properties `constant,role,value_type` -> **missing both.**
+  This one has not even been reached yet; it fails next.
+
+**EVERY FORMULA CALL IN THE CORPUS 400s BEFORE THE MODEL SEES IT.** This is also the same error
+family as the 5 pre-existing `form_2441` 400s recorded as out of scope - that was the latent form of
+this defect, and Item 1 generalised it to every document.
+
+**WHY THE WORKER FIXES THIS AND WHY IT DOES NOT NEED EGRESS.** `AGENTS.md` says a Worker repairs its
+own defect rather than having it silently patched, and **this one is fully catchable offline**: a
+pure-Python test over the schema dict asserting that, for every object branch in every
+`response_format` schema, `set(required) == set(properties)`, fails today and passes after the fix.
+**That test is the floor.** No live model call is required to write it, run it, or prove it.
+
+**AND THE FLOOR I WROTE WAS BAD - THIS IS THE THIRD TIME.** *"`accepted` is greater than 0 on at
+least one document"* was satisfied 1164 times over while the phase it exists to serve produced
+nothing. `7ba64be` (drop-to-zero), S106 (every core citation binds), and now this. **A floor that a
+broken mechanism can satisfy is a target, not a floor.** The corrected floor for Item 1 is stated in
+rules and edges, not in acceptance counts:
+- **Corpus `rules` >= 103 and `edges` >= 337** (the measured pre-S108 values at `4990f20`), reported
+  per document from `objects_by_kind`.
+- **Corpus gaps <= 38**, and **zero gaps carrying `Error code: 400`.**
+- **The 11 constant cases resolve**, reported by id.
+- **The schema-validity test above is green.**
+
+**ONE UNRELATED FIX LANDED IN THE ARCHITECT'S LANE, RECORDED HERE.** `4990f20`'s fail-closed
+condition was too strict: it suppressed the document-prefix fallback for ANY anchored line, but a
+document may legitimately carry no anchor index at all (`_span_for_line` names
+`form_13614_c_2025`). Without an index there is nothing to scope against. Now gated on
+`_packet_can_be_scoped` - both a line anchor AND an index. An anchored line in an INDEXED document
+that still resolves to nothing continues to fail closed. `tests/test_background_m20.py::
+test_prompt_bench_uses_formula_cell_prompt_path` was the report; it is green, and the bare targeted
+set is **58 passed**.
+
+
 **NOTHING FROM S106 IS OPEN. The Worker asked whether the 34 baseline quotes must be regenerated
 upstream or whether the source artifacts need a provenance migration; the answer is neither, and it
 is recorded in BALL and specced as S107.** The 34 are hand-authored paraphrases, not extraction

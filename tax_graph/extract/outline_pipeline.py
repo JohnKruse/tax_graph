@@ -781,6 +781,19 @@ def _deterministic_schedule_d_formula_plan(
     }
 
 
+def _packet_can_be_scoped(document: SourceDocumentInput, node: OutlineNode) -> bool:
+    """Whether this line could be scoped to its own face at all.
+
+    Scoping needs both a printed line anchor on the node and an anchor index on the
+    document.  Without either, no evidence selection is possible and the caller may
+    fall back to a document prefix; with both, a failure to resolve is a real gap and
+    must not be papered over with the wrong evidence.
+    """
+    if not node.line_anchor:
+        return False
+    return isinstance((document.fields or {}).get("line_anchors"), list)
+
+
 def _spans_for_outline_node(
     document: SourceDocumentInput,
     node: OutlineNode,
@@ -841,11 +854,17 @@ def _spans_for_outline_node(
                 column_hits.append(span)
         column_limit = 4 if document_id.startswith("schedule_d_") else 8
         selected.extend(column_hits[:column_limit])
-    if not selected and not node.line_anchor:
-        # No line anchor means there is nothing to scope the packet to; a document
-        # prefix is the only available evidence.  An ANCHORED line that resolves to
-        # nothing must NOT be given the document head - that hands the model evidence
-        # for a different line and then rejects its answer for not quoting it.
+    if not selected and not _packet_can_be_scoped(document, node):
+        # The packet can only be scoped when the line carries an anchor AND the
+        # document carries an anchor index to resolve it against.  When neither is
+        # available a document prefix is the only evidence there is - some documents
+        # legitimately have no index at all (form_13614_c_2025 is an intake
+        # questionnaire with no printed line numbers).
+        #
+        # But an anchored line in an INDEXED document that still resolves to nothing
+        # must NOT be given the document head: that hands the model evidence for a
+        # different line and then rejects its answer for not quoting it, which is the
+        # defect that held every derived rule at zero until 4990f20.
         selected = spans[:20]
     limit = 12 if document_id.startswith("schedule_d_") else 80
     return selected[:limit]
