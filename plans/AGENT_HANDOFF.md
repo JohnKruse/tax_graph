@@ -21,29 +21,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT. M20-S112 IS ACCEPTED (`80980e7`, 2026-08-16). The next round is not yet
-specced.**
+**BALL: CODEX. M20-S113 is specced below - THE MODEL OWNS THE PATH, AND MUST ANSWER FROM THE
+EVIDENCE OR DECLINE.** Re-spec of the reverted S111.
 
-**S112 VERIFIED BY THE ARCHITECT, NOT BY READING THE REPORT.** `pilot/replay_harness.py` -> **21
-cases, 0 mismatches, 5 seconds, network_calls=0**, using the production `extract_formula_plan`,
-`assemble_formula_plan` and operand resolver. **Corpus untouched: rules 108, edges 369, gaps 33.**
-**Negative proof extended:** Codex proved it against `9b9333f` (S111); the Architect additionally
-ran it against `c47f5fa` (S109) -> **20 of 21 mismatches, exit 1**, and restored the tree.
+**DIRECTION IS PINNED IN `../docs/derivation-architecture.md`. READ IT FIRST**, with the S111
+post-mortem at the top of the round. Sequencing: harness (DONE, `80980e7`) -> **model owns the path
+(THIS ROUND)** -> voting -> review UI. **Never change the mechanism and the measurement in the same
+round.**
 
-**KNOW ITS LIMIT BEFORE TRUSTING IT** - written up in `../docs/derivation-architecture.md`. It
-replays OLD responses, so **it cannot predict what a CHANGED PROMPT will make the live model emit.**
-On the S109 tree it reports `production prompt differs from recorded prompt` on 19 of 20 cases.
-**That tripwire is the point: recorded evidence is stale, go run the corpus.**
-**A GREEN HARNESS IS NEVER PERMISSION TO SKIP THE CORPUS RE-DERIVE.**
+**M20-S112 IS ACCEPTED (`80980e7`, Architect, 2026-08-16), VERIFIED BY RUNNING.**
+`pilot/replay_harness.py` -> **21 cases, 0 mismatches, 5 seconds, network_calls=0**, over the
+production validator, resolver and assembler. Corpus untouched at **rules 108, edges 369, gaps 33**.
+Codex proved the negative against `9b9333f`; the Architect additionally ran it against `c47f5fa`
+(S109) -> **20 of 21 mismatches, exit 1**.
 
-**SEQUENCING, from `../docs/derivation-architecture.md`:** harness (DONE) -> **the model owns the
-path (the withdrawn S111, re-specced)** -> voting -> review UI. **Never change the mechanism and the
-measurement in the same round.**
+**KNOW THE HARNESS'S LIMIT.** It replays OLD responses and **cannot predict what a CHANGED PROMPT
+will make the live model emit** - on the S109 tree it reports `production prompt differs from
+recorded prompt` on 19 of 20 cases. **That tripwire is the point: the fixtures are stale, go run the
+corpus. A GREEN HARNESS IS NEVER PERMISSION TO SKIP THE CORPUS RE-DERIVE**, and S113 changes the
+prompt, which is exactly the case it cannot predict.
 
 **ARCHITECT SPEC DEFECTS TO STOP REPEATING.** S112's floor said "NO model call" and also "run
-`extract --year 2025` and paste the numbers". **Codex correctly took the conservative reading and
-said so.** That is the fifth floor written that the work could not satisfy as specified. **Corpus
-verification is the Architect's leg; do not put it in a Worker floor.**
+`extract --year 2025`". Codex correctly took the conservative reading and said so - the fifth floor
+written that the work could not satisfy as specified. **Corpus verification and bare test runs are
+the Architect's leg and never belong in a Worker floor.**
 
 **M20-S108 IS ACCEPTED** (`c2dc0d8` + `e2d0180` + `4377c30` + `7bfb9e8` + `7580a4d` + `b96fc59`,
 Architect, 2026-08-15). `extract --year` completes all 17 documents; `accepted` moved 0 -> ~1670;
@@ -150,102 +151,95 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S112 SPECCED BY ARCHITECT (2026-08-16). THE REPLAY HARNESS - A FAST, LAYER-NAMING REGRESSION
-SIGNAL FOR DERIVATION.** **NO schema change. NO prompt change. NO graph write. NO model call.**
-**Direction: `../docs/derivation-architecture.md` - read it before starting.**
+**M20-S113 SPECCED BY ARCHITECT (2026-08-16). THE MODEL OWNS THE PATH, AND IT MUST ANSWER FROM THE
+EVIDENCE OR DECLINE.** **RE-SPEC of the reverted S111 (`9b9333f`).** **REAL ROUND** - graph writes.
+**Direction: `../docs/derivation-architecture.md`. Read it and the S111 post-mortem below first.**
 
-**WHY THIS ROUND EXISTS, AND WHY IT COMES FIRST.** Four consecutive rounds changed the model-to-graph
-contract and **all four broke derivation while passing their targeted tests** (67, 90, 91, 91
-passed): S108 item 1 took rules to 0, S109 to 16-19, the S109 fix to 43-44, S111 to 73 with gaps at
-262. **The contract lives in FOUR places that must agree** - the prompt, the response schema, the
-validator, and assembly/resolution - **and nothing checks that they agree.** The only thing that has
-ever caught a mismatch is a twelve-minute corpus re-derive reporting one number, which says THAT
-something broke and never WHICH layer. **Nothing else lands safely until this exists** (John,
-2026-08-16: *"I would prefer to find an approach we believe in and then put effort into making it
-work."*).
+**S111 POST-MORTEM - THE ARCHITECT REVERTED PARTLY ON A MISCOUNT.** Re-running `form_1040` under
+`9b9333f` gives **rules 14, edges 44, gaps 24** (baseline 17 / 49 / 0). The 24 break down as **13
+outline-index failures, 3 quote mismatches, and 4 `not_derivable` answers with grounded reasons** -
+*"The evidence instructs the filer to use the Social Security Benefits Worksheet"*, *"The evidence
+does not provide the applicable filing status"*.
+- **THOSE 4 ARE THE FEATURE WORKING.** S111 counted them as review gaps. **A declined cell is an
+  OUTCOME, not a gap** - S110 said this in those words and S111 did not carry it over.
+- **THE 13 ARE PRE-EXISTING DEBT NEWLY EXPOSED.** Removing the cue gate means many more lines are
+  classified as `computation` and attempt operand resolution, so they hit the outline-index wall
+  that class E has always been. **They were previously never attempted, not previously passing.**
+- **THE REAL REGRESSION ON THAT DOCUMENT IS 3 RULES.** Corpus-wide S111 measured 73 rules against
+  108, which is a genuine loss and why the revert stands - but **the "262 gaps" headline was
+  inflated by counting declines and newly-surfaced debt as breakage.**
 
-**WHAT TO BUILD.** A recorded-response replay fixture and runner:
-1. **Capture.** From a real `extract --year 2025`, record for **at least 20 cells** the exact
-   `(prompt, raw model response)` pair plus the document id and line anchor. **Cells must be chosen
-   to cover every branch that has broken**: a plain `SUBTRACT` (`form_1040` 11a), a large `SUM`
-   (`schedule_1` line 10 or `form_1040` 1z), a filing-status constant pair (`schedule_1a` 9), a
-   scalar constant (`schedule_1a` 12), a cross-document reference (`form_6251` 13), a threshold
-   conditional (`form_6251` 18), a band table (`form_2441` 8), a range reference (`schedule_2` 1z),
-   and both filer elections (`form_1040` 35a and 36).
-2. **Replay.** Feed each recorded response through **the real production path** - the same
-   validator, the same assembly, the same operand resolution that `extract` uses. **No
-   reimplementation.** A fake client returns the recorded response; everything downstream is
-   production code.
-3. **Assert per layer, and say which one failed.** For each fixture record the expected outcome and
-   assert it, with a message naming the stage: schema-valid, validator-accepted, operands-resolved,
-   rule-and-edges-assembled. **A failure must state the layer and the cell**, e.g.
-   `form_6251 18: operands resolved but assembly produced 0 edges`.
+**CONSEQUENCE FOR THIS ROUND: CLASSIFYING MORE LINES WILL SURFACE MORE UNRESOLVABLE OPERANDS. THAT
+IS EXPECTED AND MUST BE REPORTED SEPARATELY, NOT COUNTED AS REGRESSION.**
 
-**THE POINT IS THE DIAGNOSTIC MESSAGE, NOT THE PASS/FAIL.** A harness that reports "assertion
-failed" is worth little; the whole value is that it names the layer in seconds instead of after a
-twelve-minute re-derive plus manual archaeology.
+**ITEM 1 - ONE PROMPT, A DISCRIMINATED UNION.** One call per addressable line returns a `kind` plus
+that kind's fields:
+- **`computation`** - `operation`, `source_lines`, `quote`
+- **`filer_entry`** - `quote`
+- **`election`** - `question`, `options[]` (each with `label`, `downstream_effect`,
+  `citation_refs`), `quote`. **An `escalate` option is MANDATORY** - the MCP contract requires the
+  agent to present the choice and never make it.
+- **`information_return`** - `form`, `box`, `quote`
+- **`not_derivable`** - `reason`, `quote`
+
+**Cue phrases move INTO the prompt as EXAMPLES. They must not gate anything.**
+
+**ITEM 2 - THE GROUNDING CONSTRAINT (John, 2026-08-16).** The prompt must state, in words:
+**answer only from the supplied evidence; if the evidence does not establish the answer, return
+`not_derivable` with a reason.** Today the ONLY grounding check is that `quote` appears in the
+packet - **which constrains the quote and not `source_lines`.** We have been relying on the model's
+good behaviour rather than requiring it. **S111 proved the model uses this well when asked**: its
+four declines each named exactly what the evidence lacked.
+
+**ITEM 3 - A DECLINE IS AN OUTCOME, NOT A GAP.** `not_derivable`, `filer_entry`, `election` and
+`information_return` are **reported in their own counters** and **must not appear in
+`review_gaps.yaml`.** A gap is a cell that tried to derive and FAILED. **Getting this wrong is what
+made S111 look twice as bad as it was.**
+
+**ITEM 4 - RE-RECORD THE REPLAY FIXTURES.** This round changes the prompt, so
+`pilot/fixtures/m20_s112_replay.json` goes stale by construction and the harness will report
+`production prompt differs from recorded prompt` on every case. **Re-record all 21 cases from a real
+run as part of this round, and add at least 4 covering the new kinds** (`filer_entry`, `election`,
+`information_return`, `not_derivable`). **`pilot/replay_harness.py` must be green at the end.**
+
+**ITEM 5 - MEASURE THE CUE MATCHER, DO NOT DELETE IT.** Run the union answer AND the existing cue
+decision, and report agreement across all ~790 addressable lines in four quadrants:
+matcher-admitted + model says `computation`; matcher-admitted + model says otherwise (**the
+misroutes**); matcher-skipped + model says `computation` (**derivation we have been silently
+losing** - nobody has ever looked at the 649 skipped lines); both skip. **That table justifies
+deleting the matcher in a LATER round.**
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not change any production code path.** If the harness needs a seam to inject a fake client,
-  add the seam and nothing else. **If the seam cannot be added without changing behaviour, STOP and
-  report it** - that is a finding worth having.
-- **Do not re-record fixtures to make a failing assertion pass.** A recorded response is evidence;
-  editing it to fit is the same defect as rewriting a citation to fit its range.
-- **Do not assert on counts that vary run to run.** Output moves +/-2 rules corpus-wide; assert
-  per-cell outcomes, which are stable.
-- **Do not touch the arity/role contract, the cue matcher, or the response schema.** All out of
-  scope; S109 and S111 are reverted.
+- **Do not delete or tune the cue lists.** They become prompt examples; the gate is measured here
+  and removed next.
+- **Do not touch the arity/role contract.** Reverted at `db4df3e`; out of scope.
+- **Do not hand-author a decision object.** `form_1040` 35a and 36 must be pipeline-produced.
+- **Do not count a decline as a gap** (item 3).
+- **Do not re-record a fixture to make a failing assertion pass.** Re-recording is for the prompt
+  change only; a recorded response is evidence.
 
 **THE FLOOR.**
-- **The harness runs in under 30 seconds with no network** and covers at least the 10 named shapes.
-- **It FAILS, loudly and by layer, when pointed at the reverted breakage.** Prove it by running
-  against `9b9333f` (S111) or `c47f5fa` (S109) and pasting the output. **A harness that has never
-  caught a real break is not evidence that it works** - this is the acceptance test for the round.
-- **It PASSES on the current tree** (`db4df3e` behaviour, rules 107-109).
-- **Corpus is untouched**: `extract --year 2025` still gives `rules` 107-109, `edges` 345-370,
-  `gaps` <= 34. Run it and paste the numbers.
+- **`rules` >= 107 and `edges` >= 345 corpus-wide.** Derivation must not lose ground. **State it as
+  a range if you can run more than once.**
+- **`form_1040` 35a and 36 classify as `election` or `filer_entry`, NOT `computation`**, and mint no
+  `COPY` rule. Report what each produced.
+- **`pilot/face_lint.py pilot/face_lint_rules.yaml` reports ZERO `filer-election-is-not-a-copy`
+  hits** (currently 2). Paste the output.
+- **`pilot/replay_harness.py` green** with re-recorded fixtures covering the new kinds.
+- **The four-quadrant agreement table** from item 5, with counts.
+- **Declines reported separately** with counts per kind, and `review_gaps.yaml` containing only
+  genuine derivation failures.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **Targeted tests**: run what your sandbox permits and REPORT THE COMMAND. **The bare-run
-  requirement is withdrawn** - see below.
+- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Bare-run verification is
+  the Architect's leg and is NOT a Worker floor.
 
-**A CORRECTION THE ARCHITECT OWES THE WORKER.** Three rounds carried a floor demanding pytest be run
-bare with no `PYTEST_DEBUG_TEMPROOT`. **The Worker cannot do that** - its sandbox hits `WinError 5`
-on the poisoned `.test_tmp\pytest-of-devbox` ACL and yields 46 passed / 36 errors, which S111's
-report stated plainly and the Architect misread as evasion. **Bare-run verification is the
-Architect's job and is removed from Worker floors.** Use whatever temp root works and say which.
+**THE ARCHITECT'S LEG, NOT YOURS.** The corpus re-derive (`extract --year 2025`) and the bare test
+run. **Do not attempt either; S112's floor contradicted itself on exactly this point and cost a
+round of confusion.** **A green replay harness is NOT permission to skip the corpus - this round
+changes the prompt, which is precisely the case the harness cannot predict.**
 
-**OUT OF SCOPE.** Voting. `system_fingerprint`. The model owning the path (the withdrawn S111 -
-it returns AFTER this lands). The 12 outline-index gaps. The 5 transport `400`s.
-
-**S112 WORKER EVIDENCE (2026-08-16).** Added `pilot/replay_harness.py`, the committed
-`pilot/fixtures/m20_s112_replay.json`, `tests/test_m20_s112.py`, and the pilot README entry. The
-fixture contains 21 exact prompt/raw-response pairs from real outline-first micro calls and covers
-all named shapes. The runner uses the production `extract_formula_plan` seam with a fake client,
-then calls production operand resolution and assembly. It makes no provider call and writes no
-graph state.
-
-RAN: `.venv\Scripts\python.exe pilot\replay_harness.py` -> **21 cases, 0 mismatches,
-network_calls=0** in about 5 seconds. The expected diagnostic failures are visible by layer:
-`form_6251 13` fails validator and operand resolution, `form_6251 18` fails validator after
-operand resolution, `form_2441 8` fails validator after operand resolution, and `schedule_2 1z`
-fails operand resolution. The other 16 cases reach rule-and-edge assembly.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tgpt'; .venv\Scripts\python.exe -m pytest
-tests/test_m20_s112.py -q` -> **1 passed, 1 warning in 5.31s**. The warning is the pre-existing
-pytest cache ACL warning for `.pytest_cache`; the test itself is green.
-
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check -- pilot\replay_harness.py pilot\fixtures\m20_s112_replay.json
-tests\test_m20_s112.py pilot\README.md` -> **exit 0, no output**.
-
-RAN negative proof against a temporary copy of `9b9333f` with the same harness and fixture ->
-**21 mismatches, exit 1, network_calls=0**. Every case exposed the reverted `kind` schema and
-prompt drift; downstream resolver/assembler diagnostics remained visible where reachable. The
-temporary copy was removed after the run.
-
-NOT RUN: `extract --year 2025` corpus re-derive. S112 explicitly forbids a model call and graph
-write, so a fresh provider-backed corpus number would violate this round's scope. No fresh corpus
-metric is claimed; the pinned post-revert baseline above remains the current corpus evidence.
+**OUT OF SCOPE.** Deleting the cue matcher. Voting. `system_fingerprint`. The 12 outline-index gaps
+themselves - **expect more of them to surface and report them; do not fix them here.**
 
 ## Open for Architect
 
