@@ -33,18 +33,32 @@ test fails pre-fix with the exact `ValueError`. Replay harness still 25/0.
 task wrapper but left the old python process holding port 8765, so three checks tested the PRE-FIX
 server. Codex's 200 was correct throughout.
 
-**M20-S113 IS DELIVERED AND LOOKS RIGHT, NOT YET FORMALLY ACCEPTED** (`6b855b4`, 2026-08-16).
-Verified by the Architect: replay harness **25 cases, 0 mismatches**; **93 passed bare**; corpus
-**rules 78, edges 224, gaps 153**. **The rule drop is RECLASSIFICATION, not loss** - the model
+**M20-S113 IS ACCEPTED (`6b855b4`, Architect, 2026-08-16).** John ruled the reclassification
+correct. Replay harness 25/0; 93 passed bare; corpus **rules 78, edges 224, gaps 153**. The model
 classified **500 addressable lines** against the cue matcher's 141 and returned **filer_entry 134,
-not_derivable 117, information_return 13, election 5**. `form_1040` 35a and 36 mint **zero rules**;
-the wrong `COPY` is gone. **Five election objects were pipeline-produced, not hand-authored.**
-**The `rules >= 107` floor was unsatisfiable by construction** - the round's purpose is to stop
-treating non-computations as computations, which necessarily lowers the rule count. **That is the
-SIXTH floor written that the work could not satisfy as specified.**
+not_derivable 117, information_return 13, election 5**. `form_1040` 35a and 36 mint zero rules - the
+wrong `COPY` is gone - and five elections were pipeline-produced.
 
-**AWAITING JOHN'S ADJUDICATION on whether the reclassification is correct.** The 1040's
-`filer_entry` / `not_derivable` calls and the 5 elections are the question.
+**THE RULE COUNT IS NOT A QUALITY METRIC. NEVER USE IT AS A FLOOR AGAIN.** `rules >= 107` was
+unsatisfiable by construction: the round's purpose was to stop treating non-computations as
+computations. **That was the sixth floor written that the work could not satisfy.** Rulings are
+pinned in `../docs/derivation-architecture.md`.
+
+**THREE JOHN RULINGS, 2026-08-16, NOW QUEUED AS WORK:**
+1. **`filer_entry` needs a reason taxonomy** - `derivation_failed` (a defect) vs
+   `source_form_not_modelled` (a scope fact). `form_1040` 1f is the second: Form 8839 is not
+   acquired. **Fold into S115 if cheap; otherwise its own round.**
+2. **`form_1040` 6b's decline is a PACKET DEFECT.** It declined for want of the Social Security
+   Benefits Worksheet, **which the graph contains**. *"We model the worksheets so that they can
+   support the forms."* When a line's evidence names a worksheet the graph has, that worksheet
+   belongs in the packet.
+3. **ROUTING IS ITS OWN CONSTRUCT.** `schedule_d` 17 is flow control, not an election. Until routing
+   exists, **`election` must be validated so it stops absorbing branches** - the same failure mode
+   as `COPY` absorbing line 36.
+
+**ARCHITECT NOTE.** John: *"do what you think best. I don't understand why this is such a big deal
+for you."* **Acceptance is the Architect's call and was being escalated unnecessarily.** Bring John
+decisions only where the answer changes what gets built.
 
 **DIRECTION IS PINNED IN `../docs/derivation-architecture.md`. READ IT FIRST.** Sequencing: harness
 (DONE, `80980e7`) -> model owns the path (DONE, `6b855b4`) -> **review surface (THIS ROUND)** ->

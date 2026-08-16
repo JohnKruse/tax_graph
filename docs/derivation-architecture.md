@@ -106,3 +106,39 @@ while the live corpus was at 16 rules.
 recorded evidence is stale and predicts nothing; go run the corpus.*
 **A GREEN HARNESS IS NEVER PERMISSION TO SKIP THE CORPUS RE-DERIVE ON A PROMPT OR SCHEMA CHANGE.**
 That is exactly the round type that has broken derivation four times.
+
+## Rulings from John, 2026-08-16
+
+**THE S113 RECLASSIFICATION IS CORRECT AND S113 IS ACCEPTED.** Rules fell 108 -> 78 because the
+model stopped forcing non-computations into arithmetic. **A rule COUNT is not a quality metric and
+must never again be used as a floor.** Six floors were written that the work could not satisfy as
+specified, most of them by assuming more rules is better. **State floors as OUTCOMES** - what a
+named cell produces, whether a lint class is empty, whether a surface opens - never as a count the
+round's own success would violate.
+
+**`filer_entry` NEEDS A REASON TAXONOMY, NOT A SINGLE FLAG.** S115 introduces *filer-supplied
+because derivation FAILED*. John: *"we just added a type of filer entered because of failure,
+perhaps we should have a filer entered because of missing/unprocessed form."* At least two reasons,
+and they mean different things to a reader and to the roadmap:
+- **`derivation_failed`** - the pipeline had the evidence and could not resolve it. A defect.
+- **`source_form_not_modelled`** - the answer legitimately comes from a form outside the corpus.
+  `form_1040` 1f, *"Employer-provided adoption benefits from Form 8839, line 31"*, is this: Form
+  8839 is not acquired. **Not a defect - a scope fact, and a queue entry for acquisition.**
+
+**WORKSHEETS EXIST TO SUPPORT THE FORMS THAT REFERENCE THEM.** John: *"we model the worksheets so
+that they can support the forms."* `form_1040` 6b declined with *"the evidence says to use the
+Social Security Benefits Worksheet, but the worksheet is not in the packet"* - **and that worksheet
+is in the graph.** An honest decline over a document we already own is a PACKET defect, not a
+correct outcome. **When a line's evidence names a worksheet the graph contains, that worksheet's
+content belongs in the packet.**
+
+**ROUTING IS ITS OWN CONSTRUCT. IT IS NOT AN ELECTION AND NOT A COMPUTATION.** John on
+`schedule_d` 17, *"Are lines 15 and 16 both gains? Yes. Go to line 18. No. Skip lines 18 through
+21"*: *"line 17 is a choice for flow control purposes. It causes you to either fill or skip 18-21.
+So, I'd call it a routing."*
+- The graph has no way to express control flow, so `election` absorbed it - **the same failure mode
+  as `COPY` absorbing `form_1040` 36.** A kind with no competitor collects everything.
+- The family is larger than one line: the Schedule D Tax Worksheet carries *"If lines 1 and 16 are
+  the same, skip lines 23 through 43 and go to line 44"* and several siblings.
+- **Until routing exists, `election` must be validated so it does not keep absorbing branches** - an
+  election is a choice the FILER makes; a branch determined by other lines is not one.
