@@ -21,8 +21,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S114 is specced below - THE REVIEW SURFACE MUST NOT DIE ON ONE UNPLACEABLE ROW.**
-**IT IS BLOCKING JOHN'S REVIEW RIGHT NOW** - the document picker returns HTTP 500.
+**BALL: CODEX. M20-S115 is specced below - THE REVIEW CONTRACT: three verdicts, each carrying a
+comment.**
+
+**M20-S114 IS ACCEPTED (`9f856a9`, Architect, 2026-08-16), VERIFIED BY RUNNING.** `/api/documents`
+-> **HTTP 200, 9532 bytes, all 16 documents**. `schedule_a` reports **2 unplaceable rows, visible
+with reasons** instead of raising; its SALT election is anchored to the real line 5a checkbox
+(`generated_status: decision` on `f1_7[0]`) and the header duplicate is gone. Codex proved the new
+test fails pre-fix with the exact `ValueError`. Replay harness still 25/0.
+**NOTE: the 500 John kept hitting after the fix was the ARCHITECT's error** - `TaskStop` killed the
+task wrapper but left the old python process holding port 8765, so three checks tested the PRE-FIX
+server. Codex's 200 was correct throughout.
 
 **M20-S113 IS DELIVERED AND LOOKS RIGHT, NOT YET FORMALLY ACCEPTED** (`6b855b4`, 2026-08-16).
 Verified by the Architect: replay harness **25 cases, 0 mismatches**; **93 passed bare**; corpus
@@ -163,107 +172,95 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S114 SPECCED BY ARCHITECT (2026-08-16). THE REVIEW SURFACE MUST NOT DIE ON ONE UNPLACEABLE
-ROW, AND AN ELECTION MUST ANCHOR TO A CELL THAT EXISTS.** **REAL ROUND** - workbench and draft
-projection. **NO response-schema change. NO prompt change. NO model call.**
+**M20-S115 SPECCED BY ARCHITECT (2026-08-16). THE REVIEW CONTRACT: THREE VERDICTS, EACH CARRYING A
+COMMENT.** **REAL ROUND** - review surface and verdict store. **NO response-schema change. NO prompt
+change.** Try Again calls the model; nothing else does.
 
-**THIS IS BLOCKING JOHN'S REVIEW RIGHT NOW.** He opened the workbench, the document picker returned
-**HTTP 500 after a few seconds**, and nothing is reviewable. Traceback:
+**JOHN'S CONTRACT, 2026-08-16, VERBATIM IN SUBSTANCE.** Three options only, any one may carry a
+comment.
+- **ACCEPT** - the easy one. The comment is augmenting information.
+- **TRY AGAIN** - take the comment and **use it as another evidence source in re-deriving** the
+  operation. **If it works out and is then ACCEPTED, the comment must be saved as the successful
+  change.**
+- **REJECT** - the form cannot be approved while a reject stands, and the defect is reported.
 
-```
-workbench/generated_review.py:83
-ValueError: generated line has no physical cell: schedule_a_2025:5
-```
+**ITEM 1 - THE SURFACE MUST TELL THE TRUTH FIRST. THIS IS PREREQUISITE, NOT COSMETIC.** John opened
+the workbench on `form_1040` line 1a - *"Total amount from Form(s) W-2, box 1"* - and read
+**"Review gap"**, concluding extraction had failed. **It had not.** S113 classified 1a as
+`filer_entry` and cited *"Enter the total amount from Form(s) W-2, box 1. If a joint return, also
+include your spouse's income."* The cell carries `expression.kind = review_gap` because it has no
+arithmetic, and the UI renders anything without an expression as a gap.
+- **All five S113 kinds must display as themselves**: `computation`, `filer_entry`, `election`,
+  `information_return`, `not_derivable` - each with its citation, and `not_derivable` with its
+  reason. **134 `filer_entry` and 117 `not_derivable` cells corpus-wide currently read as failures.**
+- **Fix the pane sizing.** `.review-river` is `height: calc(100vh - 108px)` with
+  `overflow: hidden`, and the cell list starves the detail body, leaving a sliver for the
+  instruction text. **The detail body must be the part that grows and scrolls.**
+- **A reviewer cannot exercise a verdict contract on cells that are mislabelled.**
 
-**ONE unmatched row takes down the ENTIRE document index**, because `/api/documents` builds every
-generated document eagerly and `build_generated_document_cells` raises rather than degrades.
+**ITEM 2 - THREE VERDICTS, EACH WITH A COMMENT.** Replace the current `Accept / Question / Reject`
+plus a detached `Try again` panel. The verdict vocabulary is
+`_ADDRESS_JUDGEMENTS = {confirmed, questioned, rejected}`; **`questioned` becomes the Try Again
+verdict**. Two legacy records exist on disk - migrate them, do not orphan them.
 
-**WHY THE ROW IS UNMATCHED - OPENED INDIVIDUALLY, PER THE HARD RULE.** S113 emits 5 elections. Their
-placement:
-- **`schedule_a` 5a - physical cell YES.** *"Do you elect to deduct state and local general sales
-  taxes instead of state and local income taxes?"* **Correct election, correctly placed. This is the
-  mechanism working.**
-- **`schedule_a` 5 - NO cell.** Line 5 is the printed HEADER *"State and local taxes (SALT)"* over
-  5a-5e; it has no box because nothing is entered on it. **Its own question says *"Which type of tax
-  will you include on Schedule A, line 5a?"* - the correct anchor is IN the question.** This is also
-  a duplicate of the 5a election.
-- **`schedule_a` 18 - NO cell.** *"If you elect to itemize deductions even though they are less than
-  your standard deduction"* - a real election on a checkbox line.
-- **`schedule_2` 4 - NO cell**, and its face is garbage: `"1 4361 2 4029 3 4"`.
-- **`schedule_d` 17 - NO cell.** *"Are lines 15 and 16 both gains?"* - **not an election at all**; the
-  answer is determined by lines 15 and 16, not chosen by the filer.
+**ITEM 3 - THE TRY AGAIN LOOP, AND THE COMMENT IS EARNED.** Today `rederive_cell(document_id, line,
+draft_comment)` re-derives and **persists nothing**, while a `questioned` verdict **persists a
+comment the model never sees**. The comment that reaches the model is thrown away; the one that
+survives is inert. **That inverts the prime directive, where review input IS pipeline input.**
+- Try Again sends the comment as evidence and shows the result **without persisting**.
+- **A comment becomes CURATED only when a subsequent ACCEPT follows the Try Again that produced the
+  accepted result.** A typed comment is not curated; a comment that demonstrably worked is.
+- `_latest_curated_comment` already feeds later derivations. **Wire the earned comment into that
+  ledger** so the next corpus run consumes it.
 
-**ITEM 1 - DEGRADE, NEVER RAISE.** An unplaceable generated row must produce a REPORTED, VISIBLE
-row - flagged unplaceable, with its label, kind and reason - **not an exception.** No single row may
-be able to take down the picker or a document. **This is the blocking fix and it comes first.**
+**ITEM 4 - REJECT, AND THE ESCAPE HATCH IS GATE-DEPENDENT.** `gate` is implemented
+(`engine.py:98` defaults to `project`, the extension path stamps `user`) but **every one of the 647
+current nodes has `gate: None`** - so treat absent as `project`.
+- **On a `gate: project` document: ABANDON ONLY.** **The dialog must not offer the escape hatch at
+  all.** John: *"I don't plan on letting the core docs out without bona fide approval."*
+- **On a `gate: user` document: offer ABANDON or CONTINUE WITH THE CELL AS FILER-PROVIDED.** This
+  demotes the node to `REQUIRE_INPUT` - **an existing first-class kind, not a hand-authored value.**
+  Nothing is fabricated; the pipeline records that it could not derive this cell and the filer
+  supplies it.
+- **Provenance must say WHY**: filer-supplied **because derivation failed**, not merely
+  filer-supplied. Those are different claims and the audit record must distinguish them.
+- **The reject reason and the Try Again history travel with the form**, so the next reader sees the
+  attempts and the comments. That is what makes a contributed form improvable rather than merely
+  tolerated.
+- **A demoted cell NEVER counts as derived** in any coverage or derivation metric.
 
-**ITEM 2 - ANCHOR AN ELECTION TO A CELL THAT EXISTS.** When an election names a line with no
-physical cell:
-1. If the election's own `question` or `options` name a concrete sub-line that HAS a cell, anchor
-   there (`schedule_a` 5 -> 5a).
-2. Otherwise attach it to the document as a form-level decision, visible in review without geometry.
-3. **Never silently drop it, and never invent a cell.**
-**Deduplicate:** an election anchored to the same cell as an existing one with an equivalent question
-is one election, not two.
-
-**ITEM 3 - A TEST THAT WOULD HAVE CAUGHT THIS.** `/api/documents` must return **200 with the current
-drafts**, and there must be a test asserting it for every `GENERATED_REVIEW_DOCUMENTS` entry
-(`form_1040_2025`, `schedule_1_2025`, `schedule_a_2025`). **The S113 floor checked rules, edges,
-gaps and lint hits and never checked that the review UI opens** - which was the one thing John
-actually needed.
+**ITEM 5 - REPORTING IS QUEUED, NOT FIRED.** A reject writes a defect report to a local queue with
+the cell, the attempts, and the comments. **Do NOT post to GitHub from a UI click** - an
+outward-facing side effect must not be a button's side effect. Posting is a separate deliberate step
+and is OUT OF SCOPE.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not change the response schema, the prompt, or the union.** S113 stands; this round is the
-  review surface.
-- **Do not "fix" the elections by suppressing them.** `schedule_d` 17 being a misclassification is a
-  DERIVATION question for John, not a reason to filter elections out of the UI.
+- **Do not let a `gate: project` document offer the filer-provided hatch.**
+- **Do not curate every comment.** Only a comment whose Try Again result was then accepted.
+- **Do not write a value into a cell.** The hatch changes a node's KIND, never its value.
+- **Do not change the response schema or the prompt.**
 - **Do not re-baseline expected-count fixtures.**
 
-**THE FLOOR.**
-- **`GET /api/documents` returns 200** against the current drafts. Paste the status and byte count.
-- **All three generated documents render**, and **`schedule_a` shows its SALT election** anchored to
-  a real cell.
-- **Unplaceable rows are visible and labelled**, with a count reported per document.
-- **A test covers `/api/documents` for all three generated documents** and fails on the current
-  `main` before the fix. Prove it fails first.
+**THE FLOOR - OUTCOMES, NOT COUNTS.**
+- **`form_1040` line 1a renders as a filer entry with its W-2 citation, NOT "Review gap".** Paste
+  what the cell API returns for it.
+- **The detail body scrolls and shows full instruction text** with the cell list capped. Say how it
+  was verified.
+- **Three verdict buttons, each accepting a comment**; the detached Try again panel is gone.
+- **A Try Again followed by an Accept curates that comment**, provable by a test: assert the comment
+  appears in the curated ledger for that address after the sequence, and does NOT after a Try Again
+  alone.
+- **Reject on a `gate: project` document offers abandon only**; on `gate: user` it offers the
+  filer-provided option, and taking it sets the node to `REQUIRE_INPUT` with a reason.
+- **The two legacy verdict records still load.**
 - **`pilot/replay_harness.py` still green** (25 cases).
-- **Corpus untouched** - no re-derive needed; this round does not call a model.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Bare-run and corpus
-  verification are the Architect's leg.
+- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Bare-run, corpus
+  re-derive and live workbench checks are the ARCHITECT's leg.
 
-**OUT OF SCOPE.** Election quality (`schedule_d` 17 misclassified, `schedule_2` 4's broken face) -
-**recorded for John's adjudication, not fixed here.** The variant picker and voting UI. The 88
-outline-index gaps.
-
-**WORKER STATUS - S114 IMPLEMENTED, AWAITING ARCHITECT ACCEPTANCE (2026-08-16).** The generated
-review projection now degrades unmatched draft rows into a separate `unplaceable` document-level
-list with label, kind, reason, provenance, and no invented geometry. Elections first try their
-line, then a concrete sub-line named in the question/options; Schedule A line 5 resolves to the
-real line 5a checkbox. Equivalent elections on one cell are deduplicated, preferring the decision
-whose own line has a physical cell. The API reports `unplaceable_count` per document and the river
-renders form-level rows without changing the physical-cell denominator. No response schema, prompt,
-model call, or promoted artifact changed.
-
-Pre-fix proof: `python -m pytest tests/test_workbench_cells_api_m17.py::test_generated_documents_open_and_report_unplaceable_rows -q`
--> **1 failed in 69.80s**, `ValueError: generated line has no physical cell: schedule_a_2025:5`.
-Live floor: `/api/documents` -> **status=200, bytes=9532**; current projection is
-`form_1040_2025` 199 cells / 0 unplaceable, `schedule_1_2025` 73 / 0, `schedule_a_2025` 33 / 2;
-Schedule A carries one SALT decision on the line 5a checkbox.
-
-Test evidence:
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_m20_s114.py -q -> 2 passed`.
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py::test_generated_documents_open_and_report_unplaceable_rows -q -> 1 passed in 83.57s`.
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_server_m15.py tests/test_m20_s114.py -q -> 8 passed in 60.04s`.
-- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_m17.py -q -> 11 passed in 19.74s`.
-- `RAN: .venv\Scripts\python.exe pilot/replay_harness.py -> replay cases=25 mismatches=0 network_calls=0`.
-- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`; `git diff --check -> clean`.
-- `NOT RUN: tests/test_workbench_m15.py -> file is absent; nearest existing consumer guard is tests/test_workbench_server_m15.py`.
-
-The combined legacy generated-review/API command remains **3 failed, 10 passed** on the current
-drafts for the pre-existing 1i instruction citation, 1a W-2 source rendering, and 1040 policy
-histogram expectations. Those guards were not changed or re-baselined. Corpus untouched; no
-derivation run requested.
+**OUT OF SCOPE.** Posting to GitHub. Voting and the variant picker. Promoting drafts into the
+graph. The 88 outline-index gaps. Election quality (`schedule_d` 17 misclassified, `schedule_2` 4's
+broken face) - still awaiting John's adjudication.
 
 ## Open for Architect
 
