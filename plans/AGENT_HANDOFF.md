@@ -21,8 +21,17 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S109 is specced below - ONE mechanism, four cases.**
+**BALL: CODEX. M20-S110 is specced below - the escape hatch and the filer election, ONE round.**
 **The Worker needs NO live model call; the Architect runs re-derivation and reports the numbers.**
+
+**S109 IS REVERTED (`db4df3e`, John's call, 2026-08-16).** Two passes both wrecked derivation. The
+tree is back at **rules 108 / gaps 33**, inside the 107-109 / 32-34 baseline. **Arity-by-role is
+still the right model and is NOT to be retried until there is an end-to-end regression signal.**
+
+**READ THIS BEFORE TOUCHING THE RESPONSE SCHEMA.** Four schema changes this phase; three of them
+took derivation to a fraction of baseline **while passing their targeted tests** (67, 90, 91
+passed). **A green test run is not evidence for a schema change.** A corpus re-derive costs
+**$0.046 and twelve minutes** and is the only thing that has ever caught this class.
 
 **M20-S108 IS ACCEPTED** (`c2dc0d8` + `e2d0180` + `4377c30` + `7bfb9e8` + `7580a4d` + `b96fc59`,
 Architect, 2026-08-15). `extract --year` completes all 17 documents; `accepted` moved 0 -> ~1670;
@@ -129,102 +138,82 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S109 SPECCED BY ARCHITECT (2026-08-15). ARITY IS VALIDATED AGAINST OPERATION ROLES, NOT A
-FIXED OPERAND COUNT.** **REAL ROUND** - graph writes. **No live model call is required of the
-Worker**; the Architect runs re-derivation.
+**M20-S110 SPECCED BY ARCHITECT (2026-08-16). A FORMULA CELL CAN SAY "I AM NOT A COMPUTATION", AND
+DERIVATION CAN EMIT A FILER ELECTION.** **REAL ROUND** - graph writes.
+**THIS ROUND CHANGES THE RESPONSE SCHEMA. READ THE WARNING BELOW BEFORE STARTING.**
 
-**THIS SPEC WAS WRITTEN AFTER OPENING ALL TEN FAILURES END TO END**, per the hard rule added to
-`../AGENTS.md` on 2026-08-15. **The bucket is five causes, not one, and S109 takes exactly one of
-them.**
+**THE EVIDENCE, OPENED END TO END PER THE HARD RULE.** `form_1040` line 36 prints *"Amount of line
+34 you want applied to your 2026 estimated tax"*. It receives the correct face, the correct
+instruction section, and answers **`COPY` of line 34 - three times out of three, and again three
+times out of three at `reasoning_effort: high`.** All six were **`accepted: True`**. `35a` behaves
+identically. **The validator, the tiering, and the whole suite are blind to it; only
+`pilot/face_lint.py` notices.**
 
-**WHAT THE TEN ACTUALLY ARE** (prompt, packet, response and rejecting stage read for each):
+**THE MODEL IS NOT WRONG - THE QUESTION IS.** `_formula_prompt` asks *"Which printed lines does this
+line use, and what operation combines them?"* Line 36 **does** use line 34, as a bound, and given an
+arithmetic vocabulary `COPY` is the most defensible answer available. **There is no way to reply
+"this is not a computation."** `REQUIRE_INPUT` exists but lives on the OTHER prompt path
+(`_non_formula_prompt`); once `_formula_outline_nodes` classifies a line as a formula, the pipeline
+has committed to it being arithmetic. **More thinking cannot fix a presupposed question.**
 
-| cause | n | cases |
-| --- | --- | --- |
-| **A. threshold conditional with printed constants** | 2 | `form_6251` 18, 39 |
-| **B. alternation - "whichever applies"** | 3 | `form_6251` 12, 13, 20 |
-| **C. composite expression** | 1 | `form_2441` 15 |
-| **D. printed band table** | 1 | `form_2441` 8 |
-| **E. conditional on a cross-form value** | 1 | `form_2441` 5 |
-| **F. passes on re-run (variance)** | 2 | `form_1116` 19, `form_1099_div` 2d |
+**THE POPULATION IS EXACTLY 2 OF 141 FORMULA-ROUTED CELLS**, corpus-wide: `form_1040` 35a and 36.
+**Do not go looking for more; the round is about the missing CONCEPT, not the count.** The two
+jointly partition the line 34 overpayment, which is why they are the right first pair.
 
-**S109 IS A, D AND E ONLY - FOUR CASES, ONE MECHANISM.**
+**ITEM 1 - THE ESCAPE HATCH.** A formula response may answer that the line is not a computation,
+with a reason. Such a cell is **routed to the non-formula path instead of being forced into
+arithmetic**, and **no rule or edge is minted for it.** **A cell that takes the hatch is NOT a gap
+and NOT a failure** - it is a correct classification and must be reported separately from
+`review_gaps`.
 
-**THE DEFECT.** `_validate_source_line_arity` compares `len(source_lines)` against a fixed number
-per operation. **That count assumes every operand is a line.** It is not: a printed constant is an
-operand, and so is a threshold. `form_6251` 18 prints *"If line 17 is $239,100 or less ($119,550 or
-less if married filing separately), multiply line 17 by 26% (0.26). Otherwise, multiply line 17 by
-28% (0.28) and subtract $4,782 ($2,391 if married filing separately)"*. **The model returns exactly
-that** - one line plus six correctly role-tagged constants - and is rejected because `IF_ELSE`
-wants 4. `form_6251` 39 is the same rule on line 12, returning 9. `form_2441` 8 returns **48
-operands**: one line plus the entire printed AGI decimal band table.
+**ITEM 2 - DERIVATION CAN EMIT AN ELECTION.** The output shape ALREADY EXISTS and must be reused,
+not redesigned: `graph/2025/decisions/tax-liability.yaml`, `decision_1040_deduction_method`, carries
+`decision_id`, `sets_node`, `question`, `citation_refs`, and `options[]` where each option has
+`option_id`, `label`, `option_type`, `sets`, `downstream_effect` and its own `citation_refs`.
+**Today there is exactly ONE such object and it was hand-authored in M11.** Derivation has never
+produced one.
+- **The `question` and every `option` MUST carry `citation_refs` to the printed text that
+  establishes the election.** Same provenance discipline as every other generated object.
+- **An `option_type: escalate` option is MANDATORY on every emitted decision.** The MCP contract
+  requires presenting the escape hatch and never choosing for the filer; a decision without one is
+  a defect, not a style choice.
+- **Decision objects already route to human review unconditionally** (`route.py`, *"decision objects
+  always require human review"*). That is correct and must not be weakened to make a count look
+  better.
 
-**THE TARGET STATE.** **Arity is checked against the operation's ROLE SET from
-`operation_registry.operation_roles`, not a raw length.** A plan satisfies the contract when every
-REQUIRED role is filled exactly once and no unknown role appears. **A repeated role is legal where
-the registry says the role is repeatable** - band rows, filing-status variants.
-
-**AND SEPARATE THE TWO MEANINGS OF `role`, WHICH ARE CURRENTLY FUSED.** The schema's `role` is
-carrying both **operand position** (`minuend`, `subtrahend`, `condition`, `if_true`) and **branch
-selection** (`default`, `married filing separately`). **They are different axes** and the collision
-is what produces `MULTIPLY operand roles do not preserve computation order`. Give the branch axis
-its own field; leave `role` meaning operand position only.
+**WARNING - THIS IS THE FOURTH SCHEMA CHANGE IN THIS PHASE AND THE PREVIOUS THREE ALL BROKE
+DERIVATION WHILE PASSING THEIR TESTS.** S108 item 1 (67 passed, rules -> 0), S109 (90 passed, rules
+107-109 -> 16-19), the S109 fix (91 passed, rules -> 43-44). **`tests/` validates hand-written
+payloads against the validator; NOTHING in it asserts that a real model response still resolves end
+to end.** **A green targeted set is not evidence for this round. The corpus re-derive is the
+evidence, it costs $0.046 and twelve minutes, and it is not optional.**
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not widen an arity number to make a case pass.** If a rule needs a role the registry does not
-  have, that is a FINDING - report it, do not invent the role silently.
-- **Do not touch causes B, C or F.** Alternation needs an Architect ruling that is not written yet;
-  composite expressions are a larger design change; F is run variance, not a defect.
+- **Do not change how any existing operation validates.** S109 was reverted for exactly this; the
+  arity/role contract is OUT OF SCOPE.
+- **Do not let the hatch become a dumping ground.** If more than the 2 named cells take it, that is
+  a FINDING to report, not a success.
+- **Do not hand-author the two decision objects.** They must be produced by the pipeline. A
+  hand-written decision for line 36 is scaffolding and fails the round.
 - **Do not re-baseline any expected-count fixture.**
 
-**THE FLOOR.**
-- **`form_6251` 18 and 39, `form_2441` 8 and 5 all derive.** Report each by id, before and after.
-- **Corpus `rules` and `edges` measured over THREE runs**, reported as a range, not one number.
-  **Baseline is `rules` 107-109 and `edges` 365-370** (triple run, 2026-08-15). **The bottom of the
-  new range must exceed the top of the old** - `rules >= 110`. **A single-run number is not
-  evidence; the corpus varies +/-2 run to run.**
-- **Zero `operand roles do not preserve computation order` gaps** (currently 0-2 depending on run).
-- **Targeted set green**, bare, no `PYTEST_DEBUG_TEMPROOT`: `tests/test_m20_s108.py
-  tests/test_background_m20.py tests/test_draft_route_m20.py tests/test_m20_s102.py
-  tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py`
-  (59 passed at `40d0489`).
+**THE FLOOR - STATED IN DERIVATION OUTPUT, NOT IN ACCEPTANCE COUNTS.**
+- **`form_1040` 35a and 36 no longer derive as `COPY`.** Report what they derive as, by id.
+- **Both emit a decision object** with a `question`, at least two real options, a mandatory
+  `escalate` option, and `citation_refs` on the decision and every option.
+- **`pilot/face_lint.py pilot/face_lint_rules.yaml` reports ZERO
+  `filer-election-is-not-a-copy` hits** (currently 2). Run it and paste the output.
+- **Corpus stays in baseline: `rules` 107-109 and `edges` 345-370, gaps <= 34**, from a real
+  `extract --year 2025`. **Derivation must not regress by even one rule.**
+- **Targeted set green, bare, no `PYTEST_DEBUG_TEMPROOT` and no elevation**:
+  `tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py
+  tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py
+  tests/test_extract_outline_m4.py tests/test_operation_registry_m20.py` (82 passed at `db4df3e`).
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
 
-**OUT OF SCOPE.** Alternation (B). Composite expressions (C). The 12 outline-index gaps. The 5
-transport `400`s. The 2 silent-wrong `COPY` rules the face lint reports on `form_1040` 35a and 36.
-
-**WORKER STATUS (CODEX, 2026-08-15).** Implemented the S109 role contract. The operation registry
-now declares repeatable roles and the constrained two-branch IF_ELSE variant; micro validation
-assigns roles from that contract instead of comparing source-line count; `role` and `branch` are
-separate in the formula schema and promoted edge shape; assembly preserves both axes and keeps
-legacy lookup branch spelling readable. Added `tests/test_m20_s109.py` with the four floor shapes,
-unknown/missing-role findings, the fixed-arity guard, and edge projection.
-
-**TEST EVIDENCE (WORKER).** RAN: `.venv\\Scripts\\python.exe -m pytest tests/test_m20_s109.py
-tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py
-tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py
-tests/test_extract_outline_m4.py -q` -> `67 passed in 26.90s` (elevated only because the pinned
-`.test_tmp` root returned `WinError 5` in the normal sandbox). RAN: `.venv\\Scripts\\python.exe
--m pytest tests/test_operation_registry_m20.py tests/test_background_m20.py
-tests/test_m20_s108.py -q` -> `35 passed in 1.15s`. RAN: `.venv\\Scripts\\python.exe
-tools\\check_ascii.py` -> `ASCII check OK`. RAN: `git diff --check` -> clean. NOT RUN: live model
-call and triple corpus re-derivation; the round assigns those to the Architect.
-
-**WORKER CORRECTION (CODEX, 2026-08-16).** S109 now has a distinct same-form line operand shape:
-`{\"line\": \"9\", \"role\": \"minuend\", \"branch\": null}`. The cross-form shape still
-requires a document `form`; the prompt explicitly forbids using a line number as a form. Validation
-accepts the same-form object, and an assembly regression proves its role-bearing lines resolve
-against the current document. No graph artifact, citation, or source range changed.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s109_fix';
-.venv\\Scripts\\python.exe -m pytest tests/test_m20_s109.py -q` -> 9 passed.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s109_fix';
-.venv\\Scripts\\python.exe -m pytest tests/test_m20_s109.py tests/test_m20_s108.py
-tests/test_operation_registry_m20.py tests/test_background_m20.py tests/test_draft_route_m20.py
-tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py
-tests/test_extract_outline_m4.py -q` -> 91 passed.
-RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py` -> ASCII check OK; `git diff --check` ->
-clean. NOT RUN: live model call or triple corpus re-derivation; Architect owns that leg.
+**OUT OF SCOPE.** The arity/role contract (reverted, do not retry here). The 12 outline-index gaps.
+The 5 transport `400`s. Voting, seeds, and `system_fingerprint`. The grounding constraint on
+`source_lines`.
 
 ## Open for Architect
 
