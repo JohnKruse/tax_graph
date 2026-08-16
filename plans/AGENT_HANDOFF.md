@@ -21,21 +21,29 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S112 is specced below - the REPLAY HARNESS. No schema, no prompt, no graph
-write, no model call.**
+**BALL: ARCHITECT. M20-S112 IS ACCEPTED (`80980e7`, 2026-08-16). The next round is not yet
+specced.**
 
-**DIRECTION IS PINNED IN `../docs/derivation-architecture.md` (2026-08-16). READ IT FIRST.** It
-exists so a niggling problem does not divert the direction, and it states the sequencing: **replay
-harness -> the model owns the path -> voting -> review UI.** **Never change the mechanism and the
+**S112 VERIFIED BY THE ARCHITECT, NOT BY READING THE REPORT.** `pilot/replay_harness.py` -> **21
+cases, 0 mismatches, 5 seconds, network_calls=0**, using the production `extract_formula_plan`,
+`assemble_formula_plan` and operand resolver. **Corpus untouched: rules 108, edges 369, gaps 33.**
+**Negative proof extended:** Codex proved it against `9b9333f` (S111); the Architect additionally
+ran it against `c47f5fa` (S109) -> **20 of 21 mismatches, exit 1**, and restored the tree.
+
+**KNOW ITS LIMIT BEFORE TRUSTING IT** - written up in `../docs/derivation-architecture.md`. It
+replays OLD responses, so **it cannot predict what a CHANGED PROMPT will make the live model emit.**
+On the S109 tree it reports `production prompt differs from recorded prompt` on 19 of 20 cases.
+**That tripwire is the point: recorded evidence is stale, go run the corpus.**
+**A GREEN HARNESS IS NEVER PERMISSION TO SKIP THE CORPUS RE-DERIVE.**
+
+**SEQUENCING, from `../docs/derivation-architecture.md`:** harness (DONE) -> **the model owns the
+path (the withdrawn S111, re-specced)** -> voting -> review UI. **Never change the mechanism and the
 measurement in the same round.**
 
-**S111 IS REVERTED** (rules 73, edges 187, gaps 262 - baseline is 107-109 / 345-370 / <=34).
-**S109 IS REVERTED** (`db4df3e`). **Four consecutive schema changes broke derivation while passing
-their targeted tests** (67, 90, 91, 91 passed). **Neither returns until the harness exists.**
-
-**THE ONE THING PROVEN, AND IT IS THE REASON TO KEEP GOING.** Every failure opened end to end this
-week had a CORRECT model answer. **The AI half is not the risk; every catastrophic failure came from
-the deterministic half.**
+**ARCHITECT SPEC DEFECTS TO STOP REPEATING.** S112's floor said "NO model call" and also "run
+`extract --year 2025` and paste the numbers". **Codex correctly took the conservative reading and
+said so.** That is the fifth floor written that the work could not satisfy as specified. **Corpus
+verification is the Architect's leg; do not put it in a Worker floor.**
 
 **M20-S108 IS ACCEPTED** (`c2dc0d8` + `e2d0180` + `4377c30` + `7bfb9e8` + `7580a4d` + `b96fc59`,
 Architect, 2026-08-15). `extract --year` completes all 17 documents; `accepted` moved 0 -> ~1670;

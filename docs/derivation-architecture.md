@@ -84,3 +84,25 @@ matcher is deleted.
 - **The Worker cannot run pytest bare in its sandbox** - it hits `WinError 5` on the poisoned
   `.test_tmp\pytest-of-devbox` ACL and reports 46 passed / 36 errors. **Bare-run verification is the
   ARCHITECT's job.** Do not write it into a Worker floor.
+
+## What the replay harness can and cannot do (measured 2026-08-16, `80980e7`)
+
+`pilot/replay_harness.py` replays 21 recorded `(prompt, raw response)` pairs through the PRODUCTION
+validator, operand resolver and assembler. **21 cases, 0 mismatches, 5 seconds, zero network calls.**
+Diagnostics are per layer and name the cell, e.g.
+`form_6251:18 schema_valid=Y validator_accepted=N operands_resolved=Y assembled=N`.
+
+**IT CATCHES:** regressions in the resolve-and-assemble path, and schema breaks like S108's
+structured-output `400` and S111's `kind` change. Pointed at S109 (`c47f5fa`) it fails 20 of 21,
+exit 1.
+
+**IT CANNOT CATCH:** what a CHANGED PROMPT will make the LIVE model emit. It replays OLD responses.
+S109 broke because its new prompt drove the model to produce `{"form": "9", "line": "9"}` - a shape
+no recorded fixture contains - so on the S109 tree the harness reports
+`production prompt differs from recorded prompt` on 19 of 20 cases and `assembled=Y` on several,
+while the live corpus was at 16 rules.
+
+**THEREFORE the prompt-drift tripwire is the most valuable signal in it, not noise.** It means: *the
+recorded evidence is stale and predicts nothing; go run the corpus.*
+**A GREEN HARNESS IS NEVER PERMISSION TO SKIP THE CORPUS RE-DERIVE ON A PROMPT OR SCHEMA CHANGE.**
+That is exactly the round type that has broken derivation four times.
