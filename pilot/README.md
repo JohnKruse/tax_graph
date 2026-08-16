@@ -24,14 +24,16 @@ the source-side error. Live mode requires exactly one line:
 This pilot is measurement evidence only. It does not change prompts, validators, graph files, or
 review state.
 
-## M20-S112 production replay harness
+## M20-S113 production replay harness
 
-`replay_harness.py` replays 21 recorded outline-first micro responses without a provider call. Each
+`replay_harness.py` replays 25 recorded outline-first micro responses without a provider call. Each
 case stores the exact prompt in compressed ASCII form and the raw JSON response, then invokes the
-production prompt seam, schema, micro validator, deterministic operand resolver, and assembler.
-The output names the first useful layer boundary instead of reducing a failure to one aggregate
-count. Expected failures are part of the fixture: they preserve known diagnostic shapes such as
-cross-document references, threshold conditionals, band tables, and Schedule 2 range references.
+production prompt seam, union schema, micro validator, deterministic operand resolver, and
+assembler. The fixture covers computation, filer_entry, election, information_return, and
+not_derivable outcomes. The output names the first useful layer boundary instead of reducing a
+failure to one aggregate count. Expected failures are part of the fixture: they preserve known
+diagnostic shapes such as cross-document references, threshold conditionals, band tables, and
+Schedule 2 range references.
 
 Run the provider-free replay from the repository root:
 

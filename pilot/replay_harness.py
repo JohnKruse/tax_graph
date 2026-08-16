@@ -13,14 +13,18 @@ import zlib
 from jsonschema import Draft202012Validator
 
 from tax_graph.extract.assembly import _steps_for_plan, assemble_formula_plan
-from tax_graph.extract.micro import extract_formula_plan, formula_micro_schema
+from tax_graph.extract.micro import (
+    extract_formula_plan,
+    formula_micro_schema,
+    formula_response_kind,
+)
 from tax_graph.extract.outline import (
     build_candidate_spans,
     build_outline_tree,
 )
 from tax_graph.extract.outline_pipeline import (
-    _formula_outline_nodes,
     _instruction_owner_map,
+    _model_formula_outline_nodes,
     _outline_line_index,
     _outline_line_metadata,
     _outline_node_id,
@@ -124,7 +128,7 @@ def _contexts(root: Path, cases: list[dict[str, Any]]) -> dict[tuple[str, str], 
         outline = build_outline_tree(document)
         spans = build_candidate_spans(document)
         owners = _instruction_owner_map(spans)
-        nodes = _formula_outline_nodes(outline.children)
+        nodes = _model_formula_outline_nodes(outline.children)
         line_index = _outline_line_index(document_id, outline.children)
         line_kinds, line_children = _outline_line_metadata(document_id, outline.children)
         line_anchors = sorted(
@@ -200,6 +204,7 @@ def _run_case(case: dict[str, Any], context: ReplayContext, *, root: Path) -> Re
         errors["schema"] = schema_error
 
     client = ReplayClient(expected_prompt=_decode_prompt(case), response_text=response_text)
+    response_kind = formula_response_kind(response)
     try:
         extract_formula_plan(
             outline_node=context.node,
@@ -215,20 +220,26 @@ def _run_case(case: dict[str, Any], context: ReplayContext, *, root: Path) -> Re
         if isinstance(exc, ReplayHarnessError):
             errors["prompt"] = _message(exc)
 
-    try:
-        _steps_for_plan(
-            context.document,
-            context.node,
-            response,
-            context.spans,
-            line_index=context.line_index,
-            line_kinds=context.line_kinds,
-            line_children=context.line_children,
-            resolution_events=[],
-        )
+    if response_kind == "computation":
+        try:
+            _steps_for_plan(
+                context.document,
+                context.node,
+                response,
+                context.spans,
+                line_index=context.line_index,
+                line_kinds=context.line_kinds,
+                line_children=context.line_children,
+                resolution_events=[],
+            )
+            actual["operands_resolved"] = True
+        except Exception as exc:
+            errors["operands"] = _message(exc)
+    elif response_kind in {"filer_entry", "election", "information_return", "not_derivable"}:
+        # These branches deliberately have no arithmetic operands to resolve.
         actual["operands_resolved"] = True
-    except Exception as exc:
-        errors["operands"] = _message(exc)
+    else:
+        errors["operands"] = f"unknown response kind: {response_kind}"
 
     object_kinds: tuple[str, ...] = ()
     try:
@@ -244,9 +255,15 @@ def _run_case(case: dict[str, Any], context: ReplayContext, *, root: Path) -> Re
             resolution_events=[],
         )
         object_kinds = tuple(sorted({object.kind for object in batch.objects}))
-        if not {"rules", "edges"}.issubset(object_kinds):
+        if response_kind == "computation" and not {"rules", "edges"}.issubset(object_kinds):
             raise ReplayHarnessError(
                 f"assembly returned object kinds {','.join(object_kinds) or 'none'}"
+            )
+        if response_kind == "election" and "decisions" not in object_kinds:
+            raise ReplayHarnessError("assembly returned no decision object")
+        if response_kind in {"filer_entry", "information_return", "not_derivable"} and object_kinds:
+            raise ReplayHarnessError(
+                f"non-computation assembly returned object kinds {','.join(object_kinds)}"
             )
         actual["rule_and_edges_assembled"] = True
     except Exception as exc:

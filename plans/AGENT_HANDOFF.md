@@ -241,6 +241,34 @@ changes the prompt, which is precisely the case the harness cannot predict.**
 **OUT OF SCOPE.** Deleting the cue matcher. Voting. `system_fingerprint`. The 12 outline-index gaps
 themselves - **expect more of them to surface and report them; do not fix them here.**
 
+**WORKER STATUS (2026-08-16; implementation slice in progress).** The S113 union is implemented
+in `tax_graph/extract/micro.py`: the prompt now sends every addressable line through one grounded
+five-kind response, with explicit nulls for unused fields, evidence span ids, election escalation,
+and validation for each branch. `outline_pipeline.py` records outcomes separately from
+`review_gaps.yaml`, projects elections as decision objects without arithmetic rules or edges, and
+records the four cue-matcher/model quadrants. `assembly.py` handles the union branches,
+`prompt_bench.py` and `pilot/replay_harness.py` use the model-owned addressable set, and the replay
+fixture was re-recorded from real local union responses: 25 cases covering all five kinds. The
+fixture preserves four expected diagnostic negatives at the resolver or assembler boundary:
+`schedule_1:10`, `form_2441:6`, `schedule_1a:14c`, and `form_6251:18`.
+
+RAN: `.venv\Scripts\python.exe pilot\replay_harness.py` -> **25 cases, 0 mismatches,
+network_calls=0**. RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp2).Path;
+.venv\Scripts\python.exe -m pytest tests\test_m20_s113.py tests\test_m20_s112.py -q --tb=short`
+-> **11 passed, 1 warning in 5.94s**. RAN: `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp2).Path;
+.venv\Scripts\python.exe -m pytest tests\test_background_m20.py tests\test_extract_outline_m4.py -q
+--tb=short` -> **30 passed, 1 warning in 1.15s**. RAN:
+`.venv\Scripts\python.exe pilot\face_lint.py pilot\face_lint_rules.yaml` ->
+**105 derived cells, 2 lint hits**; `filer-election-is-not-a-copy` is zero, and the two existing
+hits are `form_6251:29` / `subtract-is-subtract` and `schedule_d:7` /
+`conditional-face-needs-a-branch`. RAN: `.venv\Scripts\python.exe tools\check_ascii.py` ->
+**ASCII check OK**. RAN: `git diff --check` -> **clean**.
+
+NOT RUN: the corpus re-derive (`extract --year 2025`) and bare/full suite, per the Architect leg
+above. The corpus four-quadrant counts, corpus rules/edges floor, 1040 35a/36 result, and live
+`review_gaps.yaml` are therefore still open for Architect verification. The face lint command read
+the existing corpus drafts only; it did not create or promote a candidate.
+
 ## Open for Architect
 
 **S109 IS REVERTED (John's call, 2026-08-16). DERIVATION IS BACK AT BASELINE.**

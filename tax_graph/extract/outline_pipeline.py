@@ -13,7 +13,11 @@ from tax_graph.extract.assembly import FormulaAssemblyFinding, _resolve_source_l
 from tax_graph.extract.background import extract_background_controls
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient, is_transient_transport_error, response_telemetry
-from tax_graph.extract.micro import extract_formula_plan, extract_non_formula_source
+from tax_graph.extract.micro import (
+    extract_formula_plan,
+    extract_non_formula_source,
+    formula_response_kind,
+)
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
 from tax_graph.extract.instruction_ownership import (
     instruction_line_owners,
@@ -95,6 +99,23 @@ def generate_outline_first_drafts(
         "failure_reasons_by_kind": {},
         "findings": [],
         "formula_cells": [],
+        "outcomes": [],
+        "outcome_counts": {
+            "filer_entry": 0,
+            "election": 0,
+            "information_return": 0,
+            "not_derivable": 0,
+        },
+        "decision_cells": [],
+        "routing_agreement": {
+            "quadrants": {
+                "matcher_admitted_model_computation": {"count": 0, "cells": []},
+                "matcher_admitted_model_non_computation": {"count": 0, "cells": []},
+                "matcher_skipped_model_computation": {"count": 0, "cells": []},
+                "matcher_skipped_model_non_computation": {"count": 0, "cells": []},
+            },
+            "unclassified": [],
+        },
         "non_formula_cells": [],
         "source_cells_attempted": 0,
         "source_cells_succeeded": 0,
@@ -112,7 +133,14 @@ def generate_outline_first_drafts(
     line_index = _outline_line_index(document.document_id, outline.children)
     line_kinds, line_children = _outline_line_metadata(document.document_id, outline.children)
     instruction_owners = _instruction_owner_map(spans)
-    for outline_node in _formula_outline_nodes(outline.children):
+    model_nodes = _model_formula_outline_nodes(outline.children)
+    legacy_fixture = _uses_legacy_line_wrappers(document)
+    if legacy_fixture:
+        # Synthetic fixtures from the pre-S111 renderer still exercise the
+        # separate source classifier below. Acquired corrected text has no
+        # wrapper and always takes the model-owned union.
+        model_nodes = _formula_outline_nodes(outline.children)
+    for outline_node in model_nodes:
         node_spans = _spans_for_outline_node(
             document,
             outline_node,
@@ -158,6 +186,12 @@ def generate_outline_first_drafts(
         ]
         if packet_findings:
             micro_stats["cells_failed"] += 1
+            _record_routing_agreement(
+                micro_stats,
+                outline_node,
+                "",
+                target_cell_id=target_cell_id,
+            )
             finding = {
                 "code": "incomplete_evidence",
                 "target_cell_id": target_cell_id,
@@ -188,11 +222,39 @@ def generate_outline_first_drafts(
                     formula_model = telemetry.resolved_model or formula_model
             except Exception as exc:
                 micro_stats["cells_failed"] += 1
+                _record_routing_agreement(
+                    micro_stats,
+                    outline_node,
+                    "",
+                    target_cell_id=target_cell_id,
+                )
                 _record_micro_failure(micro_stats, outline_node, exc)
                 _record_review_gap(micro_stats, cell_record, f"micro extraction failed: {type(exc).__name__}: {exc}")
                 continue
         else:
             formula_model = "deterministic-schedule-d-formula"
+        response_kind = formula_response_kind(plan)
+        _record_routing_agreement(
+            micro_stats,
+            outline_node,
+            response_kind,
+            target_cell_id=target_cell_id,
+        )
+        cell_record["response_kind"] = response_kind
+        if response_kind in {"form_line", "filer_entry", "information_return", "not_derivable"}:
+            _record_union_non_computation(
+                document,
+                outline_node,
+                plan,
+                node_spans,
+                line_index=line_index,
+                stats=micro_stats,
+                cell=cell_record,
+            )
+            continue
+        if response_kind not in {"computation", "election", "form_line", "filer_entry", "information_return", "not_derivable"}:
+            _record_review_gap(micro_stats, cell_record, "model returned an unknown response kind")
+            continue
         try:
             batch = assemble_formula_plan(
                 document,
@@ -224,6 +286,48 @@ def generate_outline_first_drafts(
                 _record_review_gap(micro_stats, cell_record, f"assembly failed: {type(exc).__name__}: {exc}")
                 continue
             raise
+        if response_kind == "election":
+            decisions = batch.items("decisions")
+            citations = {
+                ref
+                for decision in decisions
+                for ref in decision.data.get("citation_refs", [])
+            }
+            cell_record["status"] = "decision"
+            cell_record.pop("review_gap", None)
+            cell_record["has_decision"] = len(decisions) == 1
+            cell_record["has_verbatim_citation"] = bool(citations)
+            cell_record["has_form_face_citation"] = bool(citations)
+            cell_record["citation_refs"] = sorted(citations)
+            cell_record["decision_id"] = decisions[0].object_id if decisions else ""
+            micro_stats["outcome_counts"]["election"] += 1
+            micro_stats["outcomes"].append(
+                {
+                    "target_cell_id": target_cell_id,
+                    "line_anchor": str(outline_node.line_anchor or ""),
+                    "label": outline_node.label,
+                    "status": "outcome",
+                    "kind": "election",
+                    "question": str(plan.get("question") or ""),
+                    "quote": str(plan.get("quote") or ""),
+                    "citation_span_ids": sorted(citations),
+                }
+            )
+            micro_stats["decision_cells"].append(
+                {
+                    "target_cell_id": target_cell_id,
+                    "line_anchor": str(outline_node.line_anchor or ""),
+                    "status": "decision",
+                    "question": str(plan.get("question") or ""),
+                    "decision_id": cell_record["decision_id"],
+                }
+            )
+            objects.extend(
+                obj
+                for obj in batch.objects
+                if obj.kind in {"citations", "decisions"}
+            )
+            continue
         rules = batch.items("rules")
         citations = {ref for rule in rules for ref in rule.data.get("citation_refs", [])}
         cell_record["has_expression"] = bool(rules)
@@ -255,7 +359,13 @@ def generate_outline_first_drafts(
                 )
             )
         )
-    if document.document_id in NON_FORMULA_REVIEW_DOCUMENTS:
+    routing = micro_stats["routing_agreement"]
+    routing["classified_lines"] = sum(
+        int(quadrant["count"])
+        for quadrant in routing["quadrants"].values()
+    )
+    routing["addressable_lines"] = routing["classified_lines"] + len(routing["unclassified"])
+    if document.document_id in NON_FORMULA_REVIEW_DOCUMENTS and legacy_fixture:
         _extract_non_formula_cells(
             document,
             outline.children,
@@ -494,12 +604,153 @@ def _canonical_external_source_id(
 
 
 def _formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
+    """Return the historical cue-admitted nodes for compatibility measurement."""
     selected: list[OutlineNode] = []
     for node in nodes:
         if _is_formula_node(node):
             selected.append(node)
         selected.extend(_formula_outline_nodes(node.children))
     return selected
+
+
+def _model_formula_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
+    """Return every addressable line sent to the model-owned union."""
+    selected: list[OutlineNode] = []
+    for node in nodes:
+        if (
+            node.line_anchor
+            and _addressable_anchor(str(node.line_anchor))
+            and node.kind in {"line", "totals"}
+        ) or (
+            node.kind == "transaction_table"
+            and node.line_anchor
+            and _addressable_anchor(str(node.line_anchor))
+            and "h" in node.columns
+        ):
+            selected.append(node)
+        selected.extend(_model_formula_outline_nodes(node.children))
+    return selected
+
+
+def _uses_legacy_line_wrappers(document: SourceDocumentInput) -> bool:
+    """Identify synthetic pre-S111 line wrappers used only by old fixtures."""
+    return bool(re.search(r"(?m)^-\s+[0-9]+[a-z]?:", document.text, re.IGNORECASE))
+
+
+def _record_routing_agreement(
+    stats: dict[str, Any],
+    node: OutlineNode,
+    response_kind: str,
+    *,
+    target_cell_id: str | None = None,
+) -> None:
+    """Record the cue matcher versus model kind in all four quadrants."""
+    legacy = _formula_selector_decision(node, widened=True)
+    if response_kind not in {"computation", "form_line", "filer_entry", "election", "information_return", "not_derivable"}:
+        stats["routing_agreement"]["unclassified"].append(
+            {
+                "line_anchor": str(node.line_anchor or ""),
+                "target_cell_id": target_cell_id or node.outline_id,
+                "legacy_selector_admits": bool(legacy["admitted"]),
+                "response_kind": response_kind,
+            }
+        )
+        return
+    model_computation = response_kind == "computation"
+    if legacy["admitted"] and model_computation:
+        bucket = "matcher_admitted_model_computation"
+    elif legacy["admitted"]:
+        bucket = "matcher_admitted_model_non_computation"
+    elif model_computation:
+        bucket = "matcher_skipped_model_computation"
+    else:
+        bucket = "matcher_skipped_model_non_computation"
+    entry = {
+        "line_anchor": str(node.line_anchor or ""),
+        "target_cell_id": target_cell_id or node.outline_id,
+        "legacy_selector_cue": legacy["cue"],
+        "response_kind": response_kind,
+    }
+    quadrant = stats["routing_agreement"]["quadrants"][bucket]
+    quadrant["count"] += 1
+    quadrant["cells"].append(entry)
+
+
+def _record_union_non_computation(
+    document: SourceDocumentInput,
+    node: OutlineNode,
+    plan: dict[str, Any],
+    spans: list[CandidateSpan],
+    *,
+    line_index: dict[tuple[str, str], str],
+    stats: dict[str, Any],
+    cell: dict[str, Any],
+) -> None:
+    """Record a grounded non-computation outcome without making it a gap."""
+    kind = formula_response_kind(plan)
+    quote = str(plan.get("quote") or "")
+    citation_span_ids = [span.span_id for span in spans if _quote_matches(quote, span.text)][:1]
+    cell["citation_span_ids"] = citation_span_ids
+    cell["has_verbatim_citation"] = bool(citation_span_ids)
+    cell["has_form_face_citation"] = any(
+        span.relationship == "source"
+        for span in spans
+        if span.span_id in citation_span_ids
+    )
+
+    outcome = {
+        "target_cell_id": cell["target_cell_id"],
+        "line_anchor": cell["line_anchor"],
+        "label": cell["label"],
+        "status": "outcome",
+        "kind": kind,
+        "form": str(plan.get("form") or ""),
+        "line": "",
+        "box": str(plan.get("box") or ""),
+        "question": str(plan.get("question") or ""),
+        "reason": str(plan.get("reason") or ""),
+        "quote": quote,
+        "citation_span_ids": citation_span_ids,
+        "has_form_face_citation": cell["has_form_face_citation"],
+        "has_instruction_citation": any(
+            span.relationship != "source"
+            for span in spans
+            if span.span_id in citation_span_ids
+        ),
+    }
+    cell["status"] = "outcome"
+    cell.pop("review_gap", None)
+    cell["outcome_kind"] = kind
+    cell["has_expression"] = False
+    stats.setdefault("outcomes", []).append(outcome)
+    counters = stats.setdefault(
+        "outcome_counts",
+        {
+            "filer_entry": 0,
+            "election": 0,
+            "information_return": 0,
+            "not_derivable": 0,
+        },
+    )
+    if kind in counters:
+        counters[kind] += 1
+
+    # Keep an explicit source-resolution measurement for information returns
+    # and legacy form-line declarations, but do not turn a declined outcome
+    # into review_gaps. A resolver failure is an observation for this round.
+    if kind == "filer_entry":
+        outcome["resolved_source_id"] = "filer_entry"
+        return
+    if kind == "not_derivable":
+        return
+    record = dict(outcome)
+    record["status"] = "complete"
+    if kind in {"information_return", "form_line"}:
+        resolved = _resolve_declared_source(document, record, line_index=line_index)
+        record["resolved_source_id"] = resolved
+        if resolved:
+            stats.setdefault("resolved_source_addresses", []).append(cell["target_cell_id"])
+    stats.setdefault("non_formula_cells", []).append(record)
 
 
 def _is_formula_node(node: OutlineNode) -> bool:
