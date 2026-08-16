@@ -14,7 +14,7 @@ from typing import Any, Callable, Mapping
 from flask import Flask, jsonify, request, send_file
 
 from workbench.artifacts import ArtifactBundle, load_artifact_bundle
-from workbench.cell_inventory import build_document_cells, build_documents_index
+from workbench.cell_inventory import DocumentCells, build_document_cells, build_documents_index
 from workbench.generated_review import GENERATED_REVIEW_DOCUMENTS, build_generated_document_cells
 from workbench.manifest import build_manifest
 from workbench.navigation import build_document_navigation
@@ -289,15 +289,21 @@ def create_app(
             )
         return _documents
 
-    def _document_cells(document_id: str) -> list[dict[str, Any]]:
+    def _document_projection(document_id: str) -> DocumentCells:
         builder = build_generated_document_cells if document_id in GENERATED_REVIEW_DOCUMENTS else build_document_cells
-        cells = builder(
+        return builder(
             root_path,
             year,
             document_id,
             geometry_entries=_document_context()["geometry_entries"],
             page_geometry=_document_context()["page_geometry"],
-        ).cells
+        )
+
+    def _document_cells(document_id: str) -> list[dict[str, Any]]:
+        return _decorate_document_cells(document_id, _document_projection(document_id))
+
+    def _decorate_document_cells(document_id: str, projection: DocumentCells) -> list[dict[str, Any]]:
+        cells = projection.cells
         if document_id not in GENERATED_REVIEW_DOCUMENTS:
             return cells
         ledger_path = verdict_root / "address_verdicts.jsonl"
@@ -347,7 +353,8 @@ def create_app(
     def get_document_cells(document_id: str) -> Any:
         if document_id not in _document_context()["valid_document_ids"]:
             return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
-        cells = _document_cells(document_id)
+        projection = _document_projection(document_id)
+        cells = _decorate_document_cells(document_id, projection)
         return jsonify({
             "tax_year": int(year),
             "manifest_hash": review_manifest["manifest_hash"],
@@ -363,6 +370,8 @@ def create_app(
                 include_inputs=False,
             ).page_geometry,
             "cells": cells,
+            "unplaceable": projection.unplaceable,
+            "unplaceable_count": len(projection.unplaceable),
         })
 
     @app.get("/api/documents/<document_id>/session")

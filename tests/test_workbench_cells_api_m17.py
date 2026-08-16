@@ -57,6 +57,35 @@ def test_documents_api_lists_forms(client) -> None:
 
 
 @pytest.mark.m17
+def test_generated_documents_open_and_report_unplaceable_rows(client) -> None:
+    response = client.get("/api/documents")
+    assert response.status_code == 200, response.get_data(as_text=True)
+    payload = response.get_json()
+    documents = {item["document_id"]: item for item in payload["documents"]}
+    expected = {"form_1040_2025", "schedule_1_2025", "schedule_a_2025"}
+    assert expected <= documents.keys()
+    assert all("unplaceable_count" in documents[document_id] for document_id in expected)
+
+    schedule_a = client.get("/api/documents/schedule_a_2025/cells")
+    assert schedule_a.status_code == 200, schedule_a.get_data(as_text=True)
+    schedule_a_payload = schedule_a.get_json()
+    assert any(
+        cell.get("control_role") == "checkbox"
+        and decision["question"].startswith("Do you elect to deduct")
+        and decision["anchor"] == "5a"
+        for cell in schedule_a_payload["cells"]
+        for decision in cell.get("decisions", [])
+    )
+    for document_id in expected:
+        document_cells = client.get(f"/api/documents/{document_id}/cells")
+        assert document_cells.status_code == 200, document_cells.get_data(as_text=True)
+        assert all(
+            row["label"] and row["kind"] and row["reason"]
+            for row in document_cells.get_json().get("unplaceable", [])
+        )
+
+
+@pytest.mark.m17
 def test_document_cells_api_returns_ordered_cells(client) -> None:
     response = client.get("/api/documents/form_1040_2025/cells")
     assert response.status_code == 200

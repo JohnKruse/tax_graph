@@ -60,6 +60,7 @@ function updateDashboard() {
     ? `${total} cells | page ${activePage ?? "-"} of ${activeDocument.pages.join(", ")}` +
     (policySummary(activeDocument.policy_counts) ? ` | ${policySummary(activeDocument.policy_counts)}` : "")
       + (citationSummary(activeDocument.citation_counts) ? ` | ${citationSummary(activeDocument.citation_counts)}` : "")
+      + (activeDocument.unplaceable?.length ? ` | ${activeDocument.unplaceable.length} unplaceable draft rows` : "")
     : "Your review progress stays local and resumable.";
   document.querySelector("#approved-count").textContent = `${approved} / ${total}`;
   document.querySelector("#approval-bar").style.width = total ? `${approved / total * 100}%` : "0%";
@@ -72,7 +73,8 @@ function renderDocumentList(payload) {
   list.replaceChildren();
   document.querySelector("#queue-count").textContent = `${payload.documents.length} forms`;
   document.querySelector("#progress").textContent =
-    `${payload.documents.length} forms | ${payload.documents.reduce((sum, item) => sum + item.cell_count, 0)} cells`;
+    `${payload.documents.length} forms | ${payload.documents.reduce((sum, item) => sum + item.cell_count, 0)} cells` +
+    ` | ${payload.documents.reduce((sum, item) => sum + (item.unplaceable_count || 0), 0)} unplaceable draft rows`;
   for (const documentItem of payload.documents) {
     const button = document.createElement("button");
     button.type = "button";
@@ -81,6 +83,7 @@ function renderDocumentList(payload) {
     button.innerHTML =
       `<strong>${documentItem.title}</strong>` +
       `<small>${documentItem.cell_count} cells | pages ${documentItem.pages.join(", ")}</small>` +
+      `<small>${documentItem.unplaceable_count || 0} unplaceable draft rows</small>` +
       `<small class="document-policy-counts">${policySummary(documentItem.policy_counts)}</small>` +
       `<small class="document-citation-counts">${citationSummary(documentItem.citation_counts)}</small>`;
     button.addEventListener("click", () => selectDocument(documentItem, button));
@@ -108,6 +111,7 @@ async function selectDocument(documentItem, button) {
     pages: cellsPayload.pages,
     page_geometry: cellsPayload.page_geometry || documentItem.page_geometry || [],
     cells: cellsPayload.cells,
+    unplaceable: cellsPayload.unplaceable || [],
     policy_counts: documentItem.policy_counts || {},
     citation_counts: documentItem.citation_counts || {},
   };

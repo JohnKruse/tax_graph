@@ -50,6 +50,7 @@ class DocumentCells:
     cells: list[dict[str, Any]]
     pages: list[int] = dataclass_field(default_factory=list)
     page_geometry: list[dict[str, Any]] = dataclass_field(default_factory=list)
+    unplaceable: list[dict[str, Any]] = dataclass_field(default_factory=list)
 
 
 def build_document_cells(
@@ -346,6 +347,7 @@ def build_documents_index(
                 "page_geometry": built.page_geometry,
                 "cell_count": len(built.cells),
                 "review_mode": "generated_draft" if document_id in generated_documents else "live_projection",
+                "unplaceable_count": len(built.unplaceable),
                 "policy_counts": dict(sorted(
                     Counter(cell.get("population_policy") or "unknown" for cell in built.cells).items()
                 )),

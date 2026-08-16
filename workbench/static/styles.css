@@ -177,6 +177,11 @@ h1, h2, h3, p { margin-top: 0; }
 .river-detail { flex: 1 1 67%; min-height: 0; max-height: none; overflow: auto; padding: 12px; }
 .river-empty { margin: 8px 0; color: var(--muted); font-size: 11px; }
 .river-page-divider { position: sticky; top: -10px; margin: 6px 0 4px; padding: 3px 6px; color: var(--gold); background: #12252b; border-radius: 3px; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.unplaceable-review { margin: 0 0 10px; padding: 9px; border: 1px solid #d8a44a; border-radius: 6px; background: #fff8e8; color: var(--ink); font-size: 10px; line-height: 1.35; }
+.unplaceable-review h3 { margin: 0 0 4px; font-size: 11px; }
+.unplaceable-review > p { margin: 0 0 7px; color: var(--muted); }
+.unplaceable-row { margin-top: 7px; padding-top: 7px; border-top: 1px solid #ecd39d; }
+.unplaceable-row p { margin: 3px 0 0; }
 .unit-policy-facets { display: grid; gap: 3px; margin: 0 0 7px; color: var(--muted); font-size: 10px; line-height: 1.3; }
 .unit-policy-facets strong { color: var(--ink); }
 .unit-policy-facets.policy-unsupported span:last-child { color: var(--coverage-gap); font-weight: 700; }
@@ -192,6 +197,10 @@ h1, h2, h3, p { margin-top: 0; }
 .cell-computation { margin-top: 8px; padding: 8px 10px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 4px; }
 .cell-computation ul { margin: 4px 0; padding-left: 18px; }
 .generated-expression { border-color: #84aaa4; }
+.generated-decisions { margin-bottom: 8px; padding: 7px; border: 1px solid #d8a44a; border-radius: 4px; background: #fff8e8; }
+.generated-decision + .generated-decision { margin-top: 7px; padding-top: 7px; border-top: 1px solid #ecd39d; }
+.generated-decision p { margin: 4px 0; }
+.generated-decision ul { margin: 4px 0 0 18px; padding: 0; }
 .session-review { border-color: #84aaa4; }
 .session-review label { display: grid; gap: 4px; margin-top: 7px; color: var(--muted); font-size: 10px; font-weight: 700; }
 .session-review textarea { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: #fff; font: inherit; font-weight: 400; }

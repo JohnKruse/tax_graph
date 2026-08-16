@@ -59,12 +59,21 @@ def build_generated_document_cells(
 
     rules = _records(draft.get("rules"))
     edges = _records(draft.get("edges"))
+    decisions = _records(draft.get("decisions"))
     citations = _citation_index(draft.get("citations"))
     spans = _span_index(draft.get("candidate_spans"))
     background = _background_index(micro)
     instruction_ids_by_line = _instruction_span_index(spans)
     provenance = _provenance(draft.get("metrics"))
     cells_by_anchor = _cells_by_anchor(base.cells)
+    decision_cells, unplaceable = _project_decisions(
+        decisions,
+        micro,
+        cells_by_anchor,
+        document_id=document_id,
+        provenance=provenance,
+    )
+    decision_ids = {str(item.get("decision_id") or "") for item in decisions}
     generated_by_cell_id: dict[str, dict[str, Any]] = {}
     for formula in records:
         anchor = _normalize_anchor(formula.get("line_anchor"))
@@ -80,7 +89,17 @@ def build_generated_document_cells(
                 or marker.search(str(item.get("geometry_label") or ""))
             ]
         if not matches:
-            raise ValueError(f"generated line has no physical cell: {document_id}:{anchor}")
+            if str(formula.get("decision_id") or "") in decision_ids:
+                continue
+            unplaceable.append(
+                _unplaceable_record(
+                    document_id,
+                    formula,
+                    reason="no physical cell matches the generated line anchor",
+                    provenance=provenance,
+                )
+            )
+            continue
         target = str(formula.get("target_cell_id") or "")
         base_cell = _choose_cell(matches, target)
         target_rules = [
@@ -196,6 +215,7 @@ def build_generated_document_cells(
                 "policy_defaulted": False if formula_resolved else _policy_bool(background_record, "policy_defaulted"),
                 "policy_derived": True if formula_resolved else _policy_bool(background_record, "policy_derived"),
                 "failover_class": None if formula_resolved else _background_value(background_record, "failover_class"),
+                "decisions": [],
             }
         )
         if not formula_resolved:
@@ -219,6 +239,9 @@ def build_generated_document_cells(
 
     if len(generated_by_cell_id) != expected_count:
         raise ValueError(f"generated draft cells were not projected: {document_id}")
+    for cell_id, decisions_for_cell in decision_cells.items():
+        if cell_id in generated_by_cell_id:
+            generated_by_cell_id[cell_id]["decisions"] = decisions_for_cell
     generated = list(generated_by_cell_id.values())
     generated.sort(key=lambda item: (int(item.get("order", 0)), str(item.get("cell_id"))))
     return DocumentCells(
@@ -226,6 +249,7 @@ def build_generated_document_cells(
         cells=generated,
         pages=base.pages,
         page_geometry=base.page_geometry,
+        unplaceable=unplaceable,
     )
 
 
@@ -238,6 +262,7 @@ def _load_draft(root: Path, year: str | int, document_id: str) -> dict[str, Any]
         "outline": _yaml(draft_dir / "outline.yaml", {}),
         "rules": _yaml(draft_dir / "rules.yaml", []),
         "edges": _yaml(draft_dir / "edges.yaml", []),
+        "decisions": _yaml(draft_dir / "decisions.yaml", []),
         "citations": _yaml(draft_dir / "citations.yaml", []),
         "candidate_spans": _yaml(draft_dir / "candidate_spans.yaml", []),
         "metrics": _yaml(draft_dir / "metrics.yaml", {}),
@@ -334,6 +359,210 @@ def _cells_by_anchor(cells: list[dict[str, Any]]) -> dict[str, list[dict[str, An
         if anchor:
             result.setdefault(anchor, []).append(cell)
     return result
+
+
+def _project_decisions(
+    decisions: list[dict[str, Any]],
+    micro: Any,
+    cells_by_anchor: dict[str, list[dict[str, Any]]],
+    *,
+    document_id: str,
+    provenance: dict[str, str],
+) -> tuple[dict[str, list[dict[str, Any]]], list[dict[str, Any]]]:
+    """Project generated elections onto physical cells or a visible form row."""
+    metadata = _decision_metadata(micro)
+    placed: list[tuple[str, bool, dict[str, Any]]] = []
+    unplaceable: list[dict[str, Any]] = []
+    for decision in decisions:
+        decision_id = str(decision.get("decision_id") or "")
+        meta = metadata.get(decision_id, {})
+        original_anchor = _decision_anchor(decision, meta)
+        matches = cells_by_anchor.get(original_anchor, [])
+        placed_on_original = bool(matches)
+        anchor = original_anchor
+        anchor_source = "line"
+        if not matches:
+            for candidate in _decision_subline_candidates(decision, original_anchor):
+                candidate_matches = cells_by_anchor.get(candidate, [])
+                if candidate_matches:
+                    matches = candidate_matches
+                    anchor = candidate
+                    anchor_source = "question_or_options"
+                    break
+        if not matches:
+            unplaceable.append(
+                _unplaceable_record(
+                    document_id,
+                    {
+                        "target_cell_id": meta.get("target_cell_id") or decision.get("sets_node"),
+                        "line_anchor": original_anchor,
+                        "label": meta.get("label") or decision.get("question") or original_anchor,
+                        "response_kind": "election",
+                        "question": decision.get("question"),
+                        "decision_id": decision_id,
+                    },
+                    reason=(
+                        "no physical cell matches the generated line and no concrete "
+                        "sub-line named by the question or options has a physical cell"
+                    ),
+                    provenance=provenance,
+                    decision=decision,
+                )
+            )
+            continue
+        cell = _choose_decision_cell(matches, str(meta.get("target_cell_id") or decision.get("sets_node") or ""))
+        placed.append(
+            (
+                str(cell.get("cell_id") or ""),
+                placed_on_original,
+                {
+                    "decision_id": decision_id,
+                    "question": " ".join(str(decision.get("question") or "").split()),
+                    "options": [dict(item) for item in decision.get("options", []) if isinstance(item, dict)],
+                    "citation_refs": [str(item) for item in decision.get("citation_refs", []) or []],
+                    "target_cell_id": str(meta.get("target_cell_id") or decision.get("sets_node") or ""),
+                    "line_anchor": original_anchor,
+                    "anchor": anchor,
+                    "anchor_source": anchor_source,
+                    "generated": True,
+                    "review_source": "draft_only",
+                    "generated_model": provenance["model"],
+                    "generated_provider": provenance["provider"],
+                },
+            )
+        )
+
+    placed.sort(key=lambda item: (not item[1], item[0], item[2]["decision_id"]))
+    by_cell: dict[str, list[dict[str, Any]]] = {}
+    for cell_id, _placed_on_original, projection in placed:
+        existing = by_cell.setdefault(cell_id, [])
+        if any(_decisions_equivalent(item, projection) for item in existing):
+            continue
+        existing.append(projection)
+    return by_cell, unplaceable
+
+
+def _decision_metadata(micro: Any) -> dict[str, dict[str, Any]]:
+    if not isinstance(micro, dict):
+        return {}
+    result: dict[str, dict[str, Any]] = {}
+    for key in ("decision_cells", "outcomes"):
+        for item in micro.get(key, []) or []:
+            if not isinstance(item, dict) or not item.get("decision_id"):
+                continue
+            result.setdefault(str(item["decision_id"]), dict(item))
+    return result
+
+
+def _decision_anchor(decision: dict[str, Any], metadata: dict[str, Any]) -> str:
+    for value in (
+        metadata.get("line_anchor"),
+        decision.get("sets_node"),
+        decision.get("decision_id"),
+    ):
+        match = re.search(r"(?:^|_)line_([0-9]+[a-z]?)$", str(value or "").lower())
+        if match:
+            return _normalize_anchor(match.group(1))
+        match = re.search(r"_([0-9]+[a-z]?)_filer_election$", str(value or "").lower())
+        if match:
+            return _normalize_anchor(match.group(1))
+    return ""
+
+
+def _decision_subline_candidates(decision: dict[str, Any], original_anchor: str) -> list[str]:
+    texts = [str(decision.get("question") or "")]
+    texts.extend(
+        str(value)
+        for option in decision.get("options", []) or []
+        if isinstance(option, dict)
+        for value in (option.get("label"), option.get("downstream_effect"))
+        if value
+    )
+    result: list[str] = []
+    for text in texts:
+        for match in re.finditer(r"(?<![0-9])[0-9]{1,2}[a-z](?![a-z0-9])", text, re.IGNORECASE):
+            anchor = _normalize_anchor(match.group(0))
+            if anchor != original_anchor and anchor not in result:
+                result.append(anchor)
+    return result
+
+
+def _choose_decision_cell(matches: list[dict[str, Any]], target: str) -> dict[str, Any]:
+    exact = [item for item in matches if str(item.get("node_id") or "") == target]
+    if exact:
+        return exact[0]
+    checkbox = [
+        item for item in matches
+        if str(item.get("control_role") or "").lower() == "checkbox"
+        or str(item.get("address_id") or "").endswith("/control=checkbox")
+    ]
+    return checkbox[0] if checkbox else matches[0]
+
+
+def _decisions_equivalent(left: dict[str, Any], right: dict[str, Any]) -> bool:
+    left_question = _question_key(left.get("question"))
+    right_question = _question_key(right.get("question"))
+    if left_question and left_question == right_question:
+        return True
+    return bool(_choice_topics(left) and _choice_topics(left) == _choice_topics(right))
+
+
+def _question_key(value: Any) -> str:
+    return " ".join(
+        token
+        for token in re.findall(r"[a-z0-9]+", str(value or "").lower())
+        if not re.fullmatch(r"[0-9]+[a-z]?", token)
+    )
+
+
+def _choice_topics(decision: dict[str, Any]) -> frozenset[str]:
+    topics: set[str] = set()
+    for option in decision.get("options", []) or []:
+        if not isinstance(option, dict) or option.get("option_type") != "choice":
+            continue
+        text = " ".join(
+            str(value)
+            for value in (option.get("label"), option.get("downstream_effect"))
+            if value
+        ).lower()
+        if "income tax" in text or "income taxes" in text:
+            topics.add("income_taxes")
+        if "general sales tax" in text or "general sales taxes" in text:
+            topics.add("general_sales_taxes")
+    return frozenset(topics)
+
+
+def _unplaceable_record(
+    document_id: str,
+    record: dict[str, Any],
+    *,
+    reason: str,
+    provenance: dict[str, str],
+    decision: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    anchor = _normalize_anchor(record.get("line_anchor"))
+    question = " ".join(str(record.get("question") or "").split())
+    label = " ".join(str(record.get("label") or "").split()) or question or anchor or "Unplaceable generated row"
+    kind = str(record.get("response_kind") or record.get("kind") or record.get("source_kind") or "generated")
+    return {
+        "row_id": f"unplaceable_{document_id}_{anchor or 'form_level'}_{kind}",
+        "document_id": document_id,
+        "target_cell_id": str(record.get("target_cell_id") or ""),
+        "line_anchor": anchor,
+        "label": label,
+        "kind": kind,
+        "reason": reason,
+        "question": question,
+        "decision_id": str(record.get("decision_id") or ""),
+        "decision": dict(decision) if decision else None,
+        "placement": "form_level",
+        "unplaceable": True,
+        "generated": True,
+        "review_source": "draft_only",
+        "generated_model": provenance["model"],
+        "generated_provider": provenance["provider"],
+        "generated_provenance": dict(provenance),
+    }
 
 
 def _choose_cell(matches: list[dict[str, Any]], target: str) -> dict[str, Any]:

@@ -236,6 +236,35 @@ actually needed.
 **recorded for John's adjudication, not fixed here.** The variant picker and voting UI. The 88
 outline-index gaps.
 
+**WORKER STATUS - S114 IMPLEMENTED, AWAITING ARCHITECT ACCEPTANCE (2026-08-16).** The generated
+review projection now degrades unmatched draft rows into a separate `unplaceable` document-level
+list with label, kind, reason, provenance, and no invented geometry. Elections first try their
+line, then a concrete sub-line named in the question/options; Schedule A line 5 resolves to the
+real line 5a checkbox. Equivalent elections on one cell are deduplicated, preferring the decision
+whose own line has a physical cell. The API reports `unplaceable_count` per document and the river
+renders form-level rows without changing the physical-cell denominator. No response schema, prompt,
+model call, or promoted artifact changed.
+
+Pre-fix proof: `python -m pytest tests/test_workbench_cells_api_m17.py::test_generated_documents_open_and_report_unplaceable_rows -q`
+-> **1 failed in 69.80s**, `ValueError: generated line has no physical cell: schedule_a_2025:5`.
+Live floor: `/api/documents` -> **status=200, bytes=9532**; current projection is
+`form_1040_2025` 199 cells / 0 unplaceable, `schedule_1_2025` 73 / 0, `schedule_a_2025` 33 / 2;
+Schedule A carries one SALT decision on the line 5a checkbox.
+
+Test evidence:
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_m20_s114.py -q -> 2 passed`.
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py::test_generated_documents_open_and_report_unplaceable_rows -q -> 1 passed in 83.57s`.
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_server_m15.py tests/test_m20_s114.py -q -> 8 passed in 60.04s`.
+- `RAN: .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_m17.py -q -> 11 passed in 19.74s`.
+- `RAN: .venv\Scripts\python.exe pilot/replay_harness.py -> replay cases=25 mismatches=0 network_calls=0`.
+- `RAN: .venv\Scripts\python.exe tools/check_ascii.py -> ASCII check OK`; `git diff --check -> clean`.
+- `NOT RUN: tests/test_workbench_m15.py -> file is absent; nearest existing consumer guard is tests/test_workbench_server_m15.py`.
+
+The combined legacy generated-review/API command remains **3 failed, 10 passed** on the current
+drafts for the pre-existing 1i instruction citation, 1a W-2 source rendering, and 1040 policy
+histogram expectations. Those guards were not changed or re-baselined. Corpus untouched; no
+derivation run requested.
+
 ## Open for Architect
 
 **S109 IS REVERTED (John's call, 2026-08-16). DERIVATION IS BACK AT BASELINE.**

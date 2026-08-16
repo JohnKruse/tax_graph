@@ -199,9 +199,37 @@ function generatedExpressionMarkup(cell) {
       escapeHtml(item.label || item.text || item.ref?.display_label || "unresolved source")
     ).join(", ")}</p>`
     : "";
-  return `<p class="rendered-expression"><strong>Expression:</strong> ${authored(expression.text || expression.description || cell.review_gap || "")}</p>` +
+  const decisions = Array.isArray(cell.decisions) ? cell.decisions : [];
+  const decisionMarkup = decisions.length
+    ? `<section class="generated-decisions"><strong>Filer decision:</strong>` +
+      decisions.map((decision) => `<article class="generated-decision">` +
+        `<p>${escapeHtml(decision.question || "Generated election")}</p>` +
+        (Array.isArray(decision.options) && decision.options.length
+          ? `<ul>${decision.options.map((option) => `<li>${escapeHtml(option.label || option.option_id || "Option")}</li>`).join("")}</ul>`
+          : "") +
+        `</article>`).join("") +
+      `</section>`
+    : "";
+  return decisionMarkup +
+    `<p class="rendered-expression"><strong>Expression:</strong> ${authored(expression.text || expression.description || cell.review_gap || "")}</p>` +
     `<p><strong>Risk:</strong> ${escapeHtml(RISK_LABEL[cell.risk_bucket] || cell.risk_bucket || "Review gap")}</p>` +
     sourceMarkup;
+}
+
+function unplaceableMarkup(rows) {
+  if (!rows.length) return "";
+  return `<section class="unplaceable-review" aria-label="Unplaceable generated rows">` +
+    `<h3>Unplaceable generated rows (${rows.length})</h3>` +
+    `<p>These draft rows remain visible for review but have no physical form geometry.</p>` +
+    rows.map((row) =>
+      `<article class="unplaceable-row">` +
+      `<strong>${escapeHtml(row.label || row.line_anchor || "Unplaceable generated row")}</strong>` +
+      `<p><b>Kind:</b> ${escapeHtml(row.kind || "generated")}</p>` +
+      `<p><b>Reason:</b> ${escapeHtml(row.reason || "No placement reason recorded")}</p>` +
+      (row.question ? `<p><b>Question:</b> ${escapeHtml(row.question)}</p>` : "") +
+      `</article>`
+    ).join("") +
+    `</section>`;
 }
 
 function reviewCommentsMarkup(cell) {
@@ -425,9 +453,11 @@ export function renderReviewRiver(drawer, documentModel, session, onReviewChange
   const progress = drawer.querySelector("#river-progress");
   river.replaceChildren();
   const cells = documentModel?.cells || [];
+  const unplaceable = documentModel?.unplaceable || [];
   const approved = cells.filter((cell) => reviewFor(cell, session).status === "approved").length;
   progress.textContent = `${approved} / ${cells.length}`;
-  if (!cells.length) {
+  if (unplaceable.length) river.insertAdjacentHTML("beforeend", unplaceableMarkup(unplaceable));
+  if (!cells.length && !unplaceable.length) {
     river.innerHTML = '<p class="river-empty">No cells on this form.</p>';
     return;
   }
