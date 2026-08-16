@@ -21,17 +21,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S110 is specced below - the escape hatch and the filer election, ONE round.**
+**BALL: CODEX. M20-S111 is specced below - THE MODEL PICKS THE PATH.**
+**S110 IS WITHDRAWN AND MUST BE STOPPED IF RUNNING.** Its escape hatch patched a classifier that
+S111 removes from the decision entirely. **Its decision-object requirement SURVIVES** and is carried
+into S111 item 1 as the `election` branch.
 **The Worker needs NO live model call; the Architect runs re-derivation and reports the numbers.**
 
-**S109 IS REVERTED (`db4df3e`, John's call, 2026-08-16).** Two passes both wrecked derivation. The
-tree is back at **rules 108 / gaps 33**, inside the 107-109 / 32-34 baseline. **Arity-by-role is
-still the right model and is NOT to be retried until there is an end-to-end regression signal.**
+**S109 IS REVERTED (`db4df3e`).** Tree is at **rules 108 / gaps 33**, inside the 107-109 / 32-34
+baseline. **Arity-by-role is not to be retried until there is an end-to-end regression signal.**
 
-**READ THIS BEFORE TOUCHING THE RESPONSE SCHEMA.** Four schema changes this phase; three of them
-took derivation to a fraction of baseline **while passing their targeted tests** (67, 90, 91
-passed). **A green test run is not evidence for a schema change.** A corpus re-derive costs
-**$0.046 and twelve minutes** and is the only thing that has ever caught this class.
+**READ THIS BEFORE TOUCHING THE RESPONSE SCHEMA.** Four schema changes this phase; three took
+derivation to a fraction of baseline **while passing their targeted tests** (67, 90, 91 passed).
+**A green test run is not evidence for a schema change.** A corpus re-derive costs **$0.046 and
+twelve minutes** and is the only thing that has ever caught this class.
 
 **M20-S108 IS ACCEPTED** (`c2dc0d8` + `e2d0180` + `4377c30` + `7bfb9e8` + `7580a4d` + `b96fc59`,
 Architect, 2026-08-15). `extract --year` completes all 17 documents; `accepted` moved 0 -> ~1670;
@@ -138,82 +140,91 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S110 SPECCED BY ARCHITECT (2026-08-16). A FORMULA CELL CAN SAY "I AM NOT A COMPUTATION", AND
-DERIVATION CAN EMIT A FILER ELECTION.** **REAL ROUND** - graph writes.
-**THIS ROUND CHANGES THE RESPONSE SCHEMA. READ THE WARNING BELOW BEFORE STARTING.**
+**M20-S111 SPECCED BY ARCHITECT (2026-08-16). THE MODEL PICKS THE PATH. THE CUE MATCHER STOPS
+DECIDING.** **REAL ROUND** - graph writes. **REPLACES S110, which was a patch on a classifier that
+should not be making the call.** **THIS CHANGES THE RESPONSE SCHEMA - READ THE WARNING.**
 
-**THE EVIDENCE, OPENED END TO END PER THE HARD RULE.** `form_1040` line 36 prints *"Amount of line
-34 you want applied to your 2026 estimated tax"*. It receives the correct face, the correct
-instruction section, and answers **`COPY` of line 34 - three times out of three, and again three
-times out of three at `reasoning_effort: high`.** All six were **`accepted: True`**. `35a` behaves
-identically. **The validator, the tiering, and the whole suite are blind to it; only
-`pilot/face_lint.py` notices.**
+**JOHN'S CALL, 2026-08-16:** *"Why are we constantly trying to be deterministic... You keep telling
+me the model is making good choices given the evidence and prompt we provide. Why don't we just fix
+that instead of ever more baroque decisions?"*
 
-**THE MODEL IS NOT WRONG - THE QUESTION IS.** `_formula_prompt` asks *"Which printed lines does this
-line use, and what operation combines them?"* Line 36 **does** use line 34, as a bound, and given an
-arithmetic vocabulary `COPY` is the most defensible answer available. **There is no way to reply
-"this is not a computation."** `REQUIRE_INPUT` exists but lives on the OTHER prompt path
-(`_non_formula_prompt`); once `_formula_outline_nodes` classifies a line as a formula, the pipeline
-has committed to it being arithmetic. **More thinking cannot fix a presupposed question.**
+**THE EVIDENCE FOR IT IS ONE-SIDED.** Per cell the AI makes exactly ONE decision - the answer.
+Routing, packet assembly, instruction attachment, operand resolution, arity validation and
+accept/review are all deterministic. **Every catastrophic failure this phase came from the
+deterministic half**: the packet builder zeroed derivation for two weeks (`4990f20`); the arity/role
+contract zeroed it twice (S109, reverted at `db4df3e`); a schema shape zeroed it once (S108 item 1);
+the cue matcher misroutes elections. **In every failure opened end to end, the model's answer was
+correct** - `form_1040` 11a, `schedule_2` 1z, `form_6251` 13 and 18, `form_2441` 15, and even
+`form_1040` 36, which gave the right answer to the wrong question.
 
-**THE POPULATION IS EXACTLY 2 OF 141 FORMULA-ROUTED CELLS**, corpus-wide: `form_1040` 35a and 36.
-**Do not go looking for more; the round is about the missing CONCEPT, not the count.** The two
-jointly partition the line 34 overpayment, which is why they are the right first pair.
+**THE ROUTING DEFECT, CONCRETELY.** `_formula_selector_decision` admits a line when its lowercased
+label contains a phrase from `_LEGACY_FORMULA_CUES` / `_WIDENED_FORMULA_CUES`. `form_1040` 36 reads
+*"Amount of line 34 you want applied to your 2026 estimated tax"*, which contains **`"amount of
+line"`**, so it was routed to `_formula_prompt` and asked what operation combines which lines.
+**No model decided it was a computation; a substring did, before any call was made.** The phrase is
+irreducibly ambiguous - *"Enter the amount of line 34"* IS a copy - so **the matcher cannot be fixed
+by adding or tuning cues.**
 
-**ITEM 1 - THE ESCAPE HATCH.** A formula response may answer that the line is not a computation,
-with a reason. Such a cell is **routed to the non-formula path instead of being forced into
-arithmetic**, and **no rule or edge is minted for it.** **A cell that takes the hatch is NOT a gap
-and NOT a failure** - it is a correct classification and must be reported separately from
-`review_gaps`.
+**COST IS NO LONGER AN ARGUMENT FOR THE GATE.** The matcher exists so we call on 141 lines rather
+than all ~790 outline labels. A corpus run is **159 calls / $0.046**; asking on every addressable
+line is roughly 5x, about **$0.25 a run.**
 
-**ITEM 2 - DERIVATION CAN EMIT AN ELECTION.** The output shape ALREADY EXISTS and must be reused,
-not redesigned: `graph/2025/decisions/tax-liability.yaml`, `decision_1040_deduction_method`, carries
-`decision_id`, `sets_node`, `question`, `citation_refs`, and `options[]` where each option has
-`option_id`, `label`, `option_type`, `sets`, `downstream_effect` and its own `citation_refs`.
-**Today there is exactly ONE such object and it was hand-authored in M11.** Derivation has never
-produced one.
-- **The `question` and every `option` MUST carry `citation_refs` to the printed text that
-  establishes the election.** Same provenance discipline as every other generated object.
-- **An `option_type: escalate` option is MANDATORY on every emitted decision.** The MCP contract
-  requires presenting the escape hatch and never choosing for the filer; a decision without one is
-  a defect, not a style choice.
-- **Decision objects already route to human review unconditionally** (`route.py`, *"decision objects
-  always require human review"*). That is correct and must not be weakened to make a count look
-  better.
+**ITEM 1 - ONE PROMPT, A DISCRIMINATED UNION.** One call per addressable line returns a `kind` plus
+the fields that kind requires:
+- **`computation`** - `operation`, `source_lines`, `quote`
+- **`filer_entry`** - `quote`
+- **`election`** - `question`, `options[]`, `quote` (each option carrying `label`,
+  `downstream_effect`, `citation_refs`; **an `escalate` option is MANDATORY**, per the MCP contract
+  that the agent presents the choice and never makes it)
+- **`information_return`** - `form`, `box`, `quote`
+- **`not_derivable`** - `reason`, `quote`
 
-**WARNING - THIS IS THE FOURTH SCHEMA CHANGE IN THIS PHASE AND THE PREVIOUS THREE ALL BROKE
-DERIVATION WHILE PASSING THEIR TESTS.** S108 item 1 (67 passed, rules -> 0), S109 (90 passed, rules
-107-109 -> 16-19), the S109 fix (91 passed, rules -> 43-44). **`tests/` validates hand-written
-payloads against the validator; NOTHING in it asserts that a real model response still resolves end
-to end.** **A green targeted set is not evidence for this round. The corpus re-derive is the
-evidence, it costs $0.046 and twelve minutes, and it is not optional.**
+**The cue phrases move INTO the prompt as EXAMPLES of each kind. They must not gate anything.**
+
+**ITEM 2 - GROUND THE ANSWER IN THE SUPPLIED EVIDENCE.** The prompt must say, in words, **answer
+only from the evidence given; if the evidence does not say, return `not_derivable`.** Today the only
+grounding check is that `quote` appears in the packet, **which constrains the quote and not
+`source_lines`.** We have been relying on the model's good behaviour instead of requiring it.
+
+**ITEM 3 - MEASURE BEFORE REMOVING. DO NOT DELETE THE MATCHER THIS ROUND.** Run both: the union
+answer AND the existing cue decision, and **report agreement across all ~790 addressable lines.**
+- Where the matcher admitted and the model says `computation` - agreement.
+- Where the matcher admitted and the model says anything else - **candidate misroutes; list them.**
+- Where the matcher skipped and the model says `computation` - **derivation we have been silently
+  losing; list them.**
+**That table is the deliverable that justifies deleting the matcher in a later round.** Removing it
+here would be changing the mechanism and the measurement in the same step.
+
+**WARNING - FOURTH SCHEMA CHANGE THIS PHASE; THREE OF THE PREVIOUS ONES BROKE DERIVATION WHILE
+PASSING THEIR TESTS** (67, 90, 91 passed; rules to 0, to 16-19, to 43-44). **`tests/` validates
+hand-written payloads against the validator. NOTHING asserts a real model response still resolves
+end to end. A green targeted set is NOT evidence for this round.** The corpus re-derive is, it costs
+$0.046, and it is mandatory.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not change how any existing operation validates.** S109 was reverted for exactly this; the
-  arity/role contract is OUT OF SCOPE.
-- **Do not let the hatch become a dumping ground.** If more than the 2 named cells take it, that is
-  a FINDING to report, not a success.
-- **Do not hand-author the two decision objects.** They must be produced by the pipeline. A
-  hand-written decision for line 36 is scaffolding and fails the round.
+- **Do not delete or tune `_LEGACY_FORMULA_CUES` / `_WIDENED_FORMULA_CUES`.** They become prompt
+  examples; the gate is measured this round and removed in the next.
+- **Do not touch the arity/role contract.** Reverted at `db4df3e`; out of scope.
+- **Do not hand-author a decision object.** The two elections must be pipeline-produced.
 - **Do not re-baseline any expected-count fixture.**
 
-**THE FLOOR - STATED IN DERIVATION OUTPUT, NOT IN ACCEPTANCE COUNTS.**
-- **`form_1040` 35a and 36 no longer derive as `COPY`.** Report what they derive as, by id.
-- **Both emit a decision object** with a `question`, at least two real options, a mandatory
-  `escalate` option, and `citation_refs` on the decision and every option.
-- **`pilot/face_lint.py pilot/face_lint_rules.yaml` reports ZERO
-  `filer-election-is-not-a-copy` hits** (currently 2). Run it and paste the output.
-- **Corpus stays in baseline: `rules` 107-109 and `edges` 345-370, gaps <= 34**, from a real
-  `extract --year 2025`. **Derivation must not regress by even one rule.**
-- **Targeted set green, bare, no `PYTEST_DEBUG_TEMPROOT` and no elevation**:
+**THE FLOOR - DERIVATION OUTPUT, NOT ACCEPTANCE COUNTS.**
+- **`form_1040` 35a and 36 classify as `election` (or `filer_entry`), NOT `computation`**, and
+  neither mints a `COPY` rule. Report what each produced, by id.
+- **`pilot/face_lint.py pilot/face_lint_rules.yaml` reports ZERO `filer-election-is-not-a-copy`
+  hits** (currently 2). Paste the output.
+- **Corpus stays in baseline: `rules` 107-109, `edges` 345-370, gaps <= 34**, from a real
+  `extract --year 2025`. **Derivation must not regress by one rule.**
+- **The agreement table from item 3**, with counts in all four quadrants.
+- **Targeted set green, bare - no `PYTEST_DEBUG_TEMPROOT`, no elevation**:
   `tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py
   tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py
   tests/test_extract_outline_m4.py tests/test_operation_registry_m20.py` (82 passed at `db4df3e`).
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
 
-**OUT OF SCOPE.** The arity/role contract (reverted, do not retry here). The 12 outline-index gaps.
-The 5 transport `400`s. Voting, seeds, and `system_fingerprint`. The grounding constraint on
-`source_lines`.
+**OUT OF SCOPE.** Deleting the matcher (next round, gated on item 3). Voting across seeds - **there
+is no voting mechanism today; the Architect ran the corpus three times by hand.** The 12
+outline-index gaps. The 5 transport `400`s. `system_fingerprint` capture.
 
 ## Open for Architect
 
