@@ -142,3 +142,31 @@ So, I'd call it a routing."*
   the same, skip lines 23 through 43 and go to line 44"* and several siblings.
 - **Until routing exists, `election` must be validated so it does not keep absorbing branches** - an
   election is a choice the FILER makes; a branch determined by other lines is not one.
+
+### Routing: goto in the form, conditional applicability in the graph
+
+John, 2026-08-16: *"because of the nature of these forms, the routing becomes a GOTO statement,
+which is weird, but understandable and easily done in our scheme."* **Right about the forms, and
+right that it is cheap - with one specific addition.**
+
+**The form is goto-shaped** (*"Skip lines 18 through 21"*, *"Go to line 44"*, *"Stop here"*).
+**The graph must NOT implement it as a jump.** A dataflow graph has no program counter, and a jump
+discards the fact that actually matters downstream: *those cells do not apply to this return*.
+- A sum over a skipped line must distinguish **blank-because-skipped** from
+  **blank-because-unanswered** from **genuinely zero**.
+- A goto target is a LINE NUMBER, which is placement data. **Identity never comes from line numbers**
+  (`AGENTS.md`) - the IRS renumbers without changing meaning. A predicate gating ADDRESSED cells
+  survives renumbering; `goto 44` does not.
+
+**WHAT ALREADY EXISTS:** the `MISSING` sentinel, trace kinds `computed` / `missing` /
+`missing_required` / `missing_comparison`, and `IF`, `IF_ELSE`, `COMPARE` green across prompt,
+validator, engine and schema.
+
+**WHAT IS MISSING - EXACTLY ONE THING:** a **`not_applicable`** state distinct from `missing`.
+**Without it there is a concrete user-visible bug**: `Result.missing_required_inputs` collects every
+unsupplied required leaf, so a line the form told the filer to SKIP lands in that list and **the
+agent asks them to fill in line 20 after Schedule D line 17 told them to skip 18 through 21.**
+
+**THE CONSTRUCT:** a predicate on the routing line that marks a REGION of addressed cells
+not-applicable, plus the third trace kind. Small, and it lands where the engine is already
+disciplined about typed absence.
