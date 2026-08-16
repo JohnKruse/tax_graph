@@ -38,15 +38,40 @@ def non_formula_micro_schema() -> dict[str, Any]:
 
 
 def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
-    """Return the schema for a human-language formula answer."""
+    """Return the one-call discriminated union for an addressable form line."""
+    operations = closed_operations(root=root)
     return {
         "type": "object",
         "additionalProperties": False,
-        "required": ["operation", "source_lines", "quote"],
+        "required": [
+            "kind",
+            "operation",
+            "source_lines",
+            "question",
+            "options",
+            "form",
+            "box",
+            "reason",
+            "quote",
+        ],
         "properties": {
-            "operation": {"type": "string", "enum": closed_operations(root=root)},
+            "kind": {
+                "type": "string",
+                "enum": [
+                    "computation",
+                    "filer_entry",
+                    "election",
+                    "information_return",
+                    "not_derivable",
+                ],
+            },
+            "operation": {
+                "type": ["string", "null"],
+                "enum": [*operations, None],
+                "description": "Required only for kind computation; null otherwise.",
+            },
             "source_lines": {
-                "type": "array",
+                "type": ["array", "null"],
                 "minItems": 1,
                 "items": {
                     "anyOf": [
@@ -76,10 +101,72 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
                         },
                     ],
                 },
+                "description": "Printed source references required only for kind computation.",
+            },
+            "question": {
+                "type": ["string", "null"],
+                "description": "Question presented to the filer for kind election.",
+            },
+            "options": {
+                "type": ["array", "null"],
+                "minItems": 1,
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["label", "downstream_effect", "citation_refs", "option_type"],
+                    "properties": {
+                        "label": {"type": "string", "minLength": 1},
+                        "downstream_effect": {"type": "string", "minLength": 1},
+                        "citation_refs": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {"type": "string", "minLength": 1},
+                        },
+                        "option_type": {"type": "string", "enum": ["choice", "escalate"]},
+                    },
+                },
+                "description": "Options required only for kind election; one must be escalate.",
+            },
+            "form": {
+                "type": ["string", "null"],
+                "description": "Printed source form for kind information_return.",
+            },
+            "box": {
+                "type": ["string", "null"],
+                "description": "Printed source box for kind information_return.",
+            },
+            "reason": {
+                "type": ["string", "null"],
+                "description": (
+                    "Why the line cannot be derived from the supplied evidence; "
+                    "required only for kind not_derivable."
+                ),
             },
             "quote": {"type": "string", "minLength": 1},
         },
     }
+
+
+FORMULA_RESPONSE_KINDS = frozenset(
+    {
+        "computation",
+        "filer_entry",
+        "election",
+        "information_return",
+        "not_derivable",
+    }
+)
+
+
+def formula_response_kind(plan: dict[str, Any]) -> str:
+    """Return the normalized kind for a new or legacy fixture response."""
+    if "kind" in plan:
+        return str(plan.get("kind") or "")
+    if plan.get("source_kind") in {"form_line", "filer_entry", "information_return"}:
+        return str(plan["source_kind"])
+    if "operation_plan" in plan or plan.get("operation") is not None:
+        return "computation"
+    return ""
 
 
 def _table_formula_schema(*, root: str | Path | None = None) -> dict[str, Any]:
@@ -155,35 +242,67 @@ def validate_formula_plan(
     root: str | Path | None = None,
     outline_node: OutlineNode | None = None,
 ) -> None:
-    """Validate a human-language answer with line or printed-constant operands."""
+    """Validate the formula union and retain legacy fixture compatibility."""
     allowed_operations = set(closed_operations(root=root))
     allowed_spans = {span.span_id for span in spans}
+    kind = formula_response_kind(plan)
+    if "kind" in plan:
+        if kind not in FORMULA_RESPONSE_KINDS:
+            raise MicroExtractionError(f"unsupported formula response kind: {kind}")
+        _validate_quote(plan, spans)
+        if kind == "computation":
+            if plan.get("operation") not in allowed_operations:
+                raise MicroExtractionError(f"unsupported operation: {plan.get('operation')}")
+            source_lines = plan.get("source_lines")
+            if not isinstance(source_lines, list) or not source_lines:
+                raise MicroExtractionError("computation source_lines must be a non-empty list")
+            for source_line in source_lines:
+                _validate_source_line(source_line)
+            _validate_source_line_arity(str(plan["operation"]), len(source_lines))
+            if any(plan.get(name) is not None for name in ("question", "options", "form", "box", "reason")):
+                raise MicroExtractionError("computation response contains non-computation fields")
+            return
+        if kind == "filer_entry":
+            _require_null_fields(plan, ("operation", "source_lines", "question", "options", "form", "box", "reason"))
+            return
+        if kind == "information_return":
+            _require_non_empty_string(plan, "form")
+            _require_non_empty_string(plan, "box")
+            _require_null_fields(plan, ("operation", "source_lines", "question", "options", "reason"))
+            if not _is_information_return_box(str(plan["box"])):
+                raise MicroExtractionError("information_return box must be a printed box number")
+            return
+        if kind == "election":
+            _require_non_empty_string(plan, "question")
+            _validate_election_options(plan.get("options"), allowed_spans)
+            _require_null_fields(plan, ("operation", "source_lines", "form", "box", "reason"))
+            return
+        _require_non_empty_string(plan, "reason")
+        _require_null_fields(plan, ("operation", "source_lines", "question", "options", "form", "box"))
+        return
+
+    # The source classifier was a separate pre-S111 call.  Accept its shape in
+    # deterministic fixtures so the old source-resolution guards remain useful;
+    # live formula calls use the union above.
+    if "source_kind" in plan:
+        validate_non_formula_source(plan, spans=spans)
+        return
+
     if "operation_plan" not in plan:
         operation = plan.get("operation")
+        source_lines = plan.get("source_lines")
+        if operation is None or source_lines is None:
+            raise MicroExtractionError(
+                "operation and source_lines must both be populated for a computation"
+            )
         if operation not in allowed_operations:
             raise MicroExtractionError(f"unsupported operation: {operation}")
-        source_lines = plan.get("source_lines")
         if not isinstance(source_lines, list) or not source_lines:
             raise MicroExtractionError("source_lines must be a non-empty list")
         for source_line in source_lines:
-            if isinstance(source_line, str):
-                if not source_line.strip():
-                    raise MicroExtractionError("source_lines contains an empty line")
-            elif isinstance(source_line, dict):
-                if "constant" in source_line:
-                    _validate_printed_constant(source_line)
-                elif not str(source_line.get("form", "")).strip() or not str(source_line.get("line", "")).strip():
-                    raise MicroExtractionError("cross-form source line requires form and line")
-            else:
-                raise MicroExtractionError(
-                    "source_lines item must be a line string, form/line object, or constant object"
-                )
+            _validate_source_line(source_line)
         _validate_source_line_arity(str(operation), len(source_lines))
-        quote = plan.get("quote")
-        if not isinstance(quote, str) or not quote.strip():
-            raise MicroExtractionError("quote must be a non-empty string")
-        if not any(_quote_matches(quote, span.text) for span in spans):
-            raise MicroExtractionError("quote does not match the supplied form or instruction evidence")
+        _validate_quote(plan, spans)
         return
 
     # Keep the old intermediate shape readable for deterministic fixtures and
@@ -203,6 +322,78 @@ def validate_formula_plan(
         for span_id in step.get("citation_span_ids", []):
             if span_id not in allowed_spans:
                 raise MicroExtractionError(f"unknown citation span id: {span_id}")
+
+
+def _validate_quote(plan: dict[str, Any], spans: list[CandidateSpan]) -> None:
+    """Require a response quote to be verbatim from the supplied evidence."""
+    quote = plan.get("quote")
+    if not isinstance(quote, str) or not quote.strip():
+        raise MicroExtractionError("quote must be a non-empty string")
+    if not any(_quote_matches(quote, span.text) for span in spans):
+        raise MicroExtractionError("quote does not match the supplied form or instruction evidence")
+
+
+def _validate_source_line(source_line: Any) -> None:
+    """Validate one printed line, cross-form line, or printed constant."""
+    if isinstance(source_line, str):
+        if not source_line.strip():
+            raise MicroExtractionError("source_lines contains an empty line")
+        return
+    if isinstance(source_line, dict):
+        if "constant" in source_line:
+            _validate_printed_constant(source_line)
+            return
+        if not str(source_line.get("form", "")).strip() or not str(source_line.get("line", "")).strip():
+            raise MicroExtractionError("cross-form source line requires form and line")
+        return
+    raise MicroExtractionError(
+        "source_lines item must be a line string, form/line object, or constant object"
+    )
+
+
+def _require_null_fields(plan: dict[str, Any], names: tuple[str, ...]) -> None:
+    """Require union fields outside the selected branch to be explicit nulls."""
+    for name in names:
+        if plan.get(name) is not None:
+            raise MicroExtractionError(f"{name} must be null for kind {plan.get('kind')}")
+
+
+def _require_non_empty_string(plan: dict[str, Any], name: str) -> None:
+    """Require a non-empty string in a selected union branch."""
+    value = plan.get(name)
+    if not isinstance(value, str) or not value.strip():
+        raise MicroExtractionError(f"{name} must be a non-empty string for kind {plan.get('kind')}")
+
+
+def _is_information_return_box(value: str) -> bool:
+    """Return whether a source box is a printed numeric or alphanumeric box."""
+    import re
+
+    return bool(re.fullmatch(r"[0-9]+[a-z]?", value.strip(), re.IGNORECASE))
+
+
+def _validate_election_options(options: Any, allowed_spans: set[str]) -> None:
+    """Validate model-generated election choices and their evidence references."""
+    if not isinstance(options, list) or not options:
+        raise MicroExtractionError("election options must be a non-empty list")
+    has_escalate = False
+    for option in options:
+        if not isinstance(option, dict):
+            raise MicroExtractionError("election option must be an object")
+        for name in ("label", "downstream_effect"):
+            value = option.get(name)
+            if not isinstance(value, str) or not value.strip():
+                raise MicroExtractionError(f"election option {name} must be non-empty")
+        if option.get("option_type") not in {"choice", "escalate"}:
+            raise MicroExtractionError("election option_type must be choice or escalate")
+        refs = option.get("citation_refs")
+        if not isinstance(refs, list) or not refs or not all(
+            isinstance(ref, str) and ref in allowed_spans for ref in refs
+        ):
+            raise MicroExtractionError("election option citation_refs must name supplied evidence spans")
+        has_escalate = has_escalate or option["option_type"] == "escalate"
+    if not has_escalate:
+        raise MicroExtractionError("election options must include an escalate option")
 
 
 def extract_non_formula_source(
@@ -253,25 +444,37 @@ def _formula_prompt(
 ) -> str:
     form_spans = [span for span in spans if span.relationship == "source"]
     instruction_spans = [span for span in spans if span.relationship != "source"]
-    rendered_form = "\n".join(span.text for span in form_spans[:40]) or "(not available)"
-    rendered_instructions = "\n".join(span.text for span in instruction_spans[:6]) or "(not available)"
+    rendered_form = "\n".join(
+        f"- {span.span_id}: {span.text}" for span in form_spans[:40]
+    ) or "(not available)"
+    rendered_instructions = "\n".join(
+        f"- {span.span_id}: {span.text}" for span in instruction_spans[:6]
+    ) or "(not available)"
     return "\n".join(
         [
-            "Answer the human question for one form line.",
-            "Which printed lines does this line use, and what operation combines them?",
-            "Return operation, source_lines, and quote.",
+            "Answer one addressable form line from the evidence packet below.",
+            "Answer only from the supplied evidence. Do not use outside knowledge or infer a rule the packet does not state.",
+            "If the evidence does not say enough to classify or derive the line, return kind not_derivable and explain why.",
+            "Return exactly one kind: computation, filer_entry, election, information_return, or not_derivable.",
+            "Set every field that does not belong to the selected kind to null.",
+            "For computation, return the closed operation, printed source_lines, and the verbatim quote.",
             "Use the form's printed line numbers in source_lines, never internal ids.",
             "For a printed numeric constant, include {\"constant\": number} in source_lines, not a fake line number.",
             "Set value_type to currency for dollar amounts and percentage for rates or decimal factors.",
             "For lookup branches, include the branch role on the constant object; use default for an unqualified branch and full filing-status names otherwise.",
             "For SUBTRACT and DIVIDE, source_lines are in computation order: the value being reduced comes first.",
+            "For filer_entry, use the kind only when the evidence says the filer enters or supplies the value; do not invent a calculation.",
+            "For information_return, return the printed form and box that the evidence names.",
+            "For election, return the question and substantive options grounded in the evidence. Every option must include citation_refs using the supplied span ids, and one option_type must be escalate.",
+            "For not_derivable, give a concise evidence-grounded reason.",
+            "Wording such as add line, subtract line, amount from line, amount of line, smallest of line, or enter an amount can be examples of computation, but these phrases are not routing rules; read the supplied face and instructions.",
             "",
             f"target line label: {outline_node.label}",
             "",
-            "form face line:",
+            "form face evidence:",
             rendered_form,
             "",
-            "instruction text:",
+            "instruction evidence:",
             rendered_instructions,
         ]
     )

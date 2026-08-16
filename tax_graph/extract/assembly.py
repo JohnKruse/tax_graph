@@ -48,6 +48,17 @@ def assemble_formula_plan(
     resolution_events: list[dict[str, Any]] | None = None,
 ) -> ExtractionBatch:
     """Convert an intermediate operation plan into canonical draft objects."""
+    response_kind = str(plan.get("kind") or "")
+    if response_kind == "election":
+        return _assemble_model_election(
+            document,
+            outline_node,
+            plan,
+            spans,
+            model=model,
+        )
+    if response_kind in {"filer_entry", "information_return", "not_derivable"}:
+        return ExtractionBatch(document_id=document.document_id, year=document.year, objects=[])
     allowed_operations = set(closed_operations(root=root))
     spans_by_id = {span.span_id: span for span in spans}
     human_answer = "operation_plan" not in plan
@@ -202,6 +213,127 @@ def assemble_formula_plan(
                 )
 
     return ExtractionBatch(document_id=document.document_id, year=document.year, objects=objects)
+
+
+def _assemble_model_election(
+    document: SourceDocumentInput,
+    outline_node: OutlineNode,
+    plan: dict[str, Any],
+    spans: list[CandidateSpan],
+    *,
+    model: str,
+) -> ExtractionBatch:
+    """Project the model's grounded election into a first-class decision."""
+    spans_by_id = {span.span_id: span for span in spans}
+    option_records = plan.get("options")
+    if not isinstance(option_records, list) or not option_records:
+        raise FormulaAssemblyFinding(
+            {
+                "code": "election_missing_options",
+                "target_cell_id": _canonical_target_id(document, outline_node),
+                "reason": "the model election did not return options",
+            }
+        )
+    output_citation_ids: list[str] = []
+    citation_spans: dict[str, CandidateSpan] = {}
+    output_options: list[dict[str, Any]] = []
+    used_option_ids: set[str] = set()
+    source_span: CandidateSpan | None = None
+    for index, option in enumerate(option_records, 1):
+        if not isinstance(option, dict):
+            raise FormulaAssemblyFinding(
+                {
+                    "code": "election_option_not_object",
+                    "target_cell_id": _canonical_target_id(document, outline_node),
+                    "reason": "the model election option is not an object",
+                }
+            )
+        span_ids = [str(value) for value in option.get("citation_refs", [])]
+        option_citation_refs: list[str] = []
+        for span_id in span_ids:
+            span = spans_by_id.get(span_id)
+            if span is None:
+                raise FormulaAssemblyFinding(
+                    {
+                        "code": "election_unknown_citation",
+                        "target_cell_id": _canonical_target_id(document, outline_node),
+                        "citation_span_id": span_id,
+                        "reason": "the model election cited a span outside its evidence packet",
+                    }
+                )
+            citation_id = f"cite_{_slug(span_id)}"
+            citation_spans[citation_id] = span
+            if citation_id not in output_citation_ids:
+                output_citation_ids.append(citation_id)
+            option_citation_refs.append(citation_id)
+            if source_span is None and span.relationship == "source":
+                source_span = span
+        label = " ".join(str(option.get("label") or "").split())
+        option_id = _slug(label) or f"option_{index}"
+        base_option_id = option_id
+        suffix = 2
+        while option_id in used_option_ids:
+            option_id = f"{base_option_id}_{suffix}"
+            suffix += 1
+        used_option_ids.add(option_id)
+        output_options.append(
+            {
+                "option_id": option_id,
+                "label": label,
+                "option_type": str(option.get("option_type") or "choice"),
+                "downstream_effect": " ".join(str(option.get("downstream_effect") or "").split()),
+                "citation_refs": option_citation_refs,
+            }
+        )
+    if source_span is None:
+        source_span = next(
+            (
+                span
+                for span in spans
+                if span.relationship == "source"
+                and _quote_matches(str(plan.get("quote", "")), span.text)
+            ),
+            None,
+        )
+    if source_span is None:
+        raise FormulaAssemblyFinding(
+            {
+                "code": "election_missing_form_face",
+                "target_cell_id": _canonical_target_id(document, outline_node),
+                "reason": "the model election did not cite a form-face span",
+            }
+        )
+    citation_id = f"cite_{_slug(source_span.span_id)}"
+    if citation_id not in output_citation_ids:
+        output_citation_ids.insert(0, citation_id)
+    citation_spans[citation_id] = source_span
+    decision_id = _slug(
+        f"decision_{document.document_id}_{outline_node.line_anchor or outline_node.outline_id}_filer_election"
+    )
+    decision = {
+        "decision_id": decision_id,
+        "sets_node": _canonical_target_id(document, outline_node),
+        "question": " ".join(str(plan.get("question") or "").split()),
+        "citation_refs": output_citation_ids,
+        "options": output_options,
+    }
+    return ExtractionBatch(
+        document_id=document.document_id,
+        year=document.year,
+        objects=[
+            *[
+                _citation_object(citation_ref, citation_spans[citation_ref], model)
+                for citation_ref in output_citation_ids
+            ],
+            DraftObject(
+                "decisions",
+                decision,
+                source_span.text,
+                model,
+                1.0,
+            ),
+        ],
+    )
 
 
 def _steps_for_plan(

@@ -144,6 +144,26 @@ mechanism under it is right.**
 DECIDING.** **REAL ROUND** - graph writes. **REPLACES S110, which was a patch on a classifier that
 should not be making the call.** **THIS CHANGES THE RESPONSE SCHEMA - READ THE WARNING.**
 
+**WORKER UPDATE (Codex, 2026-08-16): OFFLINE IMPLEMENTATION COMPLETE; ARCHITECT RE-DERIVATION
+PENDING.** The formula call now uses one strict nullable union with `kind` values
+`computation`, `filer_entry`, `election`, `information_return`, and `not_derivable`. Corrected
+acquired outlines send every addressable line through that call; the historical cue matcher is
+retained only as four-quadrant telemetry. Model elections project their question, options, and
+supplied citations into a decision with a mandatory `escalate` option; no label classifier writes
+the election. Prompt-bench follows the same addressable-node set. S110's untracked guard was
+removed as withdrawn.
+
+**WORKER TEST EVIDENCE:** RAN:
+`.venv\Scripts\python.exe -m pytest tests/test_m20_s111.py -q` -> **9 passed, 1 warning**.
+RAN (supported writable root):
+`$env:PYTEST_DEBUG_TEMPROOT = (Join-Path (Get-Location) '.test_tmp2'); .venv\Scripts\python.exe -m pytest tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_operation_registry_m20.py -q`
+-> **82 passed, 1 warning**. The required bare command was also RAN and produced **46 passed,
+36 errors**, all `WinError 5` during pytest temp-root setup at the poisoned
+`.test_tmp\pytest-of-devbox` ACL; no test-body failure was reported. RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
+`git diff --check` -> **clean**. NOT RUN: real `extract --year 2025` -> **Architect-owned live
+provider re-derive; BALL says Worker needs no live model call**.
+
 **JOHN'S CALL, 2026-08-16:** *"Why are we constantly trying to be deterministic... You keep telling
 me the model is making good choices given the evidence and prompt we provide. Why don't we just fix
 that instead of ever more baroque decisions?"*
