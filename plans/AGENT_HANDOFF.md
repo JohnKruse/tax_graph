@@ -228,56 +228,46 @@ clean. NOT RUN: live model call or triple corpus re-derivation; Architect owns t
 
 ## Open for Architect
 
-**ARCHITECT VERIFICATION OF S109 (`c47f5fa`, 2026-08-15). REJECTED. IT IS A WORSE REGRESSION THAN
-THE S108 SCHEMA BUG - DERIVATION FELL FROM 107-109 RULES TO 16-19.**
+**S109 IS REVERTED (John's call, 2026-08-16). DERIVATION IS BACK AT BASELINE.**
+`schemas/edge.schema.json`, `tax_graph/extract/assembly.py`, `tax_graph/extract/micro.py`,
+`tax_graph/operation_registry.py` restored to `fe08638`; `tests/test_m20_s109.py` removed.
+**Post-revert corpus: rules 108, gaps 33** (baseline 107-109 / 32-34), and `schedule_1` re-run three
+times gives **4 rules / 57 edges / 0 gaps** every time, so the one low edge reading was a flake.
+Targeted set **82 passed**.
 
-**TRIPLE CORPUS RUN, MEASURED AS A RANGE PER THE FLOOR.**
+**WHY IT WAS REVERTED.** Two passes, both catastrophic: `c47f5fa` took rules 107-109 -> 16/19/16;
+`4aa29c5` fixed the operand SHAPE and still left rules at 43-44 with `SUM operand roles` failing 42
+times. **Arity-by-role remains the right model - the implementation is not.** A `SUM` of eight
+addends has no computation order to preserve; the check was demanding positional ordering from roles
+the registry declares repeatable.
 
-| metric | baseline (pre-S109) | after `c47f5fa` |
-| --- | --- | --- |
-| rules | 107 / 108 / 109 | **16 / 19 / 16** |
-| edges | 365 / 366 / 370 | **53 / 69 / 65** |
-| gaps | 32 / 33 / 34 | **125 / 122 / 125** |
+**THE STANDING LESSON, AND IT IS NOW THREE FOR THREE.** S108 item 1, S109, and the S109 fix all
+changed the response schema, all passed their targeted tests (67, 90, 91 passed), and all took
+derivation to a fraction of baseline. **`tests/` validates hand-written payloads against the
+validator; nothing asserts that a REAL model response still resolves end to end.** A schema change
+is not verifiable offline. **Do not accept one on unit tests alone - a corpus re-derive is
+mandatory, and it costs $0.05 and twelve minutes.**
 
-**`form_1040` DROPPED TO 1-3 RULES.** Even line 11a, plain *"Subtract line 10 from line 9"*, fails.
-Bare targeted set was **90 passed** - the tests do not exercise this.
+**COST CORRECTION (2026-08-16).** A full corpus run is **159 calls, $0.046** - not the ~$3 the
+Architect had been quoting from extrapolating `form_1040` across 17 documents. John's OpenRouter
+total for a day of heavy running was **$3.03**. **Re-derive freely; cost is not a reason to skip a
+measurement.**
 
-**THE FAILURE IS THE ROLE CONTRACT REJECTING EVERYTHING**: `SUM operand roles` 50, `MIN` 13,
-`MULTIPLY` 10, `SUBTRACT` 9, `IF_ELSE` 8, `COPY` 5.
+**TWO CORRECTIONS THE ARCHITECT OWES THE RECORD.**
+1. **There is no dot.** The claim that `form_1040` line 36 was handed a single `.` as its face was
+   wrong - it came from reading prompt-bench's `matched_spans` (spans the QUOTE matched) as the
+   evidence packet. **Every face checked extracts identically to what the form prints**: 1040 36,
+   35a, 11a; schedule_2 1z; 1116 8 and 6; 6251 13.
+2. **So 35a and 36 are genuine model errors, not starved packets.** Both got the correct face AND
+   the correct instruction section and both answered `COPY`. They are filer elections splitting the
+   line 34 overpayment. **Only the face lint catches this class; nothing else notices.**
 
-**ROOT CAUSE - THE SCHEMA CANNOT ATTACH A ROLE TO A PLAIN LINE.** Opened `form_1040` 11a end to end.
-The model now returns:
-
-```
-{"form": "9",  "line": "9",  "role": "minuend",    "branch": null}
-{"form": "10", "line": "10", "role": "subtrahend", "branch": null}
-```
-
-**`form` names a DOCUMENT** (*"Schedule D Tax Worksheet"*), **and it is being filled with the line
-number.** Before S109 these operands were bare strings `"9"` and `"10"`.
-**The string variant in `anyOf` carries no `role` field; only the object variants do.** So the moment
-roles became REQUIRED for arity validation, every operand had to become an object, and every object
-demands a `form`. The model supplies the only token it has. **Operand resolution then reads
-`form: "9"` as a foreign document and the rule dies.**
-
-**THE FIX.** Give a same-form line operand a role-bearing shape: either `{"line": "9", "role": ...}`
-with **no** `form` key, or keep one object variant whose `form` is **nullable and means "this
-form"**. **Then the arity-by-role mechanism is sound** - it is the operand shape that is wrong, not
-the idea.
-
-**PATTERN WORTH NAMING - THIS IS THE SECOND TIME IN TWO ROUNDS.** S108 item 1 and S109 both changed
-the response schema and both took derivation to near zero, and **both passed their targeted tests**.
-`tests/` exercises the validator against hand-written payloads; **nothing in the suite asserts that a
-real model response still resolves end to end.** The floor caught both only because the Architect ran
-the corpus. **A schema change is not verifiable offline, whatever the unit tests say.**
-
-**`prompt-bench` ACCEPTED 11a while the corpus rejected it**, again - it stops before operand
-resolution. **Its verdict is not evidence.** That divergence has now misled twice and should be
-closed in its own round.
-
-**THE FLOOR IS UNCHANGED.** `rules` bottom-of-range **>= 110**, measured over THREE runs. Zero
-`operand roles do not preserve computation order`. `form_6251` 18 and 39, `form_2441` 8 and 5 all
-derive, reported by id.
+**THE MODEL IS NOT FISHING.** In every failure opened end to end, the operands it names are printed
+in the evidence supplied. The losses are ours: schedule_2 prints 1a-1z and the OUTLINE carries 26
+anchors, so 19 operands of *"Add lines 1a through 1y"* do not resolve. Same for `form_1116` naming
+`3g`, `4a`, `4b`. **But the prompt never says "answer only from the supplied evidence", and the only
+grounding check is that `quote` appears in the packet - which constrains the quote, not
+`source_lines`.** That guardrail should exist regardless.
 
 ## Queued (ONE LINE each - do not spec ahead)
 

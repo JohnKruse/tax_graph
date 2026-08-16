@@ -32,10 +32,6 @@
       "type": "string",
       "description": "Operand position for order-sensitive rules, e.g. 'minuend'/'subtrahend' for SUBTRACT, 'numerator'/'denominator' for DIVIDE, 'addend' for SUM. Omit for single-input rules like COPY. A computed node's value is produced by all edges that target it sharing a rule_id."
     },
-    "branch": {
-      "type": "string",
-      "description": "Optional branch-selection axis, kept separate from the operand position in role."
-    },
     "condition": {
       "type": "object",
       "description": "Optional gate: which fact/decision and value activates this edge.",
