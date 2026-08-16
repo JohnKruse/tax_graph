@@ -156,8 +156,8 @@ removed as withdrawn.
 **WORKER TEST EVIDENCE:** RAN:
 `.venv\Scripts\python.exe -m pytest tests/test_m20_s111.py -q` -> **9 passed, 1 warning**.
 RAN (supported writable root):
-`$env:PYTEST_DEBUG_TEMPROOT = (Join-Path (Get-Location) '.test_tmp2'); .venv\Scripts\python.exe -m pytest tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_operation_registry_m20.py -q`
--> **82 passed, 1 warning**. The required bare command was also RAN and produced **46 passed,
+`$env:PYTEST_DEBUG_TEMPROOT = (Join-Path (Get-Location) '.test_tmp2'); .venv\Scripts\python.exe -m pytest tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_operation_registry_m20.py tests/test_m20_s111.py -q`
+-> **91 passed, 1 warning**. The required bare command was also RAN and produced **46 passed,
 36 errors**, all `WinError 5` during pytest temp-root setup at the poisoned
 `.test_tmp\pytest-of-devbox` ACL; no test-body failure was reported. RAN:
 `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
