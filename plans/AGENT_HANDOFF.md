@@ -209,6 +209,36 @@ Architect's job and is removed from Worker floors.** Use whatever temp root work
 **OUT OF SCOPE.** Voting. `system_fingerprint`. The model owning the path (the withdrawn S111 -
 it returns AFTER this lands). The 12 outline-index gaps. The 5 transport `400`s.
 
+**S112 WORKER EVIDENCE (2026-08-16).** Added `pilot/replay_harness.py`, the committed
+`pilot/fixtures/m20_s112_replay.json`, `tests/test_m20_s112.py`, and the pilot README entry. The
+fixture contains 21 exact prompt/raw-response pairs from real outline-first micro calls and covers
+all named shapes. The runner uses the production `extract_formula_plan` seam with a fake client,
+then calls production operand resolution and assembly. It makes no provider call and writes no
+graph state.
+
+RAN: `.venv\Scripts\python.exe pilot\replay_harness.py` -> **21 cases, 0 mismatches,
+network_calls=0** in about 5 seconds. The expected diagnostic failures are visible by layer:
+`form_6251 13` fails validator and operand resolution, `form_6251 18` fails validator after
+operand resolution, `form_2441 8` fails validator after operand resolution, and `schedule_2 1z`
+fails operand resolution. The other 16 cases reach rule-and-edge assembly.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tgpt'; .venv\Scripts\python.exe -m pytest
+tests/test_m20_s112.py -q` -> **1 passed, 1 warning in 5.31s**. The warning is the pre-existing
+pytest cache ACL warning for `.pytest_cache`; the test itself is green.
+
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check -- pilot\replay_harness.py pilot\fixtures\m20_s112_replay.json
+tests\test_m20_s112.py pilot\README.md` -> **exit 0, no output**.
+
+RAN negative proof against a temporary copy of `9b9333f` with the same harness and fixture ->
+**21 mismatches, exit 1, network_calls=0**. Every case exposed the reverted `kind` schema and
+prompt drift; downstream resolver/assembler diagnostics remained visible where reachable. The
+temporary copy was removed after the run.
+
+NOT RUN: `extract --year 2025` corpus re-derive. S112 explicitly forbids a model call and graph
+write, so a fresh provider-backed corpus number would violate this round's scope. No fresh corpus
+metric is claimed; the pinned post-revert baseline above remains the current corpus evidence.
+
 ## Open for Architect
 
 **S109 IS REVERTED (John's call, 2026-08-16). DERIVATION IS BACK AT BASELINE.**

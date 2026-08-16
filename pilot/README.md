@@ -24,6 +24,22 @@ the source-side error. Live mode requires exactly one line:
 This pilot is measurement evidence only. It does not change prompts, validators, graph files, or
 review state.
 
+## M20-S112 production replay harness
+
+`replay_harness.py` replays 21 recorded outline-first micro responses without a provider call. Each
+case stores the exact prompt in compressed ASCII form and the raw JSON response, then invokes the
+production prompt seam, schema, micro validator, deterministic operand resolver, and assembler.
+The output names the first useful layer boundary instead of reducing a failure to one aggregate
+count. Expected failures are part of the fixture: they preserve known diagnostic shapes such as
+cross-document references, threshold conditionals, band tables, and Schedule 2 range references.
+
+Run the provider-free replay from the repository root:
+
+    .venv\Scripts\python.exe pilot\replay_harness.py
+
+The harness is a diagnostic witness only. It does not alter prompts, schemas, graph artifacts, or
+review state, and `network_calls=0` is part of its summary.
+
 ## M20-S103 source-extents pilot
 
 `source_extents.py` is a provider-free, read-only measurement of the acquired source ranges
