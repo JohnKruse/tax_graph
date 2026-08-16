@@ -149,14 +149,28 @@ the derived cell inventory, graph, or drafts. Each address-keyed verdict is
 schema-validated and carries the reviewed label, expression, separated form and
 instruction citation slots, canonical fingerprint, judgement, an automatically captured
 machine/session reviewer id, and UTC timestamp. An optional batch tag groups a review
-pass without entering the content fingerprint. Review comments carry an explicit
-`origin`: `curated` comments are bounded pipeline input, while `contributed` comments
-are retained for lead editing and never reach the model. Legacy comments without an
-origin fail closed and are not used as model input. The latest curated comment for an
-address wins; the complete ledger remains available for audit. A changed fingerprint
-produces a derived `needs_recheck` state. Review-gap expressions are counted explicitly
-as `NOT_REVIEWABLE` rather than as unreviewed work. No workbench action asserts a
-human-review claim on the user's behalf.
+pass without entering the content fingerprint. Generated cells expose the five
+pipeline outcomes `computation`, `filer_entry`, `election`, `information_return`, and
+`not_derivable`, with their form citation and instruction citation evidence. A
+`not_derivable` result keeps its machine reason visible; it is not relabeled as a
+generic review gap.
+
+The three visible generated-cell verdicts are `confirmed`, `questioned` (shown as
+`Try Again`), and `rejected`. Try Again sends its comment as evidence and stores only
+an in-memory attempt token. Accepting that exact attempt is the only action that
+curates its comment into the address ledger. Reject writes a local JSONL defect report
+with the rejection comment and retry history; it never posts to GitHub. A project-gated
+rejection can only be abandoned. A user-gated rejection can instead continue as
+filer-provided, which projects the cell to `REQUIRE_INPUT` without counting it as
+derived.
+
+Review comments carry an explicit `origin`: `curated` comments are bounded pipeline
+input, while `contributed` comments are retained for lead editing and never reach the
+model. Legacy comments without an origin fail closed and are not used as model input.
+The latest curated comment for an address wins; the complete ledger remains available
+for audit. A changed fingerprint produces a derived `needs_recheck` state. Review-gap
+expressions are counted explicitly as `NOT_REVIEWABLE` rather than as unreviewed work.
+No workbench action asserts a human-review claim on the user's behalf.
 
 ## Human-loop re-derive
 
@@ -165,7 +179,9 @@ The pipeline exposes a single-cell, non-persisting re-derive callback with the s
 at `POST /api/rederive` when the application host injects that callback. The request
 requires the local write token, returns the derived row plus its validation report, and
 writes no draft, graph, verdict, or session state. A draft comment is a try-again input;
-it is not stored until a separate explicit ledger action records the verified comment.
+it is not stored until a separate explicit Accept action records the verified comment.
+The generated-cell panel owns this flow, so there is no detached retry panel that can
+be mistaken for a verdict control.
 The server keeps this callback injected so the artifact-only workbench does not import
 pipeline code.
 
@@ -309,10 +325,12 @@ trustworthy, and keeps promotion mechanics where they already live.
   flat. The workbench displays all three vocabularies and never conflates them.
 - ASCII source files, provider-agnostic, no external CDNs.
 
-The Try again panel is a fresh attempt, not a verdict and not a session save. It sends
-only the correction typed for that attempt, then displays the returned expression and
-validator failures. Curated ledger comments are used when no new correction is supplied;
-contributed comments remain visible history and are never sent to the model.
+Try Again is a fresh attempt, not a verdict and not a session save. It sends only the
+correction typed for that attempt, then displays the returned expression and validator
+failures. If the cell is later rejected, the local defect report and the next workbench
+read retain the retry comments and result summaries. Curated ledger comments are used
+when no new correction is supplied; contributed comments remain visible history and
+are never sent to the model.
 
 ## Candidate v1 workflows (pick two, defer the rest)
 

@@ -24,6 +24,13 @@ GENERATED_REVIEW_DOCUMENTS = frozenset({
     "schedule_a_2025",
 })
 FULL_FORM_REVIEW_DOCUMENTS = GENERATED_REVIEW_DOCUMENTS
+GENERATED_OUTCOME_KINDS = frozenset({
+    "computation",
+    "filer_entry",
+    "election",
+    "information_return",
+    "not_derivable",
+})
 
 
 def build_generated_document_cells(
@@ -63,6 +70,11 @@ def build_generated_document_cells(
     citations = _citation_index(draft.get("citations"))
     spans = _span_index(draft.get("candidate_spans"))
     background = _background_index(micro)
+    outcomes = {
+        str(item.get("target_cell_id") or ""): item
+        for item in _records(micro.get("outcomes"))
+        if item.get("target_cell_id")
+    }
     instruction_ids_by_line = _instruction_span_index(spans)
     provenance = _provenance(draft.get("metrics"))
     cells_by_anchor = _cells_by_anchor(base.cells)
@@ -74,6 +86,11 @@ def build_generated_document_cells(
         provenance=provenance,
     )
     decision_ids = {str(item.get("decision_id") or "") for item in decisions}
+    decisions_by_target = {
+        str(item.get("sets_node") or ""): item
+        for item in decisions
+        if item.get("sets_node")
+    }
     generated_by_cell_id: dict[str, dict[str, Any]] = {}
     for formula in records:
         anchor = _normalize_anchor(formula.get("line_anchor"))
@@ -112,8 +129,33 @@ def build_generated_document_cells(
         ]
         rule = target_rules[0] if target_rules else {}
         operation = str(rule.get("operation") or "REVIEW_GAP").lower()
-        expression = _expression(target, formula, rule, target_edges, base.cells, base_cell)
+        outcome = outcomes.get(target, {})
+        generated_kind = str(
+            formula.get("outcome_kind")
+            or outcome.get("kind")
+            or ("election" if target in decisions_by_target else "")
+        )
+        if generated_kind not in GENERATED_OUTCOME_KINDS:
+            generated_kind = ""
+        expression = (
+            _expression(target, formula, rule, target_edges, base.cells, base_cell)
+            if not generated_kind or generated_kind == "computation"
+            else _outcome_expression(
+                generated_kind,
+                formula,
+                outcome,
+                target,
+                base_cell,
+                decisions_by_target.get(target),
+            )
+        )
+        decision = decisions_by_target.get(target)
         rule_citation_ids = [str(value) for value in rule.get("citation_refs", []) or []]
+        if isinstance(decision, dict):
+            rule_citation_ids.extend(
+                str(value) for value in decision.get("citation_refs", []) or []
+            )
+        rule_citation_ids = list(dict.fromkeys(rule_citation_ids))
         rule_citations = [citations[value] for value in rule_citation_ids if value in citations]
         record_instruction_ids = [str(value) for value in formula.get("instruction_span_ids", []) or []]
         exact_instruction_ids = instruction_ids_by_line.get(anchor, [])
@@ -162,17 +204,24 @@ def build_generated_document_cells(
             "USER_ENTRY": "user_entered",
             "IMPORTED": "imported",
         }.get(risk_bucket)
+        outcome_policy = {
+            "filer_entry": "user_entered",
+            "information_return": "imported",
+            "election": "decision_required",
+            "not_derivable": "unsupported",
+        }.get(generated_kind)
         background_record = background.get(str(base_cell.get("field_name") or ""))
-        formula_resolved = kind != "review_gap"
+        formula_resolved = generated_kind != "not_derivable" and kind != "review_gap"
         # A background failover never replaces a formula or source result.
         # This is the projection-side guard for controls such as Form 1040 line
         # 32 whose field-map policy is stale but whose draft expression exists.
         policy_background = None if formula_resolved else background_record
-        population_policy = (
-            inferred_policy
-            if formula_resolved and inferred_policy
-            else _projected_policy(base_cell, policy_background, inferred_policy)
-        )
+        if outcome_policy:
+            population_policy = outcome_policy
+        elif formula_resolved and inferred_policy:
+            population_policy = inferred_policy
+        else:
+            population_policy = _projected_policy(base_cell, policy_background, inferred_policy)
         review_gap = str(formula.get("review_gap") or "")
         cell = dict(base_cell)
         cell.update(
@@ -181,6 +230,7 @@ def build_generated_document_cells(
                 "review_source": "draft_only",
                 "generated_target_cell_id": target,
                 "generated_status": str(formula.get("status") or "review_gap"),
+                "generated_kind": generated_kind or ("computation" if rule_citations else ""),
                 "generated_model": str(formula.get("model") or provenance["model"]),
                 "generated_provider": provenance["provider"],
                 "generated_provenance": dict(provenance),
@@ -199,7 +249,17 @@ def build_generated_document_cells(
                 "form_citations": form_citations,
                 "instruction_citations": instruction_citations,
                 "citations": form_citations,
-                "review_gap": review_gap or None,
+                "review_gap": (
+                    review_gap
+                    or str(outcome.get("reason") or "")
+                    or str(expression.get("reason") or "")
+                    or None
+                ),
+                "kind_reason": (
+                    str(outcome.get("reason") or "")
+                    or str(expression.get("reason") or "")
+                    or None
+                ),
                 "risk_bucket": risk_bucket,
                 "population_policy": population_policy or "review_gap",
                 "policy_origin": (
@@ -568,6 +628,62 @@ def _unplaceable_record(
 def _choose_cell(matches: list[dict[str, Any]], target: str) -> dict[str, Any]:
     exact = [item for item in matches if str(item.get("node_id") or "") == target]
     return exact[0] if exact else matches[0]
+
+
+def _outcome_expression(
+    outcome_kind: str,
+    formula: dict[str, Any],
+    outcome: dict[str, Any],
+    target: str,
+    target_cell: dict[str, Any],
+    decision: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Project a model-owned terminal outcome without relabeling it as a gap."""
+    target_ref = _normalize_anchor(target_cell.get("official_ref")) or _normalize_anchor(
+        formula.get("line_anchor")
+    )
+    if outcome_kind == "filer_entry":
+        return {
+            "kind": "input",
+            "text": f"line {target_ref} = entered by filer",
+            "source": {"kind": "input", "text": "entered by filer"},
+        }
+    if outcome_kind == "information_return":
+        form = str(outcome.get("form") or formula.get("form") or "")
+        box = str(outcome.get("box") or formula.get("box") or "")
+        source_label = _source_label("information_return", form, "", box)
+        return {
+            "kind": "imported",
+            "text": f"line {target_ref} = {source_label}",
+            "source": {"kind": "imported", "text": source_label},
+        }
+    if outcome_kind == "election":
+        question = str(
+            outcome.get("question")
+            or (decision or {}).get("question")
+            or formula.get("label")
+            or f"line {target_ref} requires a filer decision"
+        )
+        return {"kind": "reference", "text": question}
+    if outcome_kind == "not_derivable":
+        reason = str(
+            outcome.get("reason")
+            or formula.get("reason")
+            or formula.get("review_gap")
+            or "the supplied evidence is insufficient"
+        )
+        return {
+            "kind": "review_gap",
+            "text": f"line {target_ref} = not derivable",
+            "reason": reason,
+        }
+    if outcome_kind == "computation":
+        return _expression(target, formula, {}, [], [], target_cell)
+    return {
+        "kind": "review_gap",
+        "text": f"line {target_ref} = unresolved",
+        "reason": "generated outcome kind is not recognized",
+    }
 
 
 def _expression(

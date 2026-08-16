@@ -34,6 +34,7 @@ _EXPRESSION_KIND_BUCKETS = {
     "copy": "COPY",
     "cross_form_fetch": "CROSS_FORM_FETCH",
     "input": "USER_ENTRY",
+    "require_input": "USER_ENTRY",
     "imported": "IMPORTED",
     "repeatable_table": "PER_ROW",
     "review_gap": "NOT_REVIEWABLE",
@@ -331,6 +332,13 @@ def latest_curated_comment(
     return latest_curated_comments(history).get(str(address))
 
 
+def latest_address_verdicts(
+    history: Iterable[Mapping[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    """Return the newest validated verdict for each canonical address."""
+    return _latest_by_address(history)
+
+
 def derive_cell_coverage(
     manifest_or_units: Mapping[str, Any] | Iterable[Mapping[str, Any]],
     history: Iterable[Mapping[str, Any]],
@@ -354,10 +362,22 @@ def derive_cell_coverage(
             expression = review_content.get("expression") if isinstance(review_content, Mapping) else None
         expression_kind = expression.get("kind") if isinstance(expression, Mapping) else ""
         kind_bucket = expression_kind_bucket(expression_kind)
+        verdict = latest.get(address)
+        provenance = verdict.get("provenance") if isinstance(verdict, Mapping) else None
+        demotion = provenance.get("demotion") if isinstance(provenance, Mapping) else None
+        if isinstance(demotion, Mapping) and str(demotion.get("kind") or "") == "REQUIRE_INPUT":
+            result = _state(unit, "unreviewed", current_fingerprint, verdict=verdict)
+            result.update({
+                "derived": False,
+                "demoted": True,
+                "demotion_kind": "REQUIRE_INPUT",
+                "demotion_reason": str(demotion.get("reason") or ""),
+            })
+            results.append(result)
+            continue
         if expression_kind == "review_gap":
             results.append(_state(unit, "review_gap", current_fingerprint, kind_bucket=kind_bucket))
             continue
-        verdict = latest.get(address)
         if verdict is None:
             result = _state(unit, "unreviewed", current_fingerprint)
         elif _canonical_judgement(verdict.get("judgement")) != "confirmed":

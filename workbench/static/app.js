@@ -204,7 +204,7 @@ function rederiveFailureLabels(payload) {
 }
 
 function renderRederiveResult(panel, payload, attemptLabel) {
-  const resultNode = panel?.querySelector(".rederive-result");
+  const resultNode = panel?.querySelector(".try-again-result");
   if (!resultNode) return;
   const result = payload?.result && typeof payload.result === "object" ? payload.result : {};
   resultNode.replaceChildren();
@@ -287,15 +287,17 @@ function renderReview(page = null, restoreCellId = null) {
     const verdict = String(detail.verdict || "");
     const comment = String(detail.comment || "").trim();
     const reviewerTag = String(detail.reviewerTag || "").trim();
+    const rejectAction = String(detail.rejectAction || "abandon");
     const message = document.querySelector("#session-message");
     if (!cell) {
       message.textContent = "Select a generated cell before recording the verdict.";
       return;
     }
     if (verdict !== "confirmed" && verdict !== "questioned" && verdict !== "rejected") {
-      message.textContent = "This review surface accepts, questions, or rejects the selected generated cell.";
+      message.textContent = "This review surface accepts, retries, or rejects the selected generated cell.";
       return;
     }
+    const retry = rederiveAttempts.get(`${activeDocument.document_id}:${cell.cell_id}`);
     const safeId = `review_${activeDocument.document_id}_${cell.cell_id}_${Date.now()}`.toLowerCase().replace(/[^a-z0-9_]+/g, "_");
     message.textContent = "Recording verdict...";
     try {
@@ -307,10 +309,12 @@ function renderReview(page = null, restoreCellId = null) {
         reviewed_at: now(),
         comment: comment || undefined,
         reviewer_tag: reviewerTag || undefined,
+        try_again_attempt_id: verdict === "confirmed" ? retry?.attemptId : undefined,
+        reject_action: verdict === "rejected" ? rejectAction : undefined,
         object_ref: {object_id: cell.address_id},
       });
       if (verdict === "confirmed") updateCellReview(cell, {approved: true, note: ""});
-      const label = verdict === "confirmed" ? "accepted" : verdict === "questioned" ? "questioned" : "rejected";
+      const label = verdict === "confirmed" ? "accepted" : verdict === "questioned" ? "retried" : "rejected";
       message.textContent = `Cell ${label} for ${cell.official_ref || cell.cell_id}.`;
     } catch (error) {
       message.textContent = `Verdict was not recorded: ${error.message}`;
@@ -325,12 +329,12 @@ function renderReview(page = null, restoreCellId = null) {
     const previous = rederiveAttempts.get(key);
     const attemptLabel = previous === undefined
       ? "first try"
-      : previous === comment
+      : previous.comment === comment
         ? "same correction (fresh try)"
         : "changed correction";
-    const panel = document.querySelector(`#river-detail .rederive-panel[data-rederive-cell="${CSS.escape(cell.cell_id)}"]`);
-    const button = panel?.querySelector(".rederive-button");
-    const status = panel?.querySelector(".rederive-status");
+    const panel = document.querySelector(`#river-detail .generated-verdict[data-generated-cell="${CSS.escape(cell.cell_id)}"]`);
+    const button = panel?.querySelector('.verdict-question');
+    const status = panel?.querySelector(".try-again-status");
     const message = document.querySelector("#session-message");
     if (!panel || !button || !status) return;
     button.disabled = true;
@@ -344,9 +348,9 @@ function renderReview(page = null, restoreCellId = null) {
     if (comment) payload.draft_comment = comment;
     try {
       const result = await rederiveCell(payload);
-      rederiveAttempts.set(key, comment);
+      rederiveAttempts.set(key, {comment, attemptId: result.attempt_id});
       renderRederiveResult(panel, result, attemptLabel);
-      status.textContent = `Retry complete: ${attemptLabel}.`;
+      status.textContent = `Try Again complete: ${attemptLabel}.`;
       message.textContent = `Retry complete for ${cell.official_ref || cell.cell_id}; no review state was saved.`;
     } catch (error) {
       status.textContent = `Retry failed: ${error.message}`;

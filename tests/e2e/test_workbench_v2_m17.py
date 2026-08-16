@@ -128,12 +128,9 @@ def test_selected_cell_uses_human_headers_dossier_order_and_occurrence(page, wor
     expect(detail.locator(".verdict-accept")).to_be_visible()
     expect(detail.locator(".verdict-question")).to_be_visible()
     expect(detail.locator(".verdict-reject")).to_be_visible()
-    expect(detail.locator(".verdict-comment-box")).to_be_hidden()
-    detail.locator(".verdict-question").click()
-    expect(detail.locator(".verdict-comment-box")).to_be_visible()
-    detail.locator(".verdict-comment").fill("The generated cell needs another look.")
-    detail.locator(".verdict-question").click()
-    expect(page.locator("#session-message")).to_contain_text("questioned")
+    expect(detail.locator(".verdict-question")).to_have_text("Try Again")
+    expect(detail.locator(".verdict-comment")).to_be_visible()
+    assert detail.locator(".reject-dialog .reject-filer").count() == 0
     assert detail.locator(".verdict-reviewer").count() == 0
 
     # Repeated-concept occurrence contracts are exercised by the M19 concept tests;
@@ -153,22 +150,23 @@ def test_generated_cell_try_again_shows_fresh_result_without_session_progress(
     anchors = cards.locator(".unit-card-anchor").all_inner_texts()
     cards.nth(anchors.index("33")).locator(".unit-card-select").click()
 
-    panel = page.locator("#river-detail .rederive-panel")
+    panel = page.locator("#river-detail .generated-verdict")
     expect(panel).to_be_visible()
-    expect(panel.locator(".rederive-comment")).to_have_value("")
-    panel.locator(".rederive-button").click()
-    expect(panel.locator(".rederive-status")).to_contain_text("first try")
-    expect(panel.locator(".rederive-result")).to_contain_text("trial expression for line 33")
-    expect(panel.locator(".rederive-result")).to_contain_text("quote_not_verbatim")
+    expect(panel.locator(".verdict-comment")).to_have_value("")
+    panel.locator(".verdict-comment").fill("Use the current form face.")
+    panel.locator(".verdict-question").click()
+    expect(panel.locator(".try-again-status")).to_contain_text("first try")
+    expect(panel.locator(".try-again-result")).to_contain_text("trial expression for line 33")
+    expect(panel.locator(".try-again-result")).to_contain_text("quote_not_verbatim")
     assert session_writes == []
 
-    panel.locator(".rederive-comment").fill("Use the current form face.")
-    panel.locator(".rederive-button").click()
-    expect(panel.locator(".rederive-status")).to_contain_text("changed correction")
-    expect(panel.locator(".rederive-result")).to_contain_text("Use the current form face.")
+    panel.locator(".verdict-comment").fill("Use the current form face and line label.")
+    panel.locator(".verdict-question").click()
+    expect(panel.locator(".try-again-status")).to_contain_text("changed correction")
+    expect(panel.locator(".try-again-result")).to_contain_text("Use the current form face and line label.")
 
-    panel.locator(".rederive-button").click()
-    expect(panel.locator(".rederive-status")).to_contain_text("same correction")
+    panel.locator(".verdict-question").click()
+    expect(panel.locator(".try-again-status")).to_contain_text("same correction")
     assert session_writes == []
 
 

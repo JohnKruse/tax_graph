@@ -29,7 +29,12 @@ from workbench.sessions import (
     validate_unit_review_scope,
 )
 from workbench.verdicts import LEGACY_REVIEW_VERDICTS, REVIEW_VERDICTS, emit_verdict
-from workbench.address_verdicts import append_address_verdict, load_address_verdicts
+from workbench.address_verdicts import (
+    append_address_verdict,
+    latest_address_verdicts,
+    load_address_verdicts,
+)
+from workbench.review_defects import append_defect_report, summarize_attempts
 
 
 REJECTION_REASON_CODES = frozenset({"pipeline_defect", "source_pathology"})
@@ -87,6 +92,7 @@ def create_app(
         for entry in review_manifest.get("entries", [])
         if isinstance(entry, dict) and entry.get("queue_id")
     }
+    trial_history: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
     @app.get("/")
     def get_shell() -> Any:
@@ -279,6 +285,11 @@ def create_app(
                     for document in artifact_bundle.graph.objects("documents")
                     if isinstance(document, dict) and document.get("document_id")
                 },
+                gates={
+                    str(document["document_id"]): str(document.get("gate") or "project")
+                    for document in artifact_bundle.graph.objects("documents")
+                    if isinstance(document, dict) and document.get("document_id")
+                },
                 geometry_entries=entries,
                 page_geometry=artifact_bundle.geometry.get("pages", []) or [],
                 valid_document_ids=frozenset(
@@ -304,10 +315,14 @@ def create_app(
 
     def _decorate_document_cells(document_id: str, projection: DocumentCells) -> list[dict[str, Any]]:
         cells = projection.cells
+        gate = _document_context().get("gates", {}).get(document_id, "project")
+        for cell in cells:
+            cell["gate"] = gate if gate in {"project", "user"} else "project"
         if document_id not in GENERATED_REVIEW_DOCUMENTS:
             return cells
         ledger_path = verdict_root / "address_verdicts.jsonl"
         history = load_address_verdicts(ledger_path) if ledger_path.is_file() else []
+        latest = latest_address_verdicts(history)
         comments_by_address: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for record in history:
             comment = str(record.get("comment") or "").strip()
@@ -323,7 +338,41 @@ def create_app(
             comments = comments_by_address.get(str(cell.get("address_id") or ""))
             if comments:
                 cell["review_comments"] = comments
+            verdict = latest.get(str(cell.get("address_id") or ""))
+            provenance = verdict.get("provenance") if isinstance(verdict, dict) else None
+            attempts = provenance.get("attempts") if isinstance(provenance, dict) else None
+            if isinstance(attempts, list) and attempts:
+                cell["review_attempts"] = [
+                    dict(item) for item in attempts if isinstance(item, dict)
+                ]
+            demotion = provenance.get("demotion") if isinstance(provenance, dict) else None
+            if isinstance(demotion, dict) and str(demotion.get("kind") or "") == "REQUIRE_INPUT":
+                reason = str(demotion.get("reason") or "derivation failed; filer must supply this value")
+                cell.update({
+                    "demoted": True,
+                    "demotion_kind": "REQUIRE_INPUT",
+                    "demotion_reason": reason,
+                    "generated_kind": "filer_entry",
+                    "generated_status": "filer_provided_after_derivation_failure",
+                    "operation": "REQUIRE_INPUT",
+                    "expression": {
+                        "kind": "require_input",
+                        "operation": "REQUIRE_INPUT",
+                        "text": f"line {cell.get('official_ref') or '-'} = entered by filer",
+                        "reason": reason,
+                    },
+                    "population_policy": "user_entered",
+                    "policy_origin": "review_rejected_demotion",
+                    "policy_reason": reason,
+                    "review_gap": None,
+                    "kind_reason": reason,
+                })
         return cells
+
+    def _document_gate(document_id: str) -> str:
+        """Return the review escape-hatch gate, defaulting absent to project."""
+        gate = str(_document_context().get("gates", {}).get(document_id, "project"))
+        return gate if gate in {"project", "user"} else "project"
 
     def _pseudo_units(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
         # The session helpers only read ``unit_id`` and the first page, so the
@@ -355,6 +404,7 @@ def create_app(
             return jsonify({"error": "unknown document_id", "document_id": document_id}), 404
         projection = _document_projection(document_id)
         cells = _decorate_document_cells(document_id, projection)
+        unplaceable = getattr(projection, "unplaceable", []) or []
         return jsonify({
             "tax_year": int(year),
             "manifest_hash": review_manifest["manifest_hash"],
@@ -370,8 +420,8 @@ def create_app(
                 include_inputs=False,
             ).page_geometry,
             "cells": cells,
-            "unplaceable": projection.unplaceable,
-            "unplaceable_count": len(projection.unplaceable),
+            "unplaceable": unplaceable,
+            "unplaceable_count": len(unplaceable),
         })
 
     @app.get("/api/documents/<document_id>/session")
@@ -438,7 +488,7 @@ def create_app(
 
     @app.post("/api/rederive")
     def post_rederive() -> Any:
-        """Try one cell again with an optional comment and persist nothing."""
+        """Try one cell again with an optional comment and persist only its token."""
         denied = _require_write_token(app)
         if denied is not None:
             return denied
@@ -468,7 +518,20 @@ def create_app(
             return jsonify({"error": f"re-derive failed: {type(exc).__name__}: {exc}"}), 502
         if not isinstance(result, Mapping):
             return jsonify({"error": "re-derive handler returned a non-object result"}), 502
-        return jsonify(dict(result))
+        result_payload = dict(result)
+        attempt_id = "try_" + uuid.uuid4().hex
+        key = f"{document_id}:{line}"
+        trial_history[key].append({
+            "attempt_id": attempt_id,
+            "document_id": document_id,
+            "line": line,
+            "comment": str(draft_comment or "").strip(),
+            "comment_source": str(result_payload.get("comment_source") or "none"),
+            "result": result_payload.get("result"),
+            "validation": result_payload.get("validation"),
+        })
+        result_payload["attempt_id"] = attempt_id
+        return jsonify(result_payload)
 
     @app.post("/api/verdicts")
     def post_verdict() -> Any:
@@ -481,7 +544,7 @@ def create_app(
         allowed = {
             "queue_id", "verdict_id", "reviewer_id", "human_minutes", "verdict",
             "reviewed_at", "reason", "object_ref", "source_override", "comment",
-            "origin", "reviewer_tag",
+            "origin", "reviewer_tag", "try_again_attempt_id", "reject_action",
         }
         unexpected = sorted(set(payload) - allowed)
         if unexpected:
@@ -496,6 +559,7 @@ def create_app(
         verdict = str(payload.get("verdict") or "")
         reason = str(payload.get("reason") or "").strip()
         comment = str(payload.get("comment") or "").strip()
+        reject_action = str(payload.get("reject_action") or "abandon").strip()
         if verdict in {"questioned", "rejected"}:
             if not comment:
                 return jsonify({"error": "a questioned or rejected verdict requires a non-empty comment"}), 400
@@ -506,6 +570,32 @@ def create_app(
                 return jsonify({"error": "a rejection requires a non-empty comment"}), 400
         elif verdict not in REVIEW_VERDICTS:
             return jsonify({"error": "verdict must be confirmed, questioned, or rejected"}), 400
+        if reject_action not in {"abandon", "filer_provided"}:
+            return jsonify({"error": "reject_action must be abandon or filer_provided"}), 400
+        if verdict != "rejected" and "reject_action" in payload:
+            return jsonify({"error": "reject_action is only valid for a rejected verdict"}), 400
+        if verdict == "rejected" and reject_action == "filer_provided" and _document_gate(queue_id) != "user":
+            return jsonify({"error": "filer-provided continuation is available only on a user-gated document"}), 400
+        attempt_id = str(payload.get("try_again_attempt_id") or "").strip()
+        curated_trial: dict[str, Any] | None = None
+        if attempt_id:
+            if verdict != "confirmed":
+                return jsonify({"error": "try_again_attempt_id is only valid for an accepted verdict"}), 400
+            curated_trial = _find_trial(trial_history, attempt_id)
+            if curated_trial is None:
+                return jsonify({"error": "unknown try-again attempt"}), 409
+            trial_queue = str(curated_trial.get("document_id") or "")
+            if trial_queue != queue_id:
+                return jsonify({"error": "try-again attempt is outside the selected document"}), 400
+            trial_comment = str(curated_trial.get("comment") or "").strip()
+            if not trial_comment:
+                return jsonify({"error": "the accepted try-again attempt has no comment to curate"}), 400
+            comment = trial_comment
+            payload = dict(payload)
+            payload["comment"] = comment
+            payload["origin"] = "curated"
+        elif str(payload.get("origin") or "").strip() == "curated":
+            return jsonify({"error": "curated comments require an accepted try-again attempt"}), 400
         try:
             object_ref = _scoped_verdict_ref(entries[queue_id], payload.get("object_ref"))
             result = emit_verdict(
@@ -525,6 +615,38 @@ def create_app(
                 reviewer_tag=payload.get("reviewer_tag"),
                 output_path=verdict_root / f"{payload['verdict_id']}.yaml",
             )
+            ledger_provenance = {
+                "queue_id": queue_id,
+            }
+            if verdict == "rejected":
+                ledger_provenance["rejection"] = {
+                    "action": reject_action,
+                    "gate": _document_gate(queue_id),
+                }
+                if reject_action == "filer_provided":
+                    ledger_provenance["demotion"] = {
+                        "kind": "REQUIRE_INPUT",
+                        "reason": "filer-supplied because derivation failed",
+                    }
+            review_cells = (
+                _document_cells(queue_id)
+                if queue_id in GENERATED_REVIEW_DOCUMENTS
+                else []
+            )
+            review_cell = next(
+                (
+                    item for item in review_cells
+                    if str(item.get("address_id") or "")
+                    == str(object_ref.get("object_id") or "")
+                ),
+                {},
+            )
+            attempts = trial_history.get(
+                f"{queue_id}:{str(review_cell.get('official_ref') or '').strip().lower()}",
+                [],
+            )
+            if verdict == "rejected":
+                ledger_provenance["attempts"] = summarize_attempts(attempts)
             _append_address_review_if_applicable(
                 root=root_path,
                 year=year,
@@ -532,9 +654,29 @@ def create_app(
                 object_ref=object_ref,
                 verdict_payload=payload,
                 reviewer_id=str(app.config["WORKBENCH_REVIEWER_ID"]),
-                cells=_document_cells(queue_id) if queue_id in GENERATED_REVIEW_DOCUMENTS else [],
+                cells=review_cells,
                 store_path=verdict_root / "address_verdicts.jsonl",
+                extra_provenance=ledger_provenance,
             )
+            if verdict == "rejected" and queue_id in GENERATED_REVIEW_DOCUMENTS and object_ref:
+                append_defect_report(
+                    root=root_path,
+                    year=year,
+                    report={
+                        "report_id": str(payload["verdict_id"]),
+                        "queue_id": queue_id,
+                        "address": str(object_ref.get("object_id") or ""),
+                        "gate": _document_gate(queue_id),
+                        "reject_action": reject_action,
+                        "comment": comment,
+                        "cell": {
+                            "cell_id": review_cell.get("cell_id"),
+                            "official_ref": review_cell.get("official_ref"),
+                            "display_name": review_cell.get("display_name"),
+                        },
+                        "attempts": summarize_attempts(attempts),
+                    },
+                )
         except FileExistsError as exc:
             return jsonify({"error": str(exc)}), 409
         except (TypeError, ValueError) as exc:
@@ -562,6 +704,18 @@ def _machine_reviewer_id() -> str:
     operating_system = platform.system() or "unknown-os"
     safe_os = "".join(char if char.isalnum() or char in "._-" else "_" for char in operating_system)
     return f"workbench/{safe_os}/{safe_host}/{safe_user}/{session}"
+
+
+def _find_trial(
+    history: Mapping[str, list[Mapping[str, Any]]],
+    attempt_id: str,
+) -> dict[str, Any] | None:
+    """Find one in-memory retry result without persisting the trial itself."""
+    for attempts in history.values():
+        for attempt in attempts:
+            if str(attempt.get("attempt_id") or "") == attempt_id:
+                return dict(attempt)
+    return None
 
 
 def _scoped_verdict_ref(entry: dict[str, Any], supplied: Any) -> dict[str, str] | None:
@@ -607,6 +761,7 @@ def _append_address_review_if_applicable(
     reviewer_id: str,
     cells: list[dict[str, Any]],
     store_path: str | Path,
+    extra_provenance: Mapping[str, Any] | None = None,
 ) -> None:
     """Mirror generated-cell verdicts into the durable address ledger."""
     if not object_ref or not cells:
@@ -617,6 +772,14 @@ def _append_address_review_if_applicable(
         return
     judgement = str(verdict_payload.get("verdict") or "")
     comment = verdict_payload.get("comment")
+    provenance = {
+        "queue_id": queue_id,
+        "generated_model": cell.get("generated_model"),
+        "generated_provider": cell.get("generated_provider"),
+        "review_source": cell.get("review_source"),
+    }
+    if extra_provenance:
+        provenance.update(dict(extra_provenance))
     append_address_verdict(
         root=root,
         year=year,
@@ -630,12 +793,7 @@ def _append_address_review_if_applicable(
         reviewed_at=verdict_payload.get("reviewed_at"),
         verdict_id=str(verdict_payload.get("verdict_id") or ""),
         store_path=store_path,
-        provenance={
-            "queue_id": queue_id,
-            "generated_model": cell.get("generated_model"),
-            "generated_provider": cell.get("generated_provider"),
-            "review_source": cell.get("review_source"),
-        },
+        provenance=provenance,
         comment=str(comment) if comment is not None else None,
         origin=str(verdict_payload.get("origin") or "") or None,
         reviewer_tag=str(verdict_payload.get("reviewer_tag") or "") or None,

@@ -21,6 +21,14 @@ const RISK_LABEL = {
   NOT_REVIEWABLE: "Review gap",
 };
 
+const OUTCOME_LABEL = {
+  computation: "Computation",
+  filer_entry: "Filer entry",
+  election: "Election",
+  information_return: "Information return",
+  not_derivable: "Not derivable",
+};
+
 function escapeHtml(value) {
   const element = document.createElement("span");
   element.textContent = String(value ?? "");
@@ -251,33 +259,64 @@ function reviewCommentsMarkup(cell) {
     `</div>`;
 }
 
+function reviewAttemptsMarkup(cell) {
+  const attempts = Array.isArray(cell.review_attempts) ? cell.review_attempts : [];
+  if (!attempts.length) return "";
+  return `<div class="review-attempt-history"><strong>Try Again history</strong>` +
+    attempts.map((item) => {
+      const validation = item.validation && typeof item.validation === "object"
+        ? ` (${item.validation.attempted ?? 0} checks, ${item.validation.errored ?? 0} errors)`
+        : "";
+      const result = item.result && typeof item.result === "object"
+        ? (item.result.rendered || item.result.expression || "")
+        : (item.result || "");
+      return `<article class="review-attempt">` +
+        `<p><strong>${escapeHtml(item.attempt_id || "retry")}</strong> - line ${escapeHtml(item.line || "-")}${escapeHtml(validation)}</p>` +
+        `<blockquote>${escapeHtml(item.comment || "No comment supplied.")}</blockquote>` +
+        (result ? `<p><strong>Result:</strong> ${escapeHtml(result)}</p>` : "") +
+        `</article>`;
+    }).join("") +
+    `</div>`;
+}
+
 function generatedVerdictMarkup(cell) {
   if (!cell.generated) return "";
+  const outcomeKind = String(cell.generated_kind || "").trim();
+  const outcomeLabel = OUTCOME_LABEL[outcomeKind] || "Generated result";
+  const kindReason = String(cell.kind_reason || "").trim();
+  const gate = cell.gate === "user" ? "user" : "project";
   return `<section class="dossier-group generated-verdict" data-generated-cell="${escapeHtml(cell.cell_id)}">` +
     `<h3>Pipeline review</h3>` +
     `<p class="generated-provenance"><strong>Generated draft:</strong> ${escapeHtml(cell.generated_model || "unknown model")} / ${escapeHtml(cell.generated_provider || "unknown provider")}</p>` +
+    `<p class="generated-status"><strong>Outcome:</strong> <span class="generated-kind">${escapeHtml(outcomeLabel)}</span></p>` +
+    (kindReason ? `<p class="generated-status generated-kind-reason"><strong>Reason:</strong> ${escapeHtml(kindReason)}</p>` : "") +
     `<p class="generated-status"><strong>Status:</strong> ${escapeHtml(cell.generated_status || "review_gap")}</p>` +
     `<p class="generated-status"><strong>Policy origin:</strong> ${escapeHtml(cell.policy_origin || "review_gap")}` +
       (cell.failover_class ? ` (${escapeHtml(cell.failover_class)})` : "") + `</p>` +
+    reviewAttemptsMarkup(cell) +
     reviewCommentsMarkup(cell) +
-    `<section class="rederive-panel" data-rederive-cell="${escapeHtml(cell.cell_id)}">` +
-      `<h4>Try again</h4>` +
-      `<p class="rederive-hint">This is a fresh, non-persisting derivation attempt. The correction below is sent only for this attempt.</p>` +
-      `<label>Correction for this attempt<textarea class="rederive-comment" rows="3" placeholder="Optional correction for the model."></textarea></label>` +
-      `<button type="button" class="rederive-button">Try again</button>` +
-      `<p class="rederive-status" role="status" aria-live="polite"></p>` +
-      `<div class="rederive-result" aria-live="polite"></div>` +
-    `</section>` +
     `<label>Optional batch tag<input class="verdict-tag" type="text" placeholder="For example: first pass" autocomplete="off"></label>` +
-    `<div class="verdict-comment-box" hidden>` +
-      `<label>What did you observe? <textarea class="verdict-comment" rows="3" placeholder="Describe the evidence or concern for the pipeline."></textarea></label>` +
-    `</div>` +
-    `<p class="verdict-hint">Accept a matching cell. Question or reject a mismatch and explain what needs attention.</p>` +
+    `<label class="verdict-comment-label">Comment for this review<textarea class="verdict-comment" rows="3" placeholder="Optional for Accept; required for Try Again or Reject."></textarea></label>` +
+    `<p class="verdict-hint">Accept the result, Try Again with this comment as evidence, or Reject and report the defect.</p>` +
     `<div class="verdict-controls" role="group" aria-label="Generated cell verdict">` +
       `<button type="button" class="verdict-button verdict-accept" data-verdict="confirmed">Accept</button>` +
-      `<button type="button" class="verdict-button verdict-question" data-verdict="questioned">Question</button>` +
+      `<button type="button" class="verdict-button verdict-question" data-verdict="questioned">Try Again</button>` +
       `<button type="button" class="verdict-button verdict-reject" data-verdict="rejected">Reject</button>` +
     `</div>` +
+    `<div class="try-again-result" aria-live="polite"></div>` +
+    `<p class="try-again-status" role="status" aria-live="polite"></p>` +
+    `<dialog class="reject-dialog">` +
+      `<form method="dialog">` +
+        `<h4>Reject this generated cell?</h4>` +
+        `<p>The reject reason and retry history will be placed in the local defect queue.</p>` +
+        `<div class="reject-actions">` +
+          `<button type="button" class="reject-abandon" data-reject-action="abandon">Abandon</button>` +
+          (gate === "user"
+            ? `<button type="button" class="reject-filer" data-reject-action="filer_provided">Continue with cell as filer-provided</button>`
+            : "") +
+        `</div>` +
+      `</form>` +
+    `</dialog>` +
     `</section>`;
 }
 
@@ -379,17 +418,27 @@ function renderDetail(detail, cell, cells, review, onReviewChange) {
       const comment = body.querySelector(".verdict-comment")?.value.trim() || "";
       const tag = body.querySelector(".verdict-tag")?.value.trim() || "";
       const verdict = button.dataset.verdict || "";
-      if (verdict === "questioned" || verdict === "rejected") {
-        const commentBox = body.querySelector(".verdict-comment-box");
-        if (commentBox?.hidden) {
-          commentBox.hidden = false;
-          body.querySelector(".verdict-comment")?.focus();
-          return;
-        }
+      if (verdict === "questioned") {
         if (!comment) {
           body.querySelector(".verdict-comment")?.focus();
           return;
         }
+        detail.dispatchEvent(new CustomEvent("workbench:rederive", {
+          bubbles: true,
+          detail: {cell, draftComment: comment},
+        }));
+        return;
+      }
+      if (verdict === "rejected") {
+        if (!comment) {
+          body.querySelector(".verdict-comment")?.focus();
+          return;
+        }
+        const dialog = body.querySelector(".reject-dialog");
+        if (dialog?.showModal) {
+          dialog.showModal();
+        }
+        return;
       }
       detail.dispatchEvent(new CustomEvent("workbench:submit-verdict", {
         bubbles: true,
@@ -402,12 +451,21 @@ function renderDetail(detail, cell, cells, review, onReviewChange) {
       }));
     });
   });
-  body.querySelector(".rederive-button")?.addEventListener("click", () => {
-    const draftComment = body.querySelector(".rederive-comment")?.value || "";
-    detail.dispatchEvent(new CustomEvent("workbench:rederive", {
-      bubbles: true,
-      detail: {cell, draftComment},
-    }));
+  body.querySelectorAll("[data-reject-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const dialog = body.querySelector(".reject-dialog");
+      dialog?.close();
+      detail.dispatchEvent(new CustomEvent("workbench:submit-verdict", {
+        bubbles: true,
+        detail: {
+          cell,
+          verdict: "rejected",
+          comment: body.querySelector(".verdict-comment")?.value.trim() || "",
+          reviewerTag: body.querySelector(".verdict-tag")?.value.trim() || "",
+          rejectAction: button.dataset.rejectAction || "abandon",
+        },
+      }));
+    });
   });
   headingTitle.focus({preventScroll: true});
 }

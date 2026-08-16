@@ -276,6 +276,28 @@ and is OUT OF SCOPE.
 graph. The 88 outline-index gaps. Election quality (`schedule_d` 17 misclassified, `schedule_2` 4's
 broken face) - still awaiting John's adjudication.
 
+**CODEX STATUS (2026-08-16, implementation slice).** Generated outcomes now project all five
+S113 kinds with outcome-specific expression and policy, including the 1a filer-entry path;
+decision citations are included in the authority slot. The workbench now uses Accept / Try Again /
+Reject, keeps retry attempts non-persistent until an accepted retry curates its comment, writes
+local rejection reports, retains rejection retry history in the address ledger, and applies the
+user-gated `REQUIRE_INPUT` demotion with provenance. The generated detail body owns the verdict
+controls and scrolls; the detached retry panel is gone. The legacy address records still load via
+the existing judgement aliases.
+
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex_s115).Path; .venv\Scripts\python.exe -m pytest tests/test_m20_s115.py -q` -> **5 passed**.
+**RAN:** same temp-root command with `tests/test_workbench_m15.py -q` -> **4 passed**.
+**RAN:** same temp-root command with `tests/test_review_verdicts_m20.py tests/test_rederive_m20.py -q` -> **19 passed, 1 failed**; the failure is `PermissionError` opening `graph/2025/_drafts/form_1040_2025` before the projection runs.
+**RAN:** same temp-root command with `tests/test_m20_s113.py tests/test_generated_review_m20.py -q` -> **11 passed, 5 failed**; all five fail at the known draft ACL before generated projection.
+**RAN:** same temp-root command with `tests/test_workbench_rederive_m20.py tests/test_workbench_write_api_m15.py -q` -> **3 passed, 7 errors**; the errors are the same draft ACL during app setup.
+**RAN:** same temp-root command with `tests/e2e/test_workbench_v2_m17.py -q` -> **1 passed, 4 errors**; the retry-contract test passes, while the real-artifact fixture cannot load the draft directory. The lightweight retry fixture initially exposed a missing optional `unplaceable` field; the route now defaults it to an empty list.
+**RAN:** `.venv\Scripts\python.exe pilot\replay_harness.py` -> **25 cases, 0 mismatches, network_calls=0**. `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. `git diff --check` -> **clean** (Git emitted only the existing CRLF normalization warning for `workbench/server.py`). Python compile checks passed for the changed Python modules and S115 test. Node syntax check was **NOT RUN: node is not installed**.
+
+**OPEN FOR ARCHITECT:** live generated-cell floors and corpus/live workbench tests remain
+unverified because this account cannot read the draft directories; no response schema or prompt
+was changed. The working tree also contains pre-existing user edits and scratch artifacts; Codex
+did not stage them.
+
 ## Open for Architect
 
 **S109 IS REVERTED (John's call, 2026-08-16). DERIVATION IS BACK AT BASELINE.**
