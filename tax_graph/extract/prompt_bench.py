@@ -39,8 +39,8 @@ from tax_graph.extract.outline import (
     build_outline_tree,
 )
 from tax_graph.extract.outline_pipeline import (
+    _formula_outline_nodes,
     _instruction_owner_map,
-    _model_formula_outline_nodes,
     _outline_node_id,
     _spans_for_outline_node,
 )
@@ -73,7 +73,7 @@ def run_prompt_bench(
     outline = build_outline_tree(document)
     instruction_owners = _instruction_owner_map(spans)
     formula_targets = {}
-    for node in _model_formula_outline_nodes(outline.children):
+    for node in _formula_outline_nodes(outline.children):
         formula_targets[_outline_node_id(document.document_id, node)] = node
         if node.line_anchor:
             formula_targets.setdefault(str(node.line_anchor), node)

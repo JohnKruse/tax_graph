@@ -21,19 +21,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S111 is specced below - THE MODEL PICKS THE PATH.**
-**S110 IS WITHDRAWN AND MUST BE STOPPED IF RUNNING.** Its escape hatch patched a classifier that
-S111 removes from the decision entirely. **Its decision-object requirement SURVIVES** and is carried
-into S111 item 1 as the `election` branch.
-**The Worker needs NO live model call; the Architect runs re-derivation and reports the numbers.**
+**BALL: CODEX. M20-S112 is specced below - the REPLAY HARNESS. No schema, no prompt, no graph
+write, no model call.**
 
-**S109 IS REVERTED (`db4df3e`).** Tree is at **rules 108 / gaps 33**, inside the 107-109 / 32-34
-baseline. **Arity-by-role is not to be retried until there is an end-to-end regression signal.**
+**DIRECTION IS PINNED IN `../docs/derivation-architecture.md` (2026-08-16). READ IT FIRST.** It
+exists so a niggling problem does not divert the direction, and it states the sequencing: **replay
+harness -> the model owns the path -> voting -> review UI.** **Never change the mechanism and the
+measurement in the same round.**
 
-**READ THIS BEFORE TOUCHING THE RESPONSE SCHEMA.** Four schema changes this phase; three took
-derivation to a fraction of baseline **while passing their targeted tests** (67, 90, 91 passed).
-**A green test run is not evidence for a schema change.** A corpus re-derive costs **$0.046 and
-twelve minutes** and is the only thing that has ever caught this class.
+**S111 IS REVERTED** (rules 73, edges 187, gaps 262 - baseline is 107-109 / 345-370 / <=34).
+**S109 IS REVERTED** (`db4df3e`). **Four consecutive schema changes broke derivation while passing
+their targeted tests** (67, 90, 91, 91 passed). **Neither returns until the harness exists.**
+
+**THE ONE THING PROVEN, AND IT IS THE REASON TO KEEP GOING.** Every failure opened end to end this
+week had a CORRECT model answer. **The AI half is not the risk; every catastrophic failure came from
+the deterministic half.**
 
 **M20-S108 IS ACCEPTED** (`c2dc0d8` + `e2d0180` + `4377c30` + `7bfb9e8` + `7580a4d` + `b96fc59`,
 Architect, 2026-08-15). `extract --year` completes all 17 documents; `accepted` moved 0 -> ~1670;
@@ -140,111 +142,72 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S111 SPECCED BY ARCHITECT (2026-08-16). THE MODEL PICKS THE PATH. THE CUE MATCHER STOPS
-DECIDING.** **REAL ROUND** - graph writes. **REPLACES S110, which was a patch on a classifier that
-should not be making the call.** **THIS CHANGES THE RESPONSE SCHEMA - READ THE WARNING.**
+**M20-S112 SPECCED BY ARCHITECT (2026-08-16). THE REPLAY HARNESS - A FAST, LAYER-NAMING REGRESSION
+SIGNAL FOR DERIVATION.** **NO schema change. NO prompt change. NO graph write. NO model call.**
+**Direction: `../docs/derivation-architecture.md` - read it before starting.**
 
-**WORKER UPDATE (Codex, 2026-08-16): OFFLINE IMPLEMENTATION COMPLETE; ARCHITECT RE-DERIVATION
-PENDING.** The formula call now uses one strict nullable union with `kind` values
-`computation`, `filer_entry`, `election`, `information_return`, and `not_derivable`. Corrected
-acquired outlines send every addressable line through that call; the historical cue matcher is
-retained only as four-quadrant telemetry. Model elections project their question, options, and
-supplied citations into a decision with a mandatory `escalate` option; no label classifier writes
-the election. Prompt-bench follows the same addressable-node set. S110's untracked guard was
-removed as withdrawn.
+**WHY THIS ROUND EXISTS, AND WHY IT COMES FIRST.** Four consecutive rounds changed the model-to-graph
+contract and **all four broke derivation while passing their targeted tests** (67, 90, 91, 91
+passed): S108 item 1 took rules to 0, S109 to 16-19, the S109 fix to 43-44, S111 to 73 with gaps at
+262. **The contract lives in FOUR places that must agree** - the prompt, the response schema, the
+validator, and assembly/resolution - **and nothing checks that they agree.** The only thing that has
+ever caught a mismatch is a twelve-minute corpus re-derive reporting one number, which says THAT
+something broke and never WHICH layer. **Nothing else lands safely until this exists** (John,
+2026-08-16: *"I would prefer to find an approach we believe in and then put effort into making it
+work."*).
 
-**WORKER TEST EVIDENCE:** RAN:
-`.venv\Scripts\python.exe -m pytest tests/test_m20_s111.py -q` -> **9 passed, 1 warning**.
-RAN (supported writable root):
-`$env:PYTEST_DEBUG_TEMPROOT = (Join-Path (Get-Location) '.test_tmp2'); .venv\Scripts\python.exe -m pytest tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py tests/test_extract_outline_m4.py tests/test_operation_registry_m20.py tests/test_m20_s111.py -q`
--> **91 passed, 1 warning**. The required bare command was also RAN and produced **46 passed,
-36 errors**, all `WinError 5` during pytest temp-root setup at the poisoned
-`.test_tmp\pytest-of-devbox` ACL; no test-body failure was reported. RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. RAN:
-`git diff --check` -> **clean**. NOT RUN: real `extract --year 2025` -> **Architect-owned live
-provider re-derive; BALL says Worker needs no live model call**.
+**WHAT TO BUILD.** A recorded-response replay fixture and runner:
+1. **Capture.** From a real `extract --year 2025`, record for **at least 20 cells** the exact
+   `(prompt, raw model response)` pair plus the document id and line anchor. **Cells must be chosen
+   to cover every branch that has broken**: a plain `SUBTRACT` (`form_1040` 11a), a large `SUM`
+   (`schedule_1` line 10 or `form_1040` 1z), a filing-status constant pair (`schedule_1a` 9), a
+   scalar constant (`schedule_1a` 12), a cross-document reference (`form_6251` 13), a threshold
+   conditional (`form_6251` 18), a band table (`form_2441` 8), a range reference (`schedule_2` 1z),
+   and both filer elections (`form_1040` 35a and 36).
+2. **Replay.** Feed each recorded response through **the real production path** - the same
+   validator, the same assembly, the same operand resolution that `extract` uses. **No
+   reimplementation.** A fake client returns the recorded response; everything downstream is
+   production code.
+3. **Assert per layer, and say which one failed.** For each fixture record the expected outcome and
+   assert it, with a message naming the stage: schema-valid, validator-accepted, operands-resolved,
+   rule-and-edges-assembled. **A failure must state the layer and the cell**, e.g.
+   `form_6251 18: operands resolved but assembly produced 0 edges`.
 
-**JOHN'S CALL, 2026-08-16:** *"Why are we constantly trying to be deterministic... You keep telling
-me the model is making good choices given the evidence and prompt we provide. Why don't we just fix
-that instead of ever more baroque decisions?"*
-
-**THE EVIDENCE FOR IT IS ONE-SIDED.** Per cell the AI makes exactly ONE decision - the answer.
-Routing, packet assembly, instruction attachment, operand resolution, arity validation and
-accept/review are all deterministic. **Every catastrophic failure this phase came from the
-deterministic half**: the packet builder zeroed derivation for two weeks (`4990f20`); the arity/role
-contract zeroed it twice (S109, reverted at `db4df3e`); a schema shape zeroed it once (S108 item 1);
-the cue matcher misroutes elections. **In every failure opened end to end, the model's answer was
-correct** - `form_1040` 11a, `schedule_2` 1z, `form_6251` 13 and 18, `form_2441` 15, and even
-`form_1040` 36, which gave the right answer to the wrong question.
-
-**THE ROUTING DEFECT, CONCRETELY.** `_formula_selector_decision` admits a line when its lowercased
-label contains a phrase from `_LEGACY_FORMULA_CUES` / `_WIDENED_FORMULA_CUES`. `form_1040` 36 reads
-*"Amount of line 34 you want applied to your 2026 estimated tax"*, which contains **`"amount of
-line"`**, so it was routed to `_formula_prompt` and asked what operation combines which lines.
-**No model decided it was a computation; a substring did, before any call was made.** The phrase is
-irreducibly ambiguous - *"Enter the amount of line 34"* IS a copy - so **the matcher cannot be fixed
-by adding or tuning cues.**
-
-**COST IS NO LONGER AN ARGUMENT FOR THE GATE.** The matcher exists so we call on 141 lines rather
-than all ~790 outline labels. A corpus run is **159 calls / $0.046**; asking on every addressable
-line is roughly 5x, about **$0.25 a run.**
-
-**ITEM 1 - ONE PROMPT, A DISCRIMINATED UNION.** One call per addressable line returns a `kind` plus
-the fields that kind requires:
-- **`computation`** - `operation`, `source_lines`, `quote`
-- **`filer_entry`** - `quote`
-- **`election`** - `question`, `options[]`, `quote` (each option carrying `label`,
-  `downstream_effect`, `citation_refs`; **an `escalate` option is MANDATORY**, per the MCP contract
-  that the agent presents the choice and never makes it)
-- **`information_return`** - `form`, `box`, `quote`
-- **`not_derivable`** - `reason`, `quote`
-
-**The cue phrases move INTO the prompt as EXAMPLES of each kind. They must not gate anything.**
-
-**ITEM 2 - GROUND THE ANSWER IN THE SUPPLIED EVIDENCE.** The prompt must say, in words, **answer
-only from the evidence given; if the evidence does not say, return `not_derivable`.** Today the only
-grounding check is that `quote` appears in the packet, **which constrains the quote and not
-`source_lines`.** We have been relying on the model's good behaviour instead of requiring it.
-
-**ITEM 3 - MEASURE BEFORE REMOVING. DO NOT DELETE THE MATCHER THIS ROUND.** Run both: the union
-answer AND the existing cue decision, and **report agreement across all ~790 addressable lines.**
-- Where the matcher admitted and the model says `computation` - agreement.
-- Where the matcher admitted and the model says anything else - **candidate misroutes; list them.**
-- Where the matcher skipped and the model says `computation` - **derivation we have been silently
-  losing; list them.**
-**That table is the deliverable that justifies deleting the matcher in a later round.** Removing it
-here would be changing the mechanism and the measurement in the same step.
-
-**WARNING - FOURTH SCHEMA CHANGE THIS PHASE; THREE OF THE PREVIOUS ONES BROKE DERIVATION WHILE
-PASSING THEIR TESTS** (67, 90, 91 passed; rules to 0, to 16-19, to 43-44). **`tests/` validates
-hand-written payloads against the validator. NOTHING asserts a real model response still resolves
-end to end. A green targeted set is NOT evidence for this round.** The corpus re-derive is, it costs
-$0.046, and it is mandatory.
+**THE POINT IS THE DIAGNOSTIC MESSAGE, NOT THE PASS/FAIL.** A harness that reports "assertion
+failed" is worth little; the whole value is that it names the layer in seconds instead of after a
+twelve-minute re-derive plus manual archaeology.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not delete or tune `_LEGACY_FORMULA_CUES` / `_WIDENED_FORMULA_CUES`.** They become prompt
-  examples; the gate is measured this round and removed in the next.
-- **Do not touch the arity/role contract.** Reverted at `db4df3e`; out of scope.
-- **Do not hand-author a decision object.** The two elections must be pipeline-produced.
-- **Do not re-baseline any expected-count fixture.**
+- **Do not change any production code path.** If the harness needs a seam to inject a fake client,
+  add the seam and nothing else. **If the seam cannot be added without changing behaviour, STOP and
+  report it** - that is a finding worth having.
+- **Do not re-record fixtures to make a failing assertion pass.** A recorded response is evidence;
+  editing it to fit is the same defect as rewriting a citation to fit its range.
+- **Do not assert on counts that vary run to run.** Output moves +/-2 rules corpus-wide; assert
+  per-cell outcomes, which are stable.
+- **Do not touch the arity/role contract, the cue matcher, or the response schema.** All out of
+  scope; S109 and S111 are reverted.
 
-**THE FLOOR - DERIVATION OUTPUT, NOT ACCEPTANCE COUNTS.**
-- **`form_1040` 35a and 36 classify as `election` (or `filer_entry`), NOT `computation`**, and
-  neither mints a `COPY` rule. Report what each produced, by id.
-- **`pilot/face_lint.py pilot/face_lint_rules.yaml` reports ZERO `filer-election-is-not-a-copy`
-  hits** (currently 2). Paste the output.
-- **Corpus stays in baseline: `rules` 107-109, `edges` 345-370, gaps <= 34**, from a real
-  `extract --year 2025`. **Derivation must not regress by one rule.**
-- **The agreement table from item 3**, with counts in all four quadrants.
-- **Targeted set green, bare - no `PYTEST_DEBUG_TEMPROOT`, no elevation**:
-  `tests/test_m20_s108.py tests/test_background_m20.py tests/test_draft_route_m20.py
-  tests/test_m20_s102.py tests/test_m20_s91.py tests/test_outline_span_resolution_m20.py
-  tests/test_extract_outline_m4.py tests/test_operation_registry_m20.py` (82 passed at `db4df3e`).
+**THE FLOOR.**
+- **The harness runs in under 30 seconds with no network** and covers at least the 10 named shapes.
+- **It FAILS, loudly and by layer, when pointed at the reverted breakage.** Prove it by running
+  against `9b9333f` (S111) or `c47f5fa` (S109) and pasting the output. **A harness that has never
+  caught a real break is not evidence that it works** - this is the acceptance test for the round.
+- **It PASSES on the current tree** (`db4df3e` behaviour, rules 107-109).
+- **Corpus is untouched**: `extract --year 2025` still gives `rules` 107-109, `edges` 345-370,
+  `gaps` <= 34. Run it and paste the numbers.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
+- **Targeted tests**: run what your sandbox permits and REPORT THE COMMAND. **The bare-run
+  requirement is withdrawn** - see below.
 
-**OUT OF SCOPE.** Deleting the matcher (next round, gated on item 3). Voting across seeds - **there
-is no voting mechanism today; the Architect ran the corpus three times by hand.** The 12
-outline-index gaps. The 5 transport `400`s. `system_fingerprint` capture.
+**A CORRECTION THE ARCHITECT OWES THE WORKER.** Three rounds carried a floor demanding pytest be run
+bare with no `PYTEST_DEBUG_TEMPROOT`. **The Worker cannot do that** - its sandbox hits `WinError 5`
+on the poisoned `.test_tmp\pytest-of-devbox` ACL and yields 46 passed / 36 errors, which S111's
+report stated plainly and the Architect misread as evasion. **Bare-run verification is the
+Architect's job and is removed from Worker floors.** Use whatever temp root works and say which.
+
+**OUT OF SCOPE.** Voting. `system_fingerprint`. The model owning the path (the withdrawn S111 -
+it returns AFTER this lands). The 12 outline-index gaps. The 5 transport `400`s.
 
 ## Open for Architect
 
