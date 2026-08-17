@@ -250,6 +250,22 @@ Reporting one number that conflates them is the kind of misleading metric that c
 **ARCHITECT'S LEG.** The live re-run on both booklets, and the 1040 booklet, which needs
 chapter-scoped windows - still owed by me, in Queued.
 
+**CODEX STATUS (2026-08-17): IMPLEMENTED, PROVIDER-FREE LIVE FIXTURE GREEN.** `_raw_section`
+now returns a rejection record for section-local malformed input instead of aborting the booklet;
+the final byte/heading/owner verifier remains fail-closed. Model `end_byte` is advisory, so the
+degenerate live `Line 4.` claim at byte `71963` is recovered and its end is recomputed from the
+next section. The scorer now reports `wrong_form_owner` separately from
+`sibling_worksheet_owner`, and the stable live recording is the only fixture used. Deleted the
+per-round S122 recording and renamed the focused guard to `pilot/test_model_instruction_segmenter_m20_s123.py`.
+Stable replay reports Schedule B **29/29 sections and 8 gained cells**; Schedule D **93 unique
+sections from 104 raw claims**, **1 gained cell**, **0 wrong_form_owner**, and **58
+sibling_worksheet_owner** findings.
+
+RAN: `New-Item -ItemType Directory -Path .test_tmp_s123 -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s123).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py -q` -> **23 passed, 1 warning in 1.53s**.
+
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+
 ## Open for Architect
 
 Nothing open. Raise items here.

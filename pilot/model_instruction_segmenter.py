@@ -451,6 +451,24 @@ def manifest_owner_document_ids(
     )
 
 
+def manifest_worksheet_document_ids(
+    root: str | Path,
+    *,
+    source_document_id: str,
+) -> frozenset[str]:
+    """Return worksheet owners in one booklet's manifest vocabulary."""
+    manifest = load_manifest(root=Path(root).resolve())
+    return frozenset(
+        entry.document_id
+        for entry in manifest.documents
+        if entry.kind == "worksheet"
+        and (
+            entry.instructions_document_id == source_document_id
+            or entry.region_of == source_document_id
+        )
+    )
+
+
 def _coerce_governs(value: Any) -> tuple[str, ...]:
     """Normalize one model ``governs`` list while preserving semantic labels."""
     if not isinstance(value, list):
@@ -472,13 +490,24 @@ def _raw_section(
     window: SourceWindow,
     source_bytes: bytes,
     allowed_document_ids: frozenset[str] | None,
-) -> tuple[ModelSection, bool]:
-    """Validate and convert one response record before frame reconciliation."""
+) -> tuple[ModelSection | None, bool, dict[str, Any] | None]:
+    """Validate one response section without making the booklet fatal."""
+    def reject(reason: str, detail: str | None = None) -> tuple[None, bool, dict[str, Any]]:
+        record: dict[str, Any] = {"reason": reason}
+        if isinstance(raw, Mapping):
+            for key in ("start_byte", "heading", "document_id"):
+                if key in raw:
+                    record[key] = raw[key]
+        if detail:
+            record["detail"] = detail
+        return None, False, record
+
     if isinstance(raw, (list, tuple)):
         if len(raw) != 6:
-            raise SegmenterError(
+            return reject(
+                "invalid_section_shape",
                 "compact section response must have heading, level, start, end, "
-                "document_id, and governs"
+                "document_id, and governs",
             )
         raw = dict(
             zip(
@@ -487,7 +516,7 @@ def _raw_section(
             )
         )
     if not isinstance(raw, Mapping):
-        raise SegmenterError("each recorded section must be an object or compact row")
+        return reject("invalid_section_shape", "section must be an object or compact row")
     required = {
         "heading",
         "level",
@@ -498,62 +527,94 @@ def _raw_section(
     }
     missing = sorted(required - set(raw))
     if missing:
-        raise SegmenterError(f"section response is missing fields: {', '.join(missing)}")
+        return reject("missing_fields", ", ".join(missing))
     heading = raw["heading"]
     document_id = raw["document_id"]
     if not isinstance(heading, str) or not heading:
-        raise SegmenterError("section heading must be a non-empty string")
+        return reject("invalid_heading", "section heading must be a non-empty string")
     if not isinstance(document_id, str) or not document_id.strip():
-        raise SegmenterError("section document_id must be a non-empty string")
+        return reject("invalid_document_id", "section document_id must be a non-empty string")
     try:
         level = int(raw["level"])
         start_byte = int(raw["start_byte"])
         end_byte = int(raw["end_byte"])
-    except (TypeError, ValueError) as exc:
-        raise SegmenterError("section level and byte ranges must be integers") from exc
-    if level < 1 or start_byte >= end_byte:
-        raise SegmenterError("section level and byte range are invalid")
-    if start_byte < window.start_byte or end_byte > window.end_byte:
-        raise SegmenterError(
-            f"section {start_byte}:{end_byte} escapes window "
-            f"{window.start_byte}:{window.end_byte}"
+    except (TypeError, ValueError):
+        return reject("invalid_numeric_fields", "level and byte ranges must be integers")
+    if level < 1:
+        return reject("invalid_level", "section level must be positive")
+    if not window.start_byte <= start_byte < window.end_byte:
+        return reject(
+            "start_outside_window",
+            f"section start {start_byte} is outside window "
+            f"{window.start_byte}:{window.end_byte}",
         )
-    if end_byte > len(source_bytes):
-        raise SegmenterError("section ends outside source")
-    resolved_start_byte, offset_repaired = _resolve_heading_offset(
-        source_bytes,
-        claimed_start_byte=start_byte,
-        heading=heading,
-    )
-    if resolved_start_byte >= end_byte:
-        raise ModelFrameVerificationError(
-            f"repaired heading starts at or after section end: "
-            f"{resolved_start_byte}:{end_byte}"
+    if start_byte >= len(source_bytes):
+        return reject("start_outside_source", f"section start {start_byte} is outside source")
+    try:
+        resolved_start_byte, offset_repaired = _resolve_heading_offset(
+            source_bytes,
+            claimed_start_byte=start_byte,
+            heading=heading,
+        )
+    except _HeadingOffsetResolutionError as exc:
+        record: dict[str, Any] = {
+            "start_byte": exc.start_byte,
+            "heading": exc.heading,
+            "reason": exc.reason,
+        }
+        if exc.candidates:
+            record["candidates"] = list(exc.candidates)
+        return None, False, record
+    if not window.start_byte <= resolved_start_byte < window.end_byte:
+        return reject(
+            "heading_outside_window",
+            f"resolved heading start {resolved_start_byte} is outside window "
+            f"{window.start_byte}:{window.end_byte}",
         )
     if "text" in raw:
         claimed_text = raw["text"]
-        actual_text = source_bytes[resolved_start_byte:end_byte].decode("utf-8")
+        if not isinstance(claimed_text, str):
+            return reject("invalid_text_witness", "text witness must be a string")
+        if not resolved_start_byte <= end_byte <= len(source_bytes):
+            return reject(
+                "invalid_text_range",
+                f"text witness range is invalid: {resolved_start_byte}:{end_byte}",
+            )
+        try:
+            actual_text = source_bytes[resolved_start_byte:end_byte].decode("utf-8")
+        except UnicodeDecodeError as exc:
+            return reject("invalid_text_range", str(exc))
         if claimed_text != actual_text:
-            raise ModelFrameVerificationError(
-                f"text does not match claimed range {resolved_start_byte}:{end_byte}"
+            return reject(
+                "text_mismatch",
+                f"text does not match claimed range {resolved_start_byte}:{end_byte}",
             )
     normalized_document_id = document_id.strip()
     if allowed_document_ids is not None and normalized_document_id not in allowed_document_ids:
         allowed = ", ".join(sorted(allowed_document_ids)) or "<none>"
-        raise ModelFrameVerificationError(
+        return reject(
+            "disallowed_document_id",
             f"document_id {normalized_document_id!r} is not an allowed owner for "
-            f"{source_document_id}; allowed: {allowed}"
+            f"{source_document_id}; allowed: {allowed}",
         )
-    return ModelSection(
-        section_id="",
-        source_document_id=source_document_id,
-        document_id=normalized_document_id,
-        heading=heading,
-        level=level,
-        governs=_coerce_governs(raw["governs"]),
-        start_byte=resolved_start_byte,
-        end_byte=end_byte,
-    ), offset_repaired
+    try:
+        governs = _coerce_governs(raw["governs"])
+    except (SegmenterError, TypeError, ValueError) as exc:
+        return reject("invalid_governs", str(exc))
+    return (
+        ModelSection(
+            section_id="",
+            source_document_id=source_document_id,
+            document_id=normalized_document_id,
+            heading=heading,
+            level=level,
+            governs=governs,
+            start_byte=resolved_start_byte,
+            end_byte=end_byte,
+        ),
+        offset_repaired,
+        None,
+    )
 
 
 def verify_model_sections(
@@ -749,7 +810,7 @@ def build_model_frame(
     response_count = 0
     response_section_count = 0
     heading_offset_repaired_count = 0
-    heading_rejections: list[dict[str, Any]] = []
+    section_rejections: list[dict[str, Any]] = []
     for response_record in responses:
         response_count += 1
         try:
@@ -767,24 +828,18 @@ def build_model_frame(
             raise SegmenterError("recorded response sections must be a list")
         for raw in raw_sections:
             response_section_count += 1
-            try:
-                section, offset_repaired = _raw_section(
-                    raw,
-                    source_document_id=source_document_id,
-                    window=window,
-                    source_bytes=source_bytes,
-                    allowed_document_ids=allowed_ids,
-                )
-            except _HeadingOffsetResolutionError as exc:
-                rejection = {
-                    "start_byte": exc.start_byte,
-                    "heading": exc.heading,
-                    "reason": exc.reason,
-                }
-                if exc.candidates:
-                    rejection["candidates"] = list(exc.candidates)
-                heading_rejections.append(rejection)
+            section, offset_repaired, rejection = _raw_section(
+                raw,
+                source_document_id=source_document_id,
+                window=window,
+                source_bytes=source_bytes,
+                allowed_document_ids=allowed_ids,
+            )
+            if rejection is not None:
+                section_rejections.append(rejection)
                 continue
+            if section is None:  # pragma: no cover - rejection path above is exhaustive.
+                raise SegmenterError("section parser returned neither section nor rejection")
             parsed.append((section, window))
             if offset_repaired:
                 heading_offset_repaired_count += 1
@@ -857,7 +912,7 @@ def build_model_frame(
                 for index, section in enumerate(observed)
             ),
             "heading_offset_repaired_count": heading_offset_repaired_count,
-            "rejected_sections": [*heading_rejections, *reconciliation_rejections],
+            "rejected_sections": [*section_rejections, *reconciliation_rejections],
             "owner_conflict_count": owner_conflict_count,
             "governs_conflict_count": governs_conflict_count,
             "reconciles_to_file_size": True,
@@ -875,7 +930,7 @@ def load_recorded_fixture(
     fixture_path = Path(path)
     payload = json.loads(fixture_path.read_text(encoding="ascii"))
     if not isinstance(payload, Mapping) or payload.get("schema_version") != 1:
-        raise SegmenterError(f"invalid M20-S122 fixture: {fixture_path}")
+        raise SegmenterError(f"invalid instruction segmentation fixture: {fixture_path}")
     booklet = (payload.get("booklets") or {}).get(source_document_id)
     if not isinstance(booklet, Mapping):
         raise SegmenterError(f"fixture has no booklet {source_document_id}")
@@ -956,6 +1011,7 @@ def score_ab(
     model_frame: ModelInstructionFrame,
     deterministic_sections: Iterable[Mapping[str, Any]],
     cells_by_document: Mapping[str, Iterable[Mapping[str, Any]]],
+    worksheet_document_ids: Iterable[str] = (),
 ) -> dict[str, Any]:
     """Score correct and wrong ownership after both segmenters ran.
 
@@ -972,15 +1028,20 @@ def score_ab(
         for section in model_frame.sections
     )
     baseline = tuple(dict(section) for section in deterministic_sections)
+    cells_by_document = {
+        document_id: tuple(dict(cell) for cell in raw_cells)
+        for document_id, raw_cells in cells_by_document.items()
+    }
+    worksheet_ids = {str(value) for value in worksheet_document_ids}
     documents: dict[str, Any] = {}
     for document_id, raw_cells in sorted(cells_by_document.items()):
-        cells = tuple(dict(cell) for cell in raw_cells)
         gained: list[str] = []
-        wrong_owner: list[dict[str, Any]] = []
+        wrong_form_owner: list[dict[str, Any]] = []
+        sibling_worksheet_owner: list[dict[str, Any]] = []
         baseline_correct = 0
         model_correct = 0
         model_reachable = 0
-        for cell in cells:
+        for cell in raw_cells:
             line = str(cell.get("line") or "").strip().lower()
             cell_id = str(cell.get("cell_id") or "")
             baseline_matches = [
@@ -1010,23 +1071,27 @@ def score_ab(
             for section in model_matches:
                 owner = str(section.get("document_id") or "")
                 if owner != document_id:
-                    wrong_owner.append(
-                        {
-                            "cell_id": cell_id,
-                            "line": line,
-                            "expected_document_id": document_id,
-                            "actual_document_id": owner,
-                            "section_id": section.get("section_id"),
-                        }
-                    )
+                    finding = {
+                        "cell_id": cell_id,
+                        "line": line,
+                        "expected_document_id": document_id,
+                        "actual_document_id": owner,
+                        "section_id": section.get("section_id"),
+                    }
+                    if owner in worksheet_ids:
+                        sibling_worksheet_owner.append(finding)
+                    else:
+                        wrong_form_owner.append(finding)
         documents[document_id] = {
-            "cell_count": len(cells),
+            "cell_count": len(raw_cells),
             "baseline_correct": baseline_correct,
             "model_correct": model_correct,
             "model_reachable": model_reachable,
             "gained_correctly_owned": sorted(gained),
-            "wrong_owner": wrong_owner,
-            "wrong_owner_count": len(wrong_owner),
+            "wrong_form_owner": wrong_form_owner,
+            "wrong_form_owner_count": len(wrong_form_owner),
+            "sibling_worksheet_owner": sibling_worksheet_owner,
+            "sibling_worksheet_owner_count": len(sibling_worksheet_owner),
         }
     return {
         "schema_version": 1,
@@ -1037,7 +1102,12 @@ def score_ab(
             "gained_correctly_owned": sum(
                 len(item["gained_correctly_owned"]) for item in documents.values()
             ),
-            "wrong_owner": sum(item["wrong_owner_count"] for item in documents.values()),
+            "wrong_form_owner": sum(
+                item["wrong_form_owner_count"] for item in documents.values()
+            ),
+            "sibling_worksheet_owner": sum(
+                item["sibling_worksheet_owner_count"] for item in documents.values()
+            ),
         },
     }
 
@@ -1086,6 +1156,10 @@ def build_ab_report(
         path,
         source_document_id=source_document_id,
         fixture_path=fixture_path,
+        allowed_document_ids=manifest_owner_document_ids(
+            root,
+            source_document_id=source_document_id,
+        ),
     )
     deterministic = _baseline_sections(path, source_document_id)
     cells = load_reconciliation_cells(
@@ -1098,6 +1172,10 @@ def build_ab_report(
         model_frame=frame,
         deterministic_sections=deterministic,
         cells_by_document=cells,
+        worksheet_document_ids=manifest_worksheet_document_ids(
+            root,
+            source_document_id=source_document_id,
+        ),
     )
     report["model_coverage"] = dict(frame.coverage)
     report["deterministic_section_count"] = len(deterministic)
@@ -1172,7 +1250,7 @@ def main() -> int:
         config = load_config(root=ROOT)
         records: list[dict[str, Any]] = []
         output = args.output or Path(
-            f"m20_s122_{_slug(args.source_document_id)}_responses.json"
+            f"m20_s123_{_slug(args.source_document_id)}_responses.json"
         )
         for window in windows:
             prompt = build_window_prompt(
@@ -1216,6 +1294,7 @@ def main() -> int:
         source_document_id=args.source_document_id,
         fixture_path=args.fixture,
         year=args.year,
+        allowed_document_ids=allowed_document_ids,
     )
     print(
         f"verified {args.source_document_id}: {len(frame.sections)} sections, "

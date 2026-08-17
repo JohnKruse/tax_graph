@@ -1,4 +1,4 @@
-"""M20-S122 guards for source-only model segmentation and its verifier."""
+"""M20-S123 guards for source-only model segmentation and its verifier."""
 
 from __future__ import annotations
 
@@ -319,21 +319,25 @@ def test_governs_conflict_with_every_observation_at_an_edge_is_rejected() -> Non
 
 
 def test_verifier_rejects_a_range_whose_claimed_text_is_fabricated() -> None:
-    """A response cannot smuggle invented section text through a valid range."""
+    """A fabricated section is rejected while the surrounding booklet remains valid."""
     source = _source()
     records = _section_records(source, "demo_2025")
-    bad = dict(records[0])
-    bad_response = dict(bad["response"])
-    bad_sections = [dict(section) for section in bad_response["sections"]]
-    bad_sections[0]["text"] = "invented text"
-    bad_response["sections"] = bad_sections
-    bad["response"] = bad_response
-    with pytest.raises(ModelFrameVerificationError, match="text does not match"):
-        build_model_frame(
-            source.decode("utf-8"),
-            source_document_id="instructions_demo_2025",
-            responses=[bad, *records[1:]],
-        )
+    bad = deepcopy(records)
+    for record in bad:
+        record["response"] = dict(record["response"])
+        record["response"]["sections"] = [
+            dict(section) for section in record["response"]["sections"]
+        ]
+        for section in record["response"]["sections"]:
+            if section["heading"] == "# Two":
+                section["text"] = "invented text"
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=bad,
+    )
+    assert [section.heading for section in frame.sections] == ["# One", "# Three"]
+    assert frame.coverage["rejected_sections"][0]["reason"] == "text_mismatch"
 
 
 def test_verifier_rejects_a_heading_not_at_the_claimed_source_offset() -> None:
@@ -401,19 +405,45 @@ def test_verifier_rejects_a_document_id_outside_the_manifest_owner_set() -> None
     """A source booklet id cannot become an owner for a governed section."""
     source = _source()
     records = _section_records(source, "demo_2025")
-    bad = dict(records[0])
-    bad_response = dict(bad["response"])
-    bad_sections = [dict(section) for section in bad_response["sections"]]
-    bad_sections[0]["document_id"] = "instructions_demo_2025"
-    bad_response["sections"] = bad_sections
-    bad["response"] = bad_response
-    with pytest.raises(ModelFrameVerificationError, match="not an allowed owner"):
-        build_model_frame(
-            source.decode("utf-8"),
-            source_document_id="instructions_demo_2025",
-            responses=[bad, *records[1:]],
-            allowed_document_ids={"demo_2025"},
-        )
+    bad = deepcopy(records)
+    for record in bad:
+        record["response"] = dict(record["response"])
+        record["response"]["sections"] = [
+            dict(section) for section in record["response"]["sections"]
+        ]
+        for section in record["response"]["sections"]:
+            if section["heading"] == "# Two":
+                section["document_id"] = "instructions_demo_2025"
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=bad,
+        allowed_document_ids={"demo_2025"},
+    )
+    assert [section.heading for section in frame.sections] == ["# One", "# Three"]
+    assert frame.coverage["rejected_sections"][0]["reason"] == "disallowed_document_id"
+
+
+def test_malformed_section_is_rejected_without_failing_the_booklet() -> None:
+    """A bad level drops one section while neighboring sections still tile."""
+    source = _source()
+    records = _section_records(source, "demo_2025")
+    bad = deepcopy(records)
+    for section in bad[0]["response"]["sections"]:
+        if section["heading"] == "# Two":
+            section["level"] = 0
+
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=bad,
+    )
+
+    assert [section.heading for section in frame.sections] == ["# One", "# Three"]
+    rejected = frame.coverage["rejected_sections"]
+    assert rejected
+    assert all(item["reason"] == "invalid_level" for item in rejected)
+    assert all(item["start_byte"] == source.index(b"# Two") for item in rejected)
 
 
 def test_prompt_contains_source_but_no_cell_conditioning() -> None:
@@ -462,8 +492,8 @@ def test_schema_enumerates_manifest_owners_without_the_source_id() -> None:
     }
 
 
-def test_scorer_reports_gains_and_wrong_owner_after_segmentation() -> None:
-    """Ownership is scored only after the source-backed frame is verified."""
+def test_scorer_reports_form_and_worksheet_owner_metrics_after_segmentation() -> None:
+    """Ownership metrics distinguish wrong forms from correct worksheet sections."""
     frame = ModelInstructionFrame(
         schema_version=1,
         year="2025",
@@ -497,8 +527,8 @@ def test_scorer_reports_gains_and_wrong_owner_after_segmentation() -> None:
         },
     )
     assert report["documents"]["schedule_b_2025"]["gained_correctly_owned"] == ["b1"]
-    assert report["documents"]["schedule_b_2025"]["wrong_owner_count"] == 0
-    assert report["documents"]["schedule_d_2025"]["wrong_owner_count"] == 1
+    assert report["documents"]["schedule_b_2025"]["wrong_form_owner_count"] == 0
+    assert report["documents"]["schedule_d_2025"]["wrong_form_owner_count"] == 1
 
 
 def test_verifier_rejects_non_tiling_sections_directly() -> None:
@@ -539,15 +569,15 @@ def test_verifier_rejects_non_tiling_sections_directly() -> None:
     (
         (
             "instructions_schedule_b_2025",
-            "m20_s122_live_recorded_responses.json",
-            28,
-            31,
+            "instruction_segmenter_live_recordings.json",
+            29,
+            29,
         ),
         (
             "instructions_schedule_d_2025",
-            "m20_s122_live_recorded_responses.json",
-            92,
-            105,
+            "instruction_segmenter_live_recordings.json",
+            93,
+            104,
         ),
     ),
 )
@@ -562,13 +592,17 @@ def test_recorded_booklet_fixture_is_source_backed(
         ROOT / ".cache" / "raw" / "2025" / f"{source_document_id}.txt",
         source_document_id=source_document_id,
         fixture_path=ROOT / "pilot" / "fixtures" / fixture_name,
+        allowed_document_ids=manifest_owner_document_ids(
+            ROOT,
+            source_document_id=source_document_id,
+        ),
     )
     assert len(frame.sections) == expected_sections
     assert frame.coverage["reconciles_to_file_size"] is True
     assert frame.coverage["response_section_count"] == expected_raw_sections
     assert frame.coverage["rejected_sections"] == []
     assert frame.coverage["heading_offset_repaired_count"] == (
-        0 if source_document_id == "instructions_schedule_b_2025" else 1
+        0 if source_document_id == "instructions_schedule_b_2025" else 2
     )
 
 
@@ -576,8 +610,8 @@ def test_ab_report_is_per_booklet_and_names_both_directions() -> None:
     """The real A/B report exposes Schedule B recovery and Schedule D control."""
     reports = {}
     for source_document_id, fixture_name in (
-        ("instructions_schedule_b_2025", "m20_s122_live_recorded_responses.json"),
-        ("instructions_schedule_d_2025", "m20_s122_live_recorded_responses.json"),
+        ("instructions_schedule_b_2025", "instruction_segmenter_live_recordings.json"),
+        ("instructions_schedule_d_2025", "instruction_segmenter_live_recordings.json"),
     ):
         reports[source_document_id] = build_ab_report(
             ROOT / ".cache" / "raw" / "2025" / f"{source_document_id}.txt",
@@ -589,23 +623,26 @@ def test_ab_report_is_per_booklet_and_names_both_directions() -> None:
     schedule_b = reports["instructions_schedule_b_2025"]
     assert schedule_b["totals"] == {
         "cells": 8,
-        "gained_correctly_owned": 6,
-        "wrong_owner": 0,
+        "gained_correctly_owned": 8,
+        "wrong_form_owner": 0,
+        "sibling_worksheet_owner": 0,
     }
     assert schedule_b["documents"]["schedule_b_2025"]["baseline_correct"] == 0
-    assert schedule_b["documents"]["schedule_b_2025"]["model_reachable"] == 6
-    assert schedule_b["documents"]["schedule_b_2025"]["wrong_owner_count"] == 0
+    assert schedule_b["documents"]["schedule_b_2025"]["model_reachable"] == 8
+    assert schedule_b["documents"]["schedule_b_2025"]["wrong_form_owner_count"] == 0
 
     schedule_d = reports["instructions_schedule_d_2025"]
     assert schedule_d["totals"] == {
         "cells": 24,
         "gained_correctly_owned": 1,
-        "wrong_owner": 29,
+        "wrong_form_owner": 0,
+        "sibling_worksheet_owner": 58,
     }
     assert schedule_d["documents"]["schedule_d_2025"]["baseline_correct"] == 11
     assert schedule_d["documents"]["schedule_d_2025"]["model_correct"] == 12
     assert schedule_d["documents"]["schedule_d_2025"]["model_reachable"] == 24
-    assert schedule_d["documents"]["schedule_d_2025"]["wrong_owner_count"] == 29
+    assert schedule_d["documents"]["schedule_d_2025"]["wrong_form_owner_count"] == 0
+    assert schedule_d["documents"]["schedule_d_2025"]["sibling_worksheet_owner_count"] == 58
 
 
 def test_manifest_owner_sets_exclude_the_instruction_source() -> None:
@@ -658,7 +695,7 @@ def test_three_measured_heading_pointer_repairs_are_source_anchored() -> None:
     source_document_id = "instructions_schedule_d_2025"
     source_path = ROOT / ".cache" / "raw" / "2025" / f"{source_document_id}.txt"
     source_bytes = source_path.read_bytes()
-    fixture_path = ROOT / "pilot" / "fixtures" / "m20_s122_live_recorded_responses.json"
+    fixture_path = ROOT / "pilot" / "fixtures" / "instruction_segmenter_live_recordings.json"
     records = [
         dict(record)
         for record in load_recorded_fixture(
@@ -692,7 +729,7 @@ def test_three_measured_heading_pointer_repairs_are_source_anchored() -> None:
         ),
     )
 
-    assert frame.coverage["heading_offset_repaired_count"] == 3
+    assert frame.coverage["heading_offset_repaired_count"] == 4
     assert frame.coverage["rejected_sections"] == []
     repaired = {
         section.heading: section.start_byte
@@ -704,6 +741,27 @@ def test_three_measured_heading_pointer_repairs_are_source_anchored() -> None:
         "Mark-to-Market Election for Traders": 32984,
         "Gain from an Installment Sale of QSB Stock": 51234,
     }
+
+
+def test_live_degenerate_line_four_is_recovered_from_its_start_byte() -> None:
+    """An advisory end byte cannot discard the real Line 4 section."""
+    source_document_id = "instructions_schedule_d_2025"
+    source_path = ROOT / ".cache" / "raw" / "2025" / f"{source_document_id}.txt"
+    frame = build_frame_from_fixture(
+        source_path,
+        source_document_id=source_document_id,
+        fixture_path=ROOT / "pilot" / "fixtures" / "instruction_segmenter_live_recordings.json",
+        allowed_document_ids=manifest_owner_document_ids(
+            ROOT,
+            source_document_id=source_document_id,
+        ),
+    )
+
+    line_four = next(section for section in frame.sections if section.heading == "Line 4.")
+    assert line_four.start_byte == 71963
+    assert line_four.end_byte > line_four.start_byte
+    assert line_four.document_id == "unrecaptured_section_1250_gain_worksheet_2025"
+    assert line_four.governs == ("4",)
 
 
 def test_reconciliation_cells_use_the_manifest_owner_set() -> None:
