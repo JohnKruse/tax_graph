@@ -85,6 +85,234 @@ def test_window_reconciliation_deduplicates_and_tiles_source() -> None:
     assert frame.sections[-1].end_byte == len(source)
 
 
+def test_governs_conflict_prefers_the_observation_with_more_following_context() -> None:
+    """A longer trailing window wins without unioning competing claims."""
+    source = _source()
+    two_start = source.index(b"# Two")
+    three_start = source.index(b"# Three")
+    first_window_end = three_start + 5
+    records = [
+        {
+            "window_index": 0,
+            "window_start_byte": 0,
+            "window_end_byte": first_window_end,
+            "response": {
+                "sections": [
+                    {
+                        "heading": "# One",
+                        "level": 1,
+                        "start_byte": 0,
+                        "end_byte": two_start,
+                        "document_id": "demo_2025",
+                        "governs": ["1"],
+                    },
+                    {
+                        "heading": "# Two",
+                        "level": 1,
+                        "start_byte": two_start,
+                        "end_byte": three_start,
+                        "document_id": "demo_2025",
+                        "governs": ["old_claim"],
+                    },
+                ]
+            },
+        },
+        {
+            "window_index": 1,
+            "window_start_byte": two_start,
+            "window_end_byte": len(source),
+            "response": {
+                "sections": [
+                    {
+                        "heading": "# Two",
+                        "level": 1,
+                        "start_byte": two_start,
+                        "end_byte": three_start,
+                        "document_id": "demo_2025",
+                        "governs": ["better_claim"],
+                    },
+                    {
+                        "heading": "# Three",
+                        "level": 1,
+                        "start_byte": three_start,
+                        "end_byte": len(source),
+                        "document_id": "demo_2025",
+                        "governs": ["3"],
+                    },
+                ]
+            },
+        },
+    ]
+
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=records,
+    )
+
+    two = next(section for section in frame.sections if section.heading == "# Two")
+    assert two.governs == ("better_claim",)
+    assert frame.coverage["governs_conflict_count"] == 1
+    assert frame.coverage["rejected_sections"] == []
+
+
+def test_governs_conflict_tie_is_rejected_but_other_sections_tile_source() -> None:
+    """Equal context rejects only the ambiguous section and keeps its neighbors."""
+    source = _source()
+    two_start = source.index(b"# Two")
+    three_start = source.index(b"# Three")
+    tie_end = three_start + 5
+    records = [
+        {
+            "window_index": 0,
+            "window_start_byte": 0,
+            "window_end_byte": tie_end,
+            "response": {
+                "sections": [
+                    {
+                        "heading": "# One",
+                        "level": 1,
+                        "start_byte": 0,
+                        "end_byte": two_start,
+                        "document_id": "demo_2025",
+                        "governs": ["1"],
+                    },
+                    {
+                        "heading": "# Two",
+                        "level": 1,
+                        "start_byte": two_start,
+                        "end_byte": three_start,
+                        "document_id": "demo_2025",
+                        "governs": ["left_claim"],
+                    },
+                ]
+            },
+        },
+        {
+            "window_index": 1,
+            "window_start_byte": two_start - 5,
+            "window_end_byte": tie_end,
+            "response": {
+                "sections": [
+                    {
+                        "heading": "# Two",
+                        "level": 1,
+                        "start_byte": two_start,
+                        "end_byte": three_start,
+                        "document_id": "demo_2025",
+                        "governs": ["right_claim"],
+                    }
+                ]
+            },
+        },
+        {
+            "window_index": 2,
+            "window_start_byte": three_start,
+            "window_end_byte": len(source),
+            "response": {
+                "sections": [
+                    {
+                        "heading": "# Three",
+                        "level": 1,
+                        "start_byte": three_start,
+                        "end_byte": len(source),
+                        "document_id": "demo_2025",
+                        "governs": ["3"],
+                    }
+                ]
+            },
+        },
+    ]
+
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=records,
+    )
+
+    assert [section.heading for section in frame.sections] == ["# One", "# Three"]
+    assert frame.coverage["governs_conflict_count"] == 1
+    rejected = frame.coverage["rejected_sections"]
+    assert len(rejected) == 1
+    assert rejected[0]["reason"] == "ambiguous_governs_conflict"
+    assert rejected[0]["ambiguity"] == "equal_following_context"
+    assert [claim["governs"] for claim in rejected[0]["competing_claims"]] == [
+        ["left_claim"],
+        ["right_claim"],
+    ]
+    assert frame.coverage["reconciles_to_file_size"] is True
+
+
+def test_governs_conflict_with_every_observation_at_an_edge_is_rejected() -> None:
+    """Edge-only observations stay rejected even when one has more context."""
+    source = _source()
+    two_start = source.index(b"# Two")
+    three_start = source.index(b"# Three")
+    records = [
+        {
+            "window_index": 0,
+            "window_start_byte": 0,
+            "window_end_byte": three_start,
+            "response": {
+                "sections": [
+                    {
+                        "heading": "# One",
+                        "level": 1,
+                        "start_byte": 0,
+                        "end_byte": two_start,
+                        "document_id": "demo_2025",
+                        "governs": ["1"],
+                    },
+                    {
+                        "heading": "# Two",
+                        "level": 1,
+                        "start_byte": two_start,
+                        "end_byte": three_start,
+                        "document_id": "demo_2025",
+                        "governs": ["edge_left"],
+                    },
+                ]
+            },
+        },
+        {
+            "window_index": 1,
+            "window_start_byte": two_start,
+            "window_end_byte": len(source),
+            "response": {
+                "sections": [
+                    {
+                        "heading": "# Two",
+                        "level": 1,
+                        "start_byte": two_start,
+                        "end_byte": len(source),
+                        "document_id": "demo_2025",
+                        "governs": ["edge_right"],
+                    },
+                    {
+                        "heading": "# Three",
+                        "level": 1,
+                        "start_byte": three_start,
+                        "end_byte": len(source),
+                        "document_id": "demo_2025",
+                        "governs": ["3"],
+                    },
+                ]
+            },
+        },
+    ]
+
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=records,
+    )
+
+    assert frame.coverage["governs_conflict_count"] == 1
+    assert frame.coverage["rejected_sections"][0]["ambiguity"] == (
+        "all_observations_abut_window_edge"
+    )
+
+
 def test_verifier_rejects_a_range_whose_claimed_text_is_fabricated() -> None:
     """A response cannot smuggle invented section text through a valid range."""
     source = _source()

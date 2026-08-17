@@ -524,6 +524,128 @@ def verify_model_sections(
         )
 
 
+def _governs_claim(
+    section: ModelSection,
+    window: SourceWindow,
+) -> dict[str, Any]:
+    """Serialize one competing window observation without copying source text."""
+    following_context_bytes = window.end_byte - section.start_byte
+    abuts_window_edge = (
+        section.start_byte == window.start_byte
+        or section.end_byte == window.end_byte
+    )
+    return {
+        "window_index": window.index,
+        "window_start_byte": window.start_byte,
+        "window_end_byte": window.end_byte,
+        "document_id": section.document_id,
+        "governs": list(section.governs),
+        "section_end_byte": section.end_byte,
+        "following_context_bytes": following_context_bytes,
+        "abuts_window_edge": abuts_window_edge,
+    }
+
+
+def _reconcile_window_sections(
+    parsed: Sequence[tuple[ModelSection, SourceWindow]],
+    *,
+    allowed_document_ids: frozenset[str] | None,
+) -> tuple[
+    dict[tuple[int, str], ModelSection],
+    int,
+    int,
+    list[dict[str, Any]],
+]:
+    """Reconcile duplicate observations and retain only source-backed claims.
+
+    Ownership conflicts retain the previous fail-closed behavior when a manifest
+    vocabulary is supplied.  A conflicting ``governs`` claim is resolved from
+    window context instead: the observation with the most trailing context wins,
+    while ties and all-edge observations are rejected as ambiguous.
+    """
+    grouped: dict[tuple[int, str], list[tuple[ModelSection, SourceWindow]]] = {}
+    for section, window in parsed:
+        grouped.setdefault((section.start_byte, section.heading), []).append(
+            (section, window)
+        )
+
+    unique: dict[tuple[int, str], ModelSection] = {}
+    owner_conflict_count = 0
+    governs_conflict_count = 0
+    rejected_sections: list[dict[str, Any]] = []
+    for key, claims in grouped.items():
+        first_section = claims[0][0]
+        owner_conflicts = [
+            section for section, _window in claims
+            if section.document_id != first_section.document_id
+        ]
+        if owner_conflicts and allowed_document_ids is not None:
+            raise ModelFrameVerificationError(
+                "overlapping windows disagree about document_id at "
+                f"{first_section.start_byte}"
+            )
+        owner_conflict_count += len(owner_conflicts)
+
+        governs_values = {section.governs for section, _window in claims}
+        if len(governs_values) <= 1:
+            unique[key] = first_section
+            continue
+
+        governs_conflict_count += 1
+        ordered_claims = sorted(
+            claims,
+            key=lambda item: (
+                item[1].index,
+                item[1].start_byte,
+                item[1].end_byte,
+                item[0].end_byte,
+            ),
+        )
+        if all(
+            section.start_byte == window.start_byte
+            or section.end_byte == window.end_byte
+            for section, window in ordered_claims
+        ):
+            ambiguity = "all_observations_abut_window_edge"
+            winner: tuple[ModelSection, SourceWindow] | None = None
+        else:
+            context_lengths = [
+                window.end_byte - section.start_byte
+                for section, window in ordered_claims
+            ]
+            greatest_context = max(context_lengths)
+            winners = [
+                claim
+                for claim, context_length in zip(ordered_claims, context_lengths)
+                if context_length == greatest_context
+            ]
+            ambiguity = "equal_following_context"
+            winner = winners[0] if len(winners) == 1 else None
+
+        if winner is None:
+            rejected_sections.append(
+                {
+                    "start_byte": first_section.start_byte,
+                    "heading": first_section.heading,
+                    "reason": "ambiguous_governs_conflict",
+                    "ambiguity": ambiguity,
+                    "competing_claims": [
+                        _governs_claim(section, window)
+                        for section, window in ordered_claims
+                    ],
+                }
+            )
+            continue
+        unique[key] = winner[0]
+
+    return (
+        unique,
+        owner_conflict_count,
+        governs_conflict_count,
+        rejected_sections,
+    )
+
+
 def build_model_frame(
     source_text: str,
     *,
@@ -547,7 +669,7 @@ def build_model_frame(
         if normalized_allowed_ids is not None
         else None
     )
-    parsed: list[ModelSection] = []
+    parsed: list[tuple[ModelSection, SourceWindow]] = []
     response_count = 0
     for response_record in responses:
         response_count += 1
@@ -566,32 +688,27 @@ def build_model_frame(
             raise SegmenterError("recorded response sections must be a list")
         for raw in raw_sections:
             parsed.append(
-                _raw_section(
-                    raw,
-                    source_document_id=source_document_id,
-                    window=window,
-                    source_bytes=source_bytes,
-                    allowed_document_ids=allowed_ids,
+                (
+                    _raw_section(
+                        raw,
+                        source_document_id=source_document_id,
+                        window=window,
+                        source_bytes=source_bytes,
+                        allowed_document_ids=allowed_ids,
+                    ),
+                    window,
                 )
             )
 
-    unique: dict[tuple[Any, ...], ModelSection] = {}
-    for section in parsed:
-        key = (section.start_byte, section.heading)
-        prior = unique.get(key)
-        if prior is not None and prior.governs != section.governs:
-            raise SegmenterError(
-                f"overlapping windows disagree about governs at {section.start_byte}"
-            )
-        if prior is not None:
-            if allowed_ids is not None and prior.document_id != section.document_id:
-                raise ModelFrameVerificationError(
-                    f"overlapping windows disagree about document_id at {section.start_byte}"
-                )
-            continue
-        unique[key] = section
-
-    rejected_sections: list[dict[str, Any]] = []
+    (
+        unique,
+        owner_conflict_count,
+        governs_conflict_count,
+        rejected_sections,
+    ) = _reconcile_window_sections(
+        parsed,
+        allowed_document_ids=allowed_ids,
+    )
     observed_candidates = sorted(
         unique.values(), key=lambda item: (item.start_byte, item.end_byte)
     )
@@ -666,12 +783,8 @@ def build_model_frame(
                 for index, section in enumerate(observed)
             ),
             "rejected_sections": rejected_sections,
-            "owner_conflict_count": sum(
-                1
-                for section in parsed
-                for prior in (unique.get((section.start_byte, section.heading)),)
-                if prior is not None and prior.document_id != section.document_id
-            ),
+            "owner_conflict_count": owner_conflict_count,
+            "governs_conflict_count": governs_conflict_count,
             "reconciles_to_file_size": True,
         },
     )

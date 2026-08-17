@@ -244,6 +244,22 @@ Live A/B replay evidence: Schedule B is **28 canonical sections from 31 raw, 0 g
 wrong-owner, 4 reachable cells**. Schedule D is **82 canonical sections from 93 raw, 0 gained,
 34 wrong-owner, 24 reachable cells**. Both frames reconcile to the complete source bytes.
 
+**CODEX REWORK COMPLETE (2026-08-17):** overlapping ``governs`` disagreements are now
+reconciliation cases. The observation with the greatest following window context wins; ties and
+sections touching a window edge in every observation are rejected with their competing claims.
+The frame reports ``governs_conflict_count`` beside the existing owner count, never unions claims,
+and keeps the rest of the source tileable. The provider-free S121 tests cover all three paths and
+the checked-in live recordings.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s121.py -q`
+-> **18 passed, 1 warning in 0.93s**.
+
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+
+RAN: `git diff --check` -> **clean**.
+
+S121 remains unaccepted until the Architect repeats the live leg; this rework has no provider run.
+
 ## Open for Architect
 
 **ARCHITECT LIVE LEG RUN, 2026-08-17. S121 IS STILL NOT ACCEPTED - ONE NEW DEFECT, AND IT IS A
