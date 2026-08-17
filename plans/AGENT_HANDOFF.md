@@ -261,7 +261,7 @@ Stable replay reports Schedule B **29/29 sections and 8 gained cells**; Schedule
 sections from 104 raw claims**, **1 gained cell**, **0 wrong_form_owner**, and **58
 sibling_worksheet_owner** findings.
 
-RAN: `New-Item -ItemType Directory -Path .test_tmp_s123 -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s123).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py -q` -> **23 passed, 1 warning in 1.53s**.
+RAN: `New-Item -ItemType Directory -Path .test_tmp_s123_verify2 -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s123_verify2).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py -q` -> **28 passed, 1 warning in 1.56s**. Added a regression matrix proving section-local malformed claims reject without aborting neighboring coverage.
 
 RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
 RAN: `git diff --check` -> **clean**.

@@ -446,6 +446,59 @@ def test_malformed_section_is_rejected_without_failing_the_booklet() -> None:
     assert all(item["start_byte"] == source.index(b"# Two") for item in rejected)
 
 
+@pytest.mark.parametrize(
+    ("mutation", "expected_reason"),
+    (
+        ("missing_heading", "missing_fields"),
+        ("invalid_numeric_fields", "invalid_numeric_fields"),
+        ("start_outside_window", "start_outside_window"),
+        ("invalid_governs", "invalid_governs"),
+        ("disallowed_document_id", "disallowed_document_id"),
+    ),
+)
+def test_all_section_local_validation_failures_are_rejections(
+    mutation: str,
+    expected_reason: str,
+) -> None:
+    """Section-local malformed claims do not abort neighboring source coverage."""
+    source = _source()
+    records = _section_records(source, "demo_2025")
+    bad = deepcopy(records)
+    for record in bad:
+        response = dict(record["response"])
+        sections = [dict(section) for section in response["sections"]]
+        for section in sections:
+            if section["heading"] != "# Two":
+                continue
+            if mutation == "missing_heading":
+                del section["heading"]
+            elif mutation == "invalid_numeric_fields":
+                section["level"] = "not-an-integer"
+            elif mutation == "start_outside_window":
+                section["start_byte"] = -1
+            elif mutation == "invalid_governs":
+                section["governs"] = "not-a-list"
+            elif mutation == "disallowed_document_id":
+                section["document_id"] = "other_2025"
+        response["sections"] = sections
+        record["response"] = response
+
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=bad,
+        allowed_document_ids={"demo_2025"},
+    )
+
+    assert [section.heading for section in frame.sections] == ["# One", "# Three"]
+    assert frame.coverage["reconciles_to_file_size"] is True
+    assert frame.coverage["rejected_sections"]
+    assert all(
+        item["reason"] == expected_reason
+        for item in frame.coverage["rejected_sections"]
+    )
+
+
 def test_prompt_contains_source_but_no_cell_conditioning() -> None:
     """The model prompt names only source coordinates and segmentation rules."""
     source = _source()
