@@ -21,8 +21,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S121, S122 AND S123 ARE ALL ACCEPTED. M20-S124 is specced under Current round:
-carry the segmenter to the 1040 booklet on CHAPTER-scoped windows.**
+**BALL: JOHN, FOR ONE COMMAND, AND CODEX IN PARALLEL. M20-S124 IS ACCEPTED. The 1040 booklet is
+built and windowed and needs its live run, which needs egress - that is the one thing only John can
+release. M20-S125 is specced under Current round and does NOT wait on it.**
+
+**M20-S124 IS ACCEPTED (`6006c87`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.** I derived
+the chapter boundaries in the raw-byte space my own way and checked them against the source rather
+than against Codex's offset table: **five chapters, every boundary landing exactly on the raw line
+that triggered the context change** - `# Instructions for Schedule 2` and the rest - tiling 0 to
+683,265 with no gap. **71 windows, every one inside exactly one chapter, covering each chapter with
+no gap.**
+- **The CR conversion is right, and it is not a rounding detail.** 683,265 bytes on disk against
+  675,580 characters after newline collapse, **7,685 CRs of drift** that accumulates: the Schedule 2
+  boundary is at character 508,434 and byte 513,738. **A character offset passed into the byte API
+  would have put every late chapter kilobytes off its heading.**
+- **Item 2 landed in both directions, which is the part that was easy to get wrong.** Each chapter
+  narrows the vocabulary from 18 documents to **14 - one form plus all 13 worksheets.** I drove my
+  own synthetic booklet through it: a Schedule 3 claim inside the Schedule 2 chapter is rejected as
+  `chapter_owner_disagreement` with the booklet still tiling around it, **and a worksheet owner in
+  the same position is kept.** Narrowing the worksheet half too would have re-broken what S123 had
+  just fixed.
+- **The no-op floor holds exactly.** Schedule B 29 sections, Schedule D 93 from 104 raw claims, 0
+  rejected, 0 `wrong_form_owner`, 58 `sibling_worksheet_owner`, byte conservation to EOF on both.
+- **The prompt now names the chapter's form**, so the constraint reaches the model as a prior and
+  not only as a punishment. Still document ids only; no cells.
+
+**CODEX DID NOT COPY MY SPEC'S NUMBERS, AND IT WAS RIGHT NOT TO.** The chapter table I wrote into
+S124 was in the collapsed-character space; the real raw-byte chapters are ~1% larger. It derived
+them from the tracker instead of pinning my table.
 
 **M20-S123 IS ACCEPTED (`129cb0f` + `72555bc`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.**
 I reimplemented the parser, the bounded heading repair, the dedup, the end-recomputation and the
@@ -42,10 +68,11 @@ rejected at all.**
   all **58** `sibling_worksheet_owner` rows name one of the four Schedule D worksheets, which the
   manifest links to this booklet by `region.source_document_id`. **Not one names a foreign form.**
 
-**THE COVERAGE NUMBER IS THE ONE TO READ, AND IT IS UNEVEN.** Schedule B goes **0 -> 8 of 8** cells
-correctly owned, which is the whole case for this direction. **Schedule D is 11 -> 12 of 24: one
-cell gained.** The remaining 12 are not a segmentation failure - the booklet tiles perfectly and
-every cell is reachable - so the next defect is in the join, not the segmenter.
+**THE COVERAGE NUMBER IS THE ONE TO READ, AND SCHEDULE B IS THE WHOLE CASE FOR THIS DIRECTION.**
+Schedule B goes **0 -> 8 of 8**. **Schedule D goes 11 -> 12 of 24, and that is the ceiling, not a
+shortfall** - the booklet writes instructions for exactly those twelve lines and the segmenter
+finds all twelve, as I confirmed by opening every one of the other twelve on 2026-08-17. **Schedule
+D was never the case for this work; the deterministic parser was already at 11 of 12 there.**
 
 **I WROTE THE OWNER SPLIT DOWN BACKWARDS BEFORE I READ THE MANIFEST.** My first re-derivation
 returned 58 `wrong_form_owner` and 0 sibling, the exact inverse, because I read `region_of` off the
@@ -185,100 +212,61 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S124: CARRY THE SEGMENTER TO THE 1040 BOOKLET ON CHAPTER-SCOPED WINDOWS. IT IS THE FIRST
-BOOKLET THAT HOLDS MORE THAN ONE FORM, AND A BYTE WINDOW CAN CUT A CHAPTER IN HALF.**
+**M20-S125: MAKE THE COVERAGE METRIC HONEST BEFORE THE 1040 RUN, NOT AFTER. I JUST READ MY OWN
+REPORT WRONG AND SPECCED A DEFECT THAT DOES NOT EXIST.**
 
-Schedule B and Schedule D are done and both hold exactly one form. **`instructions_form_1040_2025`
-is 683,265 bytes and holds FIVE**, and its allowed-owner vocabulary is **18 documents** - 5 forms
-plus 13 worksheets - against Schedule D's 5. A byte window that straddles the boundary between
-`Instructions for Schedule 2` and its `Line 9` section shows the model Schedule 3 prose while it is
-describing Schedule 2, **which is the S116 wrong-form defect reintroduced at segmentation time.**
+**I QUEUED "THE SCHEDULE D JOIN IS THE NEXT COVERAGE DEFECT" ON THE STRENGTH OF 12 OF 24. I OPENED
+THE 12 AND THERE IS NO DEFECT.** The Schedule D booklet writes dedicated instructions for exactly
+twelve lines - `1a`, `1b`, `2`, `3`, `8a`, `8b`, `9`, `10`, `13`, `18`, `19`, `21` - **and the
+segmenter finds all twelve.** The other twelve form lines are the arithmetic and carry lines
+(`4`, `5`, `6`, `7`, `11`, `12`, `14`, `15`, `16`, `17`, `20`, `22`) that the IRS writes no
+instruction for at all. **12 of 24 is not half a defect. It is twelve of twelve against what the
+booklet actually contains, and the segmenter is at its ceiling on Schedule D.**
 
-### ITEM 1 - WINDOW ON CHAPTERS, NEVER ACROSS THEM
+### ITEM 1 - `model_reachable` IS LYING AND IT IS THE NUMBER THAT FOOLED ME
 
-**The deterministic form-context tracker is the one part of the parser that has never failed.** It
-is `_context_for_heading`, driving `current_document_id` in
-`tax_graph/extract/instruction_sections.py:125`. Measured against the live booklet today, it splits
-into **five** chapters:
+`model_reachable` counts a cell as reached when **any** section governs its line token, **including
+a foreign worksheet's own row number.** Schedule D reports **24 of 24 reachable** while twelve of
+those cells have no `schedule_d_2025`-owned section anywhere in the booklet. The Schedule D Tax
+Worksheet governs its rows `4`, `5`, `6`, `7`, `11`, `12`, `14`... which collide head-on with the
+form's line numbers. **A match by a document that is not the cell's own document is not reach.**
+Count reach only through a section owned by the cell's document.
 
-| chapter | document | size |
-| --- | --- | --- |
-| 1 | `form_1040_2025` | 496.5 KB |
-| 2 | `schedule_1_2025` | 50.8 KB |
-| 3 | `schedule_1a_2025` | 51.7 KB |
-| 4 | `schedule_2_2025` | 19.3 KB |
-| 5 | `schedule_3_2025` | 41.5 KB |
+### ITEM 2 - REPORT THE DENOMINATOR THAT MEANS SOMETHING
 
-**No window may span two chapters.** Inside a chapter the existing byte-window and overlap machinery
-is unchanged - the 496 KB chapter still needs many windows.
+Add **`instructed_cell_count`**: cells whose line is governed by at least one section owned by the
+cell's own document. **Report `model_correct` against BOTH** the full cell count and that
+denominator. On Schedule D today that is 12 of 24 cells and **12 of 12 instructed cells**; on
+Schedule B, 8 of 8 and 8 of 8. **Do not hardcode either pair** - they are outputs, and the 1040
+booklet will have its own.
 
-**THE TRAP, AND I WALKED INTO IT MEASURING THIS.** `_parse_headings` runs on text read through
-`read_text`, where universal newlines have already collapsed `\r\n` to `\n`. **The booklet is 683,265
-bytes on disk and 675,580 characters after that collapse - 7,685 CRs of drift**, and it accumulates,
-so a boundary near the end is off by kilobytes. The segmenter addresses RAW BYTES. **Convert chapter
-boundaries into the raw-byte space explicitly and test that conversion**; do not pass a character
-offset into a byte API.
+### ITEM 3 - THE ROW-NUMBER COLLISION IS THE STANDING HAZARD, SO NAME IT
 
-### ITEM 2 - THE CHAPTER CONSTRAINS THE FORM OWNER, NOT THE WORKSHEET OWNER
-
-A section physically inside the Schedule 2 chapter **may not be owned by `schedule_3_2025`.** That
-is the whole point of windowing on chapters, and it makes the S116 defect impossible rather than
-detectable.
-
-**But narrow only the FORM half.** All 13 worksheets link to the booklet, not to a chapter, and a
-worksheet legitimately prints inside any chapter. **So a section's allowed owners are: the chapter's
-own form, plus every manifest worksheet of the booklet.** Getting this wrong in the strict direction
-would reject correct worksheet attributions wholesale - the exact mistake item 3 of S123 just
-finished undoing.
-
-### ITEM 3 - REPORT THE DISAGREEMENT, DO NOT HIDE IT
-
-Report `chapter_owner_disagreement_count`: sections whose claimed form owner is not the chapter's
-form. **Each one is rejected section-locally under the S123 rule and NEVER fails the booklet.** That
-number is how we find out whether the model respects chapters at all, so it must be visible even
-when it is zero.
+Report **`row_number_collision_count`**: line tokens claimed by both the cell's own document and a
+sibling worksheet. It is 12 on Schedule D. **This is the same semantic collision that killed the
+deterministic matcher across S116-S120** - worksheet row numbers read as form lines - and on a
+booklet with 13 worksheets it will be much larger. **Measure it now, before it is a surprise.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not weaken `verify_model_sections`.** Byte conservation from 0 to EOF, the heading witness and
-  the manifest owner check are the fail-closed guard and they stay.
-- **Do not widen the bounded heading repair**, and do not re-record Schedule B or D. The stable
-  fixture stays as it is.
-- **Do not show the model cells, outlines, addresses or unmatched lists.** Document ids only.
-- **Do not make a chapter disagreement fatal.** S123 settled that and it is not reopened.
+- **Do not change the segmenter, the prompt, the chapters or the fixture.** This round touches
+  scoring and reporting only. If a section count moves, the change is wrong.
+- **Do not weaken `verify_model_sections`**, and do not re-record anything.
+- **Do not "fix" the twelve uninstructed Schedule D lines.** They are the booklet's content, not a
+  bug, and a round that makes them appear covered would be manufacturing the metric.
 
 **THE FLOOR - ALL OF IT PROVABLE WITHOUT A MODEL CALL.**
-- **Chapter windows over the real booklet:** 5 chapters, boundaries taken from the deterministic
-  tracker, **every window lies inside exactly one chapter, and the windows tile the booklet with no
-  gap and no overlap across a boundary.**
-- **A test pins the raw-byte conversion** by naming both numbers: 683,265 bytes on disk, 675,580
-  characters after newline collapse.
-- **Schedule B and Schedule D are single-chapter, so this round is a NO-OP on them.** Replay the
-  stable fixture and still get **B 29 sections, D 93 sections from 104 raw claims, 0
-  `wrong_form_owner`, 58 `sibling_worksheet_owner`, byte conservation to EOF on both.** If those
-  move, the change is wrong.
-- **A synthetic section claiming a foreign chapter's form is rejected section-locally** and the
-  booklet still tiles around it, proven by a test.
+- **Section counts unchanged**: Schedule B 29, Schedule D 93 from 104 raw claims, 0 rejected, byte
+  conservation to EOF, `wrong_form_owner` 0 and `sibling_worksheet_owner` 58.
+- **`model_reachable` on Schedule D drops from 24 to 12** and a test names why: a worksheet row
+  number is not reach for a form cell.
+- **`instructed_cell_count`, `row_number_collision_count` and the two-denominator `model_correct`
+  are reported for both booklets**, computed, not pinned to a constant.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**ARCHITECT'S LEG.** The live 1040 run on these windows. It needs egress, so it is John's to
-release and mine to verify.
-
-**CODEX STATUS (2026-08-17): IMPLEMENTED, PROVIDER-FREE FLOOR GREEN.** The segmenter now derives
-five deterministic form-context chapters, converts normalized parser offsets into raw-byte
-boundaries, and splits windows independently inside each chapter. Each live window is constrained
-to its chapter's form plus all booklet worksheets. A foreign form claim is rejected locally as
-`chapter_owner_disagreement`; worksheet ownership remains allowed. Schedule B and Schedule D
-remain one-chapter no-ops, and the stable fixture still reports 29 and 93 verified sections.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s124).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py pilot\test_model_instruction_segmenter_m20_s124.py tests\test_instruction_sections_m20.py -q` -> **38 passed, 1 warning in 2.29s**.
-
-RAN: `.venv\Scripts\python.exe -m py_compile pilot\model_instruction_segmenter.py pilot\test_model_instruction_segmenter_m20_s124.py` -> **passed**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
-
-NOT RUN: live 1040 model leg - provider egress is the Architect's leg.
+**ARCHITECT'S LEG.** The live 1040 run, once John releases egress. It is 71 windows and therefore
+71 paid calls, and this round is what makes the report it produces readable.
 
 ## Open for Architect
 
@@ -286,20 +274,19 @@ Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-**[SPECCED AS M20-S124 - see Current round] CHAPTER-SCOPED WINDOWS FOR THE 1040 BOOKLET.** The
-sizes recorded here were stale by a whole chapter; re-measured 2026-08-17 and the real numbers are
-in the spec.
-
 **`sibling_worksheet_owner` MASKS WORKSHEET-TO-WORKSHEET MISATTRIBUTION (Architect, measured
 2026-08-17).** The bucket is correct today only because all four Schedule D worksheets have **0
 cells** in the reconciliation population, so the denominator is zero. **The moment worksheet cells
 enter it, a worksheet row attributed to the WRONG sibling worksheet scores as correct behaviour.**
 Split it again then, or key it on whether the owner is the cell's own document.
 
-**THE SCHEDULE D JOIN, NOT THE SEGMENTER, IS THE NEXT COVERAGE DEFECT (Architect, measured
-2026-08-17).** The booklet tiles perfectly and all 24 cells are reachable, yet only 12 are correctly
-owned - baseline 11, so the model gained exactly one. Segmentation is no longer the bottleneck
-there; the code that joins a cell to a section is.
+**[WITHDRAWN 2026-08-17, THE SAME DAY I WROTE IT - THERE IS NO SCHEDULE D JOIN DEFECT.]** I read
+"12 of 24 cells owned" as a shortfall without opening the twelve. They are the arithmetic and carry
+lines the IRS writes no instruction for. **The metric that misled me is being fixed as M20-S125;
+the round I nearly specced would have chased a defect that does not exist.**
+
+**THE LIVE 1040 SEGMENTATION RUN (Architect owes this; blocked on John's egress only).** 71
+windows, 71 paid calls, chapters and windows already built and verified at `6006c87`.
 
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
