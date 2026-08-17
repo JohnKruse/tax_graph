@@ -337,13 +337,17 @@ prompts, schemas, or the corpus path. The checked-in artifact is
 `plans/m20_s119_instruction_extent_census.yaml`: all 8 manifest instruction booklets reconcile,
 and the join covers all 91 `BOOKLET MENTIONS IT` cells and all 3 S118 stubs. Schedule 1 line 1's
 stub joins to `TRUNCATED_BODY` at start 512137 with the following `Taxable Refunds, Credits, or
-Offsets of State and Local Income Taxes` heading; the measured span is 2,560 bytes. Form 1040
-section 0048 is covered by its parent range and is not misclassified as `TRUNCATED_BODY`; the 0010
-overlap is present in the overlap bucket.
+Offsets of State and Local Income Taxes` heading; the measured span is 2,591 raw UTF-8 bytes
+(2,560 normalized text offsets). Form 1040 section 0048 is covered by its parent range and is not
+misclassified as `TRUNCATED_BODY`; the 0010 overlap is present in the overlap bucket.
 
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s119.py tests\test_instruction_sections_m20.py -q`
--> **8 passed, 1 warning**. **RAN:** `.venv\Scripts\python.exe -m pilot.instruction_extent_census`
--> **8 booklets, 252 sections, 56 unclaimed spans, 80 overlap spans**. **RAN:**
+**RAN:** `New-Item -ItemType Directory -Force .test_tmp_s119_run; $env:PYTEST_DEBUG_TEMPROOT =
+(Resolve-Path .test_tmp_s119_run).Path; .venv\Scripts\python.exe -m pytest
+tests\test_m20_s119.py tests\test_m20_s116.py tests\test_m20_s118.py
+tests\test_instruction_sections_m20.py -q` -> **19 passed, 1 warning in 35.81s**.
+**RAN:** `.venv\Scripts\python.exe -m pilot.instruction_extent_census` -> **8 booklets, 252
+sections, 56 unclaimed spans, 80 overlap spans**. **RAN:** independent YAML/hash/raw-byte
+reconciliation witness -> **8 booklets and 94 join rows green**. **RAN:**
 `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**; `git diff --check` ->
 **clean**. No corpus run and no model call were made.
 

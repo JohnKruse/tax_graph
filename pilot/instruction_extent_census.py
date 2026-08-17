@@ -98,14 +98,30 @@ def _line_match(target: str, governed_lines: Iterable[str]) -> str | None:
     return None
 
 
-def _byte_offsets(source: str) -> tuple[int, ...]:
-    """Map each text offset to its corresponding UTF-8 byte offset."""
+def _normalized_source(raw_bytes: bytes) -> tuple[str, tuple[int, ...]]:
+    """Normalize newlines while mapping text offsets to raw UTF-8 bytes."""
+    raw_text = raw_bytes.decode("utf-8")
+    normalized: list[str] = []
     offsets = [0]
-    total = 0
-    for character in source:
-        total += len(character.encode("utf-8"))
-        offsets.append(total)
-    return tuple(offsets)
+    raw_offset = 0
+    index = 0
+    while index < len(raw_text):
+        character = raw_text[index]
+        if character == "\r":
+            if index + 1 < len(raw_text) and raw_text[index + 1] == "\n":
+                raw_character = "\r\n"
+                index += 2
+            else:
+                raw_character = "\r"
+                index += 1
+            normalized.append("\n")
+        else:
+            raw_character = character
+            index += 1
+            normalized.append(character)
+        raw_offset += len(raw_character.encode("utf-8"))
+        offsets.append(raw_offset)
+    return "".join(normalized), tuple(offsets)
 
 
 def _range_record(
@@ -470,7 +486,8 @@ def build_instruction_extent_census(
         source_path = _source_path(root_path, year_text, entry.document_id)
         if not source_path.exists():
             raise FileNotFoundError(f"missing acquired instruction booklet: {source_path}")
-        source = source_path.read_text(encoding="utf-8")
+        raw_bytes = source_path.read_bytes()
+        source, byte_offsets = _normalized_source(raw_bytes)
         frame = build_instruction_sections(
             source,
             source_document_id=entry.document_id,
@@ -478,7 +495,6 @@ def build_instruction_extent_census(
             source_path=source_path,
         )
         sections = _unique_sections(frame.sections)
-        byte_offsets = _byte_offsets(source)
         headings = _parse_headings(source)
         parts = _coverage_parts(len(source), sections)
         unclaimed_spans: list[dict[str, Any]] = []
@@ -515,7 +531,7 @@ def build_instruction_extent_census(
                 overlap_bytes += bytes_in_part
                 overlap_extra_claim_bytes += bytes_in_part * (len(owners) - 1)
 
-        file_bytes = byte_offsets[-1]
+        file_bytes = len(raw_bytes)
         reconciled_bytes = claimed_exactly_once_bytes + unclaimed_bytes + overlap_bytes
         if reconciled_bytes != file_bytes:
             raise AssertionError(
@@ -540,7 +556,7 @@ def build_instruction_extent_census(
         ]
         booklet_reports[entry.document_id] = {
             "source_path": str(source_path.relative_to(root_path)).replace("\\", "/"),
-            "source_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
+            "source_sha256": hashlib.sha256(raw_bytes).hexdigest(),
             "source_text_length": len(source),
             "file_size_bytes": file_bytes,
             "section_count": len(sections),
@@ -583,8 +599,8 @@ def build_instruction_extent_census(
         "scope": "manifest entries with kind=instructions",
         "source_unit": "UTF-8 bytes mapped from deterministic text offsets",
         "classification_policy": {
-            TRUNCATED_BODY: "same-level heading after a section has no line-owned section",
-            OTHER_SECTION_TERRITORY: "higher-level heading after a section has no line-owned section",
+            TRUNCATED_BODY: "same-level heading follows a stub section and has no line-owned section",
+            OTHER_SECTION_TERRITORY: "heading after a non-stub section has no line-owned section",
             NON_LINE_REGION: "front matter, deeper unowned heading, or no heading context",
         },
         "counts": {
