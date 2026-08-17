@@ -21,28 +21,39 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT. M20-S117 is delivered below - the reconciliation report now asks the
-production accessor instead of matching lines itself.**
+**BALL: CODEX. M20-S118 is specced below - the AMBIGUOUS bucket is four different things and one of
+them ships duplicate bytes to the model.**
 
-**M20-S116 IS ACCEPTED (`6beb1f4` + `29cbbcd`, Architect, 2026-08-17), VERIFIED BY RUNNING.**
-Targeted suites green on the Architect's bare leg too (**85 passed**, plus **83 passed** in the two
-files Codex could not run - its three `WinError 5` errors were only the missing `.test_tmp_*` root
-and pass once the directory exists). `pilot/replay_harness.py` **25 cases, 0 mismatches, 0 network
-calls.** The report at `m20_s116_instruction_reconciliation.yaml` is checked in, reproduces Codex's
-totals exactly, and its `families:` block states all three families including `schedule_1a`/
-`schedule_b` at **0 of 56** and the **46** table-addressed dependents cells as out of scope with the
-reason. Item 2 stayed withdrawn and that was right.
+**M20-S117 IS ACCEPTED (`954c235`, Architect, 2026-08-17), VERIFIED BY RUNNING.** The Architect
+re-ran the invariant independently against the checked-in artifact: **449 cells, 0 disagreements**
+with `instruction_span_ids_for_line`, down from 46. `cell_buckets` and `instruction_buckets` each
+sum to their own population in **all 12 documents**. `schedule_2_2025` `1b` and `1d` are `MATCHED`,
+`direct`, both to section `...0122`, with no `other_form_document_ids`. **100 passed** across
+`test_m20_s116`, `test_m20_s117`, `test_instruction_sections_m20`, `test_derive_cells_m20`,
+`test_outline_span_resolution_m20`; replay harness **25/0/0**; ascii OK; `git diff --check` clean.
+**The second matcher is gone, not repaired, which is what was asked.**
 
-**IT IS ACCEPTED WITH A DEFECT THE ARCHITECT FOUND BY VERIFYING IT, AND S117 FIXES IT.** The report
-matches lines with **its own matcher**, which reads `section.line` and dedupes sections by
-`section_id` keeping only the first. A section headed *"Lines 1a Through 1z"* therefore looks like it
-owns `1a` alone. **Compared cell by cell against `instruction_span_ids_for_line` over all 449
-line-anchored cells: the report calls 46 cells uninstructed that the pipeline correctly instructs**
-(`schedule_2` 22, `schedule_3` 12, `schedule_d` 5, `form_2441` 2, `form_1040` 2, one each in
-`form_1116`, `form_6251`, `schedule_1`). **37 of the 113 `OTHER FORM OWNS LINE` rows and 9 of the
-100 parser gaps are not real.** The bucket taxonomy is sound and the report never over-claims - **0
-cells are called MATCHED that the accessor does not own** - so what ships is a real instrument
-reading low, not a wrong one.
+**THE CORRECTED NUMBERS, AND THEY RECONCILE EXACTLY.** Cells now read **MATCHED 202, parser gaps 91,
+other-form 76, AMBIGUOUS 60, genuine absences 20**. The 46 misbucketed cells moved to `MATCHED` (4)
+and `AMBIGUOUS` (42), which is the whole of the difference and is how we know nothing else shifted.
+
+**M20-S115 IS DELIVERED AND WAS NEVER ACCEPTED (`4f7abf9`, Codex, 2026-08-16). ARCHITECT MISS,
+CAUGHT WHILE REVIEWING THE PUSH RANGE 2026-08-17.** The review contract - `workbench/server.py`,
+`generated_review.py`, the new `review_defects.py`, `test_m20_s115.py` and the workbench front end -
+went in and the Architect specced S116 the next morning without verifying it. **It is on `main` and
+now on the remote, unverified.** It touches the surface John reviews, so it needs a live check, not
+a test read: **that is the Architect's leg and it is owed before the review contract is trusted** - and John does
+not review while the contract keeps moving, so an unverified contract change is worse than none.
+
+**M20-S116 IS ACCEPTED (`6beb1f4` + `29cbbcd`, Architect, 2026-08-17).** It built the two-sided
+reconciliation report and its bucket taxonomy, covering all three families. **Its own matcher was
+the defect S117 removed**; the lesson is pinned in `../AGENTS.md` and the narration is in
+`git show c7bbc9b`.
+
+**THE STANDING LESSON FROM S116-S117, and it is the third time this phase.** The report was accepted
+on Codex's evidence and only disagreed with the pipeline **because the Architect re-derived its
+central claim independently instead of reading its totals.** **Verify an artifact by recomputing
+what it asserts, not by checking that it exists and is green.**
 
 **M20-S114 IS ACCEPTED (`9f856a9`, Architect, 2026-08-16), VERIFIED BY RUNNING.** `/api/documents`
 -> **HTTP 200, 9532 bytes, all 16 documents**. `schedule_a` reports **2 unplaceable rows, visible
@@ -206,46 +217,103 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S117 DELIVERED BY CODEX (2026-08-17).** The report now projects the instruction frame using
-the production span shape and asks `instruction_span_ids_for_line` for every cell. The duplicate
-`_unique_sections` and `_sections_for_line` matchers are deleted. Cell and instruction-section
-buckets are separate, each summing to its own population. No prompt, schema, model call, ownership
-semantics, topic booklet logic, or table-column logic changed.
+**M20-S118 SPECCED BY ARCHITECT (2026-08-17). `AMBIGUOUS` IS FOUR DIFFERENT THINGS. TYPE THEM, AND
+STOP SENDING THE MODEL THE SAME BYTES TWICE.** **REAL ROUND - THIS ONE CHANGES PACKETS**, unlike
+S117. **NO response-schema change. NO prompt-template change. NO model call.**
 
-**THE REQUIRED NEGATIVE IS PROVEN.** Against the pre-S117 checked-in artifact from `29cbbcd`, the
-accessor invariant found **46 mismatched cells**. The corrected artifact has zero mismatches.
-`schedule_2_2025` lines `1b` and `1d` are both `MATCHED`, `direct`, and both receive
-`instruction_section_instructions_form_1040_2025_0122`; neither carries
-`other_form_document_ids`.
+**WHY NOW.** S117 made the report trustworthy and the first thing it shows is that **60 of 449 cells
+hand the model two or more instruction sections with no ranking between them.** That was always true;
+it was hidden behind a broken matcher reading 18. **This is a packet-quality defect, and packet
+quality is the derivation linchpin John named on 2026-08-15.**
 
-**RAN:**
-- `tests/test_m20_s116.py`: `.venv\Scripts\python.exe -m pytest tests/test_m20_s116.py tests/test_m20_s117.py -q` -> **8 passed** in 65.81s (one pre-existing pytest cache ACL warning).
-- `tests/test_m20_s117.py`: `.venv\Scripts\python.exe -m pytest tests/test_m20_s116.py tests/test_m20_s117.py -q` -> **8 passed** in 65.81s (one pre-existing pytest cache ACL warning).
-- `.venv\Scripts\python.exe -m pilot.reconcile_instructions --root . --year 2025` -> wrote `plans/m20_s116_instruction_reconciliation.yaml` with round `M20-S117`.
-- Persisted report invariant script -> **12 documents, 0 mismatches**; all bucket sums and the `schedule_2_2025` assertions passed.
-- `.venv\Scripts\python.exe pilot\replay_harness.py` -> **25 cases, 0 mismatches, 0 network calls**.
-- `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-- `git diff --check` -> **clean**.
+**FOUR CAUSES, OPENED END TO END (Architect, 2026-08-17). They are not one bucket.**
+1. **NESTED DUPLICATE - 17 cells.** `form_1040` `4a` gets `...0018` *"Lines 4a, 4b, and 4c"* and
+   `...0019` *"Lines 4a and 4b IRA Distributions"*, and **0019's text is a literal substring of
+   0018's.** The parser emitted a parent and its own child as two sections, so **the packet carries
+   the same bytes twice.** Byte-for-byte redundancy in an evidence packet is pure noise.
+2. **GENERAL PLUS SPECIFIC - the bulk of the rest.** `schedule_1` `8a` gets `...0067` *"Lines 8a
+   Through 8z"* and `...0069` *"Line 8a - Net operating loss (NOL) deduction"*. **Both legitimately
+   apply and neither is wrong**; what is missing is that the specific one is more specific.
+   `instruction_ownership.py`'s docstring already claims *"A specific heading wins"* - **that is only
+   implemented for the parent-inheritance path, never for two sections that both directly own the
+   token.**
+3. **EMPTY STUB SECTION.** `schedule_1` line `1` gets `...0060`, whose entire text is
+   `'#### Line 1\n\n'`. **A section with no body is competing with a real one.** That is a parser
+   defect showing up as ambiguity.
+4. **A WORKSHEET IS NOT A COMPETING INSTRUCTION.** The other claimant on `schedule_1` line 1 is
+   `...0068`, the *State and Local Income Tax Refund Worksheet*. **That is the worksheet the line
+   uses, and John already ruled on 2026-08-16 that it BELONGS in the packet** - *"we model the
+   worksheets so that they can support the forms."* Calling it ambiguous is the report mislabelling
+   correct content.
 
-**NOT RUN:** full suite, corpus re-derive, and live workbench checks; they are the Architect's leg
-for this reporting-only round.
+---
+
+### Item 1 - DEDUPE THE NESTED PAIR
+
+**When one owned section's text contains another owned section's text, keep the more specific one -
+the child - and drop the parent from that cell's packet.** Record on the cell which section was
+dropped and why. **Do not dedupe on section_id or on locator overlap**; containment of the actual
+text is the evidence, and it is what was measured.
+
+### Item 2 - RANK GENERAL BELOW SPECIFIC, DO NOT DROP IT
+
+**A section owning one line token is more specific than a section owning many.** Order the packet
+specific-first and mark each attachment with its specificity. **Both stay in the packet** - the
+general heading carries the *"Do not report on lines 8a through 8z..."* exclusions that the specific
+one omits. **This is ordering and labelling, not selection.**
+
+### Item 3 - TYPE THE OTHER TWO SO THE REPORT STOPS CALLING THEM AMBIGUOUS
+
+- **An owned section with an empty or heading-only body is a `STUB SECTION`** - its own report bucket,
+  and **it does not enter the packet.** Report the count per document; **do not repair the parser
+  here.**
+- **A section whose heading names a worksheet gets `WORKSHEET` provenance**, stays in the packet, and
+  **does not make its cell ambiguous.**
+
+After items 1-3, **`AMBIGUOUS` means what it says: two or more sections of equal specificity, neither
+containing the other, neither a stub, neither a worksheet.** Whatever survives is the real conflict
+list and is the input to the round after this one.
+
+---
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not drop a section that carries content the survivor lacks.** Item 1 is licensed ONLY by literal
+  text containment. **When in doubt, keep both and leave the cell ambiguous** - under-reporting a
+  conflict is recoverable, deleting evidence is not.
+- **Do not attach anything new.** No widening, no cross-document attachment, no new inheritance.
+  Ownership semantics are settled and pinned in `../AGENTS.md`.
+- **Do not re-implement the match.** Everything here happens inside or behind
+  `instruction_span_ids_for_line`; **the report keeps asking that one accessor and nothing else.**
+  That is the whole point of S117 and it must survive this round.
+- **Do not change the prompt template, the response schema, or any expected-count fixture.**
+
+**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
+- **The S117 invariant still holds**: report matched-state equals the accessor for every cell in
+  every document. **The S117 test must still pass unmodified.**
+- **No cell's packet contains two sections where one's text contains the other's**, asserted by a
+  test that walks every document. **Prove the negative against `954c235` and say how many cells it
+  finds.**
+- **`form_1040` `4a` keeps `...0019` and drops `...0018`; `schedule_1` `8a` keeps BOTH, specific
+  first.** Name what each cell ends up with.
+- **`schedule_1` line `1` reports `STUB SECTION` for `...0060` and `WORKSHEET` for `...0068`, and is
+  no longer `AMBIGUOUS`.**
+- **The regenerated report is checked in**, bucket sums still hold per population, and the three
+  family rows are unchanged.
+- **`pilot/replay_harness.py` WILL move on this round and that is expected** - packets change, so
+  recorded prompts differ. **Report what it says; do NOT edit fixtures to make it green, and do not
+  treat a red harness here as a floor failure.** The corpus re-derive that settles it is the
+  ARCHITECT's leg.
+- **`tools/check_ascii.py` OK**, `git diff --check` clean.
+- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Pre-create your
+  `PYTEST_DEBUG_TEMPROOT` directory first.
+
+**OUT OF SCOPE.** Repairing the parser that emits stub and nested sections - **this round makes them
+visible and typed; fixing the extents is its own round.** The topic-organised booklets. The
+table-column owner vocabulary. Routing. The `filer_entry` reason taxonomy.
 
 ## Open for Architect
 
-*(Nothing open. Codex's S116 block was ruled on and the round is accepted; the ruling that survives
-it is pinned in `../AGENTS.md` under Architect decisions.)*
-
-**A CORRECTION THE ARCHITECT OWES THE RECORD (2026-08-17).** The ruling committed at `0aa81e2` said
-**"INSTRUCTION OWNERSHIP HAS NO DOCUMENT SCOPE ... until ownership carries the owning DOCUMENT, no
-line-anchored join on a multi-form booklet can be trusted."** **That is false, and Codex should not
-build on it.** The scope is present and honoured at every hop: the frame stamps `document_id` per
-section, `_spans_for_instruction_frame` copies it to `owner_document_id`, and
-`instruction_span_ids_for_line` filters on it. **What was true is the narrower ruling that still
-stands: Codex was right to refuse the Schedule 1/2/3 headings for Form 1040 lines 9, 14 and 15, and
-`total_owned_packet_holes` really is 0 - because the scoping works, not because it is missing.**
-**The Architect wrote a diagnosis from a bucket label without opening the code path**, which is the
-same hard rule broken for the third time this week. The rule is in `../AGENTS.md`; read it before
-naming a cause.
+*(Nothing open.)*
 
 
 ## Queued (ONE LINE each - do not spec ahead)

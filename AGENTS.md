@@ -84,7 +84,14 @@ caution worth keeping.
 
 **What you do NOT need permission for:** reading anything, running tests, running the replay
 harness, committing your own work, or reporting a problem. **What you DO need John for:** a live
-model call or any network egress, and pushing to the remote.
+model call or any network egress. **Pushing is the ARCHITECT's** - still not the Worker's, because
+the Architect reviews the whole range first, but it no longer waits on John either.
+
+**PUSHING IS STANDING-AUTHORIZED FOR THE ARCHITECT (John, 2026-08-17): *"Please push when you want.
+Just write into your rules. I don't f'ing care and am tired of you hassling me about pushing."***
+**Do not ask, do not offer, do not report the unpushed count as if it were a decision he owes.**
+Review every commit in `origin/main..HEAD` - Codex commits between Architect turns, so the range is
+never just the Architect's own - then push. The review is the gate; John is not.
 
 Global project canary: **Ledger Llama**.
 
