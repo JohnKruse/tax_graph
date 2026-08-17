@@ -296,54 +296,46 @@ likely the SAME defect as item 2**, and if the owner-map fix closes it, say so.
 
 ## Open for Architect
 
-- **S116 source-shape question (Codex, 2026-08-17).** The acquired Form 1040 booklet currently
-  has no `form_1040_2025` instruction owner for lines 9, 14, 15, or 11; the literal headings for
-  those numbers belong to Schedule 1, 2, or 3 contexts. The owner map therefore cannot safely
-  attach them to Form 1040 without violating S116's no-widening rule. The checked-in report marks
-  these as raw-booklet mentions or genuine absences as appropriate. Please confirm whether the
-  floor expects a new cross-schedule projection (a different join) or whether the current source
-  ownership is authoritative; Codex has not crossed that boundary.
+**ARCHITECT RULING ON CODEX'S S116 BLOCK (2026-08-17). CODEX IS RIGHT AND THE SPEC'S PREMISE WAS
+FALSE. DO NOT ATTACH THOSE SPANS.**
 
-**S109 IS REVERTED (John's call, 2026-08-16). DERIVATION IS BACK AT BASELINE.**
-`schemas/edge.schema.json`, `tax_graph/extract/assembly.py`, `tax_graph/extract/micro.py`,
-`tax_graph/operation_registry.py` restored to `fe08638`; `tests/test_m20_s109.py` removed.
-**Post-revert corpus: rules 108, gaps 33** (baseline 107-109 / 32-34), and `schedule_1` re-run three
-times gives **4 rules / 57 edges / 0 gaps** every time, so the one low edge reading was a flake.
-Targeted set **82 passed**.
+Codex reported that `build_candidate_spans` yields no legitimate owner for `form_1040` lines 9, 14,
+15, 11, 11a, 11b, that the matching literal headings belong to Schedule 1/2/3, and that
+`total_owned_packet_holes` is already **0**. **Verified by opening them, which the Architect should
+have done before writing the spec:**
 
-**WHY IT WAS REVERTED.** Two passes, both catastrophic: `c47f5fa` took rules 107-109 -> 16/19/16;
-`4aa29c5` fixed the operand SHAPE and still left rules at 43-44 with `SUM operand roles` failing 42
-times. **Arity-by-role remains the right model - the implementation is not.** A `SUM` of eight
-addends has no computation order to preserve; the check was demanding positional ordering from roles
-the registry declares repeatable.
+```
+Line 9  -> "Household Employment Taxes"                    page 113  (Schedule 2)
+Line 9  -> "Net Premium Tax Credit"                        page 116  (Schedule 3)
+Line 14 -> "Moving Expenses"                               page 93   (Schedule 1)
+Line 15 -> "Deductible Part of Self-Employment Tax"        page 93   (Schedule 1)
+```
 
-**THE STANDING LESSON, AND IT IS NOW THREE FOR THREE.** S108 item 1, S109, and the S109 fix all
-changed the response schema, all passed their targeted tests (67, 90, 91 passed), and all took
-derivation to a fraction of baseline. **`tests/` validates hand-written payloads against the
-validator; nothing asserts that a REAL model response still resolves end to end.** A schema change
-is not verifiable offline. **Do not accept one on unit tests alone - a corpus re-derive is
-mandatory, and it costs $0.05 and twelve minutes.**
+**Form 1040 line 9 is total income. Schedule 2 line 9 is household employment taxes. They share a
+number and nothing else.** The Form 1040 booklet contains the Schedule 1, 2 and 3 instructions too,
+and **the owner map keys on a bare line anchor with NO DOCUMENT SCOPE**, so `Line 9` is ambiguous
+across four forms in one file.
 
-**COST CORRECTION (2026-08-16).** A full corpus run is **159 calls, $0.046** - not the ~$3 the
-Architect had been quoting from extrapolating `form_1040` across 17 documents. John's OpenRouter
-total for a day of heavy running was **$3.03**. **Re-derive freely; cost is not a reason to skip a
-measurement.**
+**S116 ITEM 2 IS WITHDRAWN.** *"The owner map works and the packet builder ignores it"* was wrong.
+The packet builder is correctly refusing these. **Implementing item 2 literally would have attached
+self-employment-tax guidance to the 1040's adjusted-gross-income line** - a wrong instruction, which
+the same spec called worse than none. **Codex stopping was the correct call and is exactly what the
+Worker directive now asks for.**
 
-**TWO CORRECTIONS THE ARCHITECT OWES THE RECORD.**
-1. **There is no dot.** The claim that `form_1040` line 36 was handed a single `.` as its face was
-   wrong - it came from reading prompt-bench's `matched_spans` (spans the QUOTE matched) as the
-   evidence packet. **Every face checked extracts identically to what the form prints**: 1040 36,
-   35a, 11a; schedule_2 1z; 1116 8 and 6; 6251 13.
-2. **So 35a and 36 are genuine model errors, not starved packets.** Both got the correct face AND
-   the correct instruction section and both answered `COPY`. They are filer elections splitting the
-   line 34 overpayment. **Only the face lint catches this class; nothing else notices.**
+**THE ARCHITECT'S ERROR, RECORDED.** The count `owned_lines["9"] == 2` was reported as a finding
+**without opening one of them.** That is the second violation in two days of the hard rule the
+Architect wrote. **A count of matches is not evidence that the matches are right.**
 
-**THE MODEL IS NOT FISHING.** In every failure opened end to end, the operands it names are printed
-in the evidence supplied. The losses are ours: schedule_2 prints 1a-1z and the OUTLINE carries 26
-anchors, so 19 operands of *"Add lines 1a through 1y"* do not resolve. Same for `form_1116` naming
-`3g`, `4a`, `4b`. **But the prompt never says "answer only from the supplied evidence", and the only
-grounding check is that `quote` appears in the packet - which constrains the quote, not
-`source_lines`.** That guardrail should exist regardless.
+**THE REAL DEFECT, AND IT IS BIGGER THAN THE ONE SPECCED: INSTRUCTION OWNERSHIP HAS NO DOCUMENT
+SCOPE.** A heading `Line 9` inside `instructions_form_1040_2025` may govern Form 1040, Schedule 1,
+Schedule 2 or Schedule 3 depending on which booklet section it sits in. **Until ownership carries
+the owning DOCUMENT, no line-anchored join on a multi-form booklet can be trusted** - and the same
+ambiguity may be silently mis-attaching instructions elsewhere that happen to look plausible.
+**That is the next round; it is not a widening of the match, it is a missing key.**
+
+**WHAT SURVIVES OF S116.** Item 1, the reconciliation report, is MORE valuable now, not less - it is
+what would have caught this. Its unmatched buckets must additionally distinguish *no instruction
+exists* from *an instruction exists but belongs to another form in the same booklet*.
 
 ## Queued (ONE LINE each - do not spec ahead)
 

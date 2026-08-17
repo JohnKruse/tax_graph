@@ -61,16 +61,30 @@ coordination in committed text files - no hidden side channels.
   and `docs/`. Does NOT write implementation code.
 - **Worker (Codex / Sonnet / Gemini):** implements one whole phase at a time from `plans/`.
 
-## Worker directive (one whole phase per session)
-1. Open the lowest-numbered phase in `plans/` not marked `[COMPLETE]`. State its Canary, wait for
-   John's go, note the session context % (warn if low).
-2. Work the steps in order WITHOUT stopping between them. Each step: implement core logic +
-   create/update the pytest + update docstrings/docs; not done until tests pass 100%; mark `[DONE]`,
-   log deviations, `git commit` (one per step; do not push yet).
-3. Stop and surface to John ONLY on a problem (tests stuck, real ambiguity, a decision the plan
-   does not cover, a plan-changing deviation, low context). Otherwise keep going.
-4. At phase end: run the exit-criteria command (100%), mark `[COMPLETE]`, move the subplan to
-   `plans/archive/`, then a single `git push`, and report.
+## Worker directive (one round per session)
+
+**"Read the handoff and start working" IS the go. Do not ask for permission again.** Being told to
+start is the authorization; there is no second confirmation step. **A round specced under
+`## Current round` in `plans/AGENT_HANDOFF.md` with the BALL on CODEX is work you are cleared to
+do.** Roughly a quarter of sessions used to stall here - that was a defect in this file, not
+caution worth keeping.
+
+1. Read `plans/AGENT_HANDOFF.md`: the **BALL** block, then **Current round**. That is the spec.
+   (Legacy `plans/PHASE_*.md` files are historical; the handoff is authoritative.) Note the session
+   context % and warn if low.
+2. Work the items in order WITHOUT stopping between them. Each: implement, create/update the pytest,
+   update docstrings/docs; not done until tests pass; `git commit` explicit paths (never `-a`; the
+   Architect shares this tree). Do not push.
+3. **Stop and surface ONLY on a real problem**: a floor you cannot meet as written, an instruction
+   that contradicts another, evidence that the spec's premise is wrong, or low context.
+   **Finding the spec's premise to be false is a RESULT, not a failure** - report it with the
+   evidence and stop; that is worth more than a faithful implementation of a wrong diagnosis.
+4. At round end: record status and RAN evidence under **Current round**, commit, and report. **Do
+   not push** - the Architect reviews the full range and pushes.
+
+**What you do NOT need permission for:** reading anything, running tests, running the replay
+harness, committing your own work, or reporting a problem. **What you DO need John for:** a live
+model call or any network egress, and pushing to the remote.
 
 Global project canary: **Ledger Llama**.
 
