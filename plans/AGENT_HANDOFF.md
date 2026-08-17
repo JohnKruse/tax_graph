@@ -21,8 +21,21 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S121 IS ACCEPTED. M20-S122 is specced under Current round from live measurement:
-one reconciliation path, and a single bad section must stop killing a whole booklet.**
+**BALL: CODEX. M20-S121 AND M20-S122 ARE BOTH ACCEPTED. M20-S123 is specced under Current round and
+it is STRUCTURAL, not another per-class patch.**
+
+**M20-S122 IS ACCEPTED (`13e0937`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION AND A LIVE RUN.**
+I re-derived the repair/reject decision for all 136 proposals myself, without importing Codex's
+resolver, and matched its counts exactly. **Schedule D went from failing closed to 92 sections**;
+Schedule B holds at 28; both tile contiguously to EOF with every heading at its byte and every owner
+in the manifest set, **and the fixture now replays UNDER the manifest constraint, which the S121
+recording could not do at all.** All four items landed: the `drop_invalid_sections` fork is gone,
+the bounded unique-line-boundary repair keeps the anti-fabrication property, the CLI persists each
+window, and the scorer shares the owner accessor. **21 passed.**
+
+**ITEM 3 PAID FOR ITSELF THE SAME HOUR.** My live Schedule D run failed again - and this time the
+recording survived, because the CLI now writes before it verifies. The previous failure cost me 9
+paid calls.
 
 **M20-S121 IS ACCEPTED (`faded97` + `119e88a` + `ad846d2`, Architect, 2026-08-17), VERIFIED BY
 RECOMPUTATION AND BY A LIVE RUN ON BOTH BOOKLETS.** I regrouped the raw recording myself without
@@ -42,8 +55,8 @@ paragraph, which no heading parser can ever see.
   Schedule D wrong-owner rows name one of the four WORKSHEETS - `schedule_d_tax_worksheet_2025` 20,
   `unrecaptured_section_1250_gain_worksheet_2025` 6, `capital_loss_carryover_worksheet_2025` 2,
   `28_rate_gain_worksheet_2025` 1 - and **not one names a foreign form.** Cell-naive segmentation
-  attributes worksheet rows to worksheets. **The 29 is a scorer denominator artifact, fixed in S122
-  item 4; do not read it as 29 wrong attributions.**
+  attributes worksheet rows to worksheets. **The number is a scorer artifact and S122 did NOT fix
+  it - it made it 58. The real cause and the fix are S123 item 3.**
 
 **A RECORDING VERIFIES CODE PATHS AND NEVER MODEL BEHAVIOUR - THIS IS NOW THE THIRD TIME.** The
 checked-in S121 recording contains **zero** governs conflicts on either booklet, so the entire
@@ -163,99 +176,79 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S122: ONE RECONCILIATION PATH, AND A SINGLE BAD SECTION MUST STOP KILLING A BOOKLET.**
+**M20-S123: A PER-SECTION FAILURE REJECTS THAT SECTION. IT NEVER FAILS THE BOOKLET. STOP PATCHING
+THIS ONE CLASS AT A TIME.**
 
-S121's mechanism is accepted and works. **What is left is a defect in MY spec, not in Codex's
-build**: the pilot runs two different reconciliations, and the one that is verified is not the one
-that runs in production. Every item below is measured from my live run, not guessed.
+**FOUR LIVE SCHEDULE D RUNS, FOUR DIFFERENT SINGLE SECTIONS, EVERY ONE FATAL TO ALL 90-ODD VERIFIED
+SECTIONS AROUND IT.** `governs` disagreement at byte 10062 (fixed in S121), heading offset at 33024
+and 378 (fixed in S122), and now a degenerate byte range at 71963. **I have specced the same shape
+of fix three times and been too narrow three times. That is my defect, not Codex's** - each round
+implemented exactly what it was given. **The fix is the rule, not the next class.**
 
-**THE EVIDENCE, AND IT IS THE WHOLE ARGUMENT.** `build_model_frame` takes
-`drop_invalid_sections`. Replay passes **True** and lists a bad section under `rejected_sections`;
-the live CLI takes the **False** default and raises. **Three live Schedule D attempts, three
-different single sections, every one fatal:** byte 33024 `Mark-to-Market Election for Traders`,
-then byte 378 `What's New`, and the recording carries 33026 and 51283. Each time **one** proposal
-out of 93-105 discarded **91 verified sections that tile the source exactly.** That is the same
-wrong shape I already ruled against for `governs`, and it survives only because replay never
-executes the production branch.
+### ITEM 1 - MAKE IT STRUCTURAL
 
-### ITEM 1 - DELETE `drop_invalid_sections`. THERE IS ONE PATH.
+`build_model_frame` catches exactly one exception type, `_HeadingOffsetResolutionError`. **Every
+other validation in `_raw_section` is still fatal** - missing fields, bad level, degenerate range,
+window escape, bad `governs`, disallowed `document_id`. **Every one of those is a statement about
+ONE section and none of them is a statement about the booklet.**
 
-The tolerant behaviour IS the behaviour. A section that cannot be bound is rejected and disclosed;
-the booklet still verifies and still tiles. **A replay that runs different code from production
-cannot predict production** - this is the third round to relearn it.
+**`_raw_section` returns either a section or a rejection record, and never raises.** Only
+envelope-level problems stay fatal: a response that is not shaped like a response, or a window
+outside the source. **The final `verify_model_sections` fail-closed guard stays exactly as it is** -
+that is the invariant, and it is the last line, not the first.
 
-### ITEM 2 - REPAIR THE OFF-BY-A-LINE POINTER BEFORE REJECTING IT
+### ITEM 2 - STOP VALIDATING `end_byte` AS IF IT WERE USED
 
-**MEASURED, n=3 ACROSS TWO RUNS, AND THERE ARE ZERO FABRICATIONS.** In every unbacked proposal the
-heading text genuinely exists within 49 bytes and the model only mis-pointed the line boundary:
+**Measured, and this is the finding that reframes the round.** `ordered` recomputes EVERY section
+end from the next section's start. The model's `end_byte` survives only as a sort tiebreak and in
+the `abuts_window_edge` test. **It is validated strictly and then discarded.**
 
-| claimed byte | heading | real byte | delta | intervening bytes |
-| --- | --- | --- | --- | --- |
-| 378 | `What's New` | 380 | +2 | `\r\n` |
-| 33026 | `Mark-to-Market Election for Traders` | 32984 | -42 | `## <heading>\r\n\r\n` |
-| 51283 | `Gain from an Installment Sale of QSB Stock` | 51234 | -49 | `## <heading>\r\n\r\n` |
+Live Schedule D emitted two `start_byte == end_byte` claims, both at byte 71963. **One of them is
+correct and we threw it away:** `Line 4.` owned by `unrecaptured_section_1250_gain_worksheet_2025`,
+governing `4`, and byte 71963 is a real line start whose text is `Line 4. To figure the amount to
+enter on line 4, follow the steps below...`. **That is a run-in label - the exact construct this
+entire line of rounds exists to reach** - discarded over a field the code does not use.
 
-**The model points either at the blank line before its own heading or at the body paragraph after
-it.** So: **snap to the UNIQUE line boundary within +/-256 bytes whose normalised text is prefixed
-by the claimed heading.** No such boundary, or more than one, means reject and disclose.
+**The section contract is `start_byte` + `heading` + `document_id` + `governs`. Treat the model's
+end as advisory.** I simulated precisely this against the live recording: **Schedule D completes at
+93 sections, 0 rejected, 1 governs conflict, tiling to EOF, and the `Line 4.` section is
+recovered.**
 
-**THE ANTI-FABRICATION PROPERTY MUST SURVIVE INTACT AND IS NOT NEGOTIABLE.** An invented heading
-matches no line boundary anywhere in the source, so it still fails. **Prove that with a test** - a
-fabricated heading inside the search window must still be rejected. Count repairs as
-`heading_offset_repaired_count`, kept distinct from `rejected_sections`.
+### ITEM 3 - `wrong_owner` IS AN ARTIFACT END TO END AND MUST STOP BEING REPORTED AS A DEFECT
 
-### ITEM 3 - THE CLI MUST PERSIST THE RECORDING BEFORE IT VERIFIES
+**Verified: `plans/m20_s116_instruction_reconciliation.yaml` holds 12 FORMS and ZERO worksheets.**
+So Schedule D's four worksheets own many sections and have **0 cells** as a denominator, and every
+CORRECT worksheet attribution is scored as a Schedule D error. **My S122 item 4 shared the accessor,
+which was right in itself, and made the number WORSE: 29 -> 58.** The accessor was never the cause.
 
-`main()` calls every window, then builds the frame, then writes the JSON - so a verification
-failure throws away every paid call. **It cost me 9 live calls on the first Schedule D attempt.**
-Write the record file after each window returns.
-
-### ITEM 4 - THE SCORER'S DENOMINATOR MUST MATCH THE BOOKLET'S OWNER SET
-
-`manifest_owner_document_ids` admits `instructions_document_id` **or** `region_of` - **5** documents
-for Schedule D. `load_reconciliation_cells` admits only `instructions_document_id` - **1**. So the
-scorer draws sections from five documents and cells from one, and every worksheet section that
-correctly governs its own row is counted as a wrong owner for Schedule D. **That is the entire
-wrong_owner=29.** **One accessor decides the booklet's document set and both callers use it.**
+**The number John would read as "58 wrong instructions" is 58 instances of the model doing the right
+thing.** Split the metric: **`wrong_form_owner`, which is the failure John actually feared and is
+currently ZERO on both booklets**, and `sibling_worksheet_owner`, which is correct behaviour.
+Reporting one number that conflates them is the kind of misleading metric that costs a review cycle.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not tune the prompt.** Nothing here is a prompt problem; all four items are reconciliation.
-- **Do not widen the repair window past a line boundary search.** Fuzzy heading matching is how
-  fabrication gets in.
+- **Do not weaken `verify_model_sections`.** Byte conservation, the heading witness and the manifest
+  owner check are the fail-closed guard and they stay.
+- **Do not widen the heading repair window.** S122's bounded unique-line-boundary search is right.
 - **Do not show the model cells, outlines, addresses or unmatched lists.** Document ids only.
 
 **THE FLOOR.**
-- **Both booklets complete in the production path**, byte conservation holding to EOF, from
-  `pilot/fixtures/m20_s122_live_recorded_responses.json` - **my live recordings, checked in with
-  this spec** (Schedule B 2 windows / 31 sections, Schedule D 9 windows / 105 sections, each
-  hash-pinned). **Delete `m20_s121_live_recorded_responses.json`**; it predates the manifest
-  constraint and cannot be replayed with `allowed_document_ids` at all, which is a trap.
-- **A fabricated heading still fails**, proven by a test.
-- **The three measured repairs above are proven**, by byte, in a test.
-- **The A/B is rescored per booklet and reported**, both directions. **Report what it is; do not
-  floor on the number.**
+- **Both booklets complete** from `pilot/fixtures/instruction_segmenter_live_recordings.json` -
+  **my second live run, checked in with this spec, and it CONTAINS the defect**: Schedule B 2
+  windows / 29 sections, Schedule D 9 windows / 104 sections including the 2 degenerate ranges at
+  71963. Byte conservation to EOF, hash-pinned. **Delete `m20_s122_live_recorded_responses.json`**;
+  one stable fixture name, no more per-round fixture churn.
+- **The `Line 4.` section at 71963 is recovered**, proven by a test naming the byte.
+- **A fabricated heading still fails, and a malformed section is REJECTED rather than fatal** - both
+  proven by tests, with the booklet still verifying around them.
+- **`wrong_form_owner` is reported separately and is 0 on both booklets.** Report what it is; do not
+  floor on the number.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
 **ARCHITECT'S LEG.** The live re-run on both booklets, and the 1040 booklet, which needs
 chapter-scoped windows - still owed by me, in Queued.
-
-**CODEX STATUS (2026-08-17): M20-S122 COMPLETE.** One reconciliation path now repairs a
-heading pointer only to a unique nearby source line boundary, rejects and discloses fabricated
-or ambiguous headings, persists each live window recording before frame verification, and uses
-the manifest owner accessor for both segmentation and scoring cells. The obsolete S121 fixture
-and the `drop_invalid_sections` fork are removed. The checked-in S122 replay completes with 28
-Schedule B sections and 92 Schedule D sections, both tiling to EOF. The injected three measured
-pointer errors repair to bytes 380, 32984, and 51234. A/B report: Schedule B 8 cells, 6 gained
-correctly owned, 0 wrong-owner; Schedule D 24 cells, 1 gained correctly owned, 29 wrong-owner
-reported without a numeric floor.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s122.py -q`
--> 21 passed, 1 warning in 1.30s (pytest cache warning only; test result green).
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
-RAN: `git diff --check` -> clean (Git emitted only its CRLF normalization warning for the
-README).
 
 ## Open for Architect
 
