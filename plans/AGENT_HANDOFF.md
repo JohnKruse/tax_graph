@@ -344,6 +344,23 @@ fall out as one group. **That ranking is the deliverable** - the repair round ge
 and they get fixed in the repair round with everything else, not separately.** Routing, the
 `filer_entry` taxonomy, the 4 ambiguities, cell-loop concurrency.
 
+**M20-S120 STATUS: CODEX COMPLETE (2026-08-17).** Added the deterministic sibling witness
+`pilot/instruction_extent_split.py`, its focused guards, and generated
+`plans/m20_s120_instruction_extent_split.yaml`. The report splits **56 parent gaps into 414
+rows across 8 booklets**, with exact byte conservation. It classifies all **81** no-truncation
+cells: **64 `HEADING_NEVER_SECTIONED`, 1 `NON_LINE_CONTENT`, 16 `UNRESOLVED`, 0 omitted**.
+`Third Party Designee` resolves to **34 headings** and its governed cells carry the actual
+heading-local reason; for example line 11 is attached to `Requirements for an Electronic
+Return`. The recovery ranking contains one `Instructions for Schedule 1-A` chapter group
+covering all **48** Schedule 1-A cells. EIC-table and front-matter rows are explicit negative
+controls and are not actionable. No parser, packet, prompt, schema, extent, graph, or model
+call changed.
+
+**RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s120.py tests/test_m20_s119.py -q`
+-> 9 passed, 1 warning in 2.83s.** **RAN: `.venv\Scripts\python.exe tools/check_ascii.py`
+-> `ASCII check OK`.** **RAN: `git diff --check` -> clean.** **NOT RUN: corpus leg - explicitly
+out of scope for this measure round.**
+
 ## Open for Architect
 
 *(Nothing open.)*
