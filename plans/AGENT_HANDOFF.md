@@ -312,7 +312,7 @@ cheap now and expensive later.
 
 **ARCHITECT'S LEG.** None outstanding. The run is bought and recorded; everything above replays.
 
-**CODEX STATUS (2026-08-18): M20-S126 IMPLEMENTED (`3df656b`).** `_reconcile_window_sections` now keys
+**CODEX STATUS (2026-08-18): M20-S126 IMPLEMENTED (`bbd1c18`).** `_reconcile_window_sections` now keys
 duplicate claims on `start_byte` alone, chooses the longest source-backed normalized heading with
 the lowest window index as tie-break, and rejects grouped `document_id` disagreements
 section-locally. `verify_model_sections` is unchanged. Added
