@@ -247,10 +247,20 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         _skip_reason_for_anchor,
         _span_for_line,
     )
+    from tax_graph.extract.instruction_ownership import (
+        instruction_line_owners,
+        instruction_span_ids_for_line,
+    )
 
     outline = build_outline_tree(document)
     instruction_frame = build_instruction_sections_frame(document, outline=outline)
     spans = build_candidate_spans(document)
+    instruction_owners = instruction_line_owners(spans)
+    instruction_spans_by_id = {
+        span.span_id: span
+        for span in spans
+        if span.relationship == "instructions" and span.section_id
+    }
     printed_nodes = [
         node
         for node in _flatten_nodes(outline.children)
@@ -288,7 +298,39 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         # printed line reaches the model even when its label contains no cue;
         # the model can then state REQUIRE_INPUT with its evidence.
         form_span = _span_for_line(document, node, spans)
-        sections = instruction_frame.for_line(document.document_id, line)
+        instruction_span_ids = instruction_span_ids_for_line(
+            spans,
+            line,
+            owners=instruction_owners,
+            owner_document_id=document.document_id,
+        )
+        selected_section_ids = {
+            instruction_spans_by_id[span_id].section_id
+            for span_id in instruction_span_ids
+            if span_id in instruction_spans_by_id
+            and instruction_spans_by_id[span_id].section_id
+        }
+        direct_sections = tuple(
+            section
+            for section in instruction_frame.sections
+            if section.section_id in selected_section_ids and section.line == line
+        )
+        if direct_sections:
+            sections = direct_sections
+        else:
+            parent_line = line[:-1] if re.fullmatch(r"[0-9]+[a-z]", line) else ""
+            sections = tuple(
+                section
+                for section in instruction_frame.sections
+                if section.section_id in selected_section_ids and section.line == parent_line
+            )
+        instruction_match = (
+            "direct"
+            if any(section.line == line for section in sections)
+            else "inherited"
+            if sections
+            else "none"
+        )
         instruction_text = "\n\n".join(section.text for section in sections)
         evidence_spans: list[dict[str, str]] = []
         full_form_face = ""
@@ -366,6 +408,8 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "instruction_owner_document_id": document.document_id,
                     "instruction_lines": [line],
                     "instruction_span_ids": [section.section_id for section in sections],
+                    "instruction_match": instruction_match,
+                    "instruction_inherited": instruction_match == "inherited",
                     "form_face_span_id": form_span.span_id if form_span is not None else "",
                     "form_face_before": form_span.text if form_span is not None else "",
                     "evidence_findings": evidence_findings,

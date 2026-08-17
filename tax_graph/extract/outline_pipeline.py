@@ -1068,16 +1068,20 @@ def _spans_for_outline_node(
         # first spans in the document (the form header).
         if source_span is not None:
             selected.append(source_span)
-        for span in spans:
-            if span.relationship == "source":
-                continue
-            if _instruction_span_belongs_to_line(
-                span,
-                node.line_anchor,
-                instruction_owners,
+        instruction_span_ids = set(
+            instruction_span_ids_for_line(
+                spans,
+                str(node.line_anchor),
+                owners=instruction_owners,
                 owner_document_id=document_id,
-            ):
-                instruction_hits.append(span)
+            )
+        )
+        instruction_hits.extend(
+            span
+            for span in spans
+            if span.span_id in instruction_span_ids
+            and span.relationship != "source"
+        )
         if source_span is not None:
             source_spans = [span for span in spans if span.relationship == "source"]
             # Locate the anchor row positionally, not by identity or equality.

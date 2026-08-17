@@ -82,18 +82,43 @@ def instruction_span_ids_for_line(
     owners: Mapping[str, Iterable[str]] | None = None,
     owner_document_id: str | None = None,
 ) -> list[str]:
-    """Return exact-owned instruction spans for one line and form context."""
+    """Return owned instruction spans for one line and form context.
+
+    A specific heading wins.  When a printed sub-line such as ``11a`` has no
+    specific owner, the numeric heading ``11`` owns its packet.  This is the
+    only inheritance performed here; mentions in prose and table addresses
+    remain outside the line-owner vocabulary.
+    """
     normalized = str(anchor or "").strip().lower()
     if not normalized:
         return []
     owner_map = owners or instruction_line_owners(spans)
-    return [
+    candidates = [
         str(_value(span, "span_id"))
         for span in spans
         if str(_value(span, "span_id"))
         and _belongs_to_document(span, owner_document_id)
         and normalized in {str(value).lower() for value in owner_map.get(str(_value(span, "span_id")), ())}
     ]
+    if candidates:
+        return candidates
+
+    parent = _numeric_parent(normalized)
+    if parent is None:
+        return []
+    return [
+        str(_value(span, "span_id"))
+        for span in spans
+        if str(_value(span, "span_id"))
+        and _belongs_to_document(span, owner_document_id)
+        and parent in {str(value).lower() for value in owner_map.get(str(_value(span, "span_id")), ())}
+    ]
+
+
+def _numeric_parent(anchor: str) -> str | None:
+    """Return the numeric heading for an alpha-suffixed printed sub-line."""
+    match = re.fullmatch(r"([0-9]+)[a-z]", str(anchor).strip().lower())
+    return match.group(1) if match else None
 
 
 def _belongs_to_document(span: Any, owner_document_id: str | None) -> bool:
