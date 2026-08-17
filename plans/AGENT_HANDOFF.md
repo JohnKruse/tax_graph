@@ -201,6 +201,21 @@ RAN: `.venv\\Scripts\\python.exe pilot\\replay_harness.py` -> 25 cases, 0 mismat
 RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py tax_graph\\extract\\instruction_ownership.py tax_graph\\extract\\cells.py tax_graph\\extract\\outline_pipeline.py tax_graph\\extract\\instruction_reconciliation.py pilot\\reconcile_instructions.py tests\\test_m20_s116.py plans\\m20_s116_instruction_reconciliation.yaml` -> OK.
 RAN: `git diff --check` -> OK.
 
+**S116 ITEM 1 CONTINUATION (Codex, 2026-08-17).** The reconciliation report now distinguishes
+`CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE` from a raw-booklet parser gap and from a
+genuine absence. Each such cell records the owning document ids and section ids; no instruction
+is attached to the cell packet. Live report totals are **198 matched, 100 raw-mentioned parser
+gaps, 113 other-form owners, 20 genuine absences, 28 instructions with no cell, and 54
+ambiguous**. This is the document-scope finding Claude's ruling calls for; S116 item 2 remains
+withdrawn.
+
+RAN: `.venv\\Scripts\\python.exe -m pytest tests\\test_m20_s116.py -q` -> 5 passed.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = 'C:\\Users\\devbox\\projects\\tax_graph\\.test_tmp_s116_codex'; .venv\\Scripts\\python.exe -m pytest tests\\test_m20_s116.py tests\\test_instruction_sections_m20.py -q` -> 10 passed.
+RAN: `.venv\\Scripts\\python.exe pilot\\reconcile_instructions.py --root . --year 2025 --output plans/m20_s116_instruction_reconciliation.yaml` -> report regenerated.
+RAN: `.venv\\Scripts\\python.exe pilot\\replay_harness.py` -> 25 cases, 0 mismatches, 0 network calls.
+RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py tax_graph\\extract\\instruction_reconciliation.py tests\\test_m20_s116.py plans\\m20_s116_instruction_reconciliation.yaml` -> OK.
+RAN: `git diff --check` -> OK.
+
 NOT RUN: bare pytest variants that need the poisoned `.test_tmp\\pytest-of-devbox` root; pytest
 failed in setup with `WinError 5` before the affected tests ran. NOT RUN: corpus/model run; this
 round has no model or prompt change and the Architect owns the corpus leg.

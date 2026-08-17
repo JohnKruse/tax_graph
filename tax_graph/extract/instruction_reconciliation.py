@@ -20,6 +20,7 @@ from tax_graph.extract.instruction_sections import InstructionSectionsFrame
 BUCKETS = (
     "MATCHED",
     "CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT",
+    "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE",
     "CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT",
     "INSTRUCTION WITH NO CELL",
     "AMBIGUOUS",
@@ -36,7 +37,8 @@ def reconcile_instruction_document(
     ``raw_booklet_text`` is used only for the missing-cell classification.  A
     missing parsed section is actionable when the source booklet names the
     line, which prevents the parser from laundering its own omission into a
-    genuine absence.
+    genuine absence.  A same-number section owned by another form gets its
+    own bucket so a shared-booklet collision is not reported as a parser gap.
     """
     cell_items = [
         cell
@@ -44,6 +46,11 @@ def reconcile_instruction_document(
         if _value(cell, "form") == document_id and _value(cell, "line")
     ]
     sections = _unique_sections(frame, document_id)
+    other_form_sections = [
+        section
+        for section in frame.sections
+        if section.document_id != document_id
+    ]
     paired_section_ids: set[str] = set()
     section_bucket_overrides: dict[str, str] = {}
     cell_rows: list[dict[str, Any]] = []
@@ -58,6 +65,7 @@ def reconcile_instruction_document(
             if parent is not None:
                 inherited = [section for section in sections if section.line == parent]
         matches = direct or inherited
+        other_matches = _sections_for_line(other_form_sections, line)
         if len(matches) > 1:
             bucket = "AMBIGUOUS"
             for section in matches:
@@ -66,20 +74,29 @@ def reconcile_instruction_document(
         elif matches:
             bucket = "MATCHED"
             paired_section_ids.add(matches[0].section_id)
-        elif _booklet_mentions_line(raw_booklet_text, line):
-            bucket = "CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT"
         else:
-            bucket = "CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT"
+            if other_matches:
+                bucket = "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE"
+            elif _booklet_mentions_line(raw_booklet_text, line):
+                bucket = "CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT"
+            else:
+                bucket = "CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT"
         bucket_counts[bucket] += 1
-        cell_rows.append(
-            {
-                "cell_id": f"{document_id}:line={line}:cell={index}",
-                "line": line,
-                "bucket": bucket,
-                "match": "inherited" if inherited and not direct and len(matches) == 1 else "direct" if direct and len(matches) == 1 else "",
-                "section_ids": [section.section_id for section in matches],
-            }
-        )
+        cell_row = {
+            "cell_id": f"{document_id}:line={line}:cell={index}",
+            "line": line,
+            "bucket": bucket,
+            "match": "inherited" if inherited and not direct and len(matches) == 1 else "direct" if direct and len(matches) == 1 else "",
+            "section_ids": [section.section_id for section in matches],
+        }
+        if bucket == "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE":
+            cell_row["other_form_document_ids"] = sorted(
+                {section.document_id for section in other_matches}
+            )
+            cell_row["other_form_section_ids"] = [
+                section.section_id for section in other_matches
+            ]
+        cell_rows.append(cell_row)
 
     instruction_rows: list[dict[str, Any]] = []
     for section in sections:
@@ -198,6 +215,17 @@ def _unique_sections(frame: InstructionSectionsFrame, document_id: str) -> list[
         seen.add(section.section_id)
         result.append(section)
     return result
+
+
+def _sections_for_line(sections: Iterable[Any], line: str) -> list[Any]:
+    """Return sections in another form context that own this line or parent."""
+    normalized = str(line).strip().lower()
+    parent = _numeric_parent(normalized)
+    return [
+        section
+        for section in sections
+        if str(getattr(section, "line", "")).strip().lower() in {normalized, parent}
+    ]
 
 
 def _booklet_mentions_line(text: str, line: str) -> bool:

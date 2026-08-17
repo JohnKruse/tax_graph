@@ -86,6 +86,29 @@ def test_reconciliation_reports_parser_gap_and_genuine_absence() -> None:
     assert next(item for item in report["cells"] if item["line"] == "11a")["match"] == "inherited"
 
 
+def test_reconciliation_distinguishes_another_form_owner() -> None:
+    frame = build_instruction_sections(
+        "\n".join(
+            [
+                "# Instructions for Schedule 2",
+                "## Line 9",
+                "Schedule 2 line 9 guidance.",
+            ]
+        ),
+        source_document_id="instructions_form_1040_2025",
+        year="2025",
+    )
+    report = reconcile_instruction_document(
+        "form_1040_2025",
+        "Line 9 guidance appears in this shared booklet.",
+        frame,
+        [{"form": "form_1040_2025", "line": "9"}],
+    )
+    cell = report["cells"][0]
+    assert cell["bucket"] == "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE"
+    assert cell["other_form_document_ids"] == ["schedule_2_2025"]
+
+
 def test_real_1040_packet_consumes_every_owned_line() -> None:
     document = load_document_input("form_1040_2025", year="2025", root=ROOT)
     frame = build_cell_frame_from_document(document)

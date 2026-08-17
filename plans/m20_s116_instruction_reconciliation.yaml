@@ -7,7 +7,8 @@ documents:
     instruction_section_count: 59
     bucket_counts:
       MATCHED: 35
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 16
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 1
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 15
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 2
       INSTRUCTION WITH NO CELL: 13
       AMBIGUOUS: 18
@@ -69,9 +70,18 @@ documents:
       - instruction_section_instructions_form_1040_2025_0013
     - cell_id: form_1040_2025:line=1z:cell=10
       line: 1z
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0122
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: form_1040_2025:line=2a:cell=11
       line: 2a
       bucket: MATCHED
@@ -105,9 +115,17 @@ documents:
       - instruction_section_instructions_form_1040_2025_0019
     - cell_id: form_1040_2025:line=4b:cell=16
       line: 4b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0065
+      - instruction_section_instructions_form_1040_2025_0124
+      - instruction_section_instructions_form_1040_2025_0142
     - cell_id: form_1040_2025:line=5a:cell=17
       line: 5a
       bucket: AMBIGUOUS
@@ -117,9 +135,15 @@ documents:
       - instruction_section_instructions_form_1040_2025_0022
     - cell_id: form_1040_2025:line=5b:cell=18
       line: 5b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0125
+      - instruction_section_instructions_form_1040_2025_0143
     - cell_id: form_1040_2025:line=6a:cell=19
       line: 6a
       bucket: AMBIGUOUS
@@ -141,14 +165,24 @@ documents:
       - instruction_section_instructions_form_1040_2025_0028
     - cell_id: form_1040_2025:line=8:cell=22
       line: '8'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0127
     - cell_id: form_1040_2025:line=9:cell=23
       line: '9'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0128
+      - instruction_section_instructions_form_1040_2025_0145
     - cell_id: form_1040_2025:line=10:cell=24
       line: '10'
       bucket: MATCHED
@@ -157,14 +191,30 @@ documents:
       - instruction_section_instructions_form_1040_2025_0030
     - cell_id: form_1040_2025:line=11a:cell=25
       line: 11a
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0091
+      - instruction_section_instructions_form_1040_2025_0130
+      - instruction_section_instructions_form_1040_2025_0148
     - cell_id: form_1040_2025:line=11b:cell=26
       line: 11b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0091
+      - instruction_section_instructions_form_1040_2025_0130
+      - instruction_section_instructions_form_1040_2025_0148
     - cell_id: form_1040_2025:line=12a:cell=27
       line: 12a
       bucket: MATCHED
@@ -191,14 +241,26 @@ documents:
       - instruction_section_instructions_form_1040_2025_0037
     - cell_id: form_1040_2025:line=14:cell=31
       line: '14'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0094
+      - instruction_section_instructions_form_1040_2025_0133
     - cell_id: form_1040_2025:line=15:cell=32
       line: '15'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0095
+      - instruction_section_instructions_form_1040_2025_0134
     - cell_id: form_1040_2025:line=16:cell=33
       line: '16'
       bucket: MATCHED
@@ -207,14 +269,23 @@ documents:
       - instruction_section_instructions_form_1040_2025_0039
     - cell_id: form_1040_2025:line=17:cell=34
       line: '17'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: form_1040_2025:line=18:cell=35
       line: '18'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0099
     - cell_id: form_1040_2025:line=19:cell=36
       line: '19'
       bucket: MATCHED
@@ -223,24 +294,42 @@ documents:
       - instruction_section_instructions_form_1040_2025_0040
     - cell_id: form_1040_2025:line=20:cell=37
       line: '20'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0103
+      - instruction_section_instructions_form_1040_2025_0104
     - cell_id: form_1040_2025:line=21:cell=38
       line: '21'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0105
+      - instruction_section_instructions_form_1040_2025_0106
     - cell_id: form_1040_2025:line=22:cell=39
       line: '22'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0107
     - cell_id: form_1040_2025:line=23:cell=40
       line: '23'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0108
     - cell_id: form_1040_2025:line=24:cell=41
       line: '24'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -437,6 +526,7 @@ documents:
     bucket_counts:
       MATCHED: 13
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 20
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 3
       INSTRUCTION WITH NO CELL: 7
       AMBIGUOUS: 9
@@ -706,6 +796,7 @@ documents:
     bucket_counts:
       MATCHED: 18
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 12
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 5
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
@@ -911,6 +1002,7 @@ documents:
     bucket_counts:
       MATCHED: 24
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 33
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 5
       INSTRUCTION WITH NO CELL: 5
       AMBIGUOUS: 3
@@ -1285,6 +1377,7 @@ documents:
     bucket_counts:
       MATCHED: 4
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
@@ -1320,7 +1413,8 @@ documents:
     instruction_section_count: 62
     bucket_counts:
       MATCHED: 44
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 9
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 1
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 8
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 2
       AMBIGUOUS: 24
@@ -1353,14 +1447,26 @@ documents:
       - instruction_section_instructions_form_1040_2025_0065
     - cell_id: schedule_1_2025:line=5:cell=5
       line: '5'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0125
+      - instruction_section_instructions_form_1040_2025_0143
     - cell_id: schedule_1_2025:line=6:cell=6
       line: '6'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_1_2025:line=7:cell=7
       line: '7'
       bucket: MATCHED
@@ -1369,9 +1475,13 @@ documents:
       - instruction_section_instructions_form_1040_2025_0066
     - cell_id: schedule_1_2025:line=8:cell=8
       line: '8'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0127
     - cell_id: schedule_1_2025:line=8a:cell=9
       line: 8a
       bucket: AMBIGUOUS
@@ -1411,9 +1521,13 @@ documents:
       - instruction_section_instructions_form_1040_2025_0074
     - cell_id: schedule_1_2025:line=8g:cell=15
       line: 8g
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0127
     - cell_id: schedule_1_2025:line=8h:cell=16
       line: 8h
       bucket: MATCHED
@@ -1512,14 +1626,28 @@ documents:
       - instruction_section_instructions_form_1040_2025_0090
     - cell_id: schedule_1_2025:line=9:cell=32
       line: '9'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0128
+      - instruction_section_instructions_form_1040_2025_0145
     - cell_id: schedule_1_2025:line=10:cell=33
       line: '10'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0030
+      - instruction_section_instructions_form_1040_2025_0129
+      - instruction_section_instructions_form_1040_2025_0147
     - cell_id: schedule_1_2025:line=11:cell=34
       line: '11'
       bucket: MATCHED
@@ -1682,14 +1810,23 @@ documents:
       - instruction_section_instructions_form_1040_2025_0121
     - cell_id: schedule_1_2025:line=25:cell=60
       line: '25'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0041
     - cell_id: schedule_1_2025:line=26:cell=61
       line: '26'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0007
+      - instruction_section_instructions_form_1040_2025_0045
     instructions:
     - section_id: instruction_section_instructions_form_1040_2025_0060
       line: '1'
@@ -1751,171 +1888,386 @@ documents:
     instruction_section_count: 0
     bucket_counts:
       MATCHED: 0
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 45
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 2
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 43
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 3
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
     cells:
     - cell_id: schedule_1a_2025:line=1:cell=1
       line: '1'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_1a_2025:line=2a:cell=2
       line: 2a
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0014
+      - instruction_section_instructions_form_1040_2025_0061
+      - instruction_section_instructions_form_1040_2025_0062
+      - instruction_section_instructions_form_1040_2025_0123
+      - instruction_section_instructions_form_1040_2025_0140
     - cell_id: schedule_1a_2025:line=2b:cell=3
       line: 2b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0015
+      - instruction_section_instructions_form_1040_2025_0061
+      - instruction_section_instructions_form_1040_2025_0063
+      - instruction_section_instructions_form_1040_2025_0123
+      - instruction_section_instructions_form_1040_2025_0140
     - cell_id: schedule_1a_2025:line=2c:cell=4
       line: 2c
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0123
+      - instruction_section_instructions_form_1040_2025_0140
     - cell_id: schedule_1a_2025:line=2d:cell=5
       line: 2d
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0123
+      - instruction_section_instructions_form_1040_2025_0140
     - cell_id: schedule_1a_2025:line=2e:cell=6
       line: 2e
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0123
+      - instruction_section_instructions_form_1040_2025_0140
     - cell_id: schedule_1a_2025:line=3:cell=7
       line: '3'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0064
+      - instruction_section_instructions_form_1040_2025_0141
     - cell_id: schedule_1a_2025:line=4:cell=8
       line: '4'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0065
+      - instruction_section_instructions_form_1040_2025_0124
+      - instruction_section_instructions_form_1040_2025_0142
     - cell_id: schedule_1a_2025:line=4b:cell=9
       line: 4b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0018
+      - instruction_section_instructions_form_1040_2025_0019
+      - instruction_section_instructions_form_1040_2025_0065
+      - instruction_section_instructions_form_1040_2025_0124
+      - instruction_section_instructions_form_1040_2025_0142
     - cell_id: schedule_1a_2025:line=4a:cell=10
       line: 4a
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0018
+      - instruction_section_instructions_form_1040_2025_0019
+      - instruction_section_instructions_form_1040_2025_0065
+      - instruction_section_instructions_form_1040_2025_0124
+      - instruction_section_instructions_form_1040_2025_0142
     - cell_id: schedule_1a_2025:line=4c:cell=11
       line: 4c
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0020
+      - instruction_section_instructions_form_1040_2025_0065
+      - instruction_section_instructions_form_1040_2025_0124
+      - instruction_section_instructions_form_1040_2025_0142
     - cell_id: schedule_1a_2025:line=5:cell=12
       line: '5'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0125
+      - instruction_section_instructions_form_1040_2025_0143
     - cell_id: schedule_1a_2025:line=6:cell=13
       line: '6'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_1a_2025:line=7:cell=14
       line: '7'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0066
     - cell_id: schedule_1a_2025:line=8:cell=15
       line: '8'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0127
     - cell_id: schedule_1a_2025:line=9:cell=16
       line: '9'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0128
+      - instruction_section_instructions_form_1040_2025_0145
     - cell_id: schedule_1a_2025:line=10:cell=17
       line: '10'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0030
+      - instruction_section_instructions_form_1040_2025_0129
+      - instruction_section_instructions_form_1040_2025_0147
     - cell_id: schedule_1a_2025:line=11:cell=18
       line: '11'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0091
+      - instruction_section_instructions_form_1040_2025_0130
+      - instruction_section_instructions_form_1040_2025_0148
     - cell_id: schedule_1a_2025:line=12:cell=19
       line: '12'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0092
+      - instruction_section_instructions_form_1040_2025_0131
+      - instruction_section_instructions_form_1040_2025_0149
     - cell_id: schedule_1a_2025:line=13:cell=20
       line: '13'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0093
+      - instruction_section_instructions_form_1040_2025_0132
     - cell_id: schedule_1a_2025:line=14a:cell=21
       line: 14a
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0094
+      - instruction_section_instructions_form_1040_2025_0133
     - cell_id: schedule_1a_2025:line=14b:cell=22
       line: 14b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0094
+      - instruction_section_instructions_form_1040_2025_0133
     - cell_id: schedule_1a_2025:line=14c:cell=23
       line: 14c
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0094
+      - instruction_section_instructions_form_1040_2025_0133
     - cell_id: schedule_1a_2025:line=15:cell=24
       line: '15'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0095
+      - instruction_section_instructions_form_1040_2025_0134
     - cell_id: schedule_1a_2025:line=16:cell=25
       line: '16'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0039
+      - instruction_section_instructions_form_1040_2025_0096
+      - instruction_section_instructions_form_1040_2025_0135
     - cell_id: schedule_1a_2025:line=17:cell=26
       line: '17'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_1a_2025:line=18:cell=27
       line: '18'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0099
     - cell_id: schedule_1a_2025:line=19:cell=28
       line: '19'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0040
+      - instruction_section_instructions_form_1040_2025_0137
     - cell_id: schedule_1a_2025:line=20:cell=29
       line: '20'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0103
+      - instruction_section_instructions_form_1040_2025_0104
     - cell_id: schedule_1a_2025:line=21:cell=30
       line: '21'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0105
+      - instruction_section_instructions_form_1040_2025_0106
     - cell_id: schedule_1a_2025:line=22:cell=31
       line: '22'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0107
     - cell_id: schedule_1a_2025:line=23:cell=32
       line: '23'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0108
     - cell_id: schedule_1a_2025:line=24:cell=33
       line: '24'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -1923,14 +2275,23 @@ documents:
       section_ids: []
     - cell_id: schedule_1a_2025:line=25:cell=34
       line: '25'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0041
     - cell_id: schedule_1a_2025:line=26:cell=35
       line: '26'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0007
+      - instruction_section_instructions_form_1040_2025_0045
     - cell_id: schedule_1a_2025:line=27:cell=36
       line: '27'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -1938,24 +2299,40 @@ documents:
       section_ids: []
     - cell_id: schedule_1a_2025:line=28:cell=37
       line: '28'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0049
     - cell_id: schedule_1a_2025:line=29:cell=38
       line: '29'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0050
     - cell_id: schedule_1a_2025:line=30:cell=39
       line: '30'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0051
     - cell_id: schedule_1a_2025:line=31:cell=40
       line: '31'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0009
     - cell_id: schedule_1a_2025:line=32:cell=41
       line: '32'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT
@@ -1968,9 +2345,13 @@ documents:
       section_ids: []
     - cell_id: schedule_1a_2025:line=34:cell=43
       line: '34'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0052
     - cell_id: schedule_1a_2025:line=35:cell=44
       line: '35'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT
@@ -1978,24 +2359,41 @@ documents:
       section_ids: []
     - cell_id: schedule_1a_2025:line=36a:cell=45
       line: 36a
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0057
     - cell_id: schedule_1a_2025:line=36b:cell=46
       line: 36b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0057
     - cell_id: schedule_1a_2025:line=37:cell=47
       line: '37'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0058
     - cell_id: schedule_1a_2025:line=38:cell=48
       line: '38'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0038
+      - instruction_section_instructions_form_1040_2025_0059
     instructions: []
   schedule_2_2025:
     document_id: schedule_2_2025
@@ -2003,16 +2401,24 @@ documents:
     instruction_section_count: 17
     bucket_counts:
       MATCHED: 16
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 29
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 29
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 1
       AMBIGUOUS: 0
     cells:
     - cell_id: schedule_2_2025:line=1:cell=1
       line: '1'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_2_2025:line=1a:cell=2
       line: 1a
       bucket: MATCHED
@@ -2021,34 +2427,84 @@ documents:
       - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=1b:cell=3
       line: 1b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0002
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_2_2025:line=1d:cell=4
       line: 1d
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0005
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_2_2025:line=1e:cell=5
       line: 1e
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0006
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_2_2025:line=1f:cell=6
       line: 1f
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0008
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_2_2025:line=1y:cell=7
       line: 1y
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_2_2025:line=1z:cell=8
       line: 1z
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0060
+      - instruction_section_instructions_form_1040_2025_0068
+      - instruction_section_instructions_form_1040_2025_0139
     - cell_id: schedule_2_2025:line=2:cell=9
       line: '2'
       bucket: MATCHED
@@ -2057,9 +2513,15 @@ documents:
       - instruction_section_instructions_form_1040_2025_0123
     - cell_id: schedule_2_2025:line=3:cell=10
       line: '3'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_3_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0064
+      - instruction_section_instructions_form_1040_2025_0141
     - cell_id: schedule_2_2025:line=4:cell=11
       line: '4'
       bucket: MATCHED
@@ -2080,9 +2542,13 @@ documents:
       - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_2_2025:line=7:cell=14
       line: '7'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0066
     - cell_id: schedule_2_2025:line=8:cell=15
       line: '8'
       bucket: MATCHED
@@ -2139,89 +2605,174 @@ documents:
       - instruction_section_instructions_form_1040_2025_0135
     - cell_id: schedule_2_2025:line=17:cell=24
       line: '17'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17b:cell=25
       line: 17b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17c:cell=26
       line: 17c
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17d:cell=27
       line: 17d
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17e:cell=28
       line: 17e
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17f:cell=29
       line: 17f
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17g:cell=30
       line: 17g
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17h:cell=31
       line: 17h
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17i:cell=32
       line: 17i
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17j:cell=33
       line: 17j
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17k:cell=34
       line: 17k
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17l:cell=35
       line: 17l
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17m:cell=36
       line: 17m
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17n:cell=37
       line: 17n
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17o:cell=38
       line: 17o
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17p:cell=39
       line: 17p
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17q:cell=40
       line: 17q
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0097
+      - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17z:cell=41
       line: 17z
       bucket: MATCHED
@@ -2230,9 +2781,13 @@ documents:
       - instruction_section_instructions_form_1040_2025_0138
     - cell_id: schedule_2_2025:line=18:cell=42
       line: '18'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0099
     - cell_id: schedule_2_2025:line=19:cell=43
       line: '19'
       bucket: MATCHED
@@ -2241,14 +2796,24 @@ documents:
       - instruction_section_instructions_form_1040_2025_0137
     - cell_id: schedule_2_2025:line=20:cell=44
       line: '20'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0103
+      - instruction_section_instructions_form_1040_2025_0104
     - cell_id: schedule_2_2025:line=21:cell=45
       line: '21'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0105
+      - instruction_section_instructions_form_1040_2025_0106
     instructions:
     - section_id: instruction_section_instructions_form_1040_2025_0136
       line: 17a
@@ -2259,7 +2824,8 @@ documents:
     instruction_section_count: 16
     bucket_counts:
       MATCHED: 17
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 18
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 18
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
@@ -2302,9 +2868,15 @@ documents:
       - instruction_section_instructions_form_1040_2025_0143
     - cell_id: schedule_3_2025:line=6:cell=7
       line: '6'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6a:cell=8
       line: 6a
       bucket: MATCHED
@@ -2313,54 +2885,119 @@ documents:
       - instruction_section_instructions_form_1040_2025_0144
     - cell_id: schedule_3_2025:line=6b:cell=9
       line: 6b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0024
+      - instruction_section_instructions_form_1040_2025_0025
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6c:cell=10
       line: 6c
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0024
+      - instruction_section_instructions_form_1040_2025_0026
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6d:cell=11
       line: 6d
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0027
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6e:cell=12
       line: 6e
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6f:cell=13
       line: 6f
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6g:cell=14
       line: 6g
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6h:cell=15
       line: 6h
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6i:cell=16
       line: 6i
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6j:cell=17
       line: 6j
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6k:cell=18
       line: 6k
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6l:cell=19
       line: 6l
       bucket: MATCHED
@@ -2369,24 +3006,44 @@ documents:
       - instruction_section_instructions_form_1040_2025_0146
     - cell_id: schedule_3_2025:line=6m:cell=20
       line: 6m
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=6z:cell=21
       line: 6z
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - form_1040_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0126
     - cell_id: schedule_3_2025:line=7:cell=22
       line: '7'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0066
     - cell_id: schedule_3_2025:line=8:cell=23
       line: '8'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0127
     - cell_id: schedule_3_2025:line=9:cell=24
       line: '9'
       bucket: MATCHED
@@ -2413,9 +3070,15 @@ documents:
       - instruction_section_instructions_form_1040_2025_0149
     - cell_id: schedule_3_2025:line=13:cell=28
       line: '13'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0093
+      - instruction_section_instructions_form_1040_2025_0132
     - cell_id: schedule_3_2025:line=13a:cell=29
       line: 13a
       bucket: MATCHED
@@ -2448,14 +3111,26 @@ documents:
       - instruction_section_instructions_form_1040_2025_0154
     - cell_id: schedule_3_2025:line=14:cell=34
       line: '14'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0094
+      - instruction_section_instructions_form_1040_2025_0133
     - cell_id: schedule_3_2025:line=15:cell=35
       line: '15'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
+      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
       match: ''
       section_ids: []
+      other_form_document_ids:
+      - schedule_1_2025
+      - schedule_2_2025
+      other_form_section_ids:
+      - instruction_section_instructions_form_1040_2025_0095
+      - instruction_section_instructions_form_1040_2025_0134
     instructions: []
   schedule_a_2025:
     document_id: schedule_a_2025
@@ -2464,6 +3139,7 @@ documents:
     bucket_counts:
       MATCHED: 21
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 6
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 1
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
@@ -2637,6 +3313,7 @@ documents:
     bucket_counts:
       MATCHED: 0
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 7
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 1
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
@@ -2689,6 +3366,7 @@ documents:
     bucket_counts:
       MATCHED: 6
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 18
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
