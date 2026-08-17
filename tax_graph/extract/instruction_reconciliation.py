@@ -18,7 +18,9 @@ import yaml
 from tax_graph.extract.instruction_sections import InstructionSectionsFrame
 from tax_graph.extract.instruction_ownership import (
     instruction_line_owners,
+    instruction_span_resolution_for_line,
     instruction_span_ids_for_line,
+    instruction_span_profile,
 )
 from tax_graph.extract.outline import _spans_for_instruction_frame
 
@@ -31,6 +33,12 @@ BUCKETS = (
     "INSTRUCTION WITH NO CELL",
     "AMBIGUOUS",
 )
+INSTRUCTION_BUCKETS = BUCKETS + (
+    "STUB SECTION",
+    "DEDUPED NESTED SECTION",
+    "WORKSHEET",
+)
+
 
 def reconcile_instruction_document(
     document_id: str,
@@ -74,14 +82,19 @@ def reconcile_instruction_document(
             if span.owner_document_id and span.owner_document_id != document_id
         }
     )
-    paired_section_ids: set[str] = set()
-    section_bucket_overrides: dict[str, str] = {}
+    section_dispositions: dict[str, str] = {}
     cell_rows: list[dict[str, Any]] = []
     cell_buckets = {bucket: 0 for bucket in BUCKETS}
-    instruction_buckets = {bucket: 0 for bucket in BUCKETS}
+    instruction_buckets = {bucket: 0 for bucket in INSTRUCTION_BUCKETS}
 
     for index, cell in enumerate(cell_items, start=1):
         line = _value(cell, "line").lower()
+        resolution = instruction_span_resolution_for_line(
+            instruction_spans,
+            line,
+            owners=instruction_owners,
+            owner_document_id=document_id,
+        )
         match_ids = instruction_span_ids_for_line(
             instruction_spans,
             line,
@@ -95,26 +108,39 @@ def reconcile_instruction_document(
             if line in instruction_owners.get(span.span_id, frozenset())
         ]
         inherited = not direct and bool(matches)
+        for span_id in resolution["stubs"]:
+            _record_disposition(section_dispositions, spans_by_id[span_id], "STUB SECTION")
+        for dropped in resolution["dropped"]:
+            dropped_span = spans_by_id.get(str(dropped.get("span_id") or ""))
+            if dropped_span is not None:
+                _record_disposition(
+                    section_dispositions,
+                    dropped_span,
+                    "DEDUPED NESTED SECTION",
+                )
+        for span in matches:
+            disposition = (
+                "WORKSHEET"
+                if span.span_id in resolution["worksheets"]
+                else "MATCHED"
+            )
+            _record_disposition(section_dispositions, span, disposition)
         other_match_ids: list[str] = []
         for owner_document_id in owner_documents:
-            other_match_ids.extend(
-                instruction_span_ids_for_line(
+            other_resolution = instruction_span_resolution_for_line(
                     instruction_spans,
                     line,
                     owners=instruction_owners,
                     owner_document_id=owner_document_id,
                 )
-            )
+            other_match_ids.extend(other_resolution["selected_ids"])
         other_matches = [spans_by_id[span_id] for span_id in other_match_ids]
-        if len(matches) > 1:
+        if resolution["ambiguous"]:
             bucket = "AMBIGUOUS"
             for span in matches:
-                section_id = span.section_id or span.span_id
-                paired_section_ids.add(section_id)
-                section_bucket_overrides[section_id] = bucket
+                _record_disposition(section_dispositions, span, "AMBIGUOUS")
         elif matches:
             bucket = "MATCHED"
-            paired_section_ids.add(matches[0].section_id or matches[0].span_id)
         else:
             if other_matches:
                 bucket = "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE"
@@ -127,8 +153,40 @@ def reconcile_instruction_document(
             "cell_id": f"{document_id}:line={line}:cell={index}",
             "line": line,
             "bucket": bucket,
-            "match": "inherited" if inherited and len(matches) == 1 else "direct" if direct and len(matches) == 1 else "",
+            "match": (
+                "inherited"
+                if inherited and matches and not direct
+                else "direct"
+                if direct and not resolution["ambiguous"]
+                else ""
+            ),
             "section_ids": [span.section_id or span.span_id for span in matches],
+            "instruction_attachments": [
+                {
+                    "span_id": span.span_id,
+                    "section_id": span.section_id or span.span_id,
+                    "specificity": resolution["specificity"].get(
+                        span.span_id,
+                        "general",
+                    ),
+                    "specificity_rank": resolution["specificity_rank"].get(
+                        span.span_id,
+                        1,
+                    ),
+                    "provenance": (
+                        "WORKSHEET"
+                        if span.span_id in resolution["worksheets"]
+                        else "INSTRUCTION"
+                    ),
+                }
+                for span in matches
+            ],
+            "instruction_dropped": list(resolution["dropped"]),
+            "instruction_dropped_sections": list(resolution["dropped"]),
+            "instruction_stub_section_ids": [
+                spans_by_id[span_id].section_id or span_id
+                for span_id in resolution["stubs"]
+            ],
         }
         if bucket == "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE":
             cell_row["other_form_document_ids"] = sorted(
@@ -146,9 +204,13 @@ def reconcile_instruction_document(
     instruction_rows: list[dict[str, Any]] = []
     for span in document_spans:
         section_id = span.section_id or span.span_id
-        if section_id in paired_section_ids:
-            bucket = section_bucket_overrides.get(section_id, "MATCHED")
-        else:
+        profile = instruction_span_profile(span)
+        bucket = section_dispositions.get(section_id)
+        if profile["is_stub"]:
+            bucket = "STUB SECTION"
+        elif profile["provenance"] == "WORKSHEET":
+            bucket = "WORKSHEET"
+        elif bucket is None:
             bucket = "INSTRUCTION WITH NO CELL"
         instruction_buckets[bucket] += 1
         instruction_rows.append(
@@ -156,6 +218,9 @@ def reconcile_instruction_document(
                 "section_id": section_id,
                 "line": section_lines.get(section_id, ""),
                 "bucket": bucket,
+                "provenance": profile["provenance"],
+                "specificity": profile["specificity"],
+                "specificity_rank": profile["specificity_rank"],
             }
         )
 
@@ -168,6 +233,29 @@ def reconcile_instruction_document(
         "cells": cell_rows,
         "instructions": instruction_rows,
     }
+
+
+_DISPOSITION_PRIORITY = {
+    "DEDUPED NESTED SECTION": 1,
+    "STUB SECTION": 2,
+    "AMBIGUOUS": 5,
+    "WORKSHEET": 3,
+    "MATCHED": 4,
+}
+
+
+def _record_disposition(
+    dispositions: dict[str, str],
+    span: Any,
+    disposition: str,
+) -> None:
+    """Keep the strongest packet disposition seen for one source section."""
+    section_id = _value(span, "section_id") or _value(span, "span_id")
+    if not section_id:
+        return
+    current = dispositions.get(section_id)
+    if current is None or _DISPOSITION_PRIORITY.get(disposition, 0) >= _DISPOSITION_PRIORITY.get(current, 0):
+        dispositions[section_id] = disposition
 
 
 def build_instruction_reconciliation_report(
@@ -205,6 +293,7 @@ def build_instruction_reconciliation_report(
     return {
         "schema_version": 1,
         "round": "M20-S117",
+        "packet_policy": "M20-S118",
         "documents": reports,
         "families": {
             "line_anchored": {

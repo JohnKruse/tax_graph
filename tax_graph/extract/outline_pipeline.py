@@ -1068,19 +1068,18 @@ def _spans_for_outline_node(
         # first spans in the document (the form header).
         if source_span is not None:
             selected.append(source_span)
-        instruction_span_ids = set(
-            instruction_span_ids_for_line(
-                spans,
-                str(node.line_anchor),
-                owners=instruction_owners,
-                owner_document_id=document_id,
-            )
+        instruction_span_ids = instruction_span_ids_for_line(
+            spans,
+            str(node.line_anchor),
+            owners=instruction_owners,
+            owner_document_id=document_id,
         )
+        spans_by_id = {span.span_id: span for span in spans}
         instruction_hits.extend(
-            span
-            for span in spans
-            if span.span_id in instruction_span_ids
-            and span.relationship != "source"
+            spans_by_id[span_id]
+            for span_id in instruction_span_ids
+            if span_id in spans_by_id
+            and spans_by_id[span_id].relationship != "source"
         )
         if source_span is not None:
             source_spans = [span for span in spans if span.relationship == "source"]

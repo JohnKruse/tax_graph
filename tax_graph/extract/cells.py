@@ -249,7 +249,7 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
     )
     from tax_graph.extract.instruction_ownership import (
         instruction_line_owners,
-        instruction_span_ids_for_line,
+        instruction_span_resolution_for_line,
     )
 
     outline = build_outline_tree(document)
@@ -298,36 +298,26 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
         # printed line reaches the model even when its label contains no cue;
         # the model can then state REQUIRE_INPUT with its evidence.
         form_span = _span_for_line(document, node, spans)
-        instruction_span_ids = instruction_span_ids_for_line(
+        instruction_resolution = instruction_span_resolution_for_line(
             spans,
             line,
             owners=instruction_owners,
             owner_document_id=document.document_id,
         )
-        selected_section_ids = {
-            instruction_spans_by_id[span_id].section_id
-            for span_id in instruction_span_ids
-            if span_id in instruction_spans_by_id
-            and instruction_spans_by_id[span_id].section_id
-        }
-        direct_sections = tuple(
-            section
+        sections_by_id = {
+            section.section_id: section
             for section in instruction_frame.sections
-            if section.section_id in selected_section_ids and section.line == line
+        }
+        sections = tuple(
+            sections_by_id[instruction_spans_by_id[span_id].section_id]
+            for span_id in instruction_resolution["selected_ids"]
+            if span_id in instruction_spans_by_id
+            and instruction_spans_by_id[span_id].section_id in sections_by_id
         )
-        if direct_sections:
-            sections = direct_sections
-        else:
-            parent_line = line[:-1] if re.fullmatch(r"[0-9]+[a-z]", line) else ""
-            sections = tuple(
-                section
-                for section in instruction_frame.sections
-                if section.section_id in selected_section_ids and section.line == parent_line
-            )
         instruction_match = (
-            "direct"
-            if any(section.line == line for section in sections)
-            else "inherited"
+            "inherited"
+            if instruction_resolution["inherited"] and sections
+            else "direct"
             if sections
             else "none"
         )
@@ -408,6 +398,40 @@ def build_cell_frame_from_document(document: Any) -> CellFrame:
                     "instruction_owner_document_id": document.document_id,
                     "instruction_lines": [line],
                     "instruction_span_ids": [section.section_id for section in sections],
+                    "instruction_attachments": [
+                        {
+                            "span_id": span_id,
+                            "section_id": instruction_spans_by_id[span_id].section_id,
+                            "specificity": instruction_resolution["specificity"].get(
+                                span_id,
+                                "general",
+                            ),
+                            "specificity_rank": instruction_resolution[
+                                "specificity_rank"
+                            ].get(span_id, 1),
+                            "provenance": (
+                                "WORKSHEET"
+                                if span_id in instruction_resolution["worksheets"]
+                                else "INSTRUCTION"
+                            ),
+                            "match": (
+                                "direct"
+                                if line in instruction_owners.get(span_id, frozenset())
+                                else "inherited"
+                            ),
+                        }
+                        for span_id in instruction_resolution["selected_ids"]
+                        if span_id in instruction_spans_by_id
+                    ],
+                    "instruction_dropped": list(instruction_resolution["dropped"]),
+                    "instruction_dropped_sections": list(
+                        instruction_resolution["dropped"]
+                    ),
+                    "instruction_stub_section_ids": [
+                        instruction_spans_by_id[span_id].section_id
+                        for span_id in instruction_resolution["stubs"]
+                        if span_id in instruction_spans_by_id
+                    ],
                     "instruction_match": instruction_match,
                     "instruction_inherited": instruction_match == "inherited",
                     "form_face_span_id": form_span.span_id if form_span is not None else "",

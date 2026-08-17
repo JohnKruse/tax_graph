@@ -311,6 +311,20 @@ list and is the input to the round after this one.
 visible and typed; fixing the extents is its own round.** The topic-organised booklets. The
 table-column owner vocabulary. Routing. The `filer_entry` reason taxonomy.
 
+**CODEX STATUS (2026-08-17).** Implemented the typed resolver behind
+`instruction_span_ids_for_line`: literal nested containment drops only the parent, specificity rank
+orders surviving attachments, heading-only sections are `STUB SECTION`, and worksheet headings carry
+`WORKSHEET` provenance without making a cell ambiguous. Cell-frame assembly now preserves a general
+section for every directly owned token, including range continuations. The report and packet paths
+remain accessor-backed; no prompt, schema, fixture, or model call changed.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s118.py tests\test_m20_s117.py tests\test_m20_s116.py -q`
+-> **14 passed, 1 warning**. **RAN:** `.venv\Scripts\python.exe pilot\replay_harness.py --root .`
+-> **replay cases=25 mismatches=0 network_calls=0**. **RAN:** `.venv\Scripts\python.exe pilot\reconcile_instructions.py --root . --year 2025 --output plans/m20_s116_instruction_reconciliation.yaml`
+-> **wrote the regenerated report**. **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**;
+`git diff --check` -> **clean**. No model call was made. **COMMIT:** implementation committed on
+`main` (not pushed; Architect owns the push decision).
+
 ## Open for Architect
 
 *(Nothing open.)*
