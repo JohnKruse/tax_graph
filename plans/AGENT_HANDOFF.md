@@ -21,42 +21,51 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S121 AND M20-S122 ARE BOTH ACCEPTED. M20-S123 is specced under Current round and
-it is STRUCTURAL, not another per-class patch.**
+**BALL: CODEX. M20-S121, S122 AND S123 ARE ALL ACCEPTED. M20-S124 is specced under Current round:
+carry the segmenter to the 1040 booklet on CHAPTER-scoped windows.**
 
-**M20-S122 IS ACCEPTED (`13e0937`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION AND A LIVE RUN.**
-I re-derived the repair/reject decision for all 136 proposals myself, without importing Codex's
-resolver, and matched its counts exactly. **Schedule D went from failing closed to 92 sections**;
-Schedule B holds at 28; both tile contiguously to EOF with every heading at its byte and every owner
-in the manifest set, **and the fixture now replays UNDER the manifest constraint, which the S121
-recording could not do at all.** All four items landed: the `drop_invalid_sections` fork is gone,
-the bounded unique-line-boundary repair keeps the anti-fabrication property, the CLI persists each
-window, and the scorer shares the owner accessor. **21 passed.**
+**M20-S123 IS ACCEPTED (`129cb0f` + `72555bc`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.**
+I reimplemented the parser, the bounded heading repair, the dedup, the end-recomputation and the
+owner split myself and reproduced every number Codex reported: Schedule B **29 raw claims -> 29
+sections**, Schedule D **104 raw claims -> 93 sections, 0 rejected, 1 governs conflict**, both
+tiling from byte 0 to EOF with every heading witnessed in the source. **The structural change did
+what it was specced to do: a fixture that used to abort the booklet now completes with nothing
+rejected at all.**
+- **The `Line 4.` run-in label at byte 71963 is recovered**, owned by
+  `unrecaptured_section_1250_gain_worksheet_2025`, governing `4`, end recomputed to 72117. That is
+  the construct this whole line of rounds exists to reach, and it was being discarded over a field
+  the code never used.
+- **`verify_model_sections` is untouched** - byte conservation from 0 to EOF, the heading witness
+  and the manifest owner check all still fail closed, and the rejection matrix proves a malformed
+  section drops out while its neighbours still verify.
+- **The owner split is real, not a relabelling.** `wrong_form_owner` is **0** on both booklets and
+  all **58** `sibling_worksheet_owner` rows name one of the four Schedule D worksheets, which the
+  manifest links to this booklet by `region.source_document_id`. **Not one names a foreign form.**
 
-**ITEM 3 PAID FOR ITSELF THE SAME HOUR.** My live Schedule D run failed again - and this time the
-recording survived, because the CLI now writes before it verifies. The previous failure cost me 9
-paid calls.
+**THE COVERAGE NUMBER IS THE ONE TO READ, AND IT IS UNEVEN.** Schedule B goes **0 -> 8 of 8** cells
+correctly owned, which is the whole case for this direction. **Schedule D is 11 -> 12 of 24: one
+cell gained.** The remaining 12 are not a segmentation failure - the booklet tiles perfectly and
+every cell is reachable - so the next defect is in the join, not the segmenter.
 
-**M20-S121 IS ACCEPTED (`faded97` + `119e88a` + `ad846d2`, Architect, 2026-08-17), VERIFIED BY
-RECOMPUTATION AND BY A LIVE RUN ON BOTH BOOKLETS.** I regrouped the raw recording myself without
-touching Codex's reconciler and reproduced its numbers exactly. **The headline is that the direction
-John chose is now proven end to end on the case it was chosen for:** `instructions_schedule_b_2025`,
-where the deterministic parser finds **0 sections and 0 of 8 cells**, segments live into **28
-sections and 6 of 8 cells correctly owned, 0 wrong owner, 0 rejected**, byte conservation holding to
-EOF, in the STRICT production path. Those line instructions are bold run-in labels inside a
-paragraph, which no heading parser can ever see.
-- **The governs reconciliation works live.** Schedule B **3** conflicts and Schedule D **4**, every
-  one resolved by the context tiebreak, **zero** rejected for ambiguity, both booklets tiling exactly.
-  The `SegmenterError: overlapping windows disagree about governs at 10062` class is gone.
-- **The manifest constraint killed the owner problem outright: `owner_conflict_count` is 0 on both
-  booklets live**, against 3 and 4 spelling conflicts in the old recording. Schedule B's 5
-  wrong-owner rows went to **0**.
-- **The model did NOT make the mistake John feared, and this is now measured, not hoped.** All **29**
-  Schedule D wrong-owner rows name one of the four WORKSHEETS - `schedule_d_tax_worksheet_2025` 20,
-  `unrecaptured_section_1250_gain_worksheet_2025` 6, `capital_loss_carryover_worksheet_2025` 2,
-  `28_rate_gain_worksheet_2025` 1 - and **not one names a foreign form.** Cell-naive segmentation
-  attributes worksheet rows to worksheets. **The number is a scorer artifact and S122 did NOT fix
-  it - it made it 58. The real cause and the fix are S123 item 3.**
+**I WROTE THE OWNER SPLIT DOWN BACKWARDS BEFORE I READ THE MANIFEST.** My first re-derivation
+returned 58 `wrong_form_owner` and 0 sibling, the exact inverse, because I read `region_of` off the
+top level of the entry when the manifest nests it under `region:`. **Codex was right and my
+recomputation was wrong.** Same lesson as always: open the artifact before believing the number.
+
+**M20-S122 (`13e0937`) AND M20-S121 (`faded97` + `119e88a` + `ad846d2`) ARE ACCEPTED, both verified
+by recomputation and by live runs on both booklets - narration pruned 2026-08-17, all in git.
+What survives of them:**
+- **The direction John chose is proven end to end on the case it was chosen for.** On
+  `instructions_schedule_b_2025` the deterministic parser finds **0 sections and 0 of 8 cells**;
+  the model segments it live into 29 sections and **8 of 8 cells correctly owned**. Those line
+  instructions are bold run-in labels inside a paragraph, which no heading parser can ever see.
+- **The manifest owner constraint killed the owner-spelling problem outright** -
+  `owner_conflict_count` is 0 on both booklets live - and the governs context tiebreak resolves
+  every overlap conflict with none rejected for ambiguity.
+- **The bounded unique-line-boundary heading repair keeps the anti-fabrication property.** Do not
+  widen it.
+- **The CLI persists each window BEFORE it verifies.** That paid for itself the same hour it
+  landed: the next live failure kept its recording instead of burning 9 paid calls again.
 
 **A RECORDING VERIFIES CODE PATHS AND NEVER MODEL BEHAVIOUR - THIS IS NOW THE THIRD TIME.** The
 checked-in S121 recording contains **zero** governs conflicts on either booklet, so the entire
@@ -176,95 +185,85 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S123: A PER-SECTION FAILURE REJECTS THAT SECTION. IT NEVER FAILS THE BOOKLET. STOP PATCHING
-THIS ONE CLASS AT A TIME.**
+**M20-S124: CARRY THE SEGMENTER TO THE 1040 BOOKLET ON CHAPTER-SCOPED WINDOWS. IT IS THE FIRST
+BOOKLET THAT HOLDS MORE THAN ONE FORM, AND A BYTE WINDOW CAN CUT A CHAPTER IN HALF.**
 
-**FOUR LIVE SCHEDULE D RUNS, FOUR DIFFERENT SINGLE SECTIONS, EVERY ONE FATAL TO ALL 90-ODD VERIFIED
-SECTIONS AROUND IT.** `governs` disagreement at byte 10062 (fixed in S121), heading offset at 33024
-and 378 (fixed in S122), and now a degenerate byte range at 71963. **I have specced the same shape
-of fix three times and been too narrow three times. That is my defect, not Codex's** - each round
-implemented exactly what it was given. **The fix is the rule, not the next class.**
+Schedule B and Schedule D are done and both hold exactly one form. **`instructions_form_1040_2025`
+is 683,265 bytes and holds FIVE**, and its allowed-owner vocabulary is **18 documents** - 5 forms
+plus 13 worksheets - against Schedule D's 5. A byte window that straddles the boundary between
+`Instructions for Schedule 2` and its `Line 9` section shows the model Schedule 3 prose while it is
+describing Schedule 2, **which is the S116 wrong-form defect reintroduced at segmentation time.**
 
-### ITEM 1 - MAKE IT STRUCTURAL
+### ITEM 1 - WINDOW ON CHAPTERS, NEVER ACROSS THEM
 
-`build_model_frame` catches exactly one exception type, `_HeadingOffsetResolutionError`. **Every
-other validation in `_raw_section` is still fatal** - missing fields, bad level, degenerate range,
-window escape, bad `governs`, disallowed `document_id`. **Every one of those is a statement about
-ONE section and none of them is a statement about the booklet.**
+**The deterministic form-context tracker is the one part of the parser that has never failed.** It
+is `_context_for_heading`, driving `current_document_id` in
+`tax_graph/extract/instruction_sections.py:125`. Measured against the live booklet today, it splits
+into **five** chapters:
 
-**`_raw_section` returns either a section or a rejection record, and never raises.** Only
-envelope-level problems stay fatal: a response that is not shaped like a response, or a window
-outside the source. **The final `verify_model_sections` fail-closed guard stays exactly as it is** -
-that is the invariant, and it is the last line, not the first.
+| chapter | document | size |
+| --- | --- | --- |
+| 1 | `form_1040_2025` | 496.5 KB |
+| 2 | `schedule_1_2025` | 50.8 KB |
+| 3 | `schedule_1a_2025` | 51.7 KB |
+| 4 | `schedule_2_2025` | 19.3 KB |
+| 5 | `schedule_3_2025` | 41.5 KB |
 
-### ITEM 2 - STOP VALIDATING `end_byte` AS IF IT WERE USED
+**No window may span two chapters.** Inside a chapter the existing byte-window and overlap machinery
+is unchanged - the 496 KB chapter still needs many windows.
 
-**Measured, and this is the finding that reframes the round.** `ordered` recomputes EVERY section
-end from the next section's start. The model's `end_byte` survives only as a sort tiebreak and in
-the `abuts_window_edge` test. **It is validated strictly and then discarded.**
+**THE TRAP, AND I WALKED INTO IT MEASURING THIS.** `_parse_headings` runs on text read through
+`read_text`, where universal newlines have already collapsed `\r\n` to `\n`. **The booklet is 683,265
+bytes on disk and 675,580 characters after that collapse - 7,685 CRs of drift**, and it accumulates,
+so a boundary near the end is off by kilobytes. The segmenter addresses RAW BYTES. **Convert chapter
+boundaries into the raw-byte space explicitly and test that conversion**; do not pass a character
+offset into a byte API.
 
-Live Schedule D emitted two `start_byte == end_byte` claims, both at byte 71963. **One of them is
-correct and we threw it away:** `Line 4.` owned by `unrecaptured_section_1250_gain_worksheet_2025`,
-governing `4`, and byte 71963 is a real line start whose text is `Line 4. To figure the amount to
-enter on line 4, follow the steps below...`. **That is a run-in label - the exact construct this
-entire line of rounds exists to reach** - discarded over a field the code does not use.
+### ITEM 2 - THE CHAPTER CONSTRAINS THE FORM OWNER, NOT THE WORKSHEET OWNER
 
-**The section contract is `start_byte` + `heading` + `document_id` + `governs`. Treat the model's
-end as advisory.** I simulated precisely this against the live recording: **Schedule D completes at
-93 sections, 0 rejected, 1 governs conflict, tiling to EOF, and the `Line 4.` section is
-recovered.**
+A section physically inside the Schedule 2 chapter **may not be owned by `schedule_3_2025`.** That
+is the whole point of windowing on chapters, and it makes the S116 defect impossible rather than
+detectable.
 
-### ITEM 3 - `wrong_owner` IS AN ARTIFACT END TO END AND MUST STOP BEING REPORTED AS A DEFECT
+**But narrow only the FORM half.** All 13 worksheets link to the booklet, not to a chapter, and a
+worksheet legitimately prints inside any chapter. **So a section's allowed owners are: the chapter's
+own form, plus every manifest worksheet of the booklet.** Getting this wrong in the strict direction
+would reject correct worksheet attributions wholesale - the exact mistake item 3 of S123 just
+finished undoing.
 
-**Verified: `plans/m20_s116_instruction_reconciliation.yaml` holds 12 FORMS and ZERO worksheets.**
-So Schedule D's four worksheets own many sections and have **0 cells** as a denominator, and every
-CORRECT worksheet attribution is scored as a Schedule D error. **My S122 item 4 shared the accessor,
-which was right in itself, and made the number WORSE: 29 -> 58.** The accessor was never the cause.
+### ITEM 3 - REPORT THE DISAGREEMENT, DO NOT HIDE IT
 
-**The number John would read as "58 wrong instructions" is 58 instances of the model doing the right
-thing.** Split the metric: **`wrong_form_owner`, which is the failure John actually feared and is
-currently ZERO on both booklets**, and `sibling_worksheet_owner`, which is correct behaviour.
-Reporting one number that conflates them is the kind of misleading metric that costs a review cycle.
+Report `chapter_owner_disagreement_count`: sections whose claimed form owner is not the chapter's
+form. **Each one is rejected section-locally under the S123 rule and NEVER fails the booklet.** That
+number is how we find out whether the model respects chapters at all, so it must be visible even
+when it is zero.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not weaken `verify_model_sections`.** Byte conservation, the heading witness and the manifest
-  owner check are the fail-closed guard and they stay.
-- **Do not widen the heading repair window.** S122's bounded unique-line-boundary search is right.
+- **Do not weaken `verify_model_sections`.** Byte conservation from 0 to EOF, the heading witness and
+  the manifest owner check are the fail-closed guard and they stay.
+- **Do not widen the bounded heading repair**, and do not re-record Schedule B or D. The stable
+  fixture stays as it is.
 - **Do not show the model cells, outlines, addresses or unmatched lists.** Document ids only.
+- **Do not make a chapter disagreement fatal.** S123 settled that and it is not reopened.
 
-**THE FLOOR.**
-- **Both booklets complete** from `pilot/fixtures/instruction_segmenter_live_recordings.json` -
-  **my second live run, checked in with this spec, and it CONTAINS the defect**: Schedule B 2
-  windows / 29 sections, Schedule D 9 windows / 104 sections including the 2 degenerate ranges at
-  71963. Byte conservation to EOF, hash-pinned. **Delete `m20_s122_live_recorded_responses.json`**;
-  one stable fixture name, no more per-round fixture churn.
-- **The `Line 4.` section at 71963 is recovered**, proven by a test naming the byte.
-- **A fabricated heading still fails, and a malformed section is REJECTED rather than fatal** - both
-  proven by tests, with the booklet still verifying around them.
-- **`wrong_form_owner` is reported separately and is 0 on both booklets.** Report what it is; do not
-  floor on the number.
+**THE FLOOR - ALL OF IT PROVABLE WITHOUT A MODEL CALL.**
+- **Chapter windows over the real booklet:** 5 chapters, boundaries taken from the deterministic
+  tracker, **every window lies inside exactly one chapter, and the windows tile the booklet with no
+  gap and no overlap across a boundary.**
+- **A test pins the raw-byte conversion** by naming both numbers: 683,265 bytes on disk, 675,580
+  characters after newline collapse.
+- **Schedule B and Schedule D are single-chapter, so this round is a NO-OP on them.** Replay the
+  stable fixture and still get **B 29 sections, D 93 sections from 104 raw claims, 0
+  `wrong_form_owner`, 58 `sibling_worksheet_owner`, byte conservation to EOF on both.** If those
+  move, the change is wrong.
+- **A synthetic section claiming a foreign chapter's form is rejected section-locally** and the
+  booklet still tiles around it, proven by a test.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**ARCHITECT'S LEG.** The live re-run on both booklets, and the 1040 booklet, which needs
-chapter-scoped windows - still owed by me, in Queued.
-
-**CODEX STATUS (2026-08-17): IMPLEMENTED, PROVIDER-FREE LIVE FIXTURE GREEN.** `_raw_section`
-now returns a rejection record for section-local malformed input instead of aborting the booklet;
-the final byte/heading/owner verifier remains fail-closed. Model `end_byte` is advisory, so the
-degenerate live `Line 4.` claim at byte `71963` is recovered and its end is recomputed from the
-next section. The scorer now reports `wrong_form_owner` separately from
-`sibling_worksheet_owner`, and the stable live recording is the only fixture used. Deleted the
-per-round S122 recording and renamed the focused guard to `pilot/test_model_instruction_segmenter_m20_s123.py`.
-Stable replay reports Schedule B **29/29 sections and 8 gained cells**; Schedule D **93 unique
-sections from 104 raw claims**, **1 gained cell**, **0 wrong_form_owner**, and **58
-sibling_worksheet_owner** findings.
-
-RAN: `New-Item -ItemType Directory -Path .test_tmp_s123_verify2 -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s123_verify2).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py -q` -> **28 passed, 1 warning in 1.56s**. Added a regression matrix proving section-local malformed claims reject without aborting neighboring coverage.
-
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean**.
+**ARCHITECT'S LEG.** The live 1040 run on these windows. It needs egress, so it is John's to
+release and mine to verify.
 
 ## Open for Architect
 
@@ -272,13 +271,20 @@ Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-**CHAPTER-SCOPED WINDOWS FOR THE 1040 BOOKLET (Architect owes this, 2026-08-17).** 675,580 bytes,
-126 pages, four forms in one file. Byte windows can cut between `Instructions for Schedule 2` and its
-`Line 9` section, which reintroduces the S116 wrong-form defect at segmentation time. **The
-deterministic chapter split is the one part of the parser that has never failed** - 317 sections to
-four documents, 70/114/67/66 - so window on chapters and cross-check the model's `document_id`
-against the chapter a section physically sits in. Chapter sizes: 1040 252KB, Sch 1 48KB, Sch 2 19KB,
-Sch 3 13KB.
+**[SPECCED AS M20-S124 - see Current round] CHAPTER-SCOPED WINDOWS FOR THE 1040 BOOKLET.** The
+sizes recorded here were stale by a whole chapter; re-measured 2026-08-17 and the real numbers are
+in the spec.
+
+**`sibling_worksheet_owner` MASKS WORKSHEET-TO-WORKSHEET MISATTRIBUTION (Architect, measured
+2026-08-17).** The bucket is correct today only because all four Schedule D worksheets have **0
+cells** in the reconciliation population, so the denominator is zero. **The moment worksheet cells
+enter it, a worksheet row attributed to the WRONG sibling worksheet scores as correct behaviour.**
+Split it again then, or key it on whether the owner is the cell's own document.
+
+**THE SCHEDULE D JOIN, NOT THE SEGMENTER, IS THE NEXT COVERAGE DEFECT (Architect, measured
+2026-08-17).** The booklet tiles perfectly and all 24 cells are reachable, yet only 12 are correctly
+owned - baseline 11, so the model gained exactly one. Segmentation is no longer the bottleneck
+there; the code that joins a cell to a section is.
 
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
