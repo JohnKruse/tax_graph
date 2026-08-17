@@ -124,8 +124,29 @@ class ModelInstructionFrame:
         }
 
 
-def segmenter_schema() -> dict[str, Any]:
+def _normalize_document_ids(
+    document_ids: Iterable[str] | None,
+) -> tuple[str, ...] | None:
+    """Return a stable, non-empty manifest vocabulary when one is supplied."""
+    if document_ids is None:
+        return None
+    normalized = tuple(
+        sorted({str(value).strip() for value in document_ids if str(value).strip()})
+    )
+    if not normalized:
+        raise ValueError("allowed document ids must contain at least one non-empty id")
+    return normalized
+
+
+def segmenter_schema(
+    *,
+    allowed_document_ids: Iterable[str] | None = None,
+) -> dict[str, Any]:
     """Return the closed structured-output schema for one model window."""
+    allowed_ids = _normalize_document_ids(allowed_document_ids)
+    document_schema: dict[str, Any] = {"type": "string"}
+    if allowed_ids is not None:
+        document_schema["enum"] = list(allowed_ids)
     return {
         "type": "object",
         "additionalProperties": False,
@@ -149,7 +170,7 @@ def segmenter_schema() -> dict[str, Any]:
                         "level": {"type": "integer", "minimum": 1},
                         "start_byte": {"type": "integer", "minimum": 0},
                         "end_byte": {"type": "integer", "minimum": 1},
-                        "document_id": {"type": "string"},
+                        "document_id": document_schema,
                         "governs": {
                             "type": "array",
                             "items": {"type": "string"},
@@ -239,16 +260,32 @@ def build_window_prompt(
     window: SourceWindow,
     *,
     source_document_id: str,
+    allowed_document_ids: Iterable[str] | None = None,
     prompt_text: str | None = None,
 ) -> str:
-    """Build a source-only prompt for one absolute-coordinate window."""
+    """Build a source-only prompt for one absolute-coordinate window.
+
+    The allowed ids identify document owners in this booklet.  They are
+    manifest identity, not form-cell context, so including them does not make
+    the segmenter cell-aware.
+    """
     instructions = prompt_text if prompt_text is not None else PROMPT_PATH.read_text(
         encoding="ascii"
     )
     source_text = _annotated_window_text(source_bytes, window)
+    owner_ids = _normalize_document_ids(allowed_document_ids)
+    owner_contract = ""
+    if owner_ids is not None:
+        owner_contract = (
+            "Allowed document_id values for every section: "
+            f"{', '.join(owner_ids)}\n"
+            "The source booklet id is a source marker, never an owner, and must not "
+            "be returned as document_id.\n"
+        )
     return (
         f"{instructions.rstrip()}\n\n"
         f"Source booklet id: {source_document_id}\n"
+        f"{owner_contract}"
         f"Window index: {window.index}\n"
         f"Window byte range: {window.start_byte}..{window.end_byte}\n"
         "The lines below are acquired source; coordinate markers are not source text.\n"
@@ -277,6 +314,7 @@ def call_model_window(
     prompt: str,
     config: Mapping[str, Any],
     *,
+    allowed_document_ids: Iterable[str] | None = None,
     max_tokens: int = 12000,
 ) -> Mapping[str, Any]:
     """Call the configured structured-output client for one pilot window."""
@@ -284,7 +322,7 @@ def call_model_window(
 
     request: dict[str, Any] = {
         "prompt": prompt,
-        "schema": segmenter_schema(),
+        "schema": segmenter_schema(allowed_document_ids=allowed_document_ids),
         "model": resolve_llm_model(config, "micro"),
         "max_tokens": max_tokens,
         "temperature": get_config_value(dict(config), "llm.temperature"),
@@ -307,6 +345,40 @@ def _source_line_at(source_bytes: bytes, start_byte: int) -> str:
     return source_bytes[start_byte:line_end].decode("utf-8").rstrip("\r")
 
 
+def _normalize_heading_markup(value: str) -> str:
+    """Remove leading Markdown presentation without changing heading text."""
+    normalized = value.strip()
+    normalized = re.sub(r"^#{1,6}[ \t]*", "", normalized)
+    normalized = re.sub(r"^(?:\*{1,3}|_{1,3})[ \t]*", "", normalized)
+    normalized = re.sub(r"(?:\*{1,3}|_{1,3})(?=[ \t]|$)", "", normalized)
+    return " ".join(normalized.split())
+
+
+def _heading_is_source_prefix(response_heading: str, source_line: str) -> bool:
+    """Return whether a response heading starts the source line after markup."""
+    response = _normalize_heading_markup(response_heading)
+    source = _normalize_heading_markup(source_line)
+    return bool(response) and source.startswith(response)
+
+
+def manifest_owner_document_ids(
+    root: str | Path,
+    *,
+    source_document_id: str,
+) -> frozenset[str]:
+    """Return manifest document ids that can own sections in one booklet."""
+    manifest = load_manifest(root=Path(root).resolve())
+    return frozenset(
+        entry.document_id
+        for entry in manifest.documents
+        if entry.document_id != source_document_id
+        and (
+            entry.instructions_document_id == source_document_id
+            or entry.region_of == source_document_id
+        )
+    )
+
+
 def _coerce_governs(value: Any) -> tuple[str, ...]:
     """Normalize one model ``governs`` list while preserving semantic labels."""
     if not isinstance(value, list):
@@ -327,6 +399,7 @@ def _raw_section(
     source_document_id: str,
     window: SourceWindow,
     source_bytes: bytes,
+    allowed_document_ids: frozenset[str] | None,
 ) -> ModelSection:
     """Validate and convert one response record before frame reconciliation."""
     if isinstance(raw, (list, tuple)):
@@ -382,10 +455,17 @@ def _raw_section(
             raise ModelFrameVerificationError(
                 f"text does not match claimed range {start_byte}:{end_byte}"
             )
+    normalized_document_id = document_id.strip()
+    if allowed_document_ids is not None and normalized_document_id not in allowed_document_ids:
+        allowed = ", ".join(sorted(allowed_document_ids)) or "<none>"
+        raise ModelFrameVerificationError(
+            f"document_id {normalized_document_id!r} is not an allowed owner for "
+            f"{source_document_id}; allowed: {allowed}"
+        )
     return ModelSection(
         section_id="",
         source_document_id=source_document_id,
-        document_id=document_id.strip(),
+        document_id=normalized_document_id,
         heading=heading,
         level=level,
         governs=_coerce_governs(raw["governs"]),
@@ -399,6 +479,7 @@ def verify_model_sections(
     sections: Sequence[ModelSection],
     *,
     source_document_id: str,
+    allowed_document_ids: frozenset[str] | None = None,
 ) -> None:
     """Fail closed if model sections do not tile and bind to source bytes."""
     if not sections:
@@ -420,7 +501,7 @@ def verify_model_sections(
                 f"section range is outside source: {section.start_byte}:{section.end_byte}"
             )
         actual_heading = _source_line_at(source_bytes, section.start_byte)
-        if actual_heading != section.heading:
+        if not _heading_is_source_prefix(section.heading, actual_heading):
             raise ModelFrameVerificationError(
                 f"heading mismatch at byte {section.start_byte}: "
                 f"response={section.heading!r}, source={actual_heading!r}"
@@ -429,6 +510,12 @@ def verify_model_sections(
             raise ModelFrameVerificationError("section heading level must be positive")
         if not section.document_id.strip():
             raise ModelFrameVerificationError("section document_id must be non-empty")
+        if allowed_document_ids is not None and section.document_id not in allowed_document_ids:
+            allowed = ", ".join(sorted(allowed_document_ids)) or "<none>"
+            raise ModelFrameVerificationError(
+                f"document_id {section.document_id!r} is not an allowed owner for "
+                f"{source_document_id}; allowed: {allowed}"
+            )
         expected_start = section.end_byte
     if expected_start != len(source_bytes):
         raise ModelFrameVerificationError(
@@ -444,9 +531,22 @@ def build_model_frame(
     responses: Iterable[Mapping[str, Any]],
     year: str | int = "2025",
     source_path: str | Path | None = None,
+    allowed_document_ids: Iterable[str] | None = None,
+    drop_invalid_sections: bool = False,
 ) -> ModelInstructionFrame:
-    """Reconcile recorded window responses into one verified model frame."""
+    """Reconcile recorded window responses into one verified model frame.
+
+    Provider output is strict by default.  Recorded replay may explicitly drop
+    source-unbacked proposals before verifying the remaining frame; the dropped
+    count is retained in coverage so replay cannot hide model defects.
+    """
     source_bytes = source_text.encode("utf-8")
+    normalized_allowed_ids = _normalize_document_ids(allowed_document_ids)
+    allowed_ids = (
+        frozenset(normalized_allowed_ids)
+        if normalized_allowed_ids is not None
+        else None
+    )
     parsed: list[ModelSection] = []
     response_count = 0
     for response_record in responses:
@@ -471,26 +571,63 @@ def build_model_frame(
                     source_document_id=source_document_id,
                     window=window,
                     source_bytes=source_bytes,
+                    allowed_document_ids=allowed_ids,
                 )
             )
 
     unique: dict[tuple[Any, ...], ModelSection] = {}
     for section in parsed:
-        key = (
-            section.start_byte,
-            section.end_byte,
-            section.heading,
-            section.level,
-            section.document_id,
-        )
+        key = (section.start_byte, section.heading)
         prior = unique.get(key)
         if prior is not None and prior.governs != section.governs:
             raise SegmenterError(
                 f"overlapping windows disagree about governs at {section.start_byte}"
             )
+        if prior is not None:
+            if allowed_ids is not None and prior.document_id != section.document_id:
+                raise ModelFrameVerificationError(
+                    f"overlapping windows disagree about document_id at {section.start_byte}"
+                )
+            continue
         unique[key] = section
 
-    ordered = sorted(unique.values(), key=lambda item: (item.start_byte, item.end_byte))
+    rejected_sections: list[dict[str, Any]] = []
+    observed_candidates = sorted(
+        unique.values(), key=lambda item: (item.start_byte, item.end_byte)
+    )
+    observed: list[ModelSection] = []
+    for section in observed_candidates:
+        actual_heading = _source_line_at(source_bytes, section.start_byte)
+        if not _heading_is_source_prefix(section.heading, actual_heading):
+            if not drop_invalid_sections:
+                observed.append(section)
+                continue
+            rejected_sections.append(
+                {
+                    "start_byte": section.start_byte,
+                    "heading": section.heading,
+                    "reason": "heading_not_at_source_offset",
+                }
+            )
+            continue
+        observed.append(section)
+    ordered = tuple(
+        ModelSection(
+            section_id=section.section_id,
+            source_document_id=section.source_document_id,
+            document_id=section.document_id,
+            heading=section.heading,
+            level=section.level,
+            governs=section.governs,
+            start_byte=section.start_byte,
+            end_byte=(
+                observed[index + 1].start_byte
+                if index + 1 < len(observed)
+                else len(source_bytes)
+            ),
+        )
+        for index, section in enumerate(observed)
+    )
     verified_sections = tuple(
         ModelSection(
             section_id=(
@@ -510,6 +647,7 @@ def build_model_frame(
         source_bytes,
         verified_sections,
         source_document_id=source_document_id,
+        allowed_document_ids=allowed_ids,
     )
     return ModelInstructionFrame(
         schema_version=1,
@@ -523,6 +661,17 @@ def build_model_frame(
             "response_section_count": len(parsed),
             "unique_section_count": len(verified_sections),
             "duplicate_response_sections": len(parsed) - len(verified_sections),
+            "boundary_repaired_sections": sum(
+                section.end_byte != verified_sections[index].end_byte
+                for index, section in enumerate(observed)
+            ),
+            "rejected_sections": rejected_sections,
+            "owner_conflict_count": sum(
+                1
+                for section in parsed
+                for prior in (unique.get((section.start_byte, section.heading)),)
+                if prior is not None and prior.document_id != section.document_id
+            ),
             "reconciles_to_file_size": True,
         },
     )
@@ -560,6 +709,8 @@ def build_frame_from_fixture(
     source_document_id: str,
     fixture_path: str | Path,
     year: str | int = "2025",
+    allowed_document_ids: Iterable[str] | None = None,
+    drop_invalid_sections: bool = True,
 ) -> ModelInstructionFrame:
     """Build a verified model frame from a recorded response fixture."""
     path = Path(source_path)
@@ -576,6 +727,8 @@ def build_frame_from_fixture(
         responses=responses,
         year=year,
         source_path=path,
+        allowed_document_ids=allowed_document_ids,
+        drop_invalid_sections=drop_invalid_sections,
     )
 
 
@@ -779,6 +932,10 @@ def main() -> int:
 
     source_path = args.source or ROOT / ".cache" / "raw" / args.year / f"{args.source_document_id}.txt"
     source_bytes = source_path.read_bytes()
+    allowed_document_ids = manifest_owner_document_ids(
+        ROOT,
+        source_document_id=args.source_document_id,
+    )
     windows = build_source_windows(
         source_bytes,
         max_window_bytes=args.max_window_bytes,
@@ -792,6 +949,7 @@ def main() -> int:
                 source_bytes,
                 windows[0],
                 source_document_id=args.source_document_id,
+                allowed_document_ids=allowed_document_ids,
             )
         )
         return 0
@@ -803,8 +961,13 @@ def main() -> int:
                 source_bytes,
                 window,
                 source_document_id=args.source_document_id,
+                allowed_document_ids=allowed_document_ids,
             )
-            response = call_model_window(prompt, config)
+            response = call_model_window(
+                prompt,
+                config,
+                allowed_document_ids=allowed_document_ids,
+            )
             records.append(
                 {
                     "window_index": window.index,
@@ -819,6 +982,7 @@ def main() -> int:
             responses=records,
             year=args.year,
             source_path=source_path,
+            allowed_document_ids=allowed_document_ids,
         )
         output = args.output or Path(
             f"m20_s121_{_slug(args.source_document_id)}_responses.json"

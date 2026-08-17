@@ -15,6 +15,7 @@ from pilot.model_instruction_segmenter import (
     build_frame_from_fixture,
     build_source_windows,
     build_window_prompt,
+    manifest_owner_document_ids,
     score_ab,
     segmenter_schema,
     verify_model_sections,
@@ -120,6 +121,57 @@ def test_verifier_rejects_a_heading_not_at_the_claimed_source_offset() -> None:
         )
 
 
+def test_verifier_accepts_markdown_and_run_in_heading_prefixes() -> None:
+    """The heading witness may be marked up or followed by paragraph text."""
+    source = b"# Page 1\n**Line 1.** Report the amount.\n"
+    sections = (
+        ModelSection(
+            section_id="page",
+            source_document_id="instructions_demo_2025",
+            document_id="demo_2025",
+            heading="Page 1",
+            level=1,
+            governs=(),
+            start_byte=0,
+            end_byte=source.index(b"**Line"),
+        ),
+        ModelSection(
+            section_id="line",
+            source_document_id="instructions_demo_2025",
+            document_id="demo_2025",
+            heading="Line 1.",
+            level=1,
+            governs=("1",),
+            start_byte=source.index(b"**Line"),
+            end_byte=len(source),
+        ),
+    )
+    verify_model_sections(
+        source,
+        sections,
+        source_document_id="instructions_demo_2025",
+    )
+
+
+def test_verifier_rejects_a_document_id_outside_the_manifest_owner_set() -> None:
+    """A source booklet id cannot become an owner for a governed section."""
+    source = _source()
+    records = _section_records(source, "demo_2025")
+    bad = dict(records[0])
+    bad_response = dict(bad["response"])
+    bad_sections = [dict(section) for section in bad_response["sections"]]
+    bad_sections[0]["document_id"] = "instructions_demo_2025"
+    bad_response["sections"] = bad_sections
+    bad["response"] = bad_response
+    with pytest.raises(ModelFrameVerificationError, match="not an allowed owner"):
+        build_model_frame(
+            source.decode("utf-8"),
+            source_document_id="instructions_demo_2025",
+            responses=[bad, *records[1:]],
+            allowed_document_ids={"demo_2025"},
+        )
+
+
 def test_prompt_contains_source_but_no_cell_conditioning() -> None:
     """The model prompt names only source coordinates and segmentation rules."""
     source = _source()
@@ -128,6 +180,7 @@ def test_prompt_contains_source_but_no_cell_conditioning() -> None:
         source,
         window,
         source_document_id="instructions_demo_2025",
+        allowed_document_ids=("demo_2025",),
         prompt_text="Segment source text into sections.",
     )
     assert "# One" in prompt
@@ -135,6 +188,9 @@ def test_prompt_contains_source_but_no_cell_conditioning() -> None:
     assert "BEGIN ACQUIRED SOURCE" in prompt
     assert "cell_id" not in prompt
     assert "unmatched list" not in prompt
+    assert "Allowed document_id values for every section" in prompt
+    assert "demo_2025" in prompt
+    assert "The source booklet id is a source marker, never an owner" in prompt
 
 
 def test_schema_has_closed_required_output_contract() -> None:
@@ -149,6 +205,16 @@ def test_schema_has_closed_required_output_contract() -> None:
         "end_byte",
         "document_id",
         "governs",
+    }
+
+
+def test_schema_enumerates_manifest_owners_without_the_source_id() -> None:
+    """The provider contract carries only the booklet's manifest owners."""
+    schema = segmenter_schema(allowed_document_ids=("schedule_b_2025",))
+    item = schema["properties"]["sections"]["items"]
+    assert item["properties"]["document_id"] == {
+        "type": "string",
+        "enum": ["schedule_b_2025"],
     }
 
 
@@ -225,16 +291,27 @@ def test_verifier_rejects_non_tiling_sections_directly() -> None:
 
 
 @pytest.mark.parametrize(
-    ("source_document_id", "fixture_name", "expected_sections"),
+    ("source_document_id", "fixture_name", "expected_sections", "expected_raw_sections"),
     (
-        ("instructions_schedule_b_2025", "m20_s121_segmenter_responses.json", 10),
-        ("instructions_schedule_d_2025", "m20_s121_schedule_d_responses.json", 70),
+        (
+            "instructions_schedule_b_2025",
+            "m20_s121_live_recorded_responses.json",
+            28,
+            31,
+        ),
+        (
+            "instructions_schedule_d_2025",
+            "m20_s121_live_recorded_responses.json",
+            82,
+            93,
+        ),
     ),
 )
 def test_recorded_booklet_fixture_is_source_backed(
     source_document_id: str,
     fixture_name: str,
     expected_sections: int,
+    expected_raw_sections: int,
 ) -> None:
     """The named booklets run from checked-in responses without a provider."""
     frame = build_frame_from_fixture(
@@ -244,15 +321,31 @@ def test_recorded_booklet_fixture_is_source_backed(
     )
     assert len(frame.sections) == expected_sections
     assert frame.coverage["reconciles_to_file_size"] is True
-    assert frame.coverage["duplicate_response_sections"] == 0
+    assert frame.coverage["response_section_count"] == expected_raw_sections
+    assert frame.coverage["rejected_sections"] == (
+        []
+        if source_document_id == "instructions_schedule_b_2025"
+        else [
+            {
+                "start_byte": 33026,
+                "heading": "Mark-to-Market Election for Traders",
+                "reason": "heading_not_at_source_offset",
+            },
+            {
+                "start_byte": 51283,
+                "heading": "Gain from an Installment Sale of QSB Stock",
+                "reason": "heading_not_at_source_offset",
+            },
+        ]
+    )
 
 
 def test_ab_report_is_per_booklet_and_names_both_directions() -> None:
     """The real A/B report exposes Schedule B recovery and Schedule D control."""
     reports = {}
     for source_document_id, fixture_name in (
-        ("instructions_schedule_b_2025", "m20_s121_segmenter_responses.json"),
-        ("instructions_schedule_d_2025", "m20_s121_schedule_d_responses.json"),
+        ("instructions_schedule_b_2025", "m20_s121_live_recorded_responses.json"),
+        ("instructions_schedule_d_2025", "m20_s121_live_recorded_responses.json"),
     ):
         reports[source_document_id] = build_ab_report(
             ROOT / ".cache" / "raw" / "2025" / f"{source_document_id}.txt",
@@ -264,18 +357,43 @@ def test_ab_report_is_per_booklet_and_names_both_directions() -> None:
     schedule_b = reports["instructions_schedule_b_2025"]
     assert schedule_b["totals"] == {
         "cells": 8,
-        "gained_correctly_owned": 7,
-        "wrong_owner": 0,
+        "gained_correctly_owned": 0,
+        "wrong_owner": 5,
     }
     assert schedule_b["documents"]["schedule_b_2025"]["baseline_correct"] == 0
-    assert schedule_b["documents"]["schedule_b_2025"]["wrong_owner_count"] == 0
+    assert schedule_b["documents"]["schedule_b_2025"]["model_reachable"] == 4
+    assert schedule_b["documents"]["schedule_b_2025"]["wrong_owner_count"] == 5
 
     schedule_d = reports["instructions_schedule_d_2025"]
-    assert schedule_d["totals"]["cells"] == 24
-    assert schedule_d["totals"]["gained_correctly_owned"] == 0
-    assert schedule_d["totals"]["wrong_owner"] == 0
+    assert schedule_d["totals"] == {
+        "cells": 24,
+        "gained_correctly_owned": 0,
+        "wrong_owner": 34,
+    }
     assert schedule_d["documents"]["schedule_d_2025"]["baseline_correct"] == 11
-    assert schedule_d["documents"]["schedule_d_2025"]["model_correct"] == 11
+    assert schedule_d["documents"]["schedule_d_2025"]["model_correct"] == 1
+    assert schedule_d["documents"]["schedule_d_2025"]["model_reachable"] == 24
+    assert schedule_d["documents"]["schedule_d_2025"]["wrong_owner_count"] == 34
+
+
+def test_manifest_owner_sets_exclude_the_instruction_source() -> None:
+    """Booklet owner vocabularies come from manifest relationships, not prose."""
+    assert manifest_owner_document_ids(
+        ROOT,
+        source_document_id="instructions_schedule_b_2025",
+    ) == frozenset({"schedule_b_2025"})
+    assert manifest_owner_document_ids(
+        ROOT,
+        source_document_id="instructions_schedule_d_2025",
+    ) == frozenset(
+        {
+            "schedule_d_2025",
+            "capital_loss_carryover_worksheet_2025",
+            "28_rate_gain_worksheet_2025",
+            "unrecaptured_section_1250_gain_worksheet_2025",
+            "schedule_d_tax_worksheet_2025",
+        }
+    )
 
 
 def test_scorer_keeps_the_schedule_1a_denominator_visible() -> None:

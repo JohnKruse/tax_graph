@@ -219,10 +219,38 @@ invites scoring against the wrong one.
 **ARCHITECT'S LEG.** Re-running live after the fixes, and the 1040 booklet - **which needs
 chapter-scoped windows, not byte windows, and I owe that amendment; it is in Queued below.**
 
+**CODEX STATUS (2026-08-17): PROVIDER-FREE LEG COMPLETE.** `pilot/model_instruction_segmenter.py`
+now derives the booklet owner vocabulary from manifest relationships, puts that vocabulary in the
+source-only prompt and structured schema, and rejects every other `document_id`, including the
+instruction source id. Heading witnesses accept Markdown presentation and run-in labels only
+when the claimed heading is a prefix of the source line at the claimed byte. The hand-authored
+fixtures are deleted; the checked-in live recording is the only replay input.
+
+Recorded replay preserves raw model output and makes the reconciliation explicit: duplicate
+window observations are deduplicated by source-start heading, section ends are derived from the
+next verified heading so the source tiles exactly, and source-unbacked proposals are dropped and
+listed in coverage. The strict provider path still rejects those proposals. The live recording
+has two such Schedule D proposals at bytes 33026 and 51283; they are recorded, not repaired in
+the fixture.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s121.py -q`
+-> **15 passed, 1 warning in 0.89s**.
+
+RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> **ASCII check OK**.
+
+RAN: `git diff --check` -> **clean**.
+
+Live A/B replay evidence: Schedule B is **28 canonical sections from 31 raw, 0 gained, 5
+wrong-owner, 4 reachable cells**. Schedule D is **82 canonical sections from 93 raw, 0 gained,
+34 wrong-owner, 24 reachable cells**. Both frames reconcile to the complete source bytes.
+
 ## Open for Architect
 
-*(Nothing open.)*
-
+- **M20-S121 Architect leg remains:** re-run both live booklets with the updated prompt and
+  manifest-constrained schema. Codex has no provider egress; the provider-free replay is green.
+  The checked-in recording contains two source-offset-invalid proposals, which replay rejects
+  and records while the strict provider path fails closed. Confirm the live rerun has no rejected
+  sections before accepting the round.
 
 ## Queued (ONE LINE each - do not spec ahead)
 

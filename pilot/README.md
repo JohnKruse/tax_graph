@@ -95,18 +95,22 @@ at the claimed source bytes, then requires the reconciled sections to tile the c
 The A/B scorer reads the M20-S116 reconciliation only after that verification and reports gains
 and wrong owners separately for each booklet and document.
 
-The recorded responses are provider-free fixtures:
+The checked-in live responses are replayable without a provider:
 
-    pilot/fixtures/m20_s121_segmenter_responses.json
-    pilot/fixtures/m20_s121_schedule_d_responses.json
+    pilot/fixtures/m20_s121_live_recorded_responses.json
+
+Production calls receive the manifest document ids that may own sections in the booklet, and
+the structured-output schema rejects every other `document_id`, including the source booklet
+id. Replay keeps the raw owner spellings and reports them as wrong-owner evidence. Replay also
+records any source-unbacked section it drops; the strict verifier still rejects that section.
 
 Run the focused pilot tests with:
 
     .venv\Scripts\python.exe -m pytest pilot/test_model_instruction_segmenter_m20_s121.py -q
 
-The fixture-backed A/B is intentionally not a live-model result. It measures Schedule B's
-topic-organized sections against the line-organized Schedule D control; the live two-booklet
-run is the Architect's leg before any production lift.
+The replayed A/B reports Schedule B's topic-organized sections against the line-organized
+Schedule D control. Its gains and wrong-owner counts are evidence from the checked-in live
+recording, not a provider-free model-quality claim for a future prompt.
 
 ## M20-S88 context arms
 
