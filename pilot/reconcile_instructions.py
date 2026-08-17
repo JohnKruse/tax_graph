@@ -1,4 +1,4 @@
-"""Build the checked-in M20-S116 instruction reconciliation artifact."""
+"""Build the checked-in M20-S117 instruction reconciliation artifact."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from tax_graph.extract.outline import build_instruction_sections_frame
 
 
 def build_live_report(root: str | Path, year: str = "2025") -> dict:
-    """Load acquired forms and build a deterministic two-sided report."""
+    """Load acquired forms and build the deterministic S117 report."""
     root_path = Path(root).resolve()
     manifest = load_manifest(root=root_path)
     documents = []

@@ -80,9 +80,10 @@ def test_reconciliation_reports_parser_gap_and_genuine_absence() -> None:
         ],
     )
 
-    assert report["bucket_counts"]["MATCHED"] == 2
-    assert report["bucket_counts"]["CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT"] == 1
-    assert report["bucket_counts"]["INSTRUCTION WITH NO CELL"] == 1
+    assert report["cell_buckets"]["MATCHED"] == 2
+    assert report["cell_buckets"]["CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT"] == 1
+    assert report["instruction_buckets"]["MATCHED"] == 1
+    assert report["instruction_buckets"]["INSTRUCTION WITH NO CELL"] == 1
     assert next(item for item in report["cells"] if item["line"] == "11a")["match"] == "inherited"
 
 
@@ -155,6 +156,6 @@ def test_report_covers_topic_and_table_families() -> None:
 
     assert report["families"]["topic_organized"]["cell_count"] == 1
     assert report["families"]["table_addressed"]["cell_count"] == 46
-    assert report["documents"]["schedule_b_2025"]["bucket_counts"][
+    assert report["documents"]["schedule_b_2025"]["cell_buckets"][
         "CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT"
     ] == 1

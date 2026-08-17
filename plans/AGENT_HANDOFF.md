@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S117 is specced below - the reconciliation report must ask the production
-ownership accessor instead of matching lines itself.**
+**BALL: ARCHITECT. M20-S117 is delivered below - the reconciliation report now asks the
+production accessor instead of matching lines itself.**
 
 **M20-S116 IS ACCEPTED (`6beb1f4` + `29cbbcd`, Architect, 2026-08-17), VERIFIED BY RUNNING.**
 Targeted suites green on the Architect's bare leg too (**85 passed**, plus **83 passed** in the two
@@ -206,90 +206,29 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S117 SPECCED BY ARCHITECT (2026-08-17). THE RECONCILIATION REPORT MUST ASK THE ONE ACCESSOR,
-NOT MATCH LINES ITSELF.** **REAL ROUND** - reporting only, no pipeline behaviour change.
-**NO response-schema change. NO prompt change. NO model call. NO change to ownership semantics.**
+**M20-S117 DELIVERED BY CODEX (2026-08-17).** The report now projects the instruction frame using
+the production span shape and asks `instruction_span_ids_for_line` for every cell. The duplicate
+`_unique_sections` and `_sections_for_line` matchers are deleted. Cell and instruction-section
+buckets are separate, each summing to its own population. No prompt, schema, model call, ownership
+semantics, topic booklet logic, or table-column logic changed.
 
-**THE TARGET STATE, IN ONE SENTENCE.** *The report says a cell is instructed if and only if the
-evidence packet for that cell would contain an instruction* - so a reader can act on the report
-without re-deriving anything, and a future round cannot silently drift the two apart.
+**THE REQUIRED NEGATIVE IS PROVEN.** Against the pre-S117 checked-in artifact from `29cbbcd`, the
+accessor invariant found **46 mismatched cells**. The corrected artifact has zero mismatches.
+`schedule_2_2025` lines `1b` and `1d` are both `MATCHED`, `direct`, and both receive
+`instruction_section_instructions_form_1040_2025_0122`; neither carries
+`other_form_document_ids`.
 
-**WHAT IS ACTUALLY WRONG, OPENED END TO END (Architect, 2026-08-17).** Three real instances, not a
-count:
-- `schedule_2_2025` line `1b` -> report says `CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE`,
-  blaming `form_1040`, `schedule_1`, `schedule_3`. The accessor returns **section `...0122`, owner
-  `schedule_2_2025`, heading *"Lines 1a Through 1z"***. Same for `1d`. The instruction is there, in
-  the right form, and the packet already carries it.
-- `schedule_2_2025` lines `6` and `13` -> owned by `...0126` and `...0132`, both `schedule_2_2025`.
-  These the report gets right, which is the tell: **single-line headings match, multi-line headings
-  do not.**
+**RAN:**
+- `tests/test_m20_s116.py`: `.venv\Scripts\python.exe -m pytest tests/test_m20_s116.py tests/test_m20_s117.py -q` -> **8 passed** in 65.81s (one pre-existing pytest cache ACL warning).
+- `tests/test_m20_s117.py`: `.venv\Scripts\python.exe -m pytest tests/test_m20_s116.py tests/test_m20_s117.py -q` -> **8 passed** in 65.81s (one pre-existing pytest cache ACL warning).
+- `.venv\Scripts\python.exe -m pilot.reconcile_instructions --root . --year 2025` -> wrote `plans/m20_s116_instruction_reconciliation.yaml` with round `M20-S117`.
+- Persisted report invariant script -> **12 documents, 0 mismatches**; all bucket sums and the `schedule_2_2025` assertions passed.
+- `.venv\Scripts\python.exe pilot\replay_harness.py` -> **25 cases, 0 mismatches, 0 network calls**.
+- `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+- `git diff --check` -> **clean**.
 
-**THE MECHANISM.** `_unique_sections` in `instruction_reconciliation.py` dedupes on `section_id` and
-keeps the first row, and the matcher then compares `section.line`. The frame stores one row per
-(section, line token) pair sharing a `section_id`, so **the dedup throws away `1b`-`1z` and the
-matcher never looks at `line_tokens`.** `instruction_ownership.py` has none of this problem because
-it reads `owner_lines` off the projected span. **This is the "one accessor, no fallbacks" defect: a
-second consumer improvised its own copy of a question that already had an owner.**
-
----
-
-### Item 1 - DELETE THE SECOND MATCHER
-
-**Build the report's cell side from `instruction_span_ids_for_line`**, called with the cell's own
-`owner_document_id`, over the spans projected from the frame - the same call `outline_pipeline.py`
-makes when it assembles the packet. **Delete `_unique_sections` and `_sections_for_line` rather than
-repairing them**; a repaired second matcher is still a second matcher.
-
-Bucket assignment then follows from what the accessor returns:
-- **non-empty, one span** -> `MATCHED`, recording `direct` or `inherited` as today.
-- **non-empty, more than one** -> `AMBIGUOUS`. This bucket is real and must not be softened: all 18
-  ambiguous cells today have 2+ spans in the accessor too, which means **the model is being handed
-  more than one instruction for those cells.**
-- **empty** -> the three unmatched buckets, unchanged in meaning. **`OTHER FORM OWNS LINE` may only
-  be assigned when the accessor owns nothing for that cell in its own document** - that is the rule
-  the current report breaks 37 times.
-
-### Item 2 - COUNT CELLS AND SECTIONS SEPARATELY
-
-`bucket_counts` today mixes two populations in one counter: `form_1040` reports 84 bucket entries
-over 59 cells and 59 sections, and the corpus `AMBIGUOUS: 54` is **18 cells plus 36 sections added
-to the same key.** A reader cannot tell what any total means. **Split it into `cell_buckets` and
-`instruction_buckets`, each summing to its own population count**, and keep both totals in the
-document entry.
-
----
-
-**WHAT MUST NOT HAPPEN.**
-- **Do not change ownership semantics to move the numbers.** No new inheritance, no widening past
-  `owner_lines`, no cross-document attachment. The pipeline side is correct as it stands; this round
-  makes the report agree with it, **never the reverse.**
-- **Do not fix the topic-organised booklets (`schedule_1a`, `schedule_b`) or the table-column join.**
-  Their family rows stay as they are.
-- **Do not change the prompt, the response schema, the union, or any expected-count fixture.**
-
-**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
-- **THE INVARIANT, and it is the round: a test walks every document and every line-anchored cell and
-  asserts the report's matched state equals `bool(instruction_span_ids_for_line(...))`.** Assert the
-  agreement, not a bucket size. **That test must fail on `29cbbcd` - prove the negative and say by
-  how much.**
-- **`schedule_2_2025` `1b` and `1d` report `MATCHED` to the `Lines 1a Through 1z` section**, and
-  neither carries an `other_form_document_ids` key. Name what each received.
-- **`cell_buckets` sums to `cell_count` and `instruction_buckets` sums to
-  `instruction_section_count`, per document**, asserted for every document in the report.
-- **The report is regenerated and checked in** at its existing path by
-  `pilot/reconcile_instructions.py`. **The three family rows still cover all three families.**
-- **`pilot/replay_harness.py` still green** (25 cases) - packets must not move, since nothing in the
-  pipeline changes.
-- **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Pre-create your
-  `PYTEST_DEBUG_TEMPROOT` directory before invoking pytest - the three `WinError 5` errors last round
-  were only its absence. Bare runs, the corpus re-derive and live workbench checks are the
-  ARCHITECT's leg.
-
-**OUT OF SCOPE.** The topic-organised booklets. The table-column owner vocabulary. Routing. The
-`filer_entry` reason taxonomy. The `form_1040` 6b worksheet packet defect. **And the question the
-corrected report will finally make answerable - how many of the ~100 real parser gaps are one
-booklet's structure vs many - is the round AFTER this one, off the corrected numbers.**
+**NOT RUN:** full suite, corpus re-derive, and live workbench checks; they are the Architect's leg
+for this reporting-only round.
 
 ## Open for Architect
 

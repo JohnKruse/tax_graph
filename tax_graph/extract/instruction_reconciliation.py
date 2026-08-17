@@ -1,8 +1,9 @@
 """Reconcile printed form cells with their acquired instruction booklet.
 
-The report is deliberately deterministic and read-only.  It keeps the form
-inventory and the booklet inventory separate, then records every item in one
-bucket so a parser gap cannot be mistaken for a genuine absence.
+The report is deliberately deterministic and read-only.  It asks the same
+ownership accessor used to assemble evidence packets, then records the form
+cell and instruction-section populations separately so a parser gap cannot
+be mistaken for a genuine absence.
 """
 
 from __future__ import annotations
@@ -15,6 +16,11 @@ from typing import Any
 import yaml
 
 from tax_graph.extract.instruction_sections import InstructionSectionsFrame
+from tax_graph.extract.instruction_ownership import (
+    instruction_line_owners,
+    instruction_span_ids_for_line,
+)
+from tax_graph.extract.outline import _spans_for_instruction_frame
 
 
 BUCKETS = (
@@ -37,43 +43,78 @@ def reconcile_instruction_document(
     ``raw_booklet_text`` is used only for the missing-cell classification.  A
     missing parsed section is actionable when the source booklet names the
     line, which prevents the parser from laundering its own omission into a
-    genuine absence.  A same-number section owned by another form gets its
-    own bucket so a shared-booklet collision is not reported as a parser gap.
+    genuine absence.  The cell side is owned exclusively by
+    ``instruction_span_ids_for_line`` so the report cannot drift from the
+    evidence packet builder.
     """
     cell_items = [
         cell
         for cell in cells
         if _value(cell, "form") == document_id and _value(cell, "line")
     ]
-    sections = _unique_sections(frame, document_id)
-    other_form_sections = [
-        section
-        for section in frame.sections
-        if section.document_id != document_id
+    instruction_spans = _spans_for_instruction_frame(
+        frame,
+        source_text=raw_booklet_text,
+    )
+    document_spans = [
+        span
+        for span in instruction_spans
+        if span.owner_document_id == document_id
     ]
+    instruction_owners = instruction_line_owners(instruction_spans)
+    spans_by_id = {span.span_id: span for span in instruction_spans}
+    section_lines = {
+        span.section_id or span.span_id: span.owner_lines[0] if span.owner_lines else ""
+        for span in instruction_spans
+    }
+    owner_documents = sorted(
+        {
+            span.owner_document_id
+            for span in instruction_spans
+            if span.owner_document_id and span.owner_document_id != document_id
+        }
+    )
     paired_section_ids: set[str] = set()
     section_bucket_overrides: dict[str, str] = {}
     cell_rows: list[dict[str, Any]] = []
-    bucket_counts = {bucket: 0 for bucket in BUCKETS}
+    cell_buckets = {bucket: 0 for bucket in BUCKETS}
+    instruction_buckets = {bucket: 0 for bucket in BUCKETS}
 
     for index, cell in enumerate(cell_items, start=1):
         line = _value(cell, "line").lower()
-        direct = [section for section in sections if section.line == line]
-        inherited = []
-        if not direct:
-            parent = _numeric_parent(line)
-            if parent is not None:
-                inherited = [section for section in sections if section.line == parent]
-        matches = direct or inherited
-        other_matches = _sections_for_line(other_form_sections, line)
+        match_ids = instruction_span_ids_for_line(
+            instruction_spans,
+            line,
+            owners=instruction_owners,
+            owner_document_id=document_id,
+        )
+        matches = [spans_by_id[span_id] for span_id in match_ids]
+        direct = [
+            span
+            for span in matches
+            if line in instruction_owners.get(span.span_id, frozenset())
+        ]
+        inherited = not direct and bool(matches)
+        other_match_ids: list[str] = []
+        for owner_document_id in owner_documents:
+            other_match_ids.extend(
+                instruction_span_ids_for_line(
+                    instruction_spans,
+                    line,
+                    owners=instruction_owners,
+                    owner_document_id=owner_document_id,
+                )
+            )
+        other_matches = [spans_by_id[span_id] for span_id in other_match_ids]
         if len(matches) > 1:
             bucket = "AMBIGUOUS"
-            for section in matches:
-                paired_section_ids.add(section.section_id)
-                section_bucket_overrides[section.section_id] = bucket
+            for span in matches:
+                section_id = span.section_id or span.span_id
+                paired_section_ids.add(section_id)
+                section_bucket_overrides[section_id] = bucket
         elif matches:
             bucket = "MATCHED"
-            paired_section_ids.add(matches[0].section_id)
+            paired_section_ids.add(matches[0].section_id or matches[0].span_id)
         else:
             if other_matches:
                 bucket = "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE"
@@ -81,42 +122,39 @@ def reconcile_instruction_document(
                 bucket = "CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT"
             else:
                 bucket = "CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT"
-        bucket_counts[bucket] += 1
+        cell_buckets[bucket] += 1
         cell_row = {
             "cell_id": f"{document_id}:line={line}:cell={index}",
             "line": line,
             "bucket": bucket,
-            "match": "inherited" if inherited and not direct and len(matches) == 1 else "direct" if direct and len(matches) == 1 else "",
-            "section_ids": [section.section_id for section in matches],
+            "match": "inherited" if inherited and len(matches) == 1 else "direct" if direct and len(matches) == 1 else "",
+            "section_ids": [span.section_id or span.span_id for span in matches],
         }
         if bucket == "CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE":
             cell_row["other_form_document_ids"] = sorted(
-                {section.document_id for section in other_matches}
+                {
+                    span.owner_document_id
+                    for span in other_matches
+                    if span.owner_document_id
+                }
             )
             cell_row["other_form_section_ids"] = [
-                section.section_id for section in other_matches
+                span.section_id or span.span_id for span in other_matches
             ]
         cell_rows.append(cell_row)
 
     instruction_rows: list[dict[str, Any]] = []
-    for section in sections:
-        if section.section_id in paired_section_ids:
-            if section_bucket_overrides.get(section.section_id) == "AMBIGUOUS":
-                bucket_counts["AMBIGUOUS"] += 1
-                instruction_rows.append(
-                    {
-                        "section_id": section.section_id,
-                        "line": section.line,
-                        "bucket": "AMBIGUOUS",
-                    }
-                )
-            continue
-        bucket = "INSTRUCTION WITH NO CELL"
-        bucket_counts[bucket] += 1
+    for span in document_spans:
+        section_id = span.section_id or span.span_id
+        if section_id in paired_section_ids:
+            bucket = section_bucket_overrides.get(section_id, "MATCHED")
+        else:
+            bucket = "INSTRUCTION WITH NO CELL"
+        instruction_buckets[bucket] += 1
         instruction_rows.append(
             {
-                "section_id": section.section_id,
-                "line": section.line,
+                "section_id": section_id,
+                "line": section_lines.get(section_id, ""),
                 "bucket": bucket,
             }
         )
@@ -124,8 +162,9 @@ def reconcile_instruction_document(
     return {
         "document_id": document_id,
         "cell_count": len(cell_items),
-        "instruction_section_count": len(sections),
-        "bucket_counts": bucket_counts,
+        "instruction_section_count": len(document_spans),
+        "cell_buckets": cell_buckets,
+        "instruction_buckets": instruction_buckets,
         "cells": cell_rows,
         "instructions": instruction_rows,
     }
@@ -160,12 +199,12 @@ def build_instruction_reconciliation_report(
     }
     topic_cell_count = sum(int(item["cell_count"]) for item in topic_documents.values())
     topic_matched_count = sum(
-        int(item["bucket_counts"].get("MATCHED", 0))
+        int(item["cell_buckets"].get("MATCHED", 0))
         for item in topic_documents.values()
     )
     return {
         "schema_version": 1,
-        "round": "M20-S116",
+        "round": "M20-S117",
         "documents": reports,
         "families": {
             "line_anchored": {
@@ -204,28 +243,6 @@ def write_instruction_reconciliation_report(
         newline="\n",
     )
     return destination
-
-
-def _unique_sections(frame: InstructionSectionsFrame, document_id: str) -> list[Any]:
-    seen: set[str] = set()
-    result = []
-    for section in frame.sections:
-        if section.document_id != document_id or section.section_id in seen:
-            continue
-        seen.add(section.section_id)
-        result.append(section)
-    return result
-
-
-def _sections_for_line(sections: Iterable[Any], line: str) -> list[Any]:
-    """Return sections in another form context that own this line or parent."""
-    normalized = str(line).strip().lower()
-    parent = _numeric_parent(normalized)
-    return [
-        section
-        for section in sections
-        if str(getattr(section, "line", "")).strip().lower() in {normalized, parent}
-    ]
 
 
 def _booklet_mentions_line(text: str, line: str) -> bool:

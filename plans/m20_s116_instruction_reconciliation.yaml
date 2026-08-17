@@ -1,17 +1,24 @@
 schema_version: 1
-round: M20-S116
+round: M20-S117
 documents:
   form_1040_2025:
     document_id: form_1040_2025
     cell_count: 59
     instruction_section_count: 59
-    bucket_counts:
-      MATCHED: 35
+    cell_buckets:
+      MATCHED: 34
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 1
-      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 15
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 13
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 2
-      INSTRUCTION WITH NO CELL: 13
-      AMBIGUOUS: 18
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 9
+    instruction_buckets:
+      MATCHED: 33
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
+      INSTRUCTION WITH NO CELL: 14
+      AMBIGUOUS: 12
     cells:
     - cell_id: form_1040_2025:line=1a:cell=1
       line: 1a
@@ -115,17 +122,11 @@ documents:
       - instruction_section_instructions_form_1040_2025_0019
     - cell_id: form_1040_2025:line=4b:cell=16
       line: 4b
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
+      bucket: AMBIGUOUS
       match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      - schedule_2_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0065
-      - instruction_section_instructions_form_1040_2025_0124
-      - instruction_section_instructions_form_1040_2025_0142
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0018
+      - instruction_section_instructions_form_1040_2025_0019
     - cell_id: form_1040_2025:line=5a:cell=17
       line: 5a
       bucket: AMBIGUOUS
@@ -135,15 +136,11 @@ documents:
       - instruction_section_instructions_form_1040_2025_0022
     - cell_id: form_1040_2025:line=5b:cell=18
       line: 5b
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
+      bucket: AMBIGUOUS
       match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_2_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0125
-      - instruction_section_instructions_form_1040_2025_0143
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0021
+      - instruction_section_instructions_form_1040_2025_0022
     - cell_id: form_1040_2025:line=6a:cell=19
       line: 6a
       bucket: AMBIGUOUS
@@ -153,10 +150,11 @@ documents:
       - instruction_section_instructions_form_1040_2025_0025
     - cell_id: form_1040_2025:line=6b:cell=20
       line: 6b
-      bucket: MATCHED
-      match: inherited
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
+      - instruction_section_instructions_form_1040_2025_0024
+      - instruction_section_instructions_form_1040_2025_0025
     - cell_id: form_1040_2025:line=7a:cell=21
       line: 7a
       bucket: MATCHED
@@ -447,12 +445,54 @@ documents:
     - section_id: instruction_section_instructions_form_1040_2025_0001
       line: 1a
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0002
+      line: 1b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0003
+      line: 1c
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0004
       line: 1a
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0005
+      line: 1d
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0006
+      line: 1e
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0007
       line: '26'
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0008
+      line: 1f
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0009
+      line: '31'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0010
+      line: 1g
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0011
+      line: '6'
+      bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1040_2025_0012
+      line: 1h
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0013
+      line: 1i
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0014
+      line: 2a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0015
+      line: 2b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0016
+      line: 3a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0017
+      line: 3b
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0018
       line: 4a
       bucket: AMBIGUOUS
@@ -483,9 +523,18 @@ documents:
     - section_id: instruction_section_instructions_form_1040_2025_0027
       line: 6d
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1040_2025_0028
+      line: 7a
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0029
       line: 7b
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1040_2025_0030
+      line: '10'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0031
+      line: 12a
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0032
       line: 12b
       bucket: INSTRUCTION WITH NO CELL
@@ -495,18 +544,63 @@ documents:
     - section_id: instruction_section_instructions_form_1040_2025_0034
       line: 12d
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1040_2025_0035
+      line: 12e
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0036
+      line: 13a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0037
+      line: 13b
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0038
       line: '38'
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0039
+      line: '16'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0040
+      line: '19'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0041
+      line: '25'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0042
+      line: 25a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0043
+      line: 25b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0044
+      line: 25c
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0045
       line: '26'
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0046
+      line: 27a
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0047
       line: 27b
       bucket: INSTRUCTION WITH NO CELL
     - section_id: instruction_section_instructions_form_1040_2025_0048
       line: 27c
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1040_2025_0049
+      line: '28'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0050
+      line: '29'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0051
+      line: '30'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0052
+      line: '34'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0053
+      line: 35a
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0054
       line: 35b
       bucket: INSTRUCTION WITH NO CELL
@@ -516,6 +610,12 @@ documents:
     - section_id: instruction_section_instructions_form_1040_2025_0056
       line: 35d
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1040_2025_0057
+      line: '36'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0058
+      line: '37'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0059
       line: '38'
       bucket: AMBIGUOUS
@@ -523,13 +623,20 @@ documents:
     document_id: form_1116_2025
     cell_count: 39
     instruction_section_count: 25
-    bucket_counts:
+    cell_buckets:
       MATCHED: 13
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 20
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 19
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 3
-      INSTRUCTION WITH NO CELL: 7
-      AMBIGUOUS: 9
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 4
+    instruction_buckets:
+      MATCHED: 12
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
+      INSTRUCTION WITH NO CELL: 6
+      AMBIGUOUS: 7
     cells:
     - cell_id: form_1116_2025:line=19:cell=1
       line: '19'
@@ -559,9 +666,10 @@ documents:
       section_ids: []
     - cell_id: form_1116_2025:line=3b:cell=5
       line: 3b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1116_2025_0008
     - cell_id: form_1116_2025:line=4:cell=6
       line: '4'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -569,9 +677,10 @@ documents:
       section_ids: []
     - cell_id: form_1116_2025:line=5:cell=7
       line: '5'
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1116_2025_0006
       - instruction_section_instructions_form_1116_2025_0013
     - cell_id: form_1116_2025:line=6:cell=8
       line: '6'
@@ -750,6 +859,9 @@ documents:
       match: ''
       section_ids: []
     instructions:
+    - section_id: instruction_section_instructions_form_1116_2025_0001
+      line: 1a
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1116_2025_0002
       line: '2'
       bucket: AMBIGUOUS
@@ -770,7 +882,7 @@ documents:
       bucket: AMBIGUOUS
     - section_id: instruction_section_instructions_form_1116_2025_0008
       line: 3a
-      bucket: INSTRUCTION WITH NO CELL
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1116_2025_0009
       line: 3d
       bucket: INSTRUCTION WITH NO CELL
@@ -783,21 +895,61 @@ documents:
     - section_id: instruction_section_instructions_form_1116_2025_0012
       line: 4b
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1116_2025_0013
+      line: '5'
+      bucket: AMBIGUOUS
     - section_id: instruction_section_instructions_form_1116_2025_0014
       line: 4a
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1116_2025_0015
+      line: '10'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0016
+      line: '12'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0017
+      line: '13'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1116_2025_0018
       line: '15'
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1116_2025_0019
+      line: '16'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0020
+      line: '18'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0021
+      line: '19'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0022
+      line: '20'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0023
+      line: '22'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0024
+      line: '24'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1116_2025_0025
+      line: '33'
+      bucket: MATCHED
   form_2441_2025:
     document_id: form_2441_2025
     cell_count: 35
     instruction_section_count: 16
-    bucket_counts:
-      MATCHED: 18
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 12
+    cell_buckets:
+      MATCHED: 20
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 10
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 5
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 0
+    instruction_buckets:
+      MATCHED: 16
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
     cells:
@@ -838,9 +990,10 @@ documents:
       - instruction_section_instructions_form_2441_2025_0003
     - cell_id: form_2441_2025:line=5:cell=7
       line: '5'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_2441_2025_0003
     - cell_id: form_2441_2025:line=6:cell=8
       line: '6'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -991,21 +1144,77 @@ documents:
       section_ids: []
     - cell_id: form_2441_2025:line=31:cell=35
       line: '31'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
-    instructions: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_2441_2025_0016
+    instructions:
+    - section_id: instruction_section_instructions_form_2441_2025_0001
+      line: '1'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0002
+      line: '2'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0003
+      line: '4'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0004
+      line: 9b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0005
+      line: '10'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0006
+      line: '12'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0007
+      line: '13'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0008
+      line: '14'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0009
+      line: '15'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0010
+      line: '16'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0011
+      line: '18'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0012
+      line: '19'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0013
+      line: '21'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0014
+      line: '24'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0015
+      line: '26'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_2441_2025_0016
+      line: '27'
+      bucket: MATCHED
   form_6251_2025:
     document_id: form_6251_2025
     cell_count: 63
     instruction_section_count: 30
-    bucket_counts:
-      MATCHED: 24
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 33
+    cell_buckets:
+      MATCHED: 25
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 32
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 5
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 1
+    instruction_buckets:
+      MATCHED: 23
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 5
-      AMBIGUOUS: 3
+      AMBIGUOUS: 2
     cells:
     - cell_id: form_6251_2025:line=32:cell=1
       line: '32'
@@ -1209,9 +1418,10 @@ documents:
       - instruction_section_instructions_form_6251_2025_0024
     - cell_id: form_6251_2025:line=14:cell=37
       line: '14'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_6251_2025_0024
     - cell_id: form_6251_2025:line=15:cell=38
       line: '15'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -1349,12 +1559,54 @@ documents:
       match: ''
       section_ids: []
     instructions:
+    - section_id: instruction_section_instructions_form_6251_2025_0001
+      line: '1'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0002
+      line: 2a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0003
+      line: 2b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0004
+      line: 2c
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0005
+      line: 2h
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_6251_2025_0006
       line: 2i
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_6251_2025_0007
+      line: 2k
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_6251_2025_0008
       line: 2i
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_6251_2025_0009
+      line: 2m
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0010
+      line: 2n
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0011
+      line: 2o
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0012
+      line: 2p
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0013
+      line: 2q
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0014
+      line: 2r
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0015
+      line: 2s
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0016
+      line: 2t
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_6251_2025_0017
       line: 3o
       bucket: INSTRUCTION WITH NO CELL
@@ -1364,18 +1616,52 @@ documents:
     - section_id: instruction_section_instructions_form_6251_2025_0019
       line: 5e
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_6251_2025_0020
+      line: '7'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_6251_2025_0021
       line: 8a
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_6251_2025_0022
+      line: '10'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_6251_2025_0023
       line: 11a
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_6251_2025_0024
+      line: '13'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0025
+      line: '18'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0026
+      line: '19'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0027
+      line: '20'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0028
+      line: '25'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0029
+      line: '27'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_6251_2025_0030
+      line: '39'
+      bucket: MATCHED
   form_8949_2025:
     document_id: form_8949_2025
     cell_count: 4
     instruction_section_count: 2
-    bucket_counts:
+    cell_buckets:
       MATCHED: 4
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 0
+    instruction_buckets:
+      MATCHED: 2
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
@@ -1406,18 +1692,31 @@ documents:
       match: direct
       section_ids:
       - instruction_section_instructions_form_8949_2025_0002
-    instructions: []
+    instructions:
+    - section_id: instruction_section_instructions_form_8949_2025_0001
+      line: '1'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_8949_2025_0002
+      line: '2'
+      bucket: MATCHED
   schedule_1_2025:
     document_id: schedule_1_2025
     cell_count: 61
     instruction_section_count: 62
-    bucket_counts:
-      MATCHED: 44
+    cell_buckets:
+      MATCHED: 13
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 1
-      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 8
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 7
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 40
+    instruction_buckets:
+      MATCHED: 12
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 2
-      AMBIGUOUS: 24
+      AMBIGUOUS: 48
     cells:
     - cell_id: schedule_1_2025:line=1:cell=1
       line: '1'
@@ -1491,138 +1790,156 @@ documents:
       - instruction_section_instructions_form_1040_2025_0069
     - cell_id: schedule_1_2025:line=8b:cell=10
       line: 8b
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0070
     - cell_id: schedule_1_2025:line=8c:cell=11
       line: 8c
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0071
     - cell_id: schedule_1_2025:line=8d:cell=12
       line: 8d
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0072
     - cell_id: schedule_1_2025:line=8e:cell=13
       line: 8e
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0073
     - cell_id: schedule_1_2025:line=8f:cell=14
       line: 8f
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0074
     - cell_id: schedule_1_2025:line=8g:cell=15
       line: 8g
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0127
-    - cell_id: schedule_1_2025:line=8h:cell=16
-      line: 8h
       bucket: MATCHED
       match: direct
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
+    - cell_id: schedule_1_2025:line=8h:cell=16
+      line: 8h
+      bucket: AMBIGUOUS
+      match: ''
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0075
     - cell_id: schedule_1_2025:line=8i:cell=17
       line: 8i
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0076
     - cell_id: schedule_1_2025:line=8j:cell=18
       line: 8j
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0077
     - cell_id: schedule_1_2025:line=8k:cell=19
       line: 8k
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0078
     - cell_id: schedule_1_2025:line=8l:cell=20
       line: 8l
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0079
     - cell_id: schedule_1_2025:line=8m:cell=21
       line: 8m
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0080
     - cell_id: schedule_1_2025:line=8n:cell=22
       line: 8n
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0081
     - cell_id: schedule_1_2025:line=8o:cell=23
       line: 8o
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0082
     - cell_id: schedule_1_2025:line=8p:cell=24
       line: 8p
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0083
     - cell_id: schedule_1_2025:line=8q:cell=25
       line: 8q
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0084
     - cell_id: schedule_1_2025:line=8r:cell=26
       line: 8r
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0085
     - cell_id: schedule_1_2025:line=8s:cell=27
       line: 8s
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0086
     - cell_id: schedule_1_2025:line=8t:cell=28
       line: 8t
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0087
     - cell_id: schedule_1_2025:line=8u:cell=29
       line: 8u
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0088
     - cell_id: schedule_1_2025:line=8v:cell=30
       line: 8v
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0089
     - cell_id: schedule_1_2025:line=8z:cell=31
       line: 8z
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0067
       - instruction_section_instructions_form_1040_2025_0090
     - cell_id: schedule_1_2025:line=9:cell=32
       line: '9'
@@ -1744,69 +2061,80 @@ documents:
       - instruction_section_instructions_form_1040_2025_0110
     - cell_id: schedule_1_2025:line=24b:cell=49
       line: 24b
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0111
     - cell_id: schedule_1_2025:line=24c:cell=50
       line: 24c
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0112
     - cell_id: schedule_1_2025:line=24d:cell=51
       line: 24d
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0113
     - cell_id: schedule_1_2025:line=24e:cell=52
       line: 24e
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0114
     - cell_id: schedule_1_2025:line=24f:cell=53
       line: 24f
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0115
     - cell_id: schedule_1_2025:line=24g:cell=54
       line: 24g
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0116
     - cell_id: schedule_1_2025:line=24h:cell=55
       line: 24h
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0117
     - cell_id: schedule_1_2025:line=24i:cell=56
       line: 24i
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0118
     - cell_id: schedule_1_2025:line=24j:cell=57
       line: 24j
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0119
     - cell_id: schedule_1_2025:line=24k:cell=58
       line: 24k
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0120
     - cell_id: schedule_1_2025:line=24z:cell=59
       line: 24z
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0109
       - instruction_section_instructions_form_1040_2025_0121
     - cell_id: schedule_1_2025:line=25:cell=60
       line: '25'
@@ -1840,6 +2168,15 @@ documents:
     - section_id: instruction_section_instructions_form_1040_2025_0063
       line: 2b
       bucket: INSTRUCTION WITH NO CELL
+    - section_id: instruction_section_instructions_form_1040_2025_0064
+      line: '3'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0065
+      line: '4'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0066
+      line: '7'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0067
       line: 8a
       bucket: AMBIGUOUS
@@ -1849,12 +2186,96 @@ documents:
     - section_id: instruction_section_instructions_form_1040_2025_0069
       line: 8a
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0070
+      line: 8b
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0071
+      line: 8c
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0072
+      line: 8d
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0073
+      line: 8e
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0074
+      line: 8f
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0075
+      line: 8h
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0076
+      line: 8i
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0077
+      line: 8j
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0078
+      line: 8k
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0079
+      line: 8l
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0080
+      line: 8m
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0081
+      line: 8n
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0082
+      line: 8o
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0083
+      line: 8p
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0084
+      line: 8q
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0085
+      line: 8r
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0086
+      line: 8s
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0087
+      line: 8t
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0088
+      line: 8u
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0089
+      line: 8v
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0090
+      line: 8z
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0091
+      line: '11'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0092
+      line: '12'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0093
+      line: '13'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0094
+      line: '14'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0095
+      line: '15'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0096
+      line: '16'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0097
       line: '17'
       bucket: AMBIGUOUS
     - section_id: instruction_section_instructions_form_1040_2025_0098
       line: '17'
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0099
+      line: '18'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0100
       line: 19a
       bucket: AMBIGUOUS
@@ -1876,21 +2297,67 @@ documents:
     - section_id: instruction_section_instructions_form_1040_2025_0106
       line: '21'
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0107
+      line: '22'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0108
+      line: '23'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0109
       line: 24a
       bucket: AMBIGUOUS
     - section_id: instruction_section_instructions_form_1040_2025_0110
       line: 24a
       bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0111
+      line: 24b
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0112
+      line: 24c
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0113
+      line: 24d
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0114
+      line: 24e
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0115
+      line: 24f
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0116
+      line: 24g
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0117
+      line: 24h
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0118
+      line: 24i
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0119
+      line: 24j
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0120
+      line: 24k
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0121
+      line: 24z
+      bucket: AMBIGUOUS
   schedule_1a_2025:
     document_id: schedule_1a_2025
     cell_count: 48
     instruction_section_count: 0
-    bucket_counts:
+    cell_buckets:
       MATCHED: 0
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 2
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 43
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 3
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 0
+    instruction_buckets:
+      MATCHED: 0
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
     cells:
@@ -2399,13 +2866,20 @@ documents:
     document_id: schedule_2_2025
     cell_count: 45
     instruction_section_count: 17
-    bucket_counts:
-      MATCHED: 16
+    cell_buckets:
+      MATCHED: 37
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
-      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 29
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 7
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
-      INSTRUCTION WITH NO CELL: 1
-      AMBIGUOUS: 0
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 1
+    instruction_buckets:
+      MATCHED: 15
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 2
     cells:
     - cell_id: schedule_2_2025:line=1:cell=1
       line: '1'
@@ -2427,84 +2901,40 @@ documents:
       - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=1b:cell=3
       line: 1b
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_1_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0002
-      - instruction_section_instructions_form_1040_2025_0060
-      - instruction_section_instructions_form_1040_2025_0068
-      - instruction_section_instructions_form_1040_2025_0139
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=1d:cell=4
       line: 1d
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_1_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0005
-      - instruction_section_instructions_form_1040_2025_0060
-      - instruction_section_instructions_form_1040_2025_0068
-      - instruction_section_instructions_form_1040_2025_0139
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=1e:cell=5
       line: 1e
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_1_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0006
-      - instruction_section_instructions_form_1040_2025_0060
-      - instruction_section_instructions_form_1040_2025_0068
-      - instruction_section_instructions_form_1040_2025_0139
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=1f:cell=6
       line: 1f
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_1_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0008
-      - instruction_section_instructions_form_1040_2025_0060
-      - instruction_section_instructions_form_1040_2025_0068
-      - instruction_section_instructions_form_1040_2025_0139
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=1y:cell=7
       line: 1y
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0060
-      - instruction_section_instructions_form_1040_2025_0068
-      - instruction_section_instructions_form_1040_2025_0139
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=1z:cell=8
       line: 1z
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      - schedule_3_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0060
-      - instruction_section_instructions_form_1040_2025_0068
-      - instruction_section_instructions_form_1040_2025_0139
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0122
     - cell_id: schedule_2_2025:line=2:cell=9
       line: '2'
       bucket: MATCHED
@@ -2615,169 +3045,106 @@ documents:
       - instruction_section_instructions_form_1040_2025_0098
     - cell_id: schedule_2_2025:line=17b:cell=25
       line: 17b
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17c:cell=26
-      line: 17c
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17d:cell=27
-      line: 17d
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17e:cell=28
-      line: 17e
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17f:cell=29
-      line: 17f
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17g:cell=30
-      line: 17g
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17h:cell=31
-      line: 17h
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17i:cell=32
-      line: 17i
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17j:cell=33
-      line: 17j
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17k:cell=34
-      line: 17k
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17l:cell=35
-      line: 17l
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17m:cell=36
-      line: 17m
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17n:cell=37
-      line: 17n
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17o:cell=38
-      line: 17o
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17p:cell=39
-      line: 17p
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17q:cell=40
-      line: 17q
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - schedule_1_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0097
-      - instruction_section_instructions_form_1040_2025_0098
-    - cell_id: schedule_2_2025:line=17z:cell=41
-      line: 17z
       bucket: MATCHED
       match: direct
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17c:cell=26
+      line: 17c
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17d:cell=27
+      line: 17d
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17e:cell=28
+      line: 17e
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17f:cell=29
+      line: 17f
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17g:cell=30
+      line: 17g
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17h:cell=31
+      line: 17h
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17i:cell=32
+      line: 17i
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17j:cell=33
+      line: 17j
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17k:cell=34
+      line: 17k
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17l:cell=35
+      line: 17l
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17m:cell=36
+      line: 17m
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17n:cell=37
+      line: 17n
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17o:cell=38
+      line: 17o
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17p:cell=39
+      line: 17p
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17q:cell=40
+      line: 17q
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
+    - cell_id: schedule_2_2025:line=17z:cell=41
+      line: 17z
+      bucket: AMBIGUOUS
+      match: ''
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0136
       - instruction_section_instructions_form_1040_2025_0138
     - cell_id: schedule_2_2025:line=18:cell=42
       line: '18'
@@ -2815,20 +3182,75 @@ documents:
       - instruction_section_instructions_form_1040_2025_0105
       - instruction_section_instructions_form_1040_2025_0106
     instructions:
+    - section_id: instruction_section_instructions_form_1040_2025_0122
+      line: 1a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0123
+      line: '2'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0124
+      line: '4'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0125
+      line: '5'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0126
+      line: '6'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0127
+      line: '8'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0128
+      line: '9'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0129
+      line: '10'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0130
+      line: '11'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0131
+      line: '12'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0132
+      line: '13'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0133
+      line: '14'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0134
+      line: '15'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0135
+      line: '16'
+      bucket: MATCHED
     - section_id: instruction_section_instructions_form_1040_2025_0136
       line: 17a
-      bucket: INSTRUCTION WITH NO CELL
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0137
+      line: '19'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0138
+      line: 17z
+      bucket: AMBIGUOUS
   schedule_3_2025:
     document_id: schedule_3_2025
     cell_count: 35
     instruction_section_count: 16
-    bucket_counts:
-      MATCHED: 17
+    cell_buckets:
+      MATCHED: 24
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
-      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 18
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 6
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
-      AMBIGUOUS: 0
+      AMBIGUOUS: 5
+    instruction_buckets:
+      MATCHED: 9
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 7
     cells:
     - cell_id: schedule_3_2025:line=1:cell=1
       line: '1'
@@ -2885,147 +3307,83 @@ documents:
       - instruction_section_instructions_form_1040_2025_0144
     - cell_id: schedule_3_2025:line=6b:cell=9
       line: 6b
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0024
-      - instruction_section_instructions_form_1040_2025_0025
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6c:cell=10
-      line: 6c
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0024
-      - instruction_section_instructions_form_1040_2025_0026
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6d:cell=11
-      line: 6d
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0027
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6e:cell=12
-      line: 6e
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6f:cell=13
-      line: 6f
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6g:cell=14
-      line: 6g
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6h:cell=15
-      line: 6h
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6i:cell=16
-      line: 6i
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6j:cell=17
-      line: 6j
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6k:cell=18
-      line: 6k
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
-    - cell_id: schedule_3_2025:line=6l:cell=19
-      line: 6l
       bucket: MATCHED
       match: direct
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6c:cell=10
+      line: 6c
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6d:cell=11
+      line: 6d
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6e:cell=12
+      line: 6e
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6f:cell=13
+      line: 6f
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6g:cell=14
+      line: 6g
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6h:cell=15
+      line: 6h
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6i:cell=16
+      line: 6i
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6j:cell=17
+      line: 6j
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6k:cell=18
+      line: 6k
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
+    - cell_id: schedule_3_2025:line=6l:cell=19
+      line: 6l
+      bucket: AMBIGUOUS
+      match: ''
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
       - instruction_section_instructions_form_1040_2025_0146
     - cell_id: schedule_3_2025:line=6m:cell=20
       line: 6m
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
     - cell_id: schedule_3_2025:line=6z:cell=21
       line: 6z
-      bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
-      match: ''
-      section_ids: []
-      other_form_document_ids:
-      - form_1040_2025
-      - schedule_2_2025
-      other_form_section_ids:
-      - instruction_section_instructions_form_1040_2025_0011
-      - instruction_section_instructions_form_1040_2025_0126
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_form_1040_2025_0144
     - cell_id: schedule_3_2025:line=7:cell=22
       line: '7'
       bucket: CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE
@@ -3087,27 +3445,31 @@ documents:
       - instruction_section_instructions_form_1040_2025_0150
     - cell_id: schedule_3_2025:line=13b:cell=30
       line: 13b
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0150
       - instruction_section_instructions_form_1040_2025_0151
     - cell_id: schedule_3_2025:line=13c:cell=31
       line: 13c
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0150
       - instruction_section_instructions_form_1040_2025_0152
     - cell_id: schedule_3_2025:line=13d:cell=32
       line: 13d
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0150
       - instruction_section_instructions_form_1040_2025_0153
     - cell_id: schedule_3_2025:line=13z:cell=33
       line: 13z
-      bucket: MATCHED
-      match: direct
+      bucket: AMBIGUOUS
+      match: ''
       section_ids:
+      - instruction_section_instructions_form_1040_2025_0150
       - instruction_section_instructions_form_1040_2025_0154
     - cell_id: schedule_3_2025:line=14:cell=34
       line: '14'
@@ -3131,16 +3493,71 @@ documents:
       other_form_section_ids:
       - instruction_section_instructions_form_1040_2025_0095
       - instruction_section_instructions_form_1040_2025_0134
-    instructions: []
+    instructions:
+    - section_id: instruction_section_instructions_form_1040_2025_0139
+      line: '1'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0140
+      line: '2'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0141
+      line: '3'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0142
+      line: '4'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0143
+      line: '5'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0144
+      line: 6a
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0145
+      line: '9'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0146
+      line: 6l
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0147
+      line: '10'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0148
+      line: '11'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0149
+      line: '12'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_form_1040_2025_0150
+      line: 13a
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0151
+      line: 13b
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0152
+      line: 13c
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0153
+      line: 13d
+      bucket: AMBIGUOUS
+    - section_id: instruction_section_instructions_form_1040_2025_0154
+      line: 13z
+      bucket: AMBIGUOUS
   schedule_a_2025:
     document_id: schedule_a_2025
     cell_count: 28
     instruction_section_count: 19
-    bucket_counts:
+    cell_buckets:
       MATCHED: 21
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 6
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 1
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 0
+    instruction_buckets:
+      MATCHED: 19
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
     cells:
@@ -3305,16 +3722,80 @@ documents:
       match: direct
       section_ids:
       - instruction_section_instructions_schedule_a_2025_0019
-    instructions: []
+    instructions:
+    - section_id: instruction_section_instructions_schedule_a_2025_0001
+      line: '1'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0002
+      line: '5'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0003
+      line: 5a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0004
+      line: 5b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0005
+      line: 5c
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0006
+      line: 5e
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0007
+      line: '6'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0008
+      line: '8'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0009
+      line: 8a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0010
+      line: 8b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0011
+      line: 8c
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0012
+      line: 8d
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0013
+      line: '9'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0014
+      line: '11'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0015
+      line: '12'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0016
+      line: '13'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0017
+      line: '15'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0018
+      line: '16'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_a_2025_0019
+      line: '18'
+      bucket: MATCHED
   schedule_b_2025:
     document_id: schedule_b_2025
     cell_count: 8
     instruction_section_count: 0
-    bucket_counts:
+    cell_buckets:
       MATCHED: 0
       CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 7
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 1
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 0
+    instruction_buckets:
+      MATCHED: 0
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
       AMBIGUOUS: 0
     cells:
@@ -3363,9 +3844,16 @@ documents:
     document_id: schedule_d_2025
     cell_count: 24
     instruction_section_count: 6
-    bucket_counts:
+    cell_buckets:
+      MATCHED: 11
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 13
+      CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
+      CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
+      INSTRUCTION WITH NO CELL: 0
+      AMBIGUOUS: 0
+    instruction_buckets:
       MATCHED: 6
-      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 18
+      CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT: 0
       CELL WITH NO INSTRUCTION + OTHER FORM OWNS LINE: 0
       CELL WITH NO INSTRUCTION + BOOKLET DOES NOT MENTION IT: 0
       INSTRUCTION WITH NO CELL: 0
@@ -3385,14 +3873,16 @@ documents:
       - instruction_section_instructions_schedule_d_2025_0002
     - cell_id: schedule_d_2025:line=2:cell=3
       line: '2'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_schedule_d_2025_0002
     - cell_id: schedule_d_2025:line=3:cell=4
       line: '3'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_schedule_d_2025_0002
     - cell_id: schedule_d_2025:line=4:cell=5
       line: '4'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -3415,19 +3905,22 @@ documents:
       section_ids: []
     - cell_id: schedule_d_2025:line=8a:cell=9
       line: 8a
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_schedule_d_2025_0001
     - cell_id: schedule_d_2025:line=8b:cell=10
       line: 8b
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_schedule_d_2025_0002
     - cell_id: schedule_d_2025:line=9:cell=11
       line: '9'
-      bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
-      match: ''
-      section_ids: []
+      bucket: MATCHED
+      match: direct
+      section_ids:
+      - instruction_section_instructions_schedule_d_2025_0002
     - cell_id: schedule_d_2025:line=10:cell=12
       line: '10'
       bucket: CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT
@@ -3497,7 +3990,25 @@ documents:
       match: direct
       section_ids:
       - instruction_section_instructions_schedule_d_2025_0006
-    instructions: []
+    instructions:
+    - section_id: instruction_section_instructions_schedule_d_2025_0001
+      line: 1a
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_d_2025_0002
+      line: 1b
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_d_2025_0003
+      line: '13'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_d_2025_0004
+      line: '18'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_d_2025_0005
+      line: '19'
+      bucket: MATCHED
+    - section_id: instruction_section_instructions_schedule_d_2025_0006
+      line: '21'
+      bucket: MATCHED
 families:
   line_anchored:
     cell_count: 449
