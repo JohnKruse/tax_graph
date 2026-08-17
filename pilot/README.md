@@ -115,6 +115,21 @@ The replayed A/B reports Schedule B's topic-organized sections against the line-
 Schedule D control. Its gains and owner metrics are evidence from the checked-in live recording,
 not a provider-free model-quality claim for a future prompt.
 
+## M20-S124 chapter-scoped booklet windows
+
+The segmenter derives deterministic form-context chapters before it opens model windows. Each
+window stays inside one chapter, so a Schedule 2 window cannot ask the model to assign a section
+to Schedule 3. A chapter permits its form owner plus every worksheet linked to the booklet; the
+worksheet vocabulary is not narrowed to the chapter. Chapter boundaries are converted from the
+parser's normalized character offsets into raw source-byte offsets before prompts and recordings
+are built. A foreign form claim is rejected locally and recorded as a chapter-owner disagreement;
+the byte verifier still checks the surviving sections against the complete booklet.
+
+The focused guards cover the real 1040 booklet and the unchanged one-chapter Schedule B and D
+fixtures:
+
+    .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s124.py -q
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction

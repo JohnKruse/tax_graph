@@ -35,6 +35,9 @@ from tax_graph.config import (  # noqa: E402
     resolve_llm_seed,
 )
 from tax_graph.extract.instruction_sections import (  # noqa: E402
+    _context_for_heading,
+    _default_document_id,
+    _parse_headings,
     build_instruction_sections_file,
 )
 
@@ -74,20 +77,46 @@ class _HeadingOffsetResolutionError(ModelFrameVerificationError):
 
 
 @dataclass(frozen=True)
+class SourceChapter:
+    """One deterministic form-context chapter in an acquired booklet."""
+
+    index: int
+    document_id: str
+    start_byte: int
+    end_byte: int
+
+    def as_dict(self) -> dict[str, int | str]:
+        """Return the raw-byte chapter coordinates used by a recording."""
+        return {
+            "index": self.index,
+            "document_id": self.document_id,
+            "start_byte": self.start_byte,
+            "end_byte": self.end_byte,
+        }
+
+
+@dataclass(frozen=True)
 class SourceWindow:
     """One UTF-8-safe source window with absolute byte coordinates."""
 
     index: int
     start_byte: int
     end_byte: int
+    chapter_index: int | None = None
+    chapter_document_id: str | None = None
 
-    def as_dict(self) -> dict[str, int]:
+    def as_dict(self) -> dict[str, int | str]:
         """Return the window coordinates used by a recorded response."""
-        return {
+        result: dict[str, int | str] = {
             "index": self.index,
             "start_byte": self.start_byte,
             "end_byte": self.end_byte,
         }
+        if self.chapter_index is not None:
+            result["chapter_index"] = self.chapter_index
+        if self.chapter_document_id is not None:
+            result["chapter_document_id"] = self.chapter_document_id
+        return result
 
 
 @dataclass(frozen=True)
@@ -237,11 +266,154 @@ def _boundary_at_or_before(boundaries: tuple[int, ...], value: int) -> int:
     return boundaries[low]
 
 
+def _collapse_newlines(text: str) -> str:
+    """Apply the same universal-newline normalization as the parser input."""
+    return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
+def _collapsed_char_to_raw_byte_offsets(raw_text: str) -> tuple[int, ...]:
+    """Map normalized character offsets back to raw UTF-8 byte offsets."""
+    offsets = [0]
+    raw_index = 0
+    raw_byte = 0
+    while raw_index < len(raw_text):
+        character = raw_text[raw_index]
+        if character == "\r":
+            if raw_index + 1 < len(raw_text) and raw_text[raw_index + 1] == "\n":
+                raw_index += 2
+                raw_byte += len("\r\n".encode("utf-8"))
+            else:
+                raw_index += 1
+                raw_byte += len(character.encode("utf-8"))
+            offsets.append(raw_byte)
+            continue
+        raw_index += 1
+        raw_byte += len(character.encode("utf-8"))
+        offsets.append(raw_byte)
+    return tuple(offsets)
+
+
+def build_source_chapters(
+    source_bytes: bytes,
+    *,
+    source_document_id: str,
+    year: str | int = "2025",
+) -> tuple[SourceChapter, ...]:
+    """Build raw-byte chapters from the deterministic form-context tracker.
+
+    The production tracker parses universal-newline text and reports character
+    offsets.  This pilot converts each context transition back into the raw
+    UTF-8 byte space before any model window is created.
+    """
+    year_text = str(year)
+    raw_text = source_bytes.decode("utf-8")
+    normalized_text = _collapse_newlines(raw_text)
+    normalized_to_raw = _collapsed_char_to_raw_byte_offsets(raw_text)
+    default_document_id = _default_document_id(source_document_id, year_text)
+    current_document_id = default_document_id
+    transitions: list[tuple[int, str]] = [(0, current_document_id)]
+    for heading in _parse_headings(normalized_text):
+        context = _context_for_heading(
+            heading.title,
+            current_document_id=current_document_id,
+            default_document_id=default_document_id,
+            year=year_text,
+        )
+        if context is None or context[0] == current_document_id:
+            continue
+        raw_start_byte = normalized_to_raw[heading.start_offset]
+        transitions.append((raw_start_byte, context[0]))
+        current_document_id = context[0]
+
+    chapters: list[SourceChapter] = []
+    for index, (start_byte, document_id) in enumerate(transitions, start=1):
+        end_byte = (
+            transitions[index][0]
+            if index < len(transitions)
+            else len(source_bytes)
+        )
+        chapters.append(
+            SourceChapter(
+                index=index,
+                document_id=document_id,
+                start_byte=start_byte,
+                end_byte=end_byte,
+            )
+        )
+    return tuple(chapters)
+
+
+def _validate_source_chapters(
+    source_bytes: bytes,
+    chapters: Sequence[SourceChapter],
+) -> None:
+    """Fail closed if chapter coordinates do not tile the raw source."""
+    if not chapters:
+        raise ValueError("source chapters must not be empty")
+    expected_start = 0
+    for chapter in chapters:
+        if chapter.start_byte != expected_start:
+            raise ValueError(
+                "source chapters must tile from byte 0: "
+                f"expected {expected_start}, got {chapter.start_byte}"
+            )
+        if not chapter.document_id.strip():
+            raise ValueError("source chapter document_id must be non-empty")
+        if not 0 <= chapter.start_byte <= chapter.end_byte <= len(source_bytes):
+            raise ValueError(
+                "source chapter range is outside source: "
+                f"{chapter.start_byte}:{chapter.end_byte}"
+            )
+        if chapter.start_byte == chapter.end_byte and len(source_bytes) > 0:
+            raise ValueError("non-empty source chapters must have positive length")
+        expected_start = chapter.end_byte
+    if expected_start != len(source_bytes):
+        raise ValueError(
+            "source chapters must tile to EOF: "
+            f"claimed {expected_start}, source has {len(source_bytes)} bytes"
+        )
+
+
+def _build_source_windows_for_range(
+    source_bytes: bytes,
+    *,
+    start_byte: int,
+    end_byte: int,
+    max_window_bytes: int,
+    overlap_bytes: int,
+) -> tuple[tuple[int, int], ...]:
+    """Split one bounded raw-byte range without crossing its endpoints."""
+    if start_byte == end_byte:
+        return ((start_byte, end_byte),)
+    boundaries = _utf8_boundaries(source_bytes)
+    ranges: list[tuple[int, int]] = []
+    start = start_byte
+    while start < end_byte:
+        candidate_end = min(end_byte, start + max_window_bytes)
+        end = _boundary_at_or_before(boundaries, candidate_end)
+        if end <= start:
+            raise ValueError(
+                "max_window_bytes falls inside an unrepresentable source character"
+            )
+        ranges.append((start, end))
+        if end == end_byte:
+            break
+        next_start = max(
+            start_byte,
+            _boundary_at_or_before(boundaries, end - overlap_bytes),
+        )
+        if next_start <= start:
+            raise ValueError("window overlap prevents progress")
+        start = next_start
+    return tuple(ranges)
+
+
 def build_source_windows(
     source_bytes: bytes,
     *,
     max_window_bytes: int = 12000,
     overlap_bytes: int = 2000,
+    chapters: Iterable[SourceChapter] | None = None,
 ) -> tuple[SourceWindow, ...]:
     """Split source into overlapping UTF-8-safe windows.
 
@@ -253,27 +425,42 @@ def build_source_windows(
         raise ValueError("max_window_bytes must be positive")
     if overlap_bytes < 0 or overlap_bytes >= max_window_bytes:
         raise ValueError("overlap_bytes must be non-negative and smaller than the window")
+    chapter_values = tuple(chapters) if chapters is not None else ()
+    if chapters is not None:
+        _validate_source_chapters(source_bytes, chapter_values)
+        windows: list[SourceWindow] = []
+        for chapter in chapter_values:
+            for start_byte, end_byte in _build_source_windows_for_range(
+                source_bytes,
+                start_byte=chapter.start_byte,
+                end_byte=chapter.end_byte,
+                max_window_bytes=max_window_bytes,
+                overlap_bytes=overlap_bytes,
+            ):
+                windows.append(
+                    SourceWindow(
+                        index=len(windows),
+                        start_byte=start_byte,
+                        end_byte=end_byte,
+                        chapter_index=chapter.index,
+                        chapter_document_id=chapter.document_id,
+                    )
+                )
+        return tuple(windows)
+
     if not source_bytes:
         return (SourceWindow(index=0, start_byte=0, end_byte=0),)
-
-    boundaries = _utf8_boundaries(source_bytes)
-    windows: list[SourceWindow] = []
-    start = 0
-    index = 0
-    while start < len(source_bytes):
-        candidate_end = min(len(source_bytes), start + max_window_bytes)
-        end = _boundary_at_or_before(boundaries, candidate_end)
-        if end <= start:
-            raise ValueError("max_window_bytes falls inside an unrepresentable source character")
-        windows.append(SourceWindow(index=index, start_byte=start, end_byte=end))
-        if end == len(source_bytes):
-            break
-        next_start = _boundary_at_or_before(boundaries, end - overlap_bytes)
-        if next_start <= start:
-            raise ValueError("window overlap prevents progress")
-        start = next_start
-        index += 1
-    return tuple(windows)
+    ranges = _build_source_windows_for_range(
+        source_bytes,
+        start_byte=0,
+        end_byte=len(source_bytes),
+        max_window_bytes=max_window_bytes,
+        overlap_bytes=overlap_bytes,
+    )
+    return tuple(
+        SourceWindow(index=index, start_byte=start, end_byte=end)
+        for index, (start, end) in enumerate(ranges)
+    )
 
 
 def build_window_prompt(
@@ -303,10 +490,18 @@ def build_window_prompt(
             "The source booklet id is a source marker, never an owner, and must not "
             "be returned as document_id.\n"
         )
+    chapter_contract = ""
+    if window.chapter_document_id is not None:
+        chapter_contract = (
+            "This window is inside the chapter for form document_id "
+            f"{window.chapter_document_id}. Do not claim another form as the "
+            "owner; worksheet owners in the allowed vocabulary may still appear.\n"
+        )
     return (
         f"{instructions.rstrip()}\n\n"
         f"Source booklet id: {source_document_id}\n"
         f"{owner_contract}"
+        f"{chapter_contract}"
         f"Window index: {window.index}\n"
         f"Window byte range: {window.start_byte}..{window.end_byte}\n"
         "The lines below are acquired source; coordinate markers are not source text.\n"
@@ -490,6 +685,8 @@ def _raw_section(
     window: SourceWindow,
     source_bytes: bytes,
     allowed_document_ids: frozenset[str] | None,
+    chapter_document_id: str | None = None,
+    worksheet_document_ids: frozenset[str] = frozenset(),
 ) -> tuple[ModelSection | None, bool, dict[str, Any] | None]:
     """Validate one response section without making the booklet fatal."""
     def reject(reason: str, detail: str | None = None) -> tuple[None, bool, dict[str, Any]]:
@@ -596,6 +793,16 @@ def _raw_section(
             "disallowed_document_id",
             f"document_id {normalized_document_id!r} is not an allowed owner for "
             f"{source_document_id}; allowed: {allowed}",
+        )
+    if (
+        chapter_document_id is not None
+        and normalized_document_id != chapter_document_id
+        and normalized_document_id not in worksheet_document_ids
+    ):
+        return reject(
+            "chapter_owner_disagreement",
+            f"document_id {normalized_document_id!r} is not the form owner "
+            f"for chapter {chapter_document_id!r}; worksheet owners remain allowed",
         )
     try:
         governs = _coerce_governs(raw["governs"])
@@ -789,6 +996,39 @@ def _reconcile_window_sections(
     )
 
 
+def _chapter_for_window(
+    window: SourceWindow,
+    chapters: Sequence[SourceChapter],
+) -> SourceChapter:
+    """Return the sole chapter containing a response window."""
+    matches = [
+        chapter
+        for chapter in chapters
+        if chapter.start_byte <= window.start_byte
+        and window.end_byte <= chapter.end_byte
+    ]
+    if len(matches) != 1:
+        raise SegmenterError(
+            "response window must lie inside exactly one source chapter: "
+            f"{window.start_byte}:{window.end_byte}"
+        )
+    chapter = matches[0]
+    if window.chapter_index is not None and window.chapter_index != chapter.index:
+        raise SegmenterError(
+            "response window chapter index disagrees with deterministic chapter: "
+            f"{window.chapter_index} != {chapter.index}"
+        )
+    if (
+        window.chapter_document_id is not None
+        and window.chapter_document_id != chapter.document_id
+    ):
+        raise SegmenterError(
+            "response window chapter document disagrees with deterministic chapter: "
+            f"{window.chapter_document_id!r} != {chapter.document_id!r}"
+        )
+    return chapter
+
+
 def build_model_frame(
     source_text: str,
     *,
@@ -797,6 +1037,8 @@ def build_model_frame(
     year: str | int = "2025",
     source_path: str | Path | None = None,
     allowed_document_ids: Iterable[str] | None = None,
+    chapters: Iterable[SourceChapter] | None = None,
+    worksheet_document_ids: Iterable[str] = (),
 ) -> ModelInstructionFrame:
     """Reconcile window responses into one verified source-backed model frame."""
     source_bytes = source_text.encode("utf-8")
@@ -806,6 +1048,14 @@ def build_model_frame(
         if normalized_allowed_ids is not None
         else None
     )
+    chapter_values = tuple(chapters) if chapters is not None else ()
+    if chapters is not None:
+        _validate_source_chapters(source_bytes, chapter_values)
+    worksheet_ids = frozenset(
+        str(value).strip()
+        for value in worksheet_document_ids
+        if str(value).strip()
+    )
     parsed: list[tuple[ModelSection, SourceWindow]] = []
     response_count = 0
     response_section_count = 0
@@ -814,16 +1064,28 @@ def build_model_frame(
     for response_record in responses:
         response_count += 1
         try:
+            record_chapter_index = response_record.get("chapter_index")
             window = SourceWindow(
                 index=int(response_record["window_index"]),
                 start_byte=int(response_record["window_start_byte"]),
                 end_byte=int(response_record["window_end_byte"]),
+                chapter_index=(
+                    int(record_chapter_index)
+                    if record_chapter_index is not None
+                    else None
+                ),
+                chapter_document_id=(
+                    str(response_record["chapter_document_id"])
+                    if response_record.get("chapter_document_id") is not None
+                    else None
+                ),
             )
             raw_sections = response_record["response"]["sections"]
         except (KeyError, TypeError, ValueError) as exc:
             raise SegmenterError("invalid recorded window response envelope") from exc
         if not 0 <= window.start_byte <= window.end_byte <= len(source_bytes):
             raise SegmenterError(f"invalid response window: {window}")
+        chapter = _chapter_for_window(window, chapter_values) if chapter_values else None
         if not isinstance(raw_sections, list):
             raise SegmenterError("recorded response sections must be a list")
         for raw in raw_sections:
@@ -834,6 +1096,8 @@ def build_model_frame(
                 window=window,
                 source_bytes=source_bytes,
                 allowed_document_ids=allowed_ids,
+                chapter_document_id=chapter.document_id if chapter is not None else None,
+                worksheet_document_ids=worksheet_ids,
             )
             if rejection is not None:
                 section_rejections.append(rejection)
@@ -913,6 +1177,11 @@ def build_model_frame(
             ),
             "heading_offset_repaired_count": heading_offset_repaired_count,
             "rejected_sections": [*section_rejections, *reconciliation_rejections],
+            "chapter_count": len(chapter_values),
+            "chapter_owner_disagreement_count": sum(
+                item.get("reason") == "chapter_owner_disagreement"
+                for item in section_rejections
+            ),
             "owner_conflict_count": owner_conflict_count,
             "governs_conflict_count": governs_conflict_count,
             "reconciles_to_file_size": True,
@@ -953,6 +1222,7 @@ def build_frame_from_fixture(
     fixture_path: str | Path,
     year: str | int = "2025",
     allowed_document_ids: Iterable[str] | None = None,
+    root: str | Path = ROOT,
 ) -> ModelInstructionFrame:
     """Build a verified model frame from a recorded response fixture."""
     path = Path(source_path)
@@ -963,6 +1233,11 @@ def build_frame_from_fixture(
         source_document_id=source_document_id,
         source_bytes=source_bytes,
     )
+    chapters = build_source_chapters(
+        source_bytes,
+        source_document_id=source_document_id,
+        year=year,
+    )
     return build_model_frame(
         source_text,
         source_document_id=source_document_id,
@@ -970,6 +1245,11 @@ def build_frame_from_fixture(
         year=year,
         source_path=path,
         allowed_document_ids=allowed_document_ids,
+        chapters=chapters,
+        worksheet_document_ids=manifest_worksheet_document_ids(
+            root,
+            source_document_id=source_document_id,
+        ),
     )
 
 
@@ -1160,6 +1440,7 @@ def build_ab_report(
             root,
             source_document_id=source_document_id,
         ),
+        root=root,
     )
     deterministic = _baseline_sections(path, source_document_id)
     cells = load_reconciliation_cells(
@@ -1210,6 +1491,28 @@ def _write_recording(
     )
 
 
+def _allowed_document_ids_for_window(
+    allowed_document_ids: Iterable[str],
+    *,
+    chapter_document_id: str | None,
+    worksheet_document_ids: Iterable[str],
+) -> frozenset[str]:
+    """Limit a chapter window to its form plus the booklet worksheets."""
+    allowed = {str(value).strip() for value in allowed_document_ids if str(value).strip()}
+    if chapter_document_id is None:
+        return frozenset(allowed)
+    worksheets = {
+        str(value).strip()
+        for value in worksheet_document_ids
+        if str(value).strip()
+    }
+    return frozenset(
+        document_id
+        for document_id in allowed
+        if document_id == chapter_document_id or document_id in worksheets
+    )
+
+
 def main() -> int:
     """Run a fixture-backed pilot or print one live window prompt."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -1225,14 +1528,30 @@ def main() -> int:
 
     source_path = args.source or ROOT / ".cache" / "raw" / args.year / f"{args.source_document_id}.txt"
     source_bytes = source_path.read_bytes()
+    chapters = build_source_chapters(
+        source_bytes,
+        source_document_id=args.source_document_id,
+        year=args.year,
+    )
     allowed_document_ids = manifest_owner_document_ids(
         ROOT,
         source_document_id=args.source_document_id,
     )
+    try:
+        worksheet_document_ids = manifest_worksheet_document_ids(
+            ROOT,
+            source_document_id=args.source_document_id,
+        )
+    except FileNotFoundError:
+        # A provider-test harness may replace the owner lookup while using a
+        # temporary root with no manifest.  The real owner lookup above still
+        # fails closed when the configured manifest is absent.
+        worksheet_document_ids = frozenset()
     windows = build_source_windows(
         source_bytes,
         max_window_bytes=args.max_window_bytes,
         overlap_bytes=args.overlap_bytes,
+        chapters=chapters,
     )
     if args.dry_run:
         print(f"source bytes: {len(source_bytes)}")
@@ -1242,7 +1561,11 @@ def main() -> int:
                 source_bytes,
                 windows[0],
                 source_document_id=args.source_document_id,
-                allowed_document_ids=allowed_document_ids,
+                allowed_document_ids=_allowed_document_ids_for_window(
+                    allowed_document_ids,
+                    chapter_document_id=windows[0].chapter_document_id,
+                    worksheet_document_ids=worksheet_document_ids,
+                ),
             )
         )
         return 0
@@ -1250,22 +1573,33 @@ def main() -> int:
         config = load_config(root=ROOT)
         records: list[dict[str, Any]] = []
         output = args.output or Path(
-            f"m20_s123_{_slug(args.source_document_id)}_responses.json"
+            f"m20_s124_{_slug(args.source_document_id)}_responses.json"
         )
         for window in windows:
             prompt = build_window_prompt(
                 source_bytes,
                 window,
                 source_document_id=args.source_document_id,
-                allowed_document_ids=allowed_document_ids,
+                allowed_document_ids=_allowed_document_ids_for_window(
+                    allowed_document_ids,
+                    chapter_document_id=window.chapter_document_id,
+                    worksheet_document_ids=worksheet_document_ids,
+                ),
+            )
+            window_allowed_document_ids = _allowed_document_ids_for_window(
+                allowed_document_ids,
+                chapter_document_id=window.chapter_document_id,
+                worksheet_document_ids=worksheet_document_ids,
             )
             response = call_model_window(
                 prompt,
                 config,
-                allowed_document_ids=allowed_document_ids,
+                allowed_document_ids=window_allowed_document_ids,
             )
             records.append(
                 {
+                    "chapter_document_id": window.chapter_document_id,
+                    "chapter_index": window.chapter_index,
                     "window_index": window.index,
                     "window_start_byte": window.start_byte,
                     "window_end_byte": window.end_byte,
@@ -1285,6 +1619,8 @@ def main() -> int:
             year=args.year,
             source_path=source_path,
             allowed_document_ids=allowed_document_ids,
+            chapters=chapters,
+            worksheet_document_ids=worksheet_document_ids,
         )
         print(f"wrote {output}; sections={len(frame.sections)}")
         return 0

@@ -265,6 +265,21 @@ when it is zero.
 **ARCHITECT'S LEG.** The live 1040 run on these windows. It needs egress, so it is John's to
 release and mine to verify.
 
+**CODEX STATUS (2026-08-17): IMPLEMENTED, PROVIDER-FREE FLOOR GREEN.** The segmenter now derives
+five deterministic form-context chapters, converts normalized parser offsets into raw-byte
+boundaries, and splits windows independently inside each chapter. Each live window is constrained
+to its chapter's form plus all booklet worksheets. A foreign form claim is rejected locally as
+`chapter_owner_disagreement`; worksheet ownership remains allowed. Schedule B and Schedule D
+remain one-chapter no-ops, and the stable fixture still reports 29 and 93 verified sections.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s124).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py pilot\test_model_instruction_segmenter_m20_s124.py tests\test_instruction_sections_m20.py -q` -> **38 passed, 1 warning in 2.29s**.
+
+RAN: `.venv\Scripts\python.exe -m py_compile pilot\model_instruction_segmenter.py pilot\test_model_instruction_segmenter_m20_s124.py` -> **passed**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean**.
+
+NOT RUN: live 1040 model leg - provider egress is the Architect's leg.
+
 ## Open for Architect
 
 Nothing open. Raise items here.
