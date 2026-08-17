@@ -21,8 +21,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. M20-S120 is accepted; the measurement line is closed and the fork below reverses the
-direction chosen on 2026-08-17, so it is his call. Nothing is specced.**
+**BALL: CODEX. M20-S121 is specced below - model-owned instruction segmentation, cell-naive, as a
+pilot.**
+
+**JOHN RULED THE FORK, 2026-08-17: THE MATCHER GOES MODEL-OWNED, AND THE MODEL MUST BE NAIVE ABOUT
+THE CELLS.** He raised the objection that decides the design: *"I'm afraid to give a model too much
+if it is to pick out the instructions. We have the example of line 24 referencing line 22 and the
+instructions for line 22 get jammed in."* **Asking a model for one cell's instruction is a question
+with a demand in it. Asking it to describe a document's sections is not.** So the model segments the
+booklet, never sees a cell, and code does the join. **This is also the boundary John set on
+2026-08-02** - the form face is exact, the instruction pages are loose, the AI reconciles.
+
+**THE DETERMINISTIC MATCHER LINE IS CLOSED. Five rounds, S116 through S120, and every one found the
+previous one's blind spot** - cross-form `Line 9`, multi-line headings, nested duplicates, worksheet
+row numbers read as form lines. **Those are all semantics a person reads instantly and a heading
+parser cannot. Do not spec another one.** The topic-organised booklets settle it: `schedule_1a`'s 48
+cells and `schedule_b`'s 8 have no line token to match and **no deterministic matcher can ever
+reach them.**
 
 **M20-S120 IS ACCEPTED (`e2294b8`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.** I re-tiled
 every one of S119's **56** parent spans from the artifact myself: the **414** split rows are
@@ -120,56 +135,103 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**NONE IN FLIGHT. S120 CLOSED THE MEASUREMENT LINE AND ITS ANSWER CHANGES THE DIRECTION JOHN CHOSE
-ON 2026-08-17. THAT FORK IS BELOW AND IT IS HIS.**
+**M20-S121 SPECCED BY ARCHITECT (2026-08-17). MODEL-OWNED INSTRUCTION SEGMENTATION, CELL-NAIVE, AS A
+PILOT.** **PILOT ROUND** - `pilot/` only, its own tests, **NO CLI wiring, NO production stage
+replaced, NO packet or prompt-template change in `tax_graph/`.** John's rule from 2026-08-06:
+exploratory work lives off to the side and gets lifted in once it wins.
 
-**THE CONCLUSION OF TWO MEASURE ROUNDS, STATED PLAINLY: THE EXTENTS ARE BARELY THE PROBLEM.**
-Of the 91 cells whose instruction the booklet demonstrably contains,
-- **10 are extent truncation** - S119, all `form_1116`. **Real, proven, and small.**
-- **The remaining 81 are dominated by content that is not organised by line at all**, which is a
-  vocabulary problem, not an extent problem. **We have been calling it a parser gap for four rounds.**
+**JOHN'S DECISION, 2026-08-17, AND IT IS THE DESIGN.** *"I'm afraid to give a model too much if it is
+to pick out the instructions. We have the example of line 24 referencing line 22 and the
+instructions for line 22 get jammed in. Maybe we use AI to break up the instructions into sections
+and then into lines? If it is naive about the cells, perhaps we can shortcircuit the problem of this
+digging deeper when we don't want it."*
 
-**THE RECOVERY RANKING DOES NOT SURVIVE CONTACT WITH THE SOURCE, AND I CHECKED ITS BEST ROW.**
-S120's largest group is *"Instructions for Schedule 1-A"*, L1, **48 cells, scope `all_form_cells`** -
-the single most valuable-looking row in the artifact. **I read the chapter: 53,340 bytes,
-29 headings, and ZERO of them name a line.** They are `Part I`, `Part II`, `Part III`, `Part IV`,
-*"Modified Adjusted Gross Income (MAGI) Amount"*, *"No Tax on Tips"*, *"Qualified Tips"*.
-**Sectioning that chapter would mint 29 sections that own no line and attach nothing to the 48
-cells.** `schedule_b` is the same shape: 13,573 bytes, 12 headings, **0 naming a line**,
-`Part I. Interest` and friends.
+**THE PRINCIPLE, AND EVERY ITEM BELOW SERVES IT: THE MODEL NEVER LEARNS THAT A CELL NEEDS AN
+ANSWER.** *"What is the instruction for line 24?"* carries a demand, and the nearest plausible answer
+is the line 22 text that line 24 points at - **that is the wrong-owner defect this project already
+drove to zero once.** *"Read this booklet and describe its sections"* carries no demand. **The model
+is never shown the cell inventory, the outline, or the unmatched list.** A section that owns nothing
+owns nothing, and absence is an ordinary output rather than a failure to avoid.
 
-**S116 ALREADY SAID THIS AND I ROUTED AROUND IT FOR FOUR ROUNDS.** Its own spec: *"`schedule_1a`
-(0 of 48) and `schedule_b` (0 of 8) have zero attachment because their booklets organise by Part and
-topic and never name a line. Nothing to own. Report it; do not fix it here."* **That was correct,
-and every round since has measured its way back to it.**
-
-**THE REST OF THE RANKING RESTS ON A PREMISE I WROTE AND SHOULD NOT HAVE.** The tail is worksheet
-headings - *"Foreign Earned Income Tax WorksheetLine 7"* (10 cells), *"Capital Loss Carryover
-WorksheetLines 6 and 14"* (7), *"Qualified Dividends and Capital Gain Tax WorksheetLine 16"* (3) -
-attributed by scanning line tokens out of span text. **Opened end to end: the Qualified Dividends
-worksheet heading, whose body says *"See the earlier instructions for line 16"*, is attributed to
-line 24 of `form_1040`, `schedule_1` AND `schedule_1a` - three documents, one heading, no document
-scope.** A worksheet's internal row numbers are being read as form line anchors.
-**THIS IS THE S116 RULING BEING BROKEN BY THE ARCHITECT'S OWN SPEC TWO ROUNDS AFTER PINNING IT IN
-`../AGENTS.md`.** S120 implemented what I asked; I asked it to treat `governs` - a token scan - as
-ownership. **`governs` is a candidate list. It is not an owner and must never again be used as one.**
+**WHY THIS IS CHEAP: THE SEAM ALREADY EXISTS.** `instruction_sections` is already this artifact -
+sections with `document_id`, `line_tokens`, and byte locators - merely built by a deterministic
+heading parser. **The pilot emits the SAME frame shape.** The span projection
+(`_spans_for_instruction_frame`) and the join (`instruction_span_ids_for_line`) are untouched, which
+is what makes this one stage rather than a redesign, **and what makes the A/B honest.**
 
 ---
 
-**THE FORK, AND IT IS JOHN'S BECAUSE IT REVERSES THE DIRECTION HE PICKED.**
+### Item 1 - THE SEGMENTER, IN `pilot/`
 
-1. **THE TOPIC-ORGANISED MECHANISM.** Give instruction ownership a second vocabulary - Part, topic,
-   heading-governs-a-range-of-lines - so booklets that never print a line number can attach at all.
-   **56 cells sit behind it (`schedule_1a` 48, `schedule_b` 8), it is the largest proven block, and
-   it has been deferred at S116, S117, S118 and S120.** **Architect's recommendation.**
-2. **`form_1116`'s 10 truncations.** Proven, small, mechanical. **Cheap enough to ride along with
-   whatever else is chosen rather than own a round.**
-3. **Re-attribute the 81 with document scope** before anything else - redo S120's join through
-   `instruction_span_ids_for_line` semantics instead of `governs`. **Honest, but it is a THIRD
-   measure round and I do not recommend it**; the two blocks above are already proven and are enough
-   work to be getting on with.
+One pass per booklet. Input: the acquired text and nothing else. Output: the frame shape already in
+use - per section a byte range, heading, level, `document_id`, and what it governs.
 
-**WHAT I AM NOT PROPOSING: another census.** Two measure rounds is the budget and it is spent.
+**THE 1040 BOOKLET IS 683,265 BYTES AND WILL NOT FIT IN ONE CALL. WINDOWING IS PART OF THE ROUND,
+NOT AN AFTERTHOUGHT.** Window it, overlap the windows, and reconcile sections that straddle a seam.
+**Byte conservation is what proves the seams are right** - see the floor.
+
+**`governs` IS TIED TO THE SECTION'S OWN HEADING AND SCOPE, NEVER TO A MENTION IN ITS BODY.** This is
+the failure that has now appeared three times - S116's cross-form `Line 9`, S120's worksheet row
+numbers read as form lines, and the line 24 / line 22 case John names. **Say so in the prompt, and
+make the scorer measure it.**
+
+**A SECTION MAY GOVERN WITHOUT A LINE NUMBER.** *"Part I. Interest"* governs Schedule B's interest
+lines and prints no line anywhere. **This is the whole reason the deterministic matcher can never
+finish the job** - `schedule_1a` 48 cells and `schedule_b` 8. The frame must be able to express it.
+
+### Item 2 - THE DETERMINISTIC VERIFIER, AND IT IS NOT OPTIONAL
+
+**The model chooses; the machine proves.** For every section the model emits:
+- **its byte range binds to real text in the acquired file**, and the recorded heading matches what
+  is actually at that offset;
+- **nothing is invented** - no section text that is not a substring of the source;
+- **the sections tile the booklet** under the same byte-conservation rule S119 and S120 already
+  enforce: claimed once, unclaimed, or overlapping, summing to file size.
+
+**Reuse `pilot/instruction_extent_census.py` for this rather than writing a third implementation.**
+
+### Item 3 - THE A/B AGAINST THE PARSER, SCORED ON THE CENSUS WE ALREADY BUILT
+
+Run both segmenters over the same booklets and score both the same way:
+- **cells that gain a correctly-owned instruction**, judged against
+  `m20_s116_instruction_reconciliation.yaml`;
+- **cells that gain a WRONG owner** - **this is the number that decides the round**, and the line 24
+  / line 22 shape is what it is looking for;
+- **`schedule_b`'s 8 and `schedule_1a`'s 48**, which the parser provably cannot reach.
+
+---
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not show the model any cell, outline, address, or unmatched list.** If the segmenter's input
+  contains anything derived from the forms, the round is void. **This is the round's whole thesis.**
+- **Do not replace, wire, or call the production segmenter.** `tax_graph/extract/` is read-only here
+  except as an import.
+- **Do not tune the prompt against the answer.** Score, report, stop. **A prompt edited until the
+  census score improves is a prompt fitted to 481 cells and it will not generalise.**
+- **Do not floor this round on how many cells get attached.** **THE RULE COUNT LESSON APPLIES: a
+  count is not a quality metric and has already been an unsatisfiable floor six times.**
+
+**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
+- **The segmenter runs from a RECORDED response fixture with no network**, so every test and the
+  whole floor is satisfiable in your sandbox. **The live run is the ARCHITECT's leg** - I have egress
+  and will run it. **A floor that needs a model call is mis-specced; say so instead of guessing.**
+- **The verifier rejects a fabricated section.** Prove it: feed a section whose range does not match
+  its text and show the verifier failing. **A verifier that has never failed is not evidence.**
+- **Byte conservation holds on the model's frame** exactly as it does on the parser's, asserted per
+  booklet, including across window seams.
+- **The A/B scorer runs on both segmenters from fixtures and reports both directions** - gained and
+  wrongly-owned - **per booklet, never as one total.**
+- **The prompt is checked in and readable**, and the round reports what it says about `governs`.
+- **`tools/check_ascii.py` OK**, `git diff --check` clean. Targeted tests only; pre-create your
+  `PYTEST_DEBUG_TEMPROOT` directory.
+
+**THE ARCHITECT'S LEG, STATED SO IT IS NOT DUPLICATED.** I run the live segmentation on **two
+booklets first - `instructions_schedule_b_2025` (13,573 bytes, topic-organised, 8 cells the parser
+cannot reach) and `instructions_schedule_d_2025` (line-organised control)** - and report the A/B.
+**Blast radius, not the corpus.** The 1040 booklet and its windowing come after those two land.
+
+**OUT OF SCOPE.** Lifting the pilot into the pipeline - **that is the round after this one, and only
+if it wins.** `form_1116`'s 10 truncations. Routing. The `filer_entry` taxonomy. The 4 ambiguities.
 
 ## Open for Architect
 
