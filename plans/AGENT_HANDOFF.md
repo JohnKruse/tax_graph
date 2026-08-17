@@ -21,7 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT. M20-S118 is accepted; the next round is not specced yet.**
+**BALL: CODEX. M20-S119 is specced below - measure what the section extents leave on the floor.
+John chose extent repair, and chose to measure first (2026-08-17).**
 
 **M20-S118 IS ACCEPTED (`3181169` + `a4cd008`, Architect, 2026-08-17), VERIFIED BY RUNNING.**
 Recomputed independently rather than read off the report: the three named cells behave exactly as
@@ -240,56 +241,97 @@ mechanism under it is right.**
 
 ## Current round
 
-**NONE IN FLIGHT. The next round is not specced; the finding below is what it should be built on,
-and it wants John's read on sequencing first.**
+**M20-S119 SPECCED BY ARCHITECT (2026-08-17). MEASURE WHAT THE SECTION EXTENTS LEAVE ON THE FLOOR.
+DO NOT REPAIR ANYTHING.** **MEASURE ROUND** - deterministic, read-only over acquired text.
+**NO model call. NO prompt, schema, packet, or extent change. NO parser fix.** John chose this line
+and chose to measure first (2026-08-17).
 
-**THE FINDING: `STUB SECTION` IS LAUNDERING A PARSER TRUNCATION, AND IT IS PROBABLY THE ROOT OF THE
-91 PARSER GAPS (Architect, 2026-08-17, opened end to end).**
+**THE TARGET STATE, IN ONE SENTENCE.** *Every byte of an acquired instruction booklet is either
+claimed by exactly one section or reported as unclaimed with the reason it is unclaimed* - so the
+next round can be specced against a census instead of an anecdote.
 
-`schedule_1` line 1 is the worked case. Its instruction section `...0060` is **13 bytes**:
-`'#### Line 1\n\n'`, locator lines 5343-5344, offsets 512124-512137 of
-`instructions_form_1040_2025`. **S118 typed it `STUB SECTION` and dropped it from the packet, which
-is correct for the packet and wrong as a name.** Reading the raw booklet at 512137 - the very next
-byte - gives:
+**THE ANECDOTE THIS REPLACES, and it is only one instance.** `schedule_1` line 1's section `...0060`
+is **13 bytes** (`'#### Line 1\n\n'`, offsets 512124-512137). The actual instruction begins at the
+very next byte - *"#### Taxable Refunds, Credits, or Offsets of State and Local Income Taxes"*, TIP
+and all - and **2,560 bytes sit unclaimed before the next section starts.** The cell's only evidence
+is a 30KB worksheet and micro-extraction fails on a quote that was never in the packet.
 
-```
-#### Taxable Refunds, Credits, or Offsets of State and Local Income Taxes
-**TIP** None of your refund is taxable if, in the year you paid the tax, you either (a) didn't
-itemize deductions, or (b) elected to deduct state and local general sales taxes instead ...
-```
+**THE PRINCIPLE IS ALREADY PINNED, DO NOT REDESIGN IT.** `../docs/source-extents.md`:
+*"Every chunk of the source is claimed by exactly one owner, and a chunk that is not a numbered row
+says what it is and what it governs."* **This round measures how far the instruction booklets are
+from that, and nothing more.**
 
-**That is the actual Schedule 1 line 1 instruction, and the section extent stopped at its heading.**
-The section is not empty; it is TRUNCATED. So the cell's only surviving evidence is `...0068`, the
-**30,083-byte** State and Local Income Tax Refund Worksheet, and micro-extraction fails
-`quote does not match the supplied form or instruction evidence` - the model has a worksheet and no
-instruction.
+---
 
-**S118 IS NOT THE CAUSE AND DROPPING THE 13 BYTES WAS RIGHT** - a heading with no body cannot supply
-a quote. **What S118 got wrong is the LABEL**, and the label is the dangerous part: `STUB SECTION`
-reads as an accepted terminal state, so a truncation that should be repaired is now filed as a
-category that needs nothing. **That is precisely the laundering the S116 report was built to
-prevent, reappearing one level up.**
+### Item 1 - THE BYTE CENSUS, PER BOOKLET
 
-**WHY THIS IS PROBABLY THE BIG ONE.** The report's largest actionable bucket is
-**91 `CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT`** - by construction, cells whose instruction
-the booklet demonstrably contains and the parser did not attach. **A truncation that keeps the
-heading and drops the body would land in exactly that bucket**, and would also explain
-`form_6251` 33 and `schedule_d` 18. **Measure that before speccing a fix**: for every stub and every
-unmatched cell, read the raw text after the section's end offset and report how much body was left
-behind. **Do not assume the shape from this one instance - open several.**
+For every acquired instruction booklet, walk the raw text once and attribute every byte to the
+section whose locator range covers it. **Report, at a named checked-in path:**
+- **bytes claimed by exactly one section**,
+- **bytes claimed by NONE**, as explicit ranges,
+- **bytes claimed by MORE THAN ONE.** Overlap is real and I have an instance: `form_1040` section
+  `...0010` ends **89 bytes past** the start of the section after it. **Report overlaps; do not
+  resolve them.**
 
-**THE SEQUENCING QUESTION FOR JOHN, and it is a real fork.**
-1. **Extent repair** - fix the parser so line sections carry their bodies. Largest reach, touches
-   acquisition, and `../docs/source-extents.md` already pins direction for it.
-2. **Cell-loop concurrency** - the corpus is latency-bound on a serial per-cell loop while
-   `extraction.concurrency` already exists and only `background.py` reads it. **Does not improve
-   quality at all**; makes every future round cheaper to verify.
-3. **The 4 surviving ambiguities** - three headings that name another form's line
-   (*"Taxable Dependent Care Benefits From Form 2441, Line 26"* claiming 1040 line 26) plus a
-   `2i`/`2I` case-fold collision on `form_6251`. **Real, small, and 4 cells.**
+Totals must reconcile: claimed + unclaimed + overlap-adjusted == file size, asserted per booklet.
 
-**The Architect's recommendation is 1, measured first per the paragraph above.** 3 is a footnote and
-2 is a convenience.
+### Item 2 - CLASSIFY EACH UNCLAIMED SPAN, AND THIS IS WHERE THE ROUND IS WON OR LOST
+
+**A naive "bytes until the next section" number is WRONG and I have already produced it by mistake.**
+`form_1040` section `...0048` (line 27c) shows **138,288** bytes before the next section - because
+what follows is the *"Definitions and Special Rules"* chapter, which is nobody's line body. **A
+number built that way will be enormous, meaningless, and will get a round specced against it.**
+
+**Classify by the HEADING HIERARCHY in the raw text, which is the same rule
+`instruction_ownership.py` already documents** - a heading owns its body through deeper headings
+until the next heading at the same or a higher level:
+- **`TRUNCATED_BODY`** - the unclaimed span sits between a section's end and the next heading **at
+  the same or a higher level than that section's own heading**. **This is the actionable bucket**
+  and `schedule_1` `...0060` is its type specimen.
+- **`OTHER_SECTION_TERRITORY`** - the span is governed by a different heading that simply has no
+  section. Report which heading.
+- **`NON_LINE_REGION`** - front matter, chapters, tables, appendices; text outside any line-heading
+  hierarchy. **Report the size; it is not a defect.**
+
+### Item 3 - JOIN THE CENSUS TO THE CELLS THAT ARE HURTING
+
+For every cell in `m20_s116_instruction_reconciliation.yaml` bucketed
+`CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT` (the largest actionable bucket), and for every
+section S118 typed `STUB SECTION`, **state whether a `TRUNCATED_BODY` span sits where that cell's
+instruction should be, and how big it is.** **That join is the deliverable** - it is what turns
+"91 parser gaps" into a ranked, causal work list.
+
+---
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not repair a single extent, section, or packet.** Not one. **The moment this round edits the
+  parser it stops being a measurement and starts being an unreviewed fix.**
+- **Do not re-run the corpus or call a model.** This is deterministic over acquired text and the
+  checked-in report. **A measure round that needs egress is mis-specced - say so instead.**
+- **Do not rename or re-bucket anything in the S116/S117/S118 report.** Write a NEW artifact.
+- **Do not report a single headline number without its classification.** An unclassified total here
+  is worse than no total, for the `...0048` reason above.
+
+**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
+- **The census reconciles per booklet**: every byte is claimed once, unclaimed, or overlapped, and
+  the three sum to the file size. **Assert it for every acquired booklet, not a sample.**
+- **`schedule_1` `...0060` is classified `TRUNCATED_BODY`**, its unclaimed span starts at 512137,
+  and the report names the heading that follows. **Name what it found, do not assert my number** -
+  if you measure something other than 2,560 bytes, **your measurement wins and say so.**
+- **`form_1040` `...0048` is NOT classified `TRUNCATED_BODY`.** It is the negative case that proves
+  the classifier is doing hierarchy and not arithmetic.
+- **The overlap at `form_1040` `...0010` appears in the overlap bucket.**
+- **Every `STUB SECTION` and every `BOOKLET MENTIONS IT` cell gets a row in the item 3 join**, even
+  when the answer is "no truncated span found" - **absence is a result and must be visible.**
+- **`tools/check_ascii.py` OK**, `git diff --check` clean.
+- **Targeted tests only; pre-create your `PYTEST_DEBUG_TEMPROOT` directory.** No corpus leg on this
+  round for either of us - **there is nothing for a re-derive to show.**
+
+**OUT OF SCOPE.** The fix. The `filer_entry` reason taxonomy. Routing. The topic-organised booklets.
+The table-column vocabulary. The 4 surviving ambiguities. Cell-loop concurrency.
+
+**WHAT THE NEXT ROUND WILL BE, so you can see where this lands:** the extent repair itself, specced
+off this census and ranked by the item 3 join. **Do not start it here.**
 
 ## Open for Architect
 
