@@ -13,7 +13,7 @@ govern a group of lines without printing a line number in its own heading.
 from __future__ import annotations
 
 import argparse
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 import json
 from pathlib import Path
@@ -901,44 +901,60 @@ def _reconcile_window_sections(
     *,
     allowed_document_ids: frozenset[str] | None,
 ) -> tuple[
-    dict[tuple[int, str], ModelSection],
+    dict[int, ModelSection],
     int,
     int,
     list[dict[str, Any]],
 ]:
     """Reconcile duplicate observations and retain only source-backed claims.
 
-    Ownership conflicts retain the previous fail-closed behavior when a manifest
-    vocabulary is supplied.  A conflicting ``governs`` claim is resolved from
-    window context instead: the observation with the most trailing context wins,
-    while ties and all-edge observations are rejected as ambiguous.
+    A source start byte identifies one section, even when overlapping windows
+    preserve different heading markup.  The longest source-backed normalized
+    heading wins, with the lowest window index breaking ties.  Ownership
+    conflicts are rejected section-locally.  A conflicting ``governs`` claim is
+    resolved from window context instead: the observation with the most trailing
+    context wins, while ties and all-edge observations are rejected as ambiguous.
     """
-    grouped: dict[tuple[int, str], list[tuple[ModelSection, SourceWindow]]] = {}
+    grouped: dict[int, list[tuple[ModelSection, SourceWindow]]] = {}
     for section, window in parsed:
-        grouped.setdefault((section.start_byte, section.heading), []).append(
-            (section, window)
-        )
+        grouped.setdefault(section.start_byte, []).append((section, window))
 
-    unique: dict[tuple[int, str], ModelSection] = {}
+    unique: dict[int, ModelSection] = {}
     owner_conflict_count = 0
     governs_conflict_count = 0
     rejected_sections: list[dict[str, Any]] = []
-    for key, claims in grouped.items():
+    for start_byte, claims in grouped.items():
         first_section = claims[0][0]
+        heading_claim = min(
+            claims,
+            key=lambda item: (
+                -len(_normalize_heading_markup(item[0].heading)),
+                item[1].index,
+            ),
+        )
+        selected_heading = heading_claim[0].heading
         owner_conflicts = [
             section for section, _window in claims
             if section.document_id != first_section.document_id
         ]
-        if owner_conflicts and allowed_document_ids is not None:
-            raise ModelFrameVerificationError(
-                "overlapping windows disagree about document_id at "
-                f"{first_section.start_byte}"
+        if owner_conflicts:
+            owner_conflict_count += len(owner_conflicts)
+            rejected_sections.append(
+                {
+                    "start_byte": start_byte,
+                    "heading": selected_heading,
+                    "reason": "overlapping_document_id_conflict",
+                    "competing_claims": [
+                        _governs_claim(section, window)
+                        for section, window in claims
+                    ],
+                }
             )
-        owner_conflict_count += len(owner_conflicts)
+            continue
 
         governs_values = {section.governs for section, _window in claims}
         if len(governs_values) <= 1:
-            unique[key] = first_section
+            unique[start_byte] = replace(first_section, heading=selected_heading)
             continue
 
         governs_conflict_count += 1
@@ -976,7 +992,7 @@ def _reconcile_window_sections(
             rejected_sections.append(
                 {
                     "start_byte": first_section.start_byte,
-                    "heading": first_section.heading,
+                    "heading": selected_heading,
                     "reason": "ambiguous_governs_conflict",
                     "ambiguity": ambiguity,
                     "competing_claims": [
@@ -986,7 +1002,7 @@ def _reconcile_window_sections(
                 }
             )
             continue
-        unique[key] = winner[0]
+        unique[start_byte] = replace(winner[0], heading=selected_heading)
 
     return (
         unique,

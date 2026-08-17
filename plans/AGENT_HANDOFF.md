@@ -312,6 +312,22 @@ cheap now and expensive later.
 
 **ARCHITECT'S LEG.** None outstanding. The run is bought and recorded; everything above replays.
 
+**CODEX STATUS (2026-08-18): M20-S126 IMPLEMENTED (`3df656b`).** `_reconcile_window_sections` now keys
+duplicate claims on `start_byte` alone, chooses the longest source-backed normalized heading with
+the lowest window index as tie-break, and rejects grouped `document_id` disagreements
+section-locally. `verify_model_sections` is unchanged. Added
+`pilot/test_model_instruction_segmenter_m20_s126.py` with the live 1040 replay (including byte
+140474) and a synthetic owner-conflict case. No prompt, chapter, window, heading-repair, or
+recording changes; no provider call.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s126.py -q` -> **2 passed, 1 warning in 1.03s**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py pilot\test_model_instruction_segmenter_m20_s124.py pilot\test_model_instruction_segmenter_m20_s126.py tests\test_instruction_sections_m20.py -q` -> **40 passed, 1 warning in 3.16s**.
+RAN: `.venv\Scripts\python.exe -m py_compile pilot\model_instruction_segmenter.py pilot\test_model_instruction_segmenter_m20_s126.py` -> passed.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check -- pilot/model_instruction_segmenter.py pilot/test_model_instruction_segmenter_m20_s126.py` -> clean.
+The pytest warning is the known permission failure writing the pre-existing `.pytest_cache`; the
+short temp override was used. Full suite and provider leg were not run.
+
 ## Open for Architect
 
 Nothing open. Raise items here.
