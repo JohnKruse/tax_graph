@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S121 is specced below - model-owned instruction segmentation, cell-naive, as a
-pilot.**
+**BALL: CODEX. M20-S121 goes back - the mechanism is right, two verification
+assumptions are contradicted by the first live run, and the real recordings are now checked in.**
 
 **JOHN RULED THE FORK, 2026-08-17: THE MATCHER GOES MODEL-OWNED, AND THE MODEL MUST BE NAIVE ABOUT
 THE CELLS.** He raised the objection that decides the design: *"I'm afraid to give a model too much
@@ -135,126 +135,89 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S121 SPECCED BY ARCHITECT (2026-08-17). MODEL-OWNED INSTRUCTION SEGMENTATION, CELL-NAIVE, AS A
-PILOT.** **PILOT ROUND** - `pilot/` only, its own tests, **NO CLI wiring, NO production stage
-replaced, NO packet or prompt-template change in `tax_graph/`.** John's rule from 2026-08-06:
-exploratory work lives off to the side and gets lifted in once it wins.
+**M20-S121 IS NOT ACCEPTED. THE MECHANISM IS BUILT AND THE PROVIDER-FREE LEG IS GREEN, BUT THE FIRST
+LIVE RUN CONTRADICTS TWO OF ITS VERIFICATION ASSUMPTIONS.** Codex's work is sound and the design is
+right; **the fixtures it had to invent encoded assumptions the real model does not share.** Finish
+it against the real recordings, now checked in.
 
-**JOHN'S DECISION, 2026-08-17, AND IT IS THE DESIGN.** *"I'm afraid to give a model too much if it is
-to pick out the instructions. We have the example of line 24 referencing line 22 and the
-instructions for line 22 get jammed in. Maybe we use AI to break up the instructions into sections
-and then into lines? If it is naive about the cells, perhaps we can shortcircuit the problem of this
-digging deeper when we don't want it."*
+**THE HEADLINE, AND IT IS GOOD NEWS: THE APPROACH REACHES WHAT THE PARSER STRUCTURALLY CANNOT.**
+Live on `instructions_schedule_b_2025`, where the deterministic parser finds **0 sections and 0 of 8
+cells**, the model returned **31 sections and found the line instructions** - lines **1, 3, 5, 7a,
+7b**. It found them because in that booklet the line instructions are **bold run-in labels inside a
+paragraph** (`**Line 1.** Report on line 1 all of your taxable interest...`), **not headings.** No
+heading parser can ever see those. **This is the case John chose this direction for, and it works.**
 
-**THE PRINCIPLE, AND EVERY ITEM BELOW SERVES IT: THE MODEL NEVER LEARNS THAT A CELL NEEDS AN
-ANSWER.** *"What is the instruction for line 24?"* carries a demand, and the nearest plausible answer
-is the line 22 text that line 24 points at - **that is the wrong-owner defect this project already
-drove to zero once.** *"Read this booklet and describe its sections"* carries no demand. **The model
-is never shown the cell inventory, the outline, or the unmatched list.** A section that owns nothing
-owns nothing, and absence is an ordinary output rather than a failure to avoid.
-
-**WHY THIS IS CHEAP: THE SEAM ALREADY EXISTS.** `instruction_sections` is already this artifact -
-sections with `document_id`, `line_tokens`, and byte locators - merely built by a deterministic
-heading parser. **The pilot emits the SAME frame shape.** The span projection
-(`_spans_for_instruction_frame`) and the join (`instruction_span_ids_for_line`) are untouched, which
-is what makes this one stage rather than a redesign, **and what makes the A/B honest.**
+**AND IT DID NOT MAKE THE MISTAKE JOHN FEARED.** On `instructions_schedule_d_2025` the model claimed
+line tokens up to **47**, which Schedule D does not have. **Those are worksheet rows, and the model
+attributed them to the worksheet, not to Schedule D** - `document_id: 'Schedule D Tax Worksheet'`
+on exactly the sections carrying 23-47. **The line-24-referencing-line-22 confusion did not happen.**
+Cell-naive segmentation appears to be doing the job it was chosen for.
 
 ---
 
-### Item 1 - THE SEGMENTER, IN `pilot/`
+### DEFECT 1 - `document_id` IS FREE TEXT, AND THE JOIN CANNOT USE IT
 
-One pass per booklet. Input: the acquired text and nothing else. Output: the frame shape already in
-use - per section a byte range, heading, level, `document_id`, and what it governs.
+Across 93 live Schedule D sections the model returned **six different spellings of the owner**:
+`instructions_schedule_d_2025` (45), `schedule_d_2025` (28), `Schedule D (Form 1040)` (13),
+`Schedule D Tax Worksheet` (4), `Schedule D` (2), `unrecaptured_section_1250_gain_worksheet_2025`
+(1). **The model knows who owns what; it is saying so in English.**
 
-**THE 1040 BOOKLET IS 683,265 BYTES AND WILL NOT FIT IN ONE CALL. WINDOWING IS PART OF THE ROUND,
-NOT AN AFTERTHOUGHT.** Window it, overlap the windows, and reconcile sections that straddle a seam.
-**Byte conservation is what proves the seams are right** - see the floor.
+**Constrain `document_id` to the manifest's document ids** - pass the valid ids for that booklet in
+the prompt and reject anything outside the set. **This does NOT break cell-naivety**: a document id
+is document identity, not a cell, an outline, an address or an unmatched list. **Note that
+`instructions_schedule_d_2025` is the SOURCE, never an owner**; that value must be rejected outright.
 
-**`governs` IS TIED TO THE SECTION'S OWN HEADING AND SCOPE, NEVER TO A MENTION IN ITS BODY.** This is
-the failure that has now appeared three times - S116's cross-form `Line 9`, S120's worksheet row
-numbers read as form lines, and the line 24 / line 22 case John names. **Say so in the prompt, and
-make the scorer measure it.**
+### DEFECT 2 - THE VERIFIER ASSUMES HEADINGS ARE MARKDOWN HEADING LINES
 
-**A SECTION MAY GOVERN WITHOUT A LINE NUMBER.** *"Part I. Interest"* governs Schedule B's interest
-lines and prints no line anywhere. **This is the whole reason the deterministic matcher can never
-finish the job** - `schedule_1a` 48 cells and `schedule_b` 8. The frame must be able to express it.
+`verify_model_sections` compares the response heading against the whole source line and fails closed.
+Two ways that fires on real output:
+- **Markup**: model returns `Page 1`, source line is `# Page 1`. **Cosmetic** - and note the
+  PRODUCTION frame stores headings without the hashes, so the model matches our own convention and
+  the pilot is stricter than the pipeline.
+- **Run-in labels**: model returns `Line 1.`, source line is the entire paragraph
+  `**Line 1.** Report on line 1 all of your taxable interest...`. **This is the Schedule B case and
+  it is the whole point of the round.**
 
-### Item 2 - THE DETERMINISTIC VERIFIER, AND IT IS NOT OPTIONAL
+**Keep the anti-fabrication property** - the heading must still be found at that byte - **but match
+it as a prefix of the source line after normalising markup, not as whole-line equality.** A section
+whose heading is not present at its start byte must still fail.
 
-**The model chooses; the machine proves.** For every section the model emits:
-- **its byte range binds to real text in the acquired file**, and the recorded heading matches what
-  is actually at that offset;
-- **nothing is invented** - no section text that is not a substring of the source;
-- **the sections tile the booklet** under the same byte-conservation rule S119 and S120 already
-  enforce: claimed once, unclaimed, or overlapping, summing to file size.
+### DEFECT 3 - THE FIXTURES WERE HAND-AUTHORED, AND THAT IS THE ARCHITECT'S DEFECT, NOT CODEX'S
 
-**Reuse `pilot/instruction_extent_census.py` for this rather than writing a third implementation.**
+My floor said *"runs from a RECORDED response fixture"* and gave it to an agent with **no egress and
+therefore no way to record anything.** Codex wrote plausible responses by hand and was transparent
+about the live leg being mine - **but hand-written fixtures test the author's assumptions, which is
+exactly why 11 tests passed while the first live call failed on byte 0.** The reported
+fixture scores (Schedule B model 7, gained 7) **are not evidence about the model and must not be
+quoted.**
 
-### Item 3 - THE A/B AGAINST THE PARSER, SCORED ON THE CENSUS WE ALREADY BUILT
-
-Run both segmenters over the same booklets and score both the same way:
-- **cells that gain a correctly-owned instruction**, judged against
-  `m20_s116_instruction_reconciliation.yaml`;
-- **cells that gain a WRONG owner** - **this is the number that decides the round**, and the line 24
-  / line 22 shape is what it is looking for;
-- **`schedule_b`'s 8 and `schedule_1a`'s 48**, which the parser provably cannot reach.
+**THE REAL RECORDINGS ARE NOW CHECKED IN:** `pilot/fixtures/m20_s121_live_recorded_responses.json`
+- live `openai/gpt-5.6-luna`, one call per window, `prompts/instruction_segmenter.md` unmodified,
+2 windows / 31 sections for Schedule B and 9 windows / 93 sections for Schedule D, each with its
+source hash. **Build the round against these. Delete the hand-authored fixtures** - keeping both
+invites scoring against the wrong one.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not show the model any cell, outline, address, or unmatched list.** If the segmenter's input
-  contains anything derived from the forms, the round is void. **This is the round's whole thesis.**
-- **Do not replace, wire, or call the production segmenter.** `tax_graph/extract/` is read-only here
-  except as an import.
-- **Do not tune the prompt against the answer.** Score, report, stop. **A prompt edited until the
-  census score improves is a prompt fitted to 481 cells and it will not generalise.**
-- **Do not floor this round on how many cells get attached.** **THE RULE COUNT LESSON APPLIES: a
-  count is not a quality metric and has already been an unsatisfiable floor six times.**
+- **Do not tune the prompt to make the numbers better.** Fix the two defects, rescore, report.
+  **A prompt fitted to two booklets will not survive the third.**
+- **Do not relax the verifier past "the heading is present at that byte".** Fabrication detection is
+  the reason the model is allowed to choose at all.
+- **Do not show the model cells, outlines, addresses or unmatched lists.** Document ids are allowed
+  and nothing else is.
 
-**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
-- **The segmenter runs from a RECORDED response fixture with no network**, so every test and the
-  whole floor is satisfiable in your sandbox. **The live run is the ARCHITECT's leg** - I have egress
-  and will run it. **A floor that needs a model call is mis-specced; say so instead of guessing.**
-- **The verifier rejects a fabricated section.** Prove it: feed a section whose range does not match
-  its text and show the verifier failing. **A verifier that has never failed is not evidence.**
-- **Byte conservation holds on the model's frame** exactly as it does on the parser's, asserted per
-  booklet, including across window seams.
-- **The A/B scorer runs on both segmenters from fixtures and reports both directions** - gained and
-  wrongly-owned - **per booklet, never as one total.**
-- **The prompt is checked in and readable**, and the round reports what it says about `governs`.
-- **`tools/check_ascii.py` OK**, `git diff --check` clean. Targeted tests only; pre-create your
-  `PYTEST_DEBUG_TEMPROOT` directory.
+**THE FLOOR.**
+- **The live recordings verify end to end** - both booklets, byte conservation holding, no manual
+  edits to the recordings.
+- **A fabricated section still fails**, proven by a test.
+- **A `document_id` outside the manifest set fails**, proven by a test, `instructions_*` included.
+- **The A/B is rescored on the live recordings and reported per booklet**, both directions, gained
+  and wrongly-owned. **Report what it is; do not floor on the number.**
+- **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**THE ARCHITECT'S LEG, STATED SO IT IS NOT DUPLICATED.** I run the live segmentation on **two
-booklets first - `instructions_schedule_b_2025` (13,573 bytes, topic-organised, 8 cells the parser
-cannot reach) and `instructions_schedule_d_2025` (line-organised control)** - and report the A/B.
-**Blast radius, not the corpus.** The 1040 booklet and its windowing come after those two land.
-
-**OUT OF SCOPE.** Lifting the pilot into the pipeline - **that is the round after this one, and only
-if it wins.** `form_1116`'s 10 truncations. Routing. The `filer_entry` taxonomy. The 4 ambiguities.
-
-**CODEX STATUS (2026-08-17): IMPLEMENTED, PROVIDER-FREE LEG GREEN.** Added the isolated
-`pilot/model_instruction_segmenter.py` stage, source-only prompt, recorded Schedule B and
-Schedule D responses, strict byte/heading/text verification, overlapping-window reconciliation,
-and per-booklet A/B scoring. The prompt contains no cell inventory, outline, address, or unmatched
-list. The fixture-backed result is Schedule B: 8 cells, deterministic 0, model 7, gained 7,
-wrong owner 0; Schedule D: 24 cells, deterministic 11, model 11, gained 0, wrong owner 0.
-The scorer keeps the Schedule 1-A 48-cell denominator visible with parser reachability 0 in its
-focused guard. The live segmentation and live A/B on Schedule B and Schedule D are NOT RUN by
-Codex; they are the Architect leg specified above.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot/test_model_instruction_segmenter_m20_s121.py -q`
--> 11 passed, 1 warning in 0.84s.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s119.py -q`
--> 3 passed, 1 warning in 0.94s.
-
-RAN: `New-Item -ItemType Directory -Path .test_tmp_s121 -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s121).Path; .venv\Scripts\python.exe -m pytest pilot/test_instruction_parser.py -q`
--> 4 passed, 1 warning in 4.16s. The initial unqualified invocation hit the known stale
-shared-temp `PermissionError` during pytest setup; it was rerun with the fresh task-local root.
-
-RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
-RAN: `git diff --check` -> clean.
+**ARCHITECT'S LEG.** Re-running live after the fixes, and the 1040 booklet - **which needs
+chapter-scoped windows, not byte windows, and I owe that amendment; it is in Queued below.**
 
 ## Open for Architect
 
@@ -262,6 +225,14 @@ RAN: `git diff --check` -> clean.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+**CHAPTER-SCOPED WINDOWS FOR THE 1040 BOOKLET (Architect owes this, 2026-08-17).** 675,580 bytes,
+126 pages, four forms in one file. Byte windows can cut between `Instructions for Schedule 2` and its
+`Line 9` section, which reintroduces the S116 wrong-form defect at segmentation time. **The
+deterministic chapter split is the one part of the parser that has never failed** - 317 sections to
+four documents, 70/114/67/66 - so window on chapters and cross-check the model's `document_id`
+against the chapter a section physically sits in. Chapter sizes: 1040 252KB, Sch 1 48KB, Sch 2 19KB,
+Sch 3 13KB.
 
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
