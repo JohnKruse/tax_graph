@@ -21,8 +21,36 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S121 goes back - the mechanism is right, two verification
-assumptions are contradicted by the first live run, and the real recordings are now checked in.**
+**BALL: CODEX. M20-S121 IS ACCEPTED. M20-S122 is specced under Current round from live measurement:
+one reconciliation path, and a single bad section must stop killing a whole booklet.**
+
+**M20-S121 IS ACCEPTED (`faded97` + `119e88a` + `ad846d2`, Architect, 2026-08-17), VERIFIED BY
+RECOMPUTATION AND BY A LIVE RUN ON BOTH BOOKLETS.** I regrouped the raw recording myself without
+touching Codex's reconciler and reproduced its numbers exactly. **The headline is that the direction
+John chose is now proven end to end on the case it was chosen for:** `instructions_schedule_b_2025`,
+where the deterministic parser finds **0 sections and 0 of 8 cells**, segments live into **28
+sections and 6 of 8 cells correctly owned, 0 wrong owner, 0 rejected**, byte conservation holding to
+EOF, in the STRICT production path. Those line instructions are bold run-in labels inside a
+paragraph, which no heading parser can ever see.
+- **The governs reconciliation works live.** Schedule B **3** conflicts and Schedule D **4**, every
+  one resolved by the context tiebreak, **zero** rejected for ambiguity, both booklets tiling exactly.
+  The `SegmenterError: overlapping windows disagree about governs at 10062` class is gone.
+- **The manifest constraint killed the owner problem outright: `owner_conflict_count` is 0 on both
+  booklets live**, against 3 and 4 spelling conflicts in the old recording. Schedule B's 5
+  wrong-owner rows went to **0**.
+- **The model did NOT make the mistake John feared, and this is now measured, not hoped.** All **29**
+  Schedule D wrong-owner rows name one of the four WORKSHEETS - `schedule_d_tax_worksheet_2025` 20,
+  `unrecaptured_section_1250_gain_worksheet_2025` 6, `capital_loss_carryover_worksheet_2025` 2,
+  `28_rate_gain_worksheet_2025` 1 - and **not one names a foreign form.** Cell-naive segmentation
+  attributes worksheet rows to worksheets. **The 29 is a scorer denominator artifact, fixed in S122
+  item 4; do not read it as 29 wrong attributions.**
+
+**A RECORDING VERIFIES CODE PATHS AND NEVER MODEL BEHAVIOUR - THIS IS NOW THE THIRD TIME.** The
+checked-in S121 recording contains **zero** governs conflicts on either booklet, so the entire
+rework was covered only by synthetic tests until I ran it. S109 taught this with `production prompt
+differs from recorded prompt` on 19 of 20 cases. **Never accept a reconciliation change on replay
+evidence alone.** Related: seed 7 does NOT make this deterministic - Schedule D returned 93 raw
+sections recorded and **105** live.
 
 **JOHN RULED THE FORK, 2026-08-17: THE MATCHER GOES MODEL-OWNED, AND THE MODEL MUST BE NAIVE ABOUT
 THE CELLS.** He raised the objection that decides the design: *"I'm afraid to give a model too much
@@ -135,183 +163,87 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S121 IS NOT ACCEPTED. THE MECHANISM IS BUILT AND THE PROVIDER-FREE LEG IS GREEN, BUT THE FIRST
-LIVE RUN CONTRADICTS TWO OF ITS VERIFICATION ASSUMPTIONS.** Codex's work is sound and the design is
-right; **the fixtures it had to invent encoded assumptions the real model does not share.** Finish
-it against the real recordings, now checked in.
+**M20-S122: ONE RECONCILIATION PATH, AND A SINGLE BAD SECTION MUST STOP KILLING A BOOKLET.**
 
-**THE HEADLINE, AND IT IS GOOD NEWS: THE APPROACH REACHES WHAT THE PARSER STRUCTURALLY CANNOT.**
-Live on `instructions_schedule_b_2025`, where the deterministic parser finds **0 sections and 0 of 8
-cells**, the model returned **31 sections and found the line instructions** - lines **1, 3, 5, 7a,
-7b**. It found them because in that booklet the line instructions are **bold run-in labels inside a
-paragraph** (`**Line 1.** Report on line 1 all of your taxable interest...`), **not headings.** No
-heading parser can ever see those. **This is the case John chose this direction for, and it works.**
+S121's mechanism is accepted and works. **What is left is a defect in MY spec, not in Codex's
+build**: the pilot runs two different reconciliations, and the one that is verified is not the one
+that runs in production. Every item below is measured from my live run, not guessed.
 
-**AND IT DID NOT MAKE THE MISTAKE JOHN FEARED.** On `instructions_schedule_d_2025` the model claimed
-line tokens up to **47**, which Schedule D does not have. **Those are worksheet rows, and the model
-attributed them to the worksheet, not to Schedule D** - `document_id: 'Schedule D Tax Worksheet'`
-on exactly the sections carrying 23-47. **The line-24-referencing-line-22 confusion did not happen.**
-Cell-naive segmentation appears to be doing the job it was chosen for.
+**THE EVIDENCE, AND IT IS THE WHOLE ARGUMENT.** `build_model_frame` takes
+`drop_invalid_sections`. Replay passes **True** and lists a bad section under `rejected_sections`;
+the live CLI takes the **False** default and raises. **Three live Schedule D attempts, three
+different single sections, every one fatal:** byte 33024 `Mark-to-Market Election for Traders`,
+then byte 378 `What's New`, and the recording carries 33026 and 51283. Each time **one** proposal
+out of 93-105 discarded **91 verified sections that tile the source exactly.** That is the same
+wrong shape I already ruled against for `governs`, and it survives only because replay never
+executes the production branch.
 
----
+### ITEM 1 - DELETE `drop_invalid_sections`. THERE IS ONE PATH.
 
-### DEFECT 1 - `document_id` IS FREE TEXT, AND THE JOIN CANNOT USE IT
+The tolerant behaviour IS the behaviour. A section that cannot be bound is rejected and disclosed;
+the booklet still verifies and still tiles. **A replay that runs different code from production
+cannot predict production** - this is the third round to relearn it.
 
-Across 93 live Schedule D sections the model returned **six different spellings of the owner**:
-`instructions_schedule_d_2025` (45), `schedule_d_2025` (28), `Schedule D (Form 1040)` (13),
-`Schedule D Tax Worksheet` (4), `Schedule D` (2), `unrecaptured_section_1250_gain_worksheet_2025`
-(1). **The model knows who owns what; it is saying so in English.**
+### ITEM 2 - REPAIR THE OFF-BY-A-LINE POINTER BEFORE REJECTING IT
 
-**Constrain `document_id` to the manifest's document ids** - pass the valid ids for that booklet in
-the prompt and reject anything outside the set. **This does NOT break cell-naivety**: a document id
-is document identity, not a cell, an outline, an address or an unmatched list. **Note that
-`instructions_schedule_d_2025` is the SOURCE, never an owner**; that value must be rejected outright.
+**MEASURED, n=3 ACROSS TWO RUNS, AND THERE ARE ZERO FABRICATIONS.** In every unbacked proposal the
+heading text genuinely exists within 49 bytes and the model only mis-pointed the line boundary:
 
-### DEFECT 2 - THE VERIFIER ASSUMES HEADINGS ARE MARKDOWN HEADING LINES
+| claimed byte | heading | real byte | delta | intervening bytes |
+| --- | --- | --- | --- | --- |
+| 378 | `What's New` | 380 | +2 | `\r\n` |
+| 33026 | `Mark-to-Market Election for Traders` | 32984 | -42 | `## <heading>\r\n\r\n` |
+| 51283 | `Gain from an Installment Sale of QSB Stock` | 51234 | -49 | `## <heading>\r\n\r\n` |
 
-`verify_model_sections` compares the response heading against the whole source line and fails closed.
-Two ways that fires on real output:
-- **Markup**: model returns `Page 1`, source line is `# Page 1`. **Cosmetic** - and note the
-  PRODUCTION frame stores headings without the hashes, so the model matches our own convention and
-  the pilot is stricter than the pipeline.
-- **Run-in labels**: model returns `Line 1.`, source line is the entire paragraph
-  `**Line 1.** Report on line 1 all of your taxable interest...`. **This is the Schedule B case and
-  it is the whole point of the round.**
+**The model points either at the blank line before its own heading or at the body paragraph after
+it.** So: **snap to the UNIQUE line boundary within +/-256 bytes whose normalised text is prefixed
+by the claimed heading.** No such boundary, or more than one, means reject and disclose.
 
-**Keep the anti-fabrication property** - the heading must still be found at that byte - **but match
-it as a prefix of the source line after normalising markup, not as whole-line equality.** A section
-whose heading is not present at its start byte must still fail.
+**THE ANTI-FABRICATION PROPERTY MUST SURVIVE INTACT AND IS NOT NEGOTIABLE.** An invented heading
+matches no line boundary anywhere in the source, so it still fails. **Prove that with a test** - a
+fabricated heading inside the search window must still be rejected. Count repairs as
+`heading_offset_repaired_count`, kept distinct from `rejected_sections`.
 
-### DEFECT 3 - THE FIXTURES WERE HAND-AUTHORED, AND THAT IS THE ARCHITECT'S DEFECT, NOT CODEX'S
+### ITEM 3 - THE CLI MUST PERSIST THE RECORDING BEFORE IT VERIFIES
 
-My floor said *"runs from a RECORDED response fixture"* and gave it to an agent with **no egress and
-therefore no way to record anything.** Codex wrote plausible responses by hand and was transparent
-about the live leg being mine - **but hand-written fixtures test the author's assumptions, which is
-exactly why 11 tests passed while the first live call failed on byte 0.** The reported
-fixture scores (Schedule B model 7, gained 7) **are not evidence about the model and must not be
-quoted.**
+`main()` calls every window, then builds the frame, then writes the JSON - so a verification
+failure throws away every paid call. **It cost me 9 live calls on the first Schedule D attempt.**
+Write the record file after each window returns.
 
-**THE REAL RECORDINGS ARE NOW CHECKED IN:** `pilot/fixtures/m20_s121_live_recorded_responses.json`
-- live `openai/gpt-5.6-luna`, one call per window, `prompts/instruction_segmenter.md` unmodified,
-2 windows / 31 sections for Schedule B and 9 windows / 93 sections for Schedule D, each with its
-source hash. **Build the round against these. Delete the hand-authored fixtures** - keeping both
-invites scoring against the wrong one.
+### ITEM 4 - THE SCORER'S DENOMINATOR MUST MATCH THE BOOKLET'S OWNER SET
+
+`manifest_owner_document_ids` admits `instructions_document_id` **or** `region_of` - **5** documents
+for Schedule D. `load_reconciliation_cells` admits only `instructions_document_id` - **1**. So the
+scorer draws sections from five documents and cells from one, and every worksheet section that
+correctly governs its own row is counted as a wrong owner for Schedule D. **That is the entire
+wrong_owner=29.** **One accessor decides the booklet's document set and both callers use it.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not tune the prompt to make the numbers better.** Fix the two defects, rescore, report.
-  **A prompt fitted to two booklets will not survive the third.**
-- **Do not relax the verifier past "the heading is present at that byte".** Fabrication detection is
-  the reason the model is allowed to choose at all.
-- **Do not show the model cells, outlines, addresses or unmatched lists.** Document ids are allowed
-  and nothing else is.
+- **Do not tune the prompt.** Nothing here is a prompt problem; all four items are reconciliation.
+- **Do not widen the repair window past a line boundary search.** Fuzzy heading matching is how
+  fabrication gets in.
+- **Do not show the model cells, outlines, addresses or unmatched lists.** Document ids only.
 
 **THE FLOOR.**
-- **The live recordings verify end to end** - both booklets, byte conservation holding, no manual
-  edits to the recordings.
-- **A fabricated section still fails**, proven by a test.
-- **A `document_id` outside the manifest set fails**, proven by a test, `instructions_*` included.
-- **The A/B is rescored on the live recordings and reported per booklet**, both directions, gained
-  and wrongly-owned. **Report what it is; do not floor on the number.**
+- **Both booklets complete in the production path**, byte conservation holding to EOF, from
+  `pilot/fixtures/m20_s122_live_recorded_responses.json` - **my live recordings, checked in with
+  this spec** (Schedule B 2 windows / 31 sections, Schedule D 9 windows / 105 sections, each
+  hash-pinned). **Delete `m20_s121_live_recorded_responses.json`**; it predates the manifest
+  constraint and cannot be replayed with `allowed_document_ids` at all, which is a trap.
+- **A fabricated heading still fails**, proven by a test.
+- **The three measured repairs above are proven**, by byte, in a test.
+- **The A/B is rescored per booklet and reported**, both directions. **Report what it is; do not
+  floor on the number.**
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**ARCHITECT'S LEG.** Re-running live after the fixes, and the 1040 booklet - **which needs
-chapter-scoped windows, not byte windows, and I owe that amendment; it is in Queued below.**
-
-**CODEX STATUS (2026-08-17): PROVIDER-FREE LEG COMPLETE.** `pilot/model_instruction_segmenter.py`
-now derives the booklet owner vocabulary from manifest relationships, puts that vocabulary in the
-source-only prompt and structured schema, and rejects every other `document_id`, including the
-instruction source id. Heading witnesses accept Markdown presentation and run-in labels only
-when the claimed heading is a prefix of the source line at the claimed byte. The hand-authored
-fixtures are deleted; the checked-in live recording is the only replay input.
-
-Recorded replay preserves raw model output and makes the reconciliation explicit: duplicate
-window observations are deduplicated by source-start heading, section ends are derived from the
-next verified heading so the source tiles exactly, and source-unbacked proposals are dropped and
-listed in coverage. The strict provider path still rejects those proposals. The live recording
-has two such Schedule D proposals at bytes 33026 and 51283; they are recorded, not repaired in
-the fixture.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s121.py -q`
--> **15 passed, 1 warning in 0.89s**.
-
-RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> **ASCII check OK**.
-
-RAN: `git diff --check` -> **clean**.
-
-Live A/B replay evidence: Schedule B is **28 canonical sections from 31 raw, 0 gained, 5
-wrong-owner, 4 reachable cells**. Schedule D is **82 canonical sections from 93 raw, 0 gained,
-34 wrong-owner, 24 reachable cells**. Both frames reconcile to the complete source bytes.
-
-**CODEX REWORK COMPLETE (2026-08-17):** overlapping ``governs`` disagreements are now
-reconciliation cases. The observation with the greatest following window context wins; ties and
-sections touching a window edge in every observation are rejected with their competing claims.
-The frame reports ``governs_conflict_count`` beside the existing owner count, never unions claims,
-and keeps the rest of the source tileable. The provider-free S121 tests cover all three paths and
-the checked-in live recordings.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s121.py -q`
--> **18 passed, 1 warning in 0.93s**.
-
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-
-RAN: `git diff --check` -> **clean**.
-
-S121 remains unaccepted until the Architect repeats the live leg; this rework has no provider run.
+**ARCHITECT'S LEG.** The live re-run on both booklets, and the 1040 booklet, which needs
+chapter-scoped windows - still owed by me, in Queued.
 
 ## Open for Architect
 
-**ARCHITECT LIVE LEG RUN, 2026-08-17. S121 IS STILL NOT ACCEPTED - ONE NEW DEFECT, AND IT IS A
-DESIGN CALL I OWE, NOT A CODEX ERROR.**
-
-**WHAT PASSED, VERIFIED BY RECOMPUTING THE ARTIFACT, NOT BY READING THE REPORT.** Replay of the
-checked-in recording reproduces Codex's numbers exactly: `schedule_b` **31 raw -> 28 unique**, 3
-duplicates, 2 boundary-repaired, **0 rejected**; `schedule_d` **93 raw -> 82 unique**, 11 duplicates,
-5 boundary-repaired, **2 rejected** (bytes 33026, 51283, disclosed and unrepaired).
-**`reconciles_to_file_size` TRUE on both.** Provider-free suite **15 passed**.
-
-**LIVE RE-RUN: `schedule_b` SUCCEEDED (29 sections). `schedule_d` FAILED CLOSED:**
-
-```
-SegmenterError: overlapping windows disagree about governs at 10062
-```
-
-**THE RECORDING COULD NOT HAVE PREDICTED THIS. I checked: the recording contains ZERO `governs`
-disagreements on either booklet.** Its 3 and 4 conflicts are owner SPELLINGS
-(`instructions_schedule_b_2025` vs `Schedule B (Form 1040)`), which defect 1's manifest constraint
-already normalises. **This is a class that only a live call produces.**
-
-**THE CAUSE IS STRUCTURAL AND WILL RECUR ON EVERY BOOKLET.** Windows are 12,000 bytes with 2,000
-overlap. Byte 10062 is **62 bytes inside the overlap**: window 0 sees that section with ~1,900 bytes
-of trailing context, window 1 sees it jammed against its own start edge with nothing before it.
-**Two different views of the same text produce two different `governs`. That is not model
-flakiness - it is the overlap doing what an overlap does.**
-
-**RULING: A `governs` DISAGREEMENT IN AN OVERLAP IS A RECONCILIATION CASE, NOT A FATAL ERROR.**
-Failing the whole booklet over one contested section is wrong: **82 verified sections are discarded
-because of one.** The code already treats the analogous case correctly - `owner_conflict_count` is
-counted and normalised, and source-unbacked proposals go to `rejected_sections` without killing the
-run. **`governs` must behave the same way.**
-
-**THE TIEBREAK, AND IT IS DETERMINISTIC - DO NOT PICK ARBITRARILY AND DO NOT UNION.**
-1. **Prefer the observation from the window that gives the section the most following context** -
-   i.e. the greatest distance from the section start to that window's end. A window that sees the
-   whole section has better evidence than one that sees a fragment. At 10062 that is window 0.
-2. **If the distances tie, or if the section abuts an edge in every window that saw it, REJECT that
-   SECTION** - list it in `rejected_sections` with the competing claims - **and keep the rest of the
-   booklet.**
-3. **Never union the governs sets.** A union over-claims, and an over-claimed `governs` is exactly
-   the wrong-instruction failure this whole line of rounds exists to prevent.
-4. **Report the count** as `governs_conflict_count`, alongside `owner_conflict_count`.
-
-**THE STANDING LESSON, NOW TWICE.** A recording verifies CODE PATHS and never MODEL BEHAVIOUR. The
-replay harness taught this on S109 (`production prompt differs from recorded prompt` on 19 of 20
-cases); S121 repeats it. **A green replay is never evidence that a live run will pass** - and the
-Architect's leg exists precisely because Codex has no egress.
-
-**ALSO OBSERVED, NOT A DEFECT:** live `schedule_b` produced **29** sections against the recording's
-28. Ordinary run-to-run variance at the same order as the corpus's +/-2 rules.
+Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
