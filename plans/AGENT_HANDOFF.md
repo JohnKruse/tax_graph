@@ -21,9 +21,39 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN, FOR ONE COMMAND, AND CODEX IN PARALLEL. M20-S124 IS ACCEPTED. The 1040 booklet is
-built and windowed and needs its live run, which needs egress - that is the one thing only John can
-release. M20-S125 is specced under Current round and does NOT wait on it.**
+**BALL: CODEX. M20-S124 IS ACCEPTED AND THE LIVE 1040 RUN IS BOUGHT, RECORDED AND CHECKED IN
+(`instruction_segmenter_live_1040.json`, 71 windows, 670 claims). M20-S126 under Current round is
+the one defect standing between that recording and a verified 1040 frame. M20-S125 is re-queued
+behind it.**
+
+**THE 1040 RUN ANSWERS THE QUESTION THIS WHOLE LINE OF ROUNDS WAS BUILT TO ASK, AND THE ANSWER IS
+NOT THE ONE I EXPECTED.** Measured against the same cell population, correctly-owned cells:
+
+| document | deterministic | model | union | cells |
+| --- | --- | --- | --- | --- |
+| `form_1040_2025` | 42 | 42 | **44** | 59 |
+| `schedule_1_2025` | **53** | 52 | 53 | 61 |
+| `schedule_1a_2025` | **0** | **11** | 11 | 48 |
+| `schedule_2_2025` | **38** | 37 | 38 | 45 |
+| `schedule_3_2025` | 27 | 27 | 27 | 35 |
+| **TOTAL** | **160** | **169** | **173** | 248 |
+
+**THE MODEL DOES NOT BEAT THE DETERMINISTIC PARSER ON LINE-ORGANISED BOOKLETS. It ties or loses by
+one on three of the four, and every point of its net gain is Schedule 1-A, 0 -> 11** - the
+topic-organised chapter where the parser finds nothing and never could. **That is exactly the case
+John chose this direction for, and it is now proven on the biggest booklet we have.**
+
+**THE TWO ARMS ARE COMPLEMENTARY, NOT COMPETING, AND THE UNION IS THE BEST NUMBER ON THE TABLE.**
+`form_1040` is the tell: both arms score 42 and the union is 44, so **they disagree about WHICH
+cells, not just how many.** 173 of 248 beats either arm alone. **Replacing the deterministic
+sections with model sections would throw away real coverage.** Queued as the direction question;
+it is not folded into S126.
+
+**WHAT THE CHAPTER WORK BOUGHT, MEASURED LIVE.** Across 586 sections in a five-form booklet:
+**0 owner conflicts and 0 chapter-owner disagreements.** The model never once claimed a foreign
+form. The 18-document vocabulary narrowed to 14 per chapter, and 18 of 670 claims rejected
+section-locally on heading resolution, none of them fatal. **S123's rule and S124's chapters both
+did their jobs on the first booklet that could actually stress them.**
 
 **M20-S124 IS ACCEPTED (`6006c87`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.** I derived
 the chapter boundaries in the raw-byte space my own way and checked them against the source rather
@@ -212,61 +242,75 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S125: MAKE THE COVERAGE METRIC HONEST BEFORE THE 1040 RUN, NOT AFTER. I JUST READ MY OWN
-REPORT WRONG AND SPECCED A DEFECT THAT DOES NOT EXIST.**
+**M20-S126: A START BYTE IS A SECTION'S IDENTITY. THE DEDUP KEY IS `(start_byte, heading)` AND THAT
+IS WHY THE PAID 1040 RUN DIED ON ITS LAST STEP.**
 
-**I QUEUED "THE SCHEDULE D JOIN IS THE NEXT COVERAGE DEFECT" ON THE STRENGTH OF 12 OF 24. I OPENED
-THE 12 AND THERE IS NO DEFECT.** The Schedule D booklet writes dedicated instructions for exactly
-twelve lines - `1a`, `1b`, `2`, `3`, `8a`, `8b`, `9`, `10`, `13`, `18`, `19`, `21` - **and the
-segmenter finds all twelve.** The other twelve form lines are the arithmetic and carry lines
-(`4`, `5`, `6`, `7`, `11`, `12`, `14`, `15`, `16`, `17`, `20`, `22`) that the IRS writes no
-instruction for at all. **12 of 24 is not half a defect. It is twelve of twelve against what the
-booklet actually contains, and the segmenter is at its ceiling on Schedule D.**
+**THE LIVE 1040 RUN IS RECORDED AND IT IS MOSTLY GOOD NEWS - read the acceptance in BALL.** It made
+all 71 calls, then `ModelFrameVerificationError: section range is outside source: 140474:140474`.
+**One zero-length section, 586 real ones.**
 
-### ITEM 1 - `model_reachable` IS LYING AND IT IS THE NUMBER THAT FOOLED ME
+`_reconcile_window_sections` groups on `(section.start_byte, section.heading)`. Two overlapping
+windows returned the same section with two heading spellings, so both survived as distinct
+sections, and the tiling step - which sets each end from the NEXT start - gave the first one a
+length of zero. **Measured on the recording: 586 unique start bytes, 591 sections under the current
+key, and every one of those 5 extras is fatal.**
 
-`model_reachable` counts a cell as reached when **any** section governs its line token, **including
-a foreign worksheet's own row number.** Schedule D reports **24 of 24 reachable** while twelve of
-those cells have no `schedule_d_2025`-owned section anywhere in the booklet. The Schedule D Tax
-Worksheet governs its rows `4`, `5`, `6`, `7`, `11`, `12`, `14`... which collide head-on with the
-form's line numbers. **A match by a document that is not the cell's own document is not reach.**
-Count reach only through a section owned by the cell's document.
+    140474: ['### Line 12d', 'Line 12d']   -> same heading, markdown prefix only
+    180034: ['### Line 27b', 'Line 27b']
+    180449: ['### Line 27c', 'Line 27c']
+    350823: ['Practitioner PIN', 'Practitioner PIN.']  -> run-in label, trailing period
+    351330: ['Form 8453', 'Form 8453.']
 
-### ITEM 2 - REPORT THE DENOMINATOR THAT MEANS SOMETHING
+**DO NOT FIX THESE TWO SPELLING CLASSES.** Three of the five already collapse under
+`_normalize_heading_markup`, which the codebase HAS and the key does not use; the other two are a
+trailing period. **Patch those and the next booklet brings a third spelling.** That is the same
+mistake I made three times running before S123.
 
-Add **`instructed_cell_count`**: cells whose line is governed by at least one section owned by the
-cell's own document. **Report `model_correct` against BOTH** the full cell count and that
-denominator. On Schedule D today that is 12 of 24 cells and **12 of 12 instructed cells**; on
-Schedule B, 8 of 8 and 8 of 8. **Do not hardcode either pair** - they are outputs, and the 1040
-booklet will have its own.
+### ITEM 1 - KEY ON `start_byte` ALONE
 
-### ITEM 3 - THE ROW-NUMBER COLLISION IS THE STANDING HAZARD, SO NAME IT
+**In a tiling, two claims that start at the same byte ARE the same section. There is no
+representation for two.** The heading is a witness, not an identity. Group on `start_byte`.
 
-Report **`row_number_collision_count`**: line tokens claimed by both the cell's own document and a
-sibling worksheet. It is 12 on Schedule D. **This is the same semantic collision that killed the
-deterministic matcher across S116-S120** - worksheet row numbers read as form lines - and on a
-booklet with 13 worksheets it will be much larger. **Measure it now, before it is a surprise.**
+### ITEM 2 - CHOOSE THE HEADING DETERMINISTICALLY
+
+When grouped claims spell the heading differently, keep **the longest normalized heading that the
+source line at that byte still starts with**, ties broken by lowest window index. It is the most
+faithful witness and it is stable across runs. **I simulated exactly this against the recording:
+586 sections, byte conservation from 0 to 683,265, every heading witnessed in the source, 0 owner
+conflicts.**
+
+### ITEM 3 - CLOSE THE LAST FATAL PATH S123 MISSED
+
+`_reconcile_window_sections` still RAISES `ModelFrameVerificationError` when grouped claims
+disagree about `document_id`. **S123 made every per-section failure a rejection and this one was
+left behind.** Collapsing the key to `start_byte` groups more claims together, so this raise gets
+more likely, not less. **Make it a section-local rejection like every other per-section failure.**
+Measured today it would not fire - 0 owner disagreements across all 586 start bytes - so this is
+cheap now and expensive later.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not change the segmenter, the prompt, the chapters or the fixture.** This round touches
-  scoring and reporting only. If a section count moves, the change is wrong.
-- **Do not weaken `verify_model_sections`**, and do not re-record anything.
-- **Do not "fix" the twelve uninstructed Schedule D lines.** They are the booklet's content, not a
-  bug, and a round that makes them appear covered would be manufacturing the metric.
+- **Do not weaken `verify_model_sections`.** Byte conservation, the heading witness and the manifest
+  owner check stay exactly as they are. **The zero-length section SHOULD be impossible, not
+  tolerated** - do not make the verifier skip it.
+- **Do not touch the segmenter prompt, the chapters, the windows or the heading repair**, and do not
+  re-record anything. The 1040 recording is paid evidence and is checked in.
+- **Do not normalize the stored heading text.** Choose among the spellings the model returned;
+  do not invent a canonical one.
 
 **THE FLOOR - ALL OF IT PROVABLE WITHOUT A MODEL CALL.**
-- **Section counts unchanged**: Schedule B 29, Schedule D 93 from 104 raw claims, 0 rejected, byte
-  conservation to EOF, `wrong_form_owner` 0 and `sibling_worksheet_owner` 58.
-- **`model_reachable` on Schedule D drops from 24 to 12** and a test names why: a worksheet row
-  number is not reach for a form cell.
-- **`instructed_cell_count`, `row_number_collision_count` and the two-denominator `model_correct`
-  are reported for both booklets**, computed, not pinned to a constant.
+- **The 1040 booklet completes** from `pilot/fixtures/instruction_segmenter_live_1040.json`:
+  **586 sections, byte conservation to EOF at 683,265, 18 section-local rejections, 0 owner
+  conflicts, 0 chapter-owner disagreements.**
+- **A test names byte 140474** and proves the two spellings collapse to one section.
+- **Schedule B and Schedule D are unchanged**: 29 and 93 sections, 0 rejected, 0 `wrong_form_owner`,
+  58 `sibling_worksheet_owner`.
+- **A synthetic owner disagreement at one start byte is REJECTED, not raised**, with the booklet
+  still tiling around it.
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**ARCHITECT'S LEG.** The live 1040 run, once John releases egress. It is 71 windows and therefore
-71 paid calls, and this round is what makes the report it produces readable.
+**ARCHITECT'S LEG.** None outstanding. The run is bought and recorded; everything above replays.
 
 ## Open for Architect
 
@@ -285,8 +329,22 @@ Split it again then, or key it on whether the owner is the cell's own document.
 lines the IRS writes no instruction for. **The metric that misled me is being fixed as M20-S125;
 the round I nearly specced would have chased a defect that does not exist.**
 
-**THE LIVE 1040 SEGMENTATION RUN (Architect owes this; blocked on John's egress only).** 71
-windows, 71 paid calls, chapters and windows already built and verified at `6006c87`.
+**[DONE 2026-08-17] THE LIVE 1040 SEGMENTATION RUN.** Recorded at 71 windows / 670 claims.
+
+**[SPECCED, DEFERRED BEHIND S126 - full spec at `5e9230c`] M20-S125: MAKE THE COVERAGE METRIC
+HONEST.** `model_reachable` counts a foreign worksheet's row number as reach; add
+`instructed_cell_count` and `row_number_collision_count`.
+
+**TAKE THE UNION OF BOTH MATCHERS INSTEAD OF REPLACING ONE (Architect, measured 2026-08-17 on the
+live 1040 run).** Deterministic 160, model 169, **union 173 of 248** - and on `form_1040` both score
+42 while the union is 44, so they disagree about which cells. **This is a direction question, not a
+defect**: John ruled the matcher goes model-owned, which settles who segments, not whether the
+deterministic sections are discarded.
+
+**SCHEDULE 1-A IS 11 OF 48 AND I HAVE NOT OPENED THE OTHER 37 (Architect, 2026-08-17).** It may be
+the same instruction ceiling that made Schedule D's 12 of 24 a full score, or a real gap. **Do not
+spec it as a defect before opening several**, which is precisely the mistake M20-S125 exists to
+stop me repeating.
 
 **`_write_recording` CLOBBERS THE FIXTURE INSTEAD OF MERGING INTO IT (Architect, read 2026-08-17).**
 It writes a payload containing ONLY the booklet just run, so pointing `--output` at
