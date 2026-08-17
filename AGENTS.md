@@ -627,6 +627,23 @@ real form defeats the borrowed shape.
     carries it into the surface.
 
 
+- **A SHARED BOOKLET IS SEVERAL FORMS' INSTRUCTIONS IN ONE FILE, AND OWNERSHIP IS ALREADY SCOPED TO
+  THE FORM. (Ruled 2026-08-17, after S116.)** `instructions_form_1040_2025` carries the Form 1040,
+  Schedule 1, Schedule 2 and Schedule 3 line instructions in one document, so a bare heading `Line 9`
+  is ambiguous **across four forms until it is read with its document scope**. That scope exists end
+  to end and is authoritative: the `instruction_sections` frame stamps `document_id` per section
+  (317 sections on the 1040 booklet split 70 / 114 / 67 / 66), `_spans_for_instruction_frame` carries
+  it onto the span as `owner_document_id`, and `instruction_span_ids_for_line` filters on it.
+  - **A cell may only receive an instruction its own form owns**, directly or by the one permitted
+    sub-line inheritance (`11a` inherits `Line 11` when nothing owns `11a`). **A wrong instruction is
+    worse than none, because the model will use it.** Form 1040 line 9 is total income; Schedule 2
+    line 9 is household employment taxes; they share a number and nothing else.
+  - **A line's owner is `line_tokens`, not `line`.** One section headed *"Lines 1a Through 1z"* owns
+    all twenty-six. Reading only the first token is what makes a heading look absent.
+  - **ONE ACCESSOR OWNS THIS QUESTION: `instruction_span_ids_for_line`.** Reports, checks and
+    surfaces ask it; none of them may re-implement the match. The S116 report did, and disagreed with
+    the pipeline on 46 cells while the pipeline was right every time.
+
 - **S3a -> S3b: YES, the structure step owns a deterministic outline adapter. S3a regeneration
   stays blocked until it lands. (Answered 2026-08-02; open since 2026-07-28.)** The bare positional
   index is not enough, and the reason is the one this phase already discovered twice: **identity
