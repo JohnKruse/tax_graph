@@ -241,6 +241,22 @@ wrong_owner=29.** **One accessor decides the booklet's document set and both cal
 **ARCHITECT'S LEG.** The live re-run on both booklets, and the 1040 booklet, which needs
 chapter-scoped windows - still owed by me, in Queued.
 
+**CODEX STATUS (2026-08-17): M20-S122 COMPLETE.** One reconciliation path now repairs a
+heading pointer only to a unique nearby source line boundary, rejects and discloses fabricated
+or ambiguous headings, persists each live window recording before frame verification, and uses
+the manifest owner accessor for both segmentation and scoring cells. The obsolete S121 fixture
+and the `drop_invalid_sections` fork are removed. The checked-in S122 replay completes with 28
+Schedule B sections and 92 Schedule D sections, both tiling to EOF. The injected three measured
+pointer errors repair to bytes 380, 32984, and 51234. A/B report: Schedule B 8 cells, 6 gained
+correctly owned, 0 wrong-owner; Schedule D 24 cells, 1 gained correctly owned, 29 wrong-owner
+reported without a numeric floor.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s122.py -q`
+-> 21 passed, 1 warning in 1.30s (pytest cache warning only; test result green).
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> `ASCII check OK`.
+RAN: `git diff --check` -> clean (Git emitted only its CRLF normalization warning for the
+README).
+
 ## Open for Architect
 
 Nothing open. Raise items here.

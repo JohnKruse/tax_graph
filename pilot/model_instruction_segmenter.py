@@ -52,6 +52,27 @@ class ModelFrameVerificationError(SegmenterError):
     """Raised when a section fails the byte or heading witness."""
 
 
+class _HeadingOffsetResolutionError(ModelFrameVerificationError):
+    """Raised when a claimed heading cannot be uniquely rebound to source."""
+
+    def __init__(
+        self,
+        *,
+        start_byte: int,
+        heading: str,
+        reason: str,
+        candidates: Sequence[int] = (),
+    ) -> None:
+        self.start_byte = start_byte
+        self.heading = heading
+        self.reason = reason
+        self.candidates = tuple(candidates)
+        super().__init__(
+            f"{reason} for {heading!r} at byte {start_byte}"
+            + (f": candidates={self.candidates!r}" if self.candidates else "")
+        )
+
+
 @dataclass(frozen=True)
 class SourceWindow:
     """One UTF-8-safe source window with absolute byte coordinates."""
@@ -345,6 +366,21 @@ def _source_line_at(source_bytes: bytes, start_byte: int) -> str:
     return source_bytes[start_byte:line_end].decode("utf-8").rstrip("\r")
 
 
+def _source_line_starts(source_bytes: bytes) -> tuple[int, ...]:
+    """Return byte offsets that begin non-empty UTF-8 source lines."""
+    starts = [0] if source_bytes else []
+    search_from = 0
+    while True:
+        newline = source_bytes.find(b"\n", search_from)
+        if newline < 0:
+            break
+        next_start = newline + 1
+        if next_start < len(source_bytes):
+            starts.append(next_start)
+        search_from = next_start
+    return tuple(starts)
+
+
 def _normalize_heading_markup(value: str) -> str:
     """Remove leading Markdown presentation without changing heading text."""
     normalized = value.strip()
@@ -359,6 +395,42 @@ def _heading_is_source_prefix(response_heading: str, source_line: str) -> bool:
     response = _normalize_heading_markup(response_heading)
     source = _normalize_heading_markup(source_line)
     return bool(response) and source.startswith(response)
+
+
+def _resolve_heading_offset(
+    source_bytes: bytes,
+    *,
+    claimed_start_byte: int,
+    heading: str,
+) -> tuple[int, bool]:
+    """Resolve a model heading to one nearby source line boundary.
+
+    The search is intentionally lexical and bounded.  It accepts only a unique
+    source line whose normalized text starts with the model heading; it never
+    searches for a fuzzy or fabricated heading elsewhere in the booklet.
+    """
+    lower_bound = max(0, claimed_start_byte - 256)
+    upper_bound = min(len(source_bytes) - 1, claimed_start_byte + 256)
+    candidates = tuple(
+        start_byte
+        for start_byte in _source_line_starts(source_bytes)
+        if lower_bound <= start_byte <= upper_bound
+        and _heading_is_source_prefix(heading, _source_line_at(source_bytes, start_byte))
+    )
+    if len(candidates) == 1:
+        return candidates[0], candidates[0] != claimed_start_byte
+    if not candidates:
+        raise _HeadingOffsetResolutionError(
+            start_byte=claimed_start_byte,
+            heading=heading,
+            reason="heading_not_at_source_offset",
+        )
+    raise _HeadingOffsetResolutionError(
+        start_byte=claimed_start_byte,
+        heading=heading,
+        reason="ambiguous_heading_source_offset",
+        candidates=candidates,
+    )
 
 
 def manifest_owner_document_ids(
@@ -400,7 +472,7 @@ def _raw_section(
     window: SourceWindow,
     source_bytes: bytes,
     allowed_document_ids: frozenset[str] | None,
-) -> ModelSection:
+) -> tuple[ModelSection, bool]:
     """Validate and convert one response record before frame reconciliation."""
     if isinstance(raw, (list, tuple)):
         if len(raw) != 6:
@@ -448,12 +520,22 @@ def _raw_section(
         )
     if end_byte > len(source_bytes):
         raise SegmenterError("section ends outside source")
+    resolved_start_byte, offset_repaired = _resolve_heading_offset(
+        source_bytes,
+        claimed_start_byte=start_byte,
+        heading=heading,
+    )
+    if resolved_start_byte >= end_byte:
+        raise ModelFrameVerificationError(
+            f"repaired heading starts at or after section end: "
+            f"{resolved_start_byte}:{end_byte}"
+        )
     if "text" in raw:
         claimed_text = raw["text"]
-        actual_text = source_bytes[start_byte:end_byte].decode("utf-8")
+        actual_text = source_bytes[resolved_start_byte:end_byte].decode("utf-8")
         if claimed_text != actual_text:
             raise ModelFrameVerificationError(
-                f"text does not match claimed range {start_byte}:{end_byte}"
+                f"text does not match claimed range {resolved_start_byte}:{end_byte}"
             )
     normalized_document_id = document_id.strip()
     if allowed_document_ids is not None and normalized_document_id not in allowed_document_ids:
@@ -469,9 +551,9 @@ def _raw_section(
         heading=heading,
         level=level,
         governs=_coerce_governs(raw["governs"]),
-        start_byte=start_byte,
+        start_byte=resolved_start_byte,
         end_byte=end_byte,
-    )
+    ), offset_repaired
 
 
 def verify_model_sections(
@@ -654,14 +736,8 @@ def build_model_frame(
     year: str | int = "2025",
     source_path: str | Path | None = None,
     allowed_document_ids: Iterable[str] | None = None,
-    drop_invalid_sections: bool = False,
 ) -> ModelInstructionFrame:
-    """Reconcile recorded window responses into one verified model frame.
-
-    Provider output is strict by default.  Recorded replay may explicitly drop
-    source-unbacked proposals before verifying the remaining frame; the dropped
-    count is retained in coverage so replay cannot hide model defects.
-    """
+    """Reconcile window responses into one verified source-backed model frame."""
     source_bytes = source_text.encode("utf-8")
     normalized_allowed_ids = _normalize_document_ids(allowed_document_ids)
     allowed_ids = (
@@ -671,6 +747,9 @@ def build_model_frame(
     )
     parsed: list[tuple[ModelSection, SourceWindow]] = []
     response_count = 0
+    response_section_count = 0
+    heading_offset_repaired_count = 0
+    heading_rejections: list[dict[str, Any]] = []
     for response_record in responses:
         response_count += 1
         try:
@@ -687,24 +766,34 @@ def build_model_frame(
         if not isinstance(raw_sections, list):
             raise SegmenterError("recorded response sections must be a list")
         for raw in raw_sections:
-            parsed.append(
-                (
-                    _raw_section(
-                        raw,
-                        source_document_id=source_document_id,
-                        window=window,
-                        source_bytes=source_bytes,
-                        allowed_document_ids=allowed_ids,
-                    ),
-                    window,
+            response_section_count += 1
+            try:
+                section, offset_repaired = _raw_section(
+                    raw,
+                    source_document_id=source_document_id,
+                    window=window,
+                    source_bytes=source_bytes,
+                    allowed_document_ids=allowed_ids,
                 )
-            )
+            except _HeadingOffsetResolutionError as exc:
+                rejection = {
+                    "start_byte": exc.start_byte,
+                    "heading": exc.heading,
+                    "reason": exc.reason,
+                }
+                if exc.candidates:
+                    rejection["candidates"] = list(exc.candidates)
+                heading_rejections.append(rejection)
+                continue
+            parsed.append((section, window))
+            if offset_repaired:
+                heading_offset_repaired_count += 1
 
     (
         unique,
         owner_conflict_count,
         governs_conflict_count,
-        rejected_sections,
+        reconciliation_rejections,
     ) = _reconcile_window_sections(
         parsed,
         allowed_document_ids=allowed_ids,
@@ -712,22 +801,7 @@ def build_model_frame(
     observed_candidates = sorted(
         unique.values(), key=lambda item: (item.start_byte, item.end_byte)
     )
-    observed: list[ModelSection] = []
-    for section in observed_candidates:
-        actual_heading = _source_line_at(source_bytes, section.start_byte)
-        if not _heading_is_source_prefix(section.heading, actual_heading):
-            if not drop_invalid_sections:
-                observed.append(section)
-                continue
-            rejected_sections.append(
-                {
-                    "start_byte": section.start_byte,
-                    "heading": section.heading,
-                    "reason": "heading_not_at_source_offset",
-                }
-            )
-            continue
-        observed.append(section)
+    observed = observed_candidates
     ordered = tuple(
         ModelSection(
             section_id=section.section_id,
@@ -775,14 +849,15 @@ def build_model_frame(
         coverage={
             "file_size_bytes": len(source_bytes),
             "response_window_count": response_count,
-            "response_section_count": len(parsed),
+            "response_section_count": response_section_count,
             "unique_section_count": len(verified_sections),
             "duplicate_response_sections": len(parsed) - len(verified_sections),
             "boundary_repaired_sections": sum(
                 section.end_byte != verified_sections[index].end_byte
                 for index, section in enumerate(observed)
             ),
-            "rejected_sections": rejected_sections,
+            "heading_offset_repaired_count": heading_offset_repaired_count,
+            "rejected_sections": [*heading_rejections, *reconciliation_rejections],
             "owner_conflict_count": owner_conflict_count,
             "governs_conflict_count": governs_conflict_count,
             "reconciles_to_file_size": True,
@@ -800,7 +875,7 @@ def load_recorded_fixture(
     fixture_path = Path(path)
     payload = json.loads(fixture_path.read_text(encoding="ascii"))
     if not isinstance(payload, Mapping) or payload.get("schema_version") != 1:
-        raise SegmenterError(f"invalid M20-S121 fixture: {fixture_path}")
+        raise SegmenterError(f"invalid M20-S122 fixture: {fixture_path}")
     booklet = (payload.get("booklets") or {}).get(source_document_id)
     if not isinstance(booklet, Mapping):
         raise SegmenterError(f"fixture has no booklet {source_document_id}")
@@ -823,7 +898,6 @@ def build_frame_from_fixture(
     fixture_path: str | Path,
     year: str | int = "2025",
     allowed_document_ids: Iterable[str] | None = None,
-    drop_invalid_sections: bool = True,
 ) -> ModelInstructionFrame:
     """Build a verified model frame from a recorded response fixture."""
     path = Path(source_path)
@@ -841,7 +915,6 @@ def build_frame_from_fixture(
         year=year,
         source_path=path,
         allowed_document_ids=allowed_document_ids,
-        drop_invalid_sections=drop_invalid_sections,
     )
 
 
@@ -977,7 +1050,6 @@ def load_reconciliation_cells(
 ) -> dict[str, tuple[dict[str, Any], ...]]:
     """Load only the post-segmentation cell population for one booklet."""
     root_path = Path(root).resolve()
-    manifest = load_manifest(root=root_path)
     path = (
         Path(reconciliation_path)
         if reconciliation_path is not None
@@ -988,11 +1060,13 @@ def load_reconciliation_cells(
     report = yaml.safe_load(path.read_text(encoding="ascii")) or {}
     documents = report.get("documents") or {}
     result: dict[str, tuple[dict[str, Any], ...]] = {}
-    for entry in manifest.documents:
-        if entry.instructions_document_id != source_document_id:
-            continue
-        document = documents.get(entry.document_id) or {}
-        result[entry.document_id] = tuple(
+    owner_document_ids = manifest_owner_document_ids(
+        root_path,
+        source_document_id=source_document_id,
+    )
+    for document_id in sorted(owner_document_ids):
+        document = documents.get(document_id) or {}
+        result[document_id] = tuple(
             dict(cell) for cell in document.get("cells", ())
         )
     return result
@@ -1028,6 +1102,34 @@ def build_ab_report(
     report["model_coverage"] = dict(frame.coverage)
     report["deterministic_section_count"] = len(deterministic)
     return report
+
+
+def _write_recording(
+    output: Path,
+    *,
+    source_document_id: str,
+    source_bytes: bytes,
+    records: Sequence[Mapping[str, Any]],
+) -> None:
+    """Persist the paid model responses before any frame verification."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "booklets": {
+                    source_document_id: {
+                        "source_sha256": _fingerprint(source_bytes),
+                        "responses": list(records),
+                    }
+                },
+            },
+            indent=2,
+            sort_keys=True,
+        ),
+        encoding="ascii",
+        newline="\n",
+    )
 
 
 def main() -> int:
@@ -1069,6 +1171,9 @@ def main() -> int:
     if args.fixture is None:
         config = load_config(root=ROOT)
         records: list[dict[str, Any]] = []
+        output = args.output or Path(
+            f"m20_s122_{_slug(args.source_document_id)}_responses.json"
+        )
         for window in windows:
             prompt = build_window_prompt(
                 source_bytes,
@@ -1089,6 +1194,12 @@ def main() -> int:
                     "response": dict(response),
                 }
             )
+            _write_recording(
+                output,
+                source_document_id=args.source_document_id,
+                source_bytes=source_bytes,
+                records=records,
+            )
         frame = build_model_frame(
             source_bytes.decode("utf-8"),
             source_document_id=args.source_document_id,
@@ -1096,26 +1207,6 @@ def main() -> int:
             year=args.year,
             source_path=source_path,
             allowed_document_ids=allowed_document_ids,
-        )
-        output = args.output or Path(
-            f"m20_s121_{_slug(args.source_document_id)}_responses.json"
-        )
-        output.write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "booklets": {
-                        args.source_document_id: {
-                            "source_sha256": _fingerprint(source_bytes),
-                            "responses": records,
-                        }
-                    },
-                },
-                indent=2,
-                sort_keys=True,
-            ),
-            encoding="ascii",
-            newline="\n",
         )
         print(f"wrote {output}; sections={len(frame.sections)}")
         return 0

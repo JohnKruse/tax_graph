@@ -82,7 +82,7 @@ The checked-in measurement is `plans/m20_s119_instruction_extent_census.yaml`. R
 
     .venv\Scripts\python.exe -m pilot.instruction_extent_census
 
-## M20-S121 model-owned instruction segmentation
+## M20-S122 model-owned instruction segmentation
 
 `model_instruction_segmenter.py` is a provider-pluggable pilot. The model receives only an
 acquired instruction-text window. It returns section headings, absolute source byte ranges,
@@ -90,23 +90,25 @@ the owning document, and `governs`. It never receives a cell inventory, form out
 or unmatched list. `governs` is tied to the section heading and scope; an incidental body
 mention does not transfer ownership.
 
-The deterministic verifier rejects ranges whose heading or optional text witness is not present
-at the claimed source bytes, then requires the reconciled sections to tile the complete booklet.
+The deterministic verifier rebinds a heading pointer only to a unique source line boundary within
+256 bytes whose normalized text starts with the returned heading. An invented or ambiguous heading
+is rejected and disclosed, while the remaining sections still have to tile the complete booklet.
 The A/B scorer reads the M20-S116 reconciliation only after that verification and reports gains
 and wrong owners separately for each booklet and document.
 
 The checked-in live responses are replayable without a provider:
 
-    pilot/fixtures/m20_s121_live_recorded_responses.json
+    pilot/fixtures/m20_s122_live_recorded_responses.json
 
 Production calls receive the manifest document ids that may own sections in the booklet, and
 the structured-output schema rejects every other `document_id`, including the source booklet
-id. Replay keeps the raw owner spellings and reports them as wrong-owner evidence. Replay also
-records any source-unbacked section it drops; the strict verifier still rejects that section.
+id. Replay keeps the raw owner spellings and reports them as wrong-owner evidence. Live calls
+persist the recording after every returned window, before frame verification, so a failed
+verification does not discard paid responses.
 
 Run the focused pilot tests with:
 
-    .venv\Scripts\python.exe -m pytest pilot/test_model_instruction_segmenter_m20_s121.py -q
+    .venv\Scripts\python.exe -m pytest pilot/test_model_instruction_segmenter_m20_s122.py -q
 
 The replayed A/B reports Schedule B's topic-organized sections against the line-organized
 Schedule D control. Its gains and wrong-owner counts are evidence from the checked-in live

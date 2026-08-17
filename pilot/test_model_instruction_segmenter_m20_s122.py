@@ -1,8 +1,11 @@
-"""M20-S121 guards for source-only model segmentation and its verifier."""
+"""M20-S122 guards for source-only model segmentation and its verifier."""
 
 from __future__ import annotations
 
+from copy import deepcopy
+import json
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -15,6 +18,8 @@ from pilot.model_instruction_segmenter import (
     build_frame_from_fixture,
     build_source_windows,
     build_window_prompt,
+    load_recorded_fixture,
+    load_reconciliation_cells,
     manifest_owner_document_ids,
     score_ab,
     segmenter_schema,
@@ -332,21 +337,32 @@ def test_verifier_rejects_a_range_whose_claimed_text_is_fabricated() -> None:
 
 
 def test_verifier_rejects_a_heading_not_at_the_claimed_source_offset() -> None:
-    """A real source range is not enough when the heading witness is wrong."""
+    """A fabricated heading is rejected without hiding the remaining booklet."""
     source = _source()
     records = _section_records(source, "demo_2025")
-    bad = dict(records[0])
-    bad_response = dict(bad["response"])
-    bad_sections = [dict(section) for section in bad_response["sections"]]
-    bad_sections[0]["heading"] = "# Invented"
-    bad_response["sections"] = bad_sections
-    bad["response"] = bad_response
-    with pytest.raises(ModelFrameVerificationError, match="heading mismatch"):
-        build_model_frame(
-            source.decode("utf-8"),
-            source_document_id="instructions_demo_2025",
-            responses=[bad, *records[1:]],
-        )
+    fabricated_records = deepcopy(records)
+    for record in fabricated_records:
+        for section in record["response"]["sections"]:
+            if section["heading"] == "# Two":
+                section["heading"] = "# Invented"
+
+    frame = build_model_frame(
+        source.decode("utf-8"),
+        source_document_id="instructions_demo_2025",
+        responses=fabricated_records,
+    )
+
+    assert [section.heading for section in frame.sections] == ["# One", "# Three"]
+    rejected = frame.coverage["rejected_sections"]
+    assert rejected
+    assert all(
+        item == {
+            "start_byte": source.index(b"# Two"),
+            "heading": "# Invented",
+            "reason": "heading_not_at_source_offset",
+        }
+        for item in rejected
+    )
 
 
 def test_verifier_accepts_markdown_and_run_in_heading_prefixes() -> None:
@@ -523,15 +539,15 @@ def test_verifier_rejects_non_tiling_sections_directly() -> None:
     (
         (
             "instructions_schedule_b_2025",
-            "m20_s121_live_recorded_responses.json",
+            "m20_s122_live_recorded_responses.json",
             28,
             31,
         ),
         (
             "instructions_schedule_d_2025",
-            "m20_s121_live_recorded_responses.json",
-            82,
-            93,
+            "m20_s122_live_recorded_responses.json",
+            92,
+            105,
         ),
     ),
 )
@@ -550,21 +566,9 @@ def test_recorded_booklet_fixture_is_source_backed(
     assert len(frame.sections) == expected_sections
     assert frame.coverage["reconciles_to_file_size"] is True
     assert frame.coverage["response_section_count"] == expected_raw_sections
-    assert frame.coverage["rejected_sections"] == (
-        []
-        if source_document_id == "instructions_schedule_b_2025"
-        else [
-            {
-                "start_byte": 33026,
-                "heading": "Mark-to-Market Election for Traders",
-                "reason": "heading_not_at_source_offset",
-            },
-            {
-                "start_byte": 51283,
-                "heading": "Gain from an Installment Sale of QSB Stock",
-                "reason": "heading_not_at_source_offset",
-            },
-        ]
+    assert frame.coverage["rejected_sections"] == []
+    assert frame.coverage["heading_offset_repaired_count"] == (
+        0 if source_document_id == "instructions_schedule_b_2025" else 1
     )
 
 
@@ -572,8 +576,8 @@ def test_ab_report_is_per_booklet_and_names_both_directions() -> None:
     """The real A/B report exposes Schedule B recovery and Schedule D control."""
     reports = {}
     for source_document_id, fixture_name in (
-        ("instructions_schedule_b_2025", "m20_s121_live_recorded_responses.json"),
-        ("instructions_schedule_d_2025", "m20_s121_live_recorded_responses.json"),
+        ("instructions_schedule_b_2025", "m20_s122_live_recorded_responses.json"),
+        ("instructions_schedule_d_2025", "m20_s122_live_recorded_responses.json"),
     ):
         reports[source_document_id] = build_ab_report(
             ROOT / ".cache" / "raw" / "2025" / f"{source_document_id}.txt",
@@ -585,23 +589,23 @@ def test_ab_report_is_per_booklet_and_names_both_directions() -> None:
     schedule_b = reports["instructions_schedule_b_2025"]
     assert schedule_b["totals"] == {
         "cells": 8,
-        "gained_correctly_owned": 0,
-        "wrong_owner": 5,
+        "gained_correctly_owned": 6,
+        "wrong_owner": 0,
     }
     assert schedule_b["documents"]["schedule_b_2025"]["baseline_correct"] == 0
-    assert schedule_b["documents"]["schedule_b_2025"]["model_reachable"] == 4
-    assert schedule_b["documents"]["schedule_b_2025"]["wrong_owner_count"] == 5
+    assert schedule_b["documents"]["schedule_b_2025"]["model_reachable"] == 6
+    assert schedule_b["documents"]["schedule_b_2025"]["wrong_owner_count"] == 0
 
     schedule_d = reports["instructions_schedule_d_2025"]
     assert schedule_d["totals"] == {
         "cells": 24,
-        "gained_correctly_owned": 0,
-        "wrong_owner": 34,
+        "gained_correctly_owned": 1,
+        "wrong_owner": 29,
     }
     assert schedule_d["documents"]["schedule_d_2025"]["baseline_correct"] == 11
-    assert schedule_d["documents"]["schedule_d_2025"]["model_correct"] == 1
+    assert schedule_d["documents"]["schedule_d_2025"]["model_correct"] == 12
     assert schedule_d["documents"]["schedule_d_2025"]["model_reachable"] == 24
-    assert schedule_d["documents"]["schedule_d_2025"]["wrong_owner_count"] == 34
+    assert schedule_d["documents"]["schedule_d_2025"]["wrong_owner_count"] == 29
 
 
 def test_manifest_owner_sets_exclude_the_instruction_source() -> None:
@@ -647,3 +651,113 @@ def test_scorer_keeps_the_schedule_1a_denominator_visible() -> None:
     )
     assert report["documents"]["schedule_1a_2025"]["cell_count"] == 48
     assert report["documents"]["schedule_1a_2025"]["model_reachable"] == 0
+
+
+def test_three_measured_heading_pointer_repairs_are_source_anchored() -> None:
+    """The three measured pointer errors repair only to their real line bytes."""
+    source_document_id = "instructions_schedule_d_2025"
+    source_path = ROOT / ".cache" / "raw" / "2025" / f"{source_document_id}.txt"
+    source_bytes = source_path.read_bytes()
+    fixture_path = ROOT / "pilot" / "fixtures" / "m20_s122_live_recorded_responses.json"
+    records = [
+        dict(record)
+        for record in load_recorded_fixture(
+            fixture_path,
+            source_document_id=source_document_id,
+            source_bytes=source_bytes,
+        )
+    ]
+    claimed_offsets = {
+        "What's New": 378,
+        "Mark-to-Market Election for Traders": 33026,
+        "Gain from an Installment Sale of QSB Stock": 51283,
+    }
+    for record in records:
+        record["response"] = dict(record["response"])
+        record["response"]["sections"] = [
+            dict(section)
+            for section in record["response"]["sections"]
+        ]
+        for section in record["response"]["sections"]:
+            if section["heading"] in claimed_offsets:
+                section["start_byte"] = claimed_offsets[section["heading"]]
+
+    frame = build_model_frame(
+        source_bytes.decode("utf-8"),
+        source_document_id=source_document_id,
+        responses=records,
+        allowed_document_ids=manifest_owner_document_ids(
+            ROOT,
+            source_document_id=source_document_id,
+        ),
+    )
+
+    assert frame.coverage["heading_offset_repaired_count"] == 3
+    assert frame.coverage["rejected_sections"] == []
+    repaired = {
+        section.heading: section.start_byte
+        for section in frame.sections
+        if section.heading in claimed_offsets
+    }
+    assert repaired == {
+        "What's New": 380,
+        "Mark-to-Market Election for Traders": 32984,
+        "Gain from an Installment Sale of QSB Stock": 51234,
+    }
+
+
+def test_reconciliation_cells_use_the_manifest_owner_set() -> None:
+    """Cell scoring receives the same five-document owner vocabulary as the model."""
+    source_document_id = "instructions_schedule_d_2025"
+    cells = load_reconciliation_cells(
+        ROOT,
+        source_document_id=source_document_id,
+    )
+
+    assert set(cells) == manifest_owner_document_ids(
+        ROOT,
+        source_document_id=source_document_id,
+    )
+
+
+def test_live_cli_writes_each_window_before_frame_verification(tmp_path, monkeypatch) -> None:
+    """A verification failure leaves the paid response recording on disk."""
+    import pilot.model_instruction_segmenter as segmenter
+
+    source_path = tmp_path / "source.txt"
+    source_path.write_bytes(b"# One\nbody\n")
+    output_path = tmp_path / "recording.json"
+    monkeypatch.setattr(segmenter, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        segmenter,
+        "manifest_owner_document_ids",
+        lambda root, *, source_document_id: frozenset({"demo_2025"}),
+    )
+    monkeypatch.setattr(segmenter, "load_config", lambda root: {})
+    monkeypatch.setattr(
+        segmenter,
+        "call_model_window",
+        lambda prompt, config, *, allowed_document_ids: {"sections": []},
+    )
+
+    def fail_verification(*args, **kwargs):
+        payload = json.loads(output_path.read_text(encoding="ascii"))
+        assert len(payload["booklets"]["demo_2025"]["responses"]) == 1
+        raise ModelFrameVerificationError("verification failed")
+
+    monkeypatch.setattr(segmenter, "build_model_frame", fail_verification)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "model_instruction_segmenter.py",
+            "demo_2025",
+            "--source",
+            str(source_path),
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    with pytest.raises(ModelFrameVerificationError, match="verification failed"):
+        segmenter.main()
