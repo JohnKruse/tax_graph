@@ -82,6 +82,32 @@ The checked-in measurement is `plans/m20_s119_instruction_extent_census.yaml`. R
 
     .venv\Scripts\python.exe -m pilot.instruction_extent_census
 
+## M20-S121 model-owned instruction segmentation
+
+`model_instruction_segmenter.py` is a provider-pluggable pilot. The model receives only an
+acquired instruction-text window. It returns section headings, absolute source byte ranges,
+the owning document, and `governs`. It never receives a cell inventory, form outline, address,
+or unmatched list. `governs` is tied to the section heading and scope; an incidental body
+mention does not transfer ownership.
+
+The deterministic verifier rejects ranges whose heading or optional text witness is not present
+at the claimed source bytes, then requires the reconciled sections to tile the complete booklet.
+The A/B scorer reads the M20-S116 reconciliation only after that verification and reports gains
+and wrong owners separately for each booklet and document.
+
+The recorded responses are provider-free fixtures:
+
+    pilot/fixtures/m20_s121_segmenter_responses.json
+    pilot/fixtures/m20_s121_schedule_d_responses.json
+
+Run the focused pilot tests with:
+
+    .venv\Scripts\python.exe -m pytest pilot/test_model_instruction_segmenter_m20_s121.py -q
+
+The fixture-backed A/B is intentionally not a live-model result. It measures Schedule B's
+topic-organized sections against the line-organized Schedule D control; the live two-booklet
+run is the Architect's leg before any production lift.
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction

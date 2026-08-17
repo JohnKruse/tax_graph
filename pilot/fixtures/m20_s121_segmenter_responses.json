@@ -1,0 +1,99 @@
+{
+  "booklets": {
+    "instructions_schedule_b_2025": {
+      "responses": [
+        {
+          "response": {
+            "sections": [
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 25,
+                "governs": [],
+                "heading": "# Page 1",
+                "level": 1,
+                "start_byte": 0
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 70,
+                "governs": [],
+                "heading": "# Instructions for Schedule B (Form 1040)",
+                "level": 1,
+                "start_byte": 25
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 187,
+                "governs": [],
+                "heading": "## Interest and Ordinary Dividends",
+                "level": 2,
+                "start_byte": 70
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 398,
+                "governs": [],
+                "heading": "## Future Developments",
+                "level": 2,
+                "start_byte": 187
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 1791,
+                "governs": [],
+                "heading": "## General Instructions",
+                "level": 2,
+                "start_byte": 398
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 1819,
+                "governs": [],
+                "heading": "## Specific Instructions",
+                "level": 2,
+                "start_byte": 1791
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 1858,
+                "governs": [],
+                "heading": "### Interest and Ordinary Dividends",
+                "level": 3,
+                "start_byte": 1819
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 7595,
+                "governs": ["1", "2", "3"],
+                "heading": "#### Part I. Interest",
+                "level": 4,
+                "start_byte": 1858
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 9056,
+                "governs": ["5", "6"],
+                "heading": "## Part II. Ordinary Dividends",
+                "level": 2,
+                "start_byte": 7595
+              },
+              {
+                "document_id": "schedule_b_2025",
+                "end_byte": 13691,
+                "governs": ["7a", "8"],
+                "heading": "## Part III. Foreign Accounts and Trusts",
+                "level": 2,
+                "start_byte": 9056
+              }
+            ]
+          },
+          "window_end_byte": 13691,
+          "window_index": 0,
+          "window_start_byte": 0
+        }
+      ],
+      "source_sha256": "15ef6f7190b6d0ff28b0eba60d4731d19eae78a0d1436521d50365a6f7028992"
+    }
+  },
+  "schema_version": 1
+}

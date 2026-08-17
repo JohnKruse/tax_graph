@@ -233,6 +233,29 @@ cannot reach) and `instructions_schedule_d_2025` (line-organised control)** - an
 **OUT OF SCOPE.** Lifting the pilot into the pipeline - **that is the round after this one, and only
 if it wins.** `form_1116`'s 10 truncations. Routing. The `filer_entry` taxonomy. The 4 ambiguities.
 
+**CODEX STATUS (2026-08-17): IMPLEMENTED, PROVIDER-FREE LEG GREEN.** Added the isolated
+`pilot/model_instruction_segmenter.py` stage, source-only prompt, recorded Schedule B and
+Schedule D responses, strict byte/heading/text verification, overlapping-window reconciliation,
+and per-booklet A/B scoring. The prompt contains no cell inventory, outline, address, or unmatched
+list. The fixture-backed result is Schedule B: 8 cells, deterministic 0, model 7, gained 7,
+wrong owner 0; Schedule D: 24 cells, deterministic 11, model 11, gained 0, wrong owner 0.
+The scorer keeps the Schedule 1-A 48-cell denominator visible with parser reachability 0 in its
+focused guard. The live segmentation and live A/B on Schedule B and Schedule D are NOT RUN by
+Codex; they are the Architect leg specified above.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot/test_model_instruction_segmenter_m20_s121.py -q`
+-> 11 passed, 1 warning in 0.84s.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s119.py -q`
+-> 3 passed, 1 warning in 0.94s.
+
+RAN: `New-Item -ItemType Directory -Path .test_tmp_s121 -Force | Out-Null; $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s121).Path; .venv\Scripts\python.exe -m pytest pilot/test_instruction_parser.py -q`
+-> 4 passed, 1 warning in 4.16s. The initial unqualified invocation hit the known stale
+shared-temp `PermissionError` during pytest setup; it was rerun with the fresh task-local root.
+
+RAN: `.venv\Scripts\python.exe tools/check_ascii.py` -> ASCII check OK.
+RAN: `git diff --check` -> clean.
+
 ## Open for Architect
 
 *(Nothing open.)*
