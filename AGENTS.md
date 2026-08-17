@@ -667,6 +667,25 @@ real form defeats the borrowed shape.
 
 ## Standing constraints (every M20 round)
 
+- **RE-DERIVE THE BLAST RADIUS, NOT THE CORPUS. WE ARE IN WALK, NOT RUN (John, 2026-08-17).** *"I
+  remember when we thought things were working that I urged you to input all docs. Now, however, we
+  are back in walk stage (crawl-walk-run). Perhaps we don't need to process every core doc and
+  worksheet to work on the pipeline?"* **He is right, and the full-corpus habit was costing an hour
+  per round to verify changes whose reach was computable in seconds.**
+  - **Compute what the change can touch, then re-derive exactly those documents** with
+    `extract --doc <id>`. S118 is the worked example: it altered **19 cell packets living in 4
+    documents** (`form_1040`, `form_1116`, `schedule_1`, `schedule_3`). Those four were the whole
+    verification; the other thirteen could not move and re-running them proved nothing.
+  - **If the blast radius is not computable, that is the finding** - say so and then run wide. Do
+    not use "I could not tell" as a reason to skip verification.
+  - **THE FULL CORPUS IS FOR MEASUREMENT, NOT FOR ROUND VERIFICATION.** Reserve it for coverage
+    numbers, stability ranges, phase-level acceptance, and prompt or schema changes that reach every
+    document. **A prompt change has no blast radius and always runs wide.**
+  - **THIS DOES NOT LOOSEN "BREADTH BEFORE DEPTH" (John, 2026-08-09), WHICH IS ABOUT A DIFFERENT
+    THING.** That rule forbids *designing* a construct off the 3-form dev set. This one governs how
+    much to *re-run* to verify a change already designed against the whole inventory. **Measure
+    broad; verify narrow.**
+
 - **PROTECTED SET, hard gate - STILL IN FORCE, and it does not lift until its replacement exists.**
   `graph/2025/{nodes,edges,rules}/` and `graph/2025/field_maps/` must be byte-identical.
   `git diff --stat` on those directories must be EMPTY. No promotion, no hand-authoring, no live
