@@ -330,6 +330,23 @@ instruction should be, and how big it is.** **That join is the deliverable** - i
 **OUT OF SCOPE.** The fix. The `filer_entry` reason taxonomy. Routing. The topic-organised booklets.
 The table-column vocabulary. The 4 surviving ambiguities. Cell-loop concurrency.
 
+**CODEX STATUS (2026-08-17).** The canonical read-only census is
+`pilot/instruction_extent_census.py`; it measures UTF-8 byte ranges, records source fingerprints,
+classifies unclaimed spans, and joins the S116 targets without changing extraction, packets,
+prompts, schemas, or the corpus path. The checked-in artifact is
+`plans/m20_s119_instruction_extent_census.yaml`: all 8 manifest instruction booklets reconcile,
+and the join covers all 91 `BOOKLET MENTIONS IT` cells and all 3 S118 stubs. Schedule 1 line 1's
+stub joins to `TRUNCATED_BODY` at start 512137 with the following `Taxable Refunds, Credits, or
+Offsets of State and Local Income Taxes` heading; the measured span is 2,560 bytes. Form 1040
+section 0048 is covered by its parent range and is not misclassified as `TRUNCATED_BODY`; the 0010
+overlap is present in the overlap bucket.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s119.py tests\test_instruction_sections_m20.py -q`
+-> **8 passed, 1 warning**. **RAN:** `.venv\Scripts\python.exe -m pilot.instruction_extent_census`
+-> **8 booklets, 252 sections, 56 unclaimed spans, 80 overlap spans**. **RAN:**
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**; `git diff --check` ->
+**clean**. No corpus run and no model call were made.
+
 **WHAT THE NEXT ROUND WILL BE, so you can see where this lands:** the extent repair itself, specced
 off this census and ranked by the item 3 join. **Do not start it here.**
 

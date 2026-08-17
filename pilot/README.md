@@ -70,6 +70,18 @@ Run it with:
 This pilot only measures acquired source. It does not add citation ranges, write graph state,
 or change production extraction.
 
+## M20-S119 instruction extent census
+
+`instruction_extent_census.py` is a provider-free, read-only census of every acquired
+instruction booklet. It attributes source bytes to the deterministic instruction-section
+locators, reports unclaimed spans and overlaps, classifies unclaimed spans from the heading
+hierarchy, and joins truncated bodies to the S116 missing-cell and stub-section populations.
+It does not repair extents, write graph state, or change extraction.
+
+The checked-in measurement is `plans/m20_s119_instruction_extent_census.yaml`. Regenerate it with:
+
+    .venv\Scripts\python.exe -m pilot.instruction_extent_census
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction
