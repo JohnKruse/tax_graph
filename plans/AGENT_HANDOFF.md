@@ -21,69 +21,38 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S120 is specced below - split the coarse spans and name, per cell, why its
-instruction is unreachable.**
+**BALL: JOHN. M20-S120 is accepted; the measurement line is closed and the fork below reverses the
+direction chosen on 2026-08-17, so it is his call. Nothing is specced.**
+
+**M20-S120 IS ACCEPTED (`e2294b8`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.** I re-tiled
+every one of S119's **56** parent spans from the artifact myself: the **414** split rows are
+contiguous, non-overlapping, hit the parent endpoints exactly and sum to the parent length, in every
+booklet - **zero conservation failures**. All **81** cells are classified with **0 omitted and 0
+extras** against S119's negatives, and the EIC table and front matter are marked non-actionable.
+**9 passed.** The round did exactly what it was asked; **what it was asked was partly wrong, and
+that is recorded under Current round.**
 
 **M20-S119 IS ACCEPTED (`0d7aa76` + `77e56c8` + `8c70a70`, Architect, 2026-08-17), VERIFIED BY
-RECOMPUTATION.** All **8 booklets** reconcile - I recomputed each `source_sha256` and file size from
-the raw bytes and summed the claim buckets myself; claimed-once + unclaimed + overlap equals file
-size everywhere. Every named floor case holds: `schedule_1`'s `...0060` is `TRUNCATED_BODY` starting
-at **512137** with the *"Taxable Refunds, Credits, or Offsets..."* heading recorded; `form_1040`
-`...0048` is **not** misclassified; the `...0010` overlap is in the overlap bucket. The join is
-**94 rows - all 91 cells and all 3 stubs - with the 81 negatives explicitly present.** 19 passed.
+RECOMPUTATION.** All 8 booklets reconcile against recomputed hashes and file sizes; every named
+floor case holds. **Its finding stands and is the durable one: extent truncation is 10 of 91 cells,
+all `form_1116`.**
 
-**THE ROUND REFUTED THE ARCHITECT'S HYPOTHESIS, WHICH IS EXACTLY WHAT IT WAS FOR.** I specced it
-believing extent truncation was the root of the 91 parser gaps. **It is 10 of 91, and all ten are
-`form_1116`.** Zero on `form_1040`, zero on `form_6251` (33 gaps), zero on `schedule_d` (18).
-**Had we gone straight to the repair, we would have fixed one document and called 81 cells done.**
-That is the entire value of a measure round and it is why the next one is also a measurement.
+**M20-S118 IS ACCEPTED (`3181169` + `a4cd008`), M20-S117 (`954c235`), M20-S116 (`6beb1f4` +
+`29cbbcd`), M20-S114 (`9f856a9`), M20-S113 (`6b855b4`)** - all verified by recomputation, narration
+in git. **What survives of them:**
+- **Nested duplicates in evidence packets are gone** (17 -> 0) and `AMBIGUOUS` is 4, not 60.
+- **The reconciliation report asks `instruction_span_ids_for_line` and nothing re-implements the
+  match.** Report state equals packet state, asserted over every cell.
+- **THE RULE COUNT IS NOT A QUALITY METRIC. NEVER USE IT AS A FLOOR AGAIN.**
+- **A green replay harness is not evidence about a packet change** - check whether its cases even
+  cover the changed cells first. On S118 the two sets were disjoint.
+- **Verify an artifact by recomputing what it asserts**, not by checking it exists and is green.
+  Three rounds in a row, that is what found the defect.
 
-**I CHECKED THE ONE PLACE THE ROUND COULD HAVE UNDERCOUNTED.** S119 scopes `TRUNCATED_BODY` to stub
-sections, which is narrower than the spec's wording. I recomputed non-stub truncation independently
-across three booklets from the raw text and heading levels: **zero sections lose more than 200 bytes
-of body before the next same-or-higher heading.** The narrowing is sound and stays.
-
-**AND A CORRECTION I OWE CODEX.** I first read the census as omitting the governing heading on its
-largest spans. **It does not** - `heading`, `headings_in_span`, `governs` and `classification_reason`
-are all there, richly. I had checked for a key name that does not exist. **The spans are coarse, not
-incomplete**, and that distinction is what S120 is built on.
-
-**M20-S118 IS ACCEPTED (`3181169` + `a4cd008`, Architect, 2026-08-17), VERIFIED BY RUNNING.**
-Recomputed independently rather than read off the report: the three named cells behave exactly as
-specced (`form_1040` 4a keeps `...0019` and drops `...0018`; `schedule_1` 8a keeps both, specific
-first; `schedule_1` 1 keeps the worksheet and records the stub), **nested text duplicates in any
-packet went 17 -> 0 across all 449 cells**, `AMBIGUOUS` went **60 -> 4** with `MATCHED` 202 -> 258
-(the 56 reconcile exactly), the **S117 invariant still reports 0 disagreements** and
-`test_m20_s117.py` is unmodified. **107 passed** across seven suites.
-
-**THE HARNESS'S 25/0/0 HERE MEANS "NOT COVERED", NOT "NOTHING MOVED".** 19 cell packets changed and
-**none of the 19 is among the harness's 25 cases** - disjoint sets, checked. **Do not read a green
-harness as evidence about a packet change again; check the overlap first.**
-
-**CORPUS, ALL 17 DOCUMENTS, 2026-08-17 (Architect's leg): rules 74, edges 181, gaps 154**, 41
-minutes, exit 0, 1446 auto-accepted / 31 human-review. **Against the S113 record of 78 / 224 / 153 -
-BUT THAT COMPARISON IS NOT SOUND AND MUST NOT BE QUOTED AS A DELTA**: these counts came from reading
-the draft YAMLs, the S113 numbers came from another session's method, and four rounds sit between
-them. **The sound check is the blast radius, and it is clean: 17 of the 19 changed cells derive with
-no review gap**, including `form_1040` 6b, which used to decline.
-
-**THE TWO THAT DID NOT, OPENED END TO END.** `form_1040` 5a fails with *"source line is not present
-in the deterministic outline index"* - an outline defect, unrelated to packets. `schedule_1` 1 fails
-with *"quote does not match the supplied form or instruction evidence"*, **and it is the finding of
-this round.**
-
-**M20-S117 IS ACCEPTED (`954c235`, Architect, 2026-08-17), VERIFIED BY RUNNING.** The Architect
-re-ran the invariant independently against the checked-in artifact: **449 cells, 0 disagreements**
-with `instruction_span_ids_for_line`, down from 46. `cell_buckets` and `instruction_buckets` each
-sum to their own population in **all 12 documents**. `schedule_2_2025` `1b` and `1d` are `MATCHED`,
-`direct`, both to section `...0122`, with no `other_form_document_ids`. **100 passed** across
-`test_m20_s116`, `test_m20_s117`, `test_instruction_sections_m20`, `test_derive_cells_m20`,
-`test_outline_span_resolution_m20`; replay harness **25/0/0**; ascii OK; `git diff --check` clean.
-**The second matcher is gone, not repaired, which is what was asked.**
-
-**THE CORRECTED NUMBERS, AND THEY RECONCILE EXACTLY.** Cells now read **MATCHED 202, parser gaps 91,
-other-form 76, AMBIGUOUS 60, genuine absences 20**. The 46 misbucketed cells moved to `MATCHED` (4)
-and `AMBIGUOUS` (42), which is the whole of the difference and is how we know nothing else shifted.
+**CORPUS, ALL 17 DOCUMENTS, 2026-08-17: rules 74, edges 181, gaps 154**, 41 minutes. **Not
+comparable to the S113 record of 78/224/153** - different counting method, four rounds between.
+**Blast-radius check was clean: 17 of 19 changed cells derive**, `form_1040` 6b now derives, and the
+two that do not are an outline-index defect and `schedule_1` line 1.
 
 **M20-S115 IS DELIVERED AND WAS NEVER ACCEPTED (`4f7abf9`, Codex, 2026-08-16). ARCHITECT MISS,
 CAUGHT WHILE REVIEWING THE PUSH RANGE 2026-08-17.** The review contract - `workbench/server.py`,
@@ -92,31 +61,6 @@ went in and the Architect specced S116 the next morning without verifying it. **
 now on the remote, unverified.** It touches the surface John reviews, so it needs a live check, not
 a test read: **that is the Architect's leg and it is owed before the review contract is trusted** - and John does
 not review while the contract keeps moving, so an unverified contract change is worse than none.
-
-**M20-S116 IS ACCEPTED (`6beb1f4` + `29cbbcd`, Architect, 2026-08-17).** It built the two-sided
-reconciliation report and its bucket taxonomy, covering all three families. **Its own matcher was
-the defect S117 removed**; the lesson is pinned in `../AGENTS.md` and the narration is in
-`git show c7bbc9b`.
-
-**THE STANDING LESSON FROM S116-S117, and it is the third time this phase.** The report was accepted
-on Codex's evidence and only disagreed with the pipeline **because the Architect re-derived its
-central claim independently instead of reading its totals.** **Verify an artifact by recomputing
-what it asserts, not by checking that it exists and is green.**
-
-**M20-S114 IS ACCEPTED (`9f856a9`, Architect, 2026-08-16), VERIFIED BY RUNNING.** `/api/documents`
--> **HTTP 200, 9532 bytes, all 16 documents**. `schedule_a` reports **2 unplaceable rows, visible
-with reasons** instead of raising; its SALT election is anchored to the real line 5a checkbox
-(`generated_status: decision` on `f1_7[0]`) and the header duplicate is gone. Codex proved the new
-test fails pre-fix with the exact `ValueError`. Replay harness still 25/0.
-**NOTE: the 500 John kept hitting after the fix was the ARCHITECT's error** - `TaskStop` killed the
-task wrapper but left the old python process holding port 8765, so three checks tested the PRE-FIX
-server. Codex's 200 was correct throughout.
-
-**M20-S113 IS ACCEPTED (`6b855b4`, Architect, 2026-08-16).** John ruled the reclassification
-correct. Replay harness 25/0; 93 passed bare; corpus **rules 78, edges 224, gaps 153**. The model
-classified **500 addressable lines** against the cue matcher's 141 and returned **filer_entry 134,
-not_derivable 117, information_return 13, election 5**. `form_1040` 35a and 36 mint zero rules - the
-wrong `COPY` is gone - and five elections were pipeline-produced.
 
 **THE RULE COUNT IS NOT A QUALITY METRIC. NEVER USE IT AS A FLOOR AGAIN.** `rules >= 107` was
 unsatisfiable by construction: the round's purpose was to stop treating non-computations as
@@ -160,99 +104,10 @@ prompt, which is exactly the case it cannot predict.
 written that the work could not satisfy as specified. **Corpus verification and bare test runs are
 the Architect's leg and never belong in a Worker floor.**
 
-**M20-S108 IS ACCEPTED** (`c2dc0d8` + `e2d0180` + `4377c30` + `7bfb9e8` + `7580a4d` + `b96fc59`,
-Architect, 2026-08-15). `extract --year` completes all 17 documents; `accepted` moved 0 -> ~1670;
-46 parameter nodes are minted and every plain printed constant now derives.
-
-**STABILITY IS MEASURED NOW - USE RANGES, NOT SINGLE NUMBERS.** Triple corpus run, 2026-08-15:
-**gaps 32 / 33 / 34, rules 109 / 108 / 107, edges 370 / 365 / 366.** Of a 36-gap union, **31 are
-STABLE (3 of 3), 1 flaky, 4 appear once.** So **86% of failures are real defects, not noise** - and
-**the corpus output itself varies +/-2 rules run to run**, concentrated in `form_1116`, `form_2441`
-and `schedule_1a`. **A single-run delta smaller than that is not evidence.**
-
-**`prompt-bench` AND THE CORPUS PATH DISAGREE.** `schedule_2` 1z is *accepted* by prompt-bench and
-fails in the corpus, because prompt-bench stops at micro-extraction and the corpus then resolves
-operands against the outline. **Use prompt-bench to see the prompt and the response; do NOT use its
-verdict as the corpus verdict.**
-
-**PRIORITY RESET, 2026-08-15.** John: *"I want to just concentrate on the derivation. It is the
-true linchpin of this whole project."* **The S102-S107 provenance line is PARKED.** It was real
-work and it found real fabrications, but fifteen rounds of it ran while derivation produced nothing
-since 2026-08-01, and the Architect never put that in front of John. **Do not open another
-citation/source-range round without an explicit instruction.**
-
-**M20-S107 IS DELIVERED, NOT ACCEPTED** (`5c3f91b` + `f63ec79` + `ffc9cdd`, Codex, 2026-08-14). Its
-full-suite evidence is unusable - `16 failed, 612 passed, 369 errors`, where the 369 are
-`.test_tmp\pytest-of-devbox` ACL setup failures and 612 passed against a clean run's 973, so most of
-the suite never executed. **Re-verification is deferred behind derivation and is NOT a blocker.**
-
-**THE 1040 IS DERIVING AGAIN** (Architect, 2026-08-15, `4990f20`). One packet-assembly bug had
-zeroed the whole phase; corpus is now **103 rules / 337 edges / 38 gaps**, and the failure class
-that accounted for all of form_1040's rejections is at **zero corpus-wide**.
-
-**M20-S106 IS ACCEPTED (`d8accca`, Architect, 2026-08-14). Verified by diffing the graph and
-running the suite, not by reading the report.**
-- **THE CORRECTION IS REAL AND I CHECKED THE PINNED SIDE.** Every citation `quoted_text` in the
-  tree was diffed against `82962eb`: **607 citations, 607 in common, ZERO text changes.** The
-  122-citation corruption that got the previous pass rejected is fully reverted. **461 core
-  citations now carry acquired-source ranges.**
-- **THE THREE CONSUMER GUARDS ARE GREEN** - `test_mcp_m2`, `test_return_record_m5`,
-  `test_workbench_cells_m17`, 3 passed in 8.6s. Those are the real acceptance signal, and the
-  reason they could finally run is environmental: a reboot released the ACL lock on
-  `.test_tmp\pytest-of-devbox`, which had been erroring the MCP test out at collection.
-- **FULL SUITE: 20 failed, 973 passed, 8 skipped, 1 xfailed in 1:06:58.** The **18-red baseline is
-  intact** - 11 e2e plus the same 7 non-e2e ids, **zero baseline reds fixed, zero newly broken.**
-  Outcomes moved 993 -> 1002 and **all 9 new outcomes are S106 tests**, which is what rules out
-  hidden movement.
-- **THE 2 REDS BEYOND THE BASELINE ARE ONE GUARD COUNTED TWICE.**
-  `test_core_source_ranges_m106::test_core_citations_reconstruct_from_acquired_ranges` and
-  `test_worksheet_ranges_s105::test_promoted_core_citations_reconstruct_from_source_ranges` fail on
-  the **identical assertion at the identical citation** (`cite_schedule_d_carryover_line_1_2`,
-  `assert []`). S106 wrote a second copy of its own core guard into the S105 file at `1822514`.
-  **S107 deletes the duplicate; the guard lives in one place.**
-
-**WHY IT IS ACCEPTED WITH ITS OWN GUARD RED, AND THIS IS MY ERROR TO OWN.** The floor I wrote said
-**every** core citation binds to a range. **34 of them never can, because they are not quotes.** I
-ran all 34 against the acquired text with a sliding best-match: **31 have their content in the
-source** at similarity 0.47-0.98 - `cite_sdtw_line_19_breakpoint` is off by a character or two -
-and **21 of those sit on a markdown table row**, the exact `row` region kind S105 already built.
-The pinned text is a lightly edited copy of real acquired bytes. **They are hand-authored
-paraphrases from the A9 scaffolding era, and S106 is the first thing that could see them.**
-**This is the SECOND time this phase I specced a floor the data cannot satisfy** (the first was
-`7ba64be`, the drop-to-zero target). The Worker did not overreach either time.
-
-**THE FOUR TAX-BRACKET CITATIONS ARE A DIFFERENT ANIMAL AND DO NOT GET AN EXEMPTION.**
-`cite_1040_tax_brackets_single`, `_joint_qss`, `_mfs`, `_hoh` score 0.42-0.47 because they are
-genuine SYNTHESES over a rate table. `cite_1040_tax_brackets_single` quotes `$57,231.00`, a
-cumulative base **that appears nowhere in the source**; the table cell holds `$30,452.75`. No range
-will ever bind them. **Burying them in a legacy exemption would hide a real modeling gap**, so they
-get a typed provenance kind of their own - see S107 item 3.
-
-**M20-S105 IS ACCEPTED (`98d81dc` + correction `82962eb`, Architect, 2026-08-14). Verified by
-running the suite and the corpus, not by reading the report.**
-- **FULL SUITE, bare command, quiet tree: 18 failed, 966 passed, 8 skipped, 1 xfailed in 1:06:24.**
-  **The 18 are EXACTLY the enumerated baseline** - 11 e2e plus the same 7 non-e2e ids, with **zero
-  new reds and zero baseline reds fixed.** Outcomes moved 987 -> 993 and **all 6 new outcomes are
-  the 6 new S105 tests, all passing.**
-- **THE STORED BOUNDARY IS A RANGE NOW. 225 of 228 worksheet citations carry source ranges**, split
-  **211 `row`, 12 `routing_sentence`, 2 `note`.** Simplified Method line 2's citation is no longer
-  fused and the note is its own citation at `118266-118490` governing lines 3 and 4.
-- **THE INVARIANT IS ENFORCED, NOT COUNTED.** `tests/test_worksheet_ranges_s105.py` validates every
-  region citation against the schema and asserts **its ranges reconstruct `quoted_text` exactly.**
-- **THE COMPENSATION IS GONE.** No persisted `form_face_text` on any node or in the node schema; the
-  row face is derived from the citation ranges; the governed note is separate provenance assembled
-  only onto the line its citation says it governs. **Driven by stored structure, not by matching the
-  printed word `Note`.**
-- **NO FACE MOVED.** All four checked worksheet faces are byte-identical to their pre-S105 values and
-  **the prior-year gate still refuses Simplified Method line 2 and admits lines 4 and 6.**
-
-**THE ROUND TOOK THREE PASSES AND THE MIDDLE ONE IS WORTH REMEMBERING.** The first pass met the
-"faces unchanged" floor by **re-introducing the fused text on a new node field that the loader
-preferred over the clean citation**, and by relocating the note logic rather than deleting it.
-**The floor had said in those words: do not re-add the router to make the faces match.** The
-Architect caught it by reading what the loader actually consumed rather than what the report
-claimed, and the correction made the round SMALLER. **A green floor check is not evidence that the
-mechanism under it is right.**
+**M20-S108 (`c2dc0d8` ...), S107 (delivered, not accepted), S106 (`d8accca`), S105 (`98d81dc` +
+`82962eb`) - narration pruned 2026-08-17, all in git. **What survives: the corpus varies +/-2 rules and
++/-5 edges run to run, so a single-run delta smaller than that is not evidence; and `prompt-bench`
+accepts rows the corpus then rejects, so never quote its verdict as the corpus verdict.**
 
 **THE 18-RED BASELINE, unchanged and still current.** Eleven `tests/e2e/*_m15.py`, plus:
 `test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
@@ -265,101 +120,56 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S120 SPECCED BY ARCHITECT (2026-08-17). THE HEADINGS THAT NEVER BECAME SECTIONS. SPLIT THE
-COARSE SPANS AND NAME, PER CELL, WHY ITS INSTRUCTION IS UNREACHABLE.** **MEASURE ROUND, the second
-and last one on this line** - deterministic, read-only. **NO model call. NO parser fix. NO packet,
-prompt, schema, or extent change.**
+**NONE IN FLIGHT. S120 CLOSED THE MEASUREMENT LINE AND ITS ANSWER CHANGES THE DIRECTION JOHN CHOSE
+ON 2026-08-17. THAT FORK IS BELOW AND IT IS HIS.**
 
-**WHY THERE IS A SECOND MEASURE ROUND AND NOT THE REPAIR.** S119 was specced to confirm truncation
-as the root of the 91 parser gaps. **It refuted that: 10 of 91, all `form_1116`.** Speccing the
-repair now would fix `form_1116` and leave 81 cells untouched. **The census already contains the
-answer to "then what is it" and this round extracts it.**
+**THE CONCLUSION OF TWO MEASURE ROUNDS, STATED PLAINLY: THE EXTENTS ARE BARELY THE PROBLEM.**
+Of the 91 cells whose instruction the booklet demonstrably contains,
+- **10 are extent truncation** - S119, all `form_1116`. **Real, proven, and small.**
+- **The remaining 81 are dominated by content that is not organised by line at all**, which is a
+  vocabulary problem, not an extent problem. **We have been calling it a parser gap for four rounds.**
 
-**WHAT THE CENSUS SHOWS, READ END TO END (Architect, 2026-08-17).** The 1040 booklet is **683,265
-bytes with 142,173 claimed exactly once - 21%.** The unclaimed remainder is not truncation; it is
-**`heading_has_no_line_owned_section`**, in a handful of enormous spans:
-- **172,427 bytes containing 34 headings**, opening at *"Third Party Designee"*, and its `governs`
-  list carries real line tokens: `11, 16, 15, 12e, 7b, 37, 1a, 38, 10, 8, 26`.
-- **108,542 bytes** of *"Earned Income Credit (EIC) Table"* - a lookup table, **not a defect.**
-- **53,340 bytes** opening *"# Instructions for Schedule 1-A / Additional Deductions"* - **this is
-  `schedule_1a`'s entire instruction chapter, and `schedule_1a` sits at 0 of 48 matched.**
-- **90,083 bytes** of front matter, correctly `NON_LINE_REGION`.
+**THE RECOVERY RANKING DOES NOT SURVIVE CONTACT WITH THE SOURCE, AND I CHECKED ITS BEST ROW.**
+S120's largest group is *"Instructions for Schedule 1-A"*, L1, **48 cells, scope `all_form_cells`** -
+the single most valuable-looking row in the artifact. **I read the chapter: 53,340 bytes,
+29 headings, and ZERO of them name a line.** They are `Part I`, `Part II`, `Part III`, `Part IV`,
+*"Modified Adjusted Gross Income (MAGI) Amount"*, *"No Tax on Tips"*, *"Qualified Tips"*.
+**Sectioning that chapter would mint 29 sections that own no line and attach nothing to the 48
+cells.** `schedule_b` is the same shape: 13,573 bytes, 12 headings, **0 naming a line**,
+`Part I. Interest` and friends.
 
-**THE SPANS ARE TOO COARSE TO ACT ON, AND THAT IS THE ONLY THING WRONG WITH S119.** One span holding
-34 headings cannot tell you which heading owns which line. **It is not a mislabel - the classifier's
-reasons are right and its headings are recorded - it is a granularity the next round has to break
-open.**
+**S116 ALREADY SAID THIS AND I ROUTED AROUND IT FOR FOUR ROUNDS.** Its own spec: *"`schedule_1a`
+(0 of 48) and `schedule_b` (0 of 8) have zero attachment because their booklets organise by Part and
+topic and never name a line. Nothing to own. Report it; do not fix it here."* **That was correct,
+and every round since has measured its way back to it.**
 
----
-
-### Item 1 - SPLIT EVERY UNCLAIMED SPAN AT ITS HEADING BOUNDARIES
-
-**One row per heading, not per span.** Each heading inside an unclaimed span becomes its own record
-with its own byte range, level, title, and the line tokens it governs. **The reconciliation from
-S119 must survive**: split ranges still sum to the parent span, and the per-booklet totals still
-reconcile to file size.
-
-### Item 2 - PER CELL, NAME WHY THE INSTRUCTION IS UNREACHABLE
-
-For each of the **81** `BOOKLET MENTIONS IT` cells with no truncated body, locate the heading whose
-`governs` covers that cell's line and report which of these it is:
-- **`HEADING_NEVER_SECTIONED`** - a heading owns the line and no section was built from it. **This
-  is the expected majority and is the actionable bucket.** Report the heading title and level.
-- **`MENTIONED_IN_PROSE_ONLY`** - the line number appears in running text, no heading owns it. **Not
-  a parser defect** - the S116 bucket was generous and this is where the generosity shows.
-- **`NON_LINE_CONTENT`** - the governing text is a table, topic list, or chapter. **Not a defect.**
-- **`UNRESOLVED`** - none of the above fits. **Keep this bucket and report it honestly rather than
-  forcing a row into a category.**
-
-### Item 3 - RANK THE REPAIR BY WHAT IT WOULD RECOVER
-
-Group `HEADING_NEVER_SECTIONED` by booklet and by governing heading level, and report **how many
-cells each group would recover.** `schedule_1a`'s 53KB chapter and its 48 unmatched cells should
-fall out as one group. **That ranking is the deliverable** - the repair round gets specced off it.
+**THE REST OF THE RANKING RESTS ON A PREMISE I WROTE AND SHOULD NOT HAVE.** The tail is worksheet
+headings - *"Foreign Earned Income Tax WorksheetLine 7"* (10 cells), *"Capital Loss Carryover
+WorksheetLines 6 and 14"* (7), *"Qualified Dividends and Capital Gain Tax WorksheetLine 16"* (3) -
+attributed by scanning line tokens out of span text. **Opened end to end: the Qualified Dividends
+worksheet heading, whose body says *"See the earlier instructions for line 16"*, is attributed to
+line 24 of `form_1040`, `schedule_1` AND `schedule_1a` - three documents, one heading, no document
+scope.** A worksheet's internal row numbers are being read as form line anchors.
+**THIS IS THE S116 RULING BEING BROKEN BY THE ARCHITECT'S OWN SPEC TWO ROUNDS AFTER PINNING IT IN
+`../AGENTS.md`.** S120 implemented what I asked; I asked it to treat `governs` - a token scan - as
+ownership. **`governs` is a candidate list. It is not an owner and must never again be used as one.**
 
 ---
 
-**WHAT MUST NOT HAPPEN.**
-- **Do not repair, re-parse, or re-extent anything.** Still a measurement. **Two measure rounds in a
-  row is deliberate; do not "helpfully" start the fix.**
-- **Do not widen `TRUNCATED_BODY`.** S119's stub-scoped definition was checked independently against
-  three booklets and **found zero non-stub truncations**; it is sound and stays as it is.
-- **Do not restate the S119 census.** Extend it or write a sibling artifact; do not fork its numbers.
-- **Do not re-bucket the S116 report.**
+**THE FORK, AND IT IS JOHN'S BECAUSE IT REVERSES THE DIRECTION HE PICKED.**
 
-**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
-- **Every unclaimed span is split to one row per heading**, and **the split ranges sum to the parent
-  span for every span in every booklet** - asserted, not sampled.
-- **All 81 cells get a row with one of the four reasons**, including `UNRESOLVED`. **A cell with no
-  row is a failure of the round.**
-- **The `Third Party Designee` span resolves into its 34 headings**, and the cells whose lines appear
-  in its `governs` list (`11`, `15`, `16`, `26`, `37`, `38`, ...) are classified by the heading that
-  actually owns each one. **Name what several of them got.**
-- **`schedule_1a` appears in the item 3 ranking as a single recoverable group** naming its chapter.
-- **The EIC table and the front matter do NOT appear as actionable.** They are the negative controls.
-- **`tools/check_ascii.py` OK**, `git diff --check` clean. Targeted tests only; pre-create your
-  `PYTEST_DEBUG_TEMPROOT` directory. **No corpus leg for either of us.**
+1. **THE TOPIC-ORGANISED MECHANISM.** Give instruction ownership a second vocabulary - Part, topic,
+   heading-governs-a-range-of-lines - so booklets that never print a line number can attach at all.
+   **56 cells sit behind it (`schedule_1a` 48, `schedule_b` 8), it is the largest proven block, and
+   it has been deferred at S116, S117, S118 and S120.** **Architect's recommendation.**
+2. **`form_1116`'s 10 truncations.** Proven, small, mechanical. **Cheap enough to ride along with
+   whatever else is chosen rather than own a round.**
+3. **Re-attribute the 81 with document scope** before anything else - redo S120's join through
+   `instruction_span_ids_for_line` semantics instead of `governs`. **Honest, but it is a THIRD
+   measure round and I do not recommend it**; the two blocks above are already proven and are enough
+   work to be getting on with.
 
-**OUT OF SCOPE.** The repair. `form_1116`'s 10 truncations - **they are real, they are S119's finding,
-and they get fixed in the repair round with everything else, not separately.** Routing, the
-`filer_entry` taxonomy, the 4 ambiguities, cell-loop concurrency.
-
-**M20-S120 STATUS: CODEX COMPLETE (2026-08-17).** Added the deterministic sibling witness
-`pilot/instruction_extent_split.py`, its focused guards, and generated
-`plans/m20_s120_instruction_extent_split.yaml`. The report splits **56 parent gaps into 414
-rows across 8 booklets**, with exact byte conservation. It classifies all **81** no-truncation
-cells: **64 `HEADING_NEVER_SECTIONED`, 1 `NON_LINE_CONTENT`, 16 `UNRESOLVED`, 0 omitted**.
-`Third Party Designee` resolves to **34 headings** and its governed cells carry the actual
-heading-local reason; for example line 11 is attached to `Requirements for an Electronic
-Return`. The recovery ranking contains one `Instructions for Schedule 1-A` chapter group
-covering all **48** Schedule 1-A cells. EIC-table and front-matter rows are explicit negative
-controls and are not actionable. No parser, packet, prompt, schema, extent, graph, or model
-call changed.
-
-**RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s120.py tests/test_m20_s119.py -q`
--> 9 passed, 1 warning in 2.83s.** **RAN: `.venv\Scripts\python.exe tools/check_ascii.py`
--> `ASCII check OK`.** **RAN: `git diff --check` -> clean.** **NOT RUN: corpus leg - explicitly
-out of scope for this measure round.**
+**WHAT I AM NOT PROPOSING: another census.** Two measure rounds is the budget and it is spent.
 
 ## Open for Architect
 
