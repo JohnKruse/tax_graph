@@ -25,6 +25,10 @@ it is the wrong change.
 - **Human review input is pipeline input.** A rejection comment is not a note to a developer - it
   is data the pipeline consumes to rework the cell. Review tooling is therefore production
   infrastructure, not a convenience UI.
+- **WHEN IN DOUBT, RECOMMEND THE BEST SOLUTION FOR A RELIABLE PIPELINE** (John, 2026-08-17, his
+  emphasis). Not the cheapest, not the smallest diff, not the one that avoids a conversation.
+  **State the recommendation plainly and say what it costs**; John will scale it down if he wants
+  to, and that is his call to make, not a decision to pre-empt by proposing something lesser.
 - **Churn in the review contract has a real cost: it destroys the human's incentive to review at
   all.** Nobody invests judgement in a moving target. Stability of the review contract is a
   feature, and is prerequisite to asking John for review effort.

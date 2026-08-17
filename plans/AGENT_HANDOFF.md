@@ -186,117 +186,94 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S115 SPECCED BY ARCHITECT (2026-08-16). THE REVIEW CONTRACT: THREE VERDICTS, EACH CARRYING A
-COMMENT.** **REAL ROUND** - review surface and verdict store. **NO response-schema change. NO prompt
-change.** Try Again calls the model; nothing else does.
+**M20-S116 SPECCED BY ARCHITECT (2026-08-17). RECONCILE INSTRUCTIONS TO FORMS IN BOTH DIRECTIONS,
+AND CLOSE THE 115 INTERIOR HOLES.** **REAL ROUND** - draft projection and packet assembly.
+**NO response-schema change. NO prompt change. NO model call.**
 
-**JOHN'S CONTRACT, 2026-08-16, VERBATIM IN SUBSTANCE.** Three options only, any one may carry a
-comment.
-- **ACCEPT** - the easy one. The comment is augmenting information.
-- **TRY AGAIN** - take the comment and **use it as another evidence source in re-deriving** the
-  operation. **If it works out and is then ACCEPTED, the comment must be saved as the successful
-  change.**
-- **REJECT** - the form cannot be approved while a reject stands, and the defect is reported.
+**THE MEASUREMENT THAT PROMPTED IT (Architect, 2026-08-17).** John's heuristic: *instructions come in
+blocks, so a listing for lines 1-3 and 5-8 with 4 left out means a MATCH failure, not an absence.*
+Applied corpus-wide: **481 cells, 244 with an instruction, 115 INTERIOR HOLES** - cells sitting
+between instructed lines with nothing attached. Worst: `form_6251` **32 of 58**, `form_1116` 19/36,
+`form_1040` 17/57, `form_2441` 15/33, `schedule_d` 12/23, `schedule_a` 9/28.
 
-**ITEM 1 - THE SURFACE MUST TELL THE TRUTH FIRST. THIS IS PREREQUISITE, NOT COSMETIC.** John opened
-the workbench on `form_1040` line 1a - *"Total amount from Form(s) W-2, box 1"* - and read
-**"Review gap"**, concluding extraction had failed. **It had not.** S113 classified 1a as
-`filer_entry` and cited *"Enter the total amount from Form(s) W-2, box 1. If a joint return, also
-include your spouse's income."* The cell carries `expression.kind = review_gap` because it has no
-arithmetic, and the UI renders anything without an expression as a gap.
-- **All five S113 kinds must display as themselves**: `computation`, `filer_entry`, `election`,
-  `information_return`, `not_derivable` - each with its citation, and `not_derivable` with its
-  reason. **134 `filer_entry` and 117 `not_derivable` cells corpus-wide currently read as failures.**
-- **Fix the pane sizing.** `.review-river` is `height: calc(100vh - 108px)` with
-  `overflow: hidden`, and the cell list starves the detail body, leaving a sliver for the
-  instruction text. **The detail body must be the part that grows and scrolls.**
-- **A reviewer cannot exercise a verdict contract on cells that are mislabelled.**
+**THREE DISTINCT FAILURES WEAR THE SAME SYMPTOM. DO NOT TREAT THEM AS ONE.**
+1. **THE OWNER MAP WORKS AND THE PACKET BUILDER IGNORES IT.** The 1040 draft holds **317 instruction
+   sections** including headings literally reading `Line 9`, `Line 14`, `Line 15`, and
+   `_instruction_owner_map` **already owns them** - line 9 by 2 spans, 14 by 2, 15 by 2, 21 by 2,
+   1z by 1. **They are still holes.** The pairing exists and is not consumed. **This is the 115.**
+2. **SUB-LINES INHERIT NOTHING FROM A PARENT HEADING.** The map owns `'11'` (3 spans) but neither
+   `'11a'` nor `'11b'`, because the 1040 prints one heading *"Line 11"* over both. `form_1040` 24 is
+   the same shape. **Same defect as `schedule_a` line 5 being a header over 5a-5e.**
+3. **TABLE COLUMNS CANNOT BE OWNED AT ALL.** All **219** owner keys on the 1040 are line anchors;
+   **zero** are table, column or row-template addresses. The dependents table is correctly addressed
+   as `2025/document=form_1040/table=dependents/row_template=dependent/column=first_name` - **one
+   address covering all four Dependent columns, which is the right design** - but an instruction can
+   only be owned by a printed line, so **all 46 dependents cells carry `instr=0` and always will.**
 
-**ITEM 2 - THREE VERDICTS, EACH WITH A COMMENT.** Replace the current `Accept / Question / Reject`
-plus a detached `Try again` panel. The verdict vocabulary is
-`_ADDRESS_JUDGEMENTS = {confirmed, questioned, rejected}`; **`questioned` becomes the Try Again
-verdict**. Two legacy records exist on disk - migrate them, do not orphan them.
+**PLUS a fourth, OUT OF SCOPE for the fix but IN SCOPE for the report:** `schedule_1a` (**0 of 48**)
+and `schedule_b` (**0 of 8**) have zero attachment because their booklets organise by Part and topic
+(*"Part I. Interest"*, *"No Tax on Tips"*) and never name a line. Nothing to own. **Report it; do not
+fix it here.**
 
-**ITEM 3 - THE TRY AGAIN LOOP, AND THE COMMENT IS EARNED.** Today `rederive_cell(document_id, line,
-draft_comment)` re-derives and **persists nothing**, while a `questioned` verdict **persists a
-comment the model never sees**. The comment that reaches the model is thrown away; the one that
-survives is inert. **That inverts the prime directive, where review input IS pipeline input.**
-- Try Again sends the comment as evidence and shows the result **without persisting**.
-- **A comment becomes CURATED only when a subsequent ACCEPT follows the Try Again that produced the
-  accepted result.** A typed comment is not curated; a comment that demonstrably worked is.
-- `_latest_curated_comment` already feeds later derivations. **Wire the earned comment into that
-  ledger** so the next corpus run consumes it.
+---
 
-**ITEM 4 - REJECT, AND THE ESCAPE HATCH IS GATE-DEPENDENT.** `gate` is implemented
-(`engine.py:98` defaults to `project`, the extension path stamps `user`) but **every one of the 647
-current nodes has `gate: None`** - so treat absent as `project`.
-- **On a `gate: project` document: ABANDON ONLY.** **The dialog must not offer the escape hatch at
-  all.** John: *"I don't plan on letting the core docs out without bona fide approval."*
-- **On a `gate: user` document: offer ABANDON or CONTINUE WITH THE CELL AS FILER-PROVIDED.** This
-  demotes the node to `REQUIRE_INPUT` - **an existing first-class kind, not a hand-authored value.**
-  Nothing is fabricated; the pipeline records that it could not derive this cell and the filer
-  supplies it.
-- **Provenance must say WHY**: filer-supplied **because derivation failed**, not merely
-  filer-supplied. Those are different claims and the audit record must distinguish them.
-- **The reject reason and the Try Again history travel with the form**, so the next reader sees the
-  attempts and the comments. That is what makes a contributed form improvable rather than merely
-  tolerated.
-- **A demoted cell NEVER counts as derived** in any coverage or derivation metric.
+### Item 1 - THE RECONCILIATION REPORT, BOTH DIRECTIONS
 
-**ITEM 5 - REPORTING IS QUEUED, NOT FIRED.** A reject writes a defect report to a local queue with
-the cell, the attempts, and the comments. **Do NOT post to GitHub from a UI click** - an
-outward-facing side effect must not be a button's side effect. Posting is a separate deliberate step
-and is OUT OF SCOPE.
+**Parse the two sides separately - they already are - then MATCH, and make the match a first-class
+checked-in artifact rather than a silent side effect.** Per document, every cell and every
+instruction section lands in exactly one bucket:
+- **MATCHED** - cell and instruction paired. Record which.
+- **CELL WITH NO INSTRUCTION, and the booklet DOES mention it** - a parse or join failure. **This is
+  the actionable bucket.**
+- **CELL WITH NO INSTRUCTION, and the booklet does NOT mention it** - a genuine absence; deriving
+  from the printed face alone is correct here. **Determine this by searching the RAW booklet text
+  for the line reference, not by consulting the parsed sections** - otherwise a parser gap is
+  laundered into an accepted state, which is exactly the failure this report exists to prevent.
+- **INSTRUCTION WITH NO CELL** - John: *"if there is a cell line missing then we know we have a real
+  problem."* Either the form outline lost a line, or the booklet names a line this year's form does
+  not have. **Report both readings; do not guess.**
+- **AMBIGUOUS** - more than one section claims a cell. Report the conflict; do not silently pick.
+
+**The report must cover ALL THREE families**: line-anchored cells, the topic-organised booklets
+(`schedule_1a`, `schedule_b`), and table-addressed cells (the 46 dependents cells). **A family the
+report cannot express is a finding to state, not a row to omit.**
+
+### Item 2 - CONSUME THE OWNER MAP (THE 115)
+
+**The invariant, and it is the floor:** *if `_instruction_owner_map` owns line L, the evidence packet
+for the cell at line L contains that instruction.* Today that is false 115 times.
+**Also implement sub-line inheritance**: a cell at `11a` with no owner of its own inherits the
+heading that owns `11`, **and the report must record that the instruction was inherited, not
+directly owned.** A more specific section always wins over an inherited one.
+
+---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not let a `gate: project` document offer the filer-provided hatch.**
-- **Do not curate every comment.** Only a comment whose Try Again result was then accepted.
-- **Do not write a value into a cell.** The hatch changes a node's KIND, never its value.
-- **Do not change the response schema or the prompt.**
+- **Do not attach an instruction to a cell the owner map does not own**, directly or by the stated
+  inheritance rule. **Widening the match to make the hole count fall is the failure mode this round
+  exists to prevent** - a wrong instruction is worse than none, because the model will use it.
+- **Do not fix the topic-organised booklets or the table-column join here.** Report their sizes.
+  They are separate rounds with separate mechanisms.
+- **Do not change the response schema, the prompt, or the union.**
 - **Do not re-baseline expected-count fixtures.**
 
-**THE FLOOR - OUTCOMES, NOT COUNTS.**
-- **`form_1040` line 1a renders as a filer entry with its W-2 citation, NOT "Review gap".** Paste
-  what the cell API returns for it.
-- **The detail body scrolls and shows full instruction text** with the cell list capped. Say how it
-  was verified.
-- **Three verdict buttons, each accepting a comment**; the detached Try again panel is gone.
-- **A Try Again followed by an Accept curates that comment**, provable by a test: assert the comment
-  appears in the curated ledger for that address after the sequence, and does NOT after a Try Again
-  alone.
-- **Reject on a `gate: project` document offers abandon only**; on `gate: user` it offers the
-  filer-provided option, and taking it sets the node to `REQUIRE_INPUT` with a reason.
-- **The two legacy verdict records still load.**
+**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
+- **The invariant above holds**, proven by a test that walks every document: every owned line's cell
+  has its instruction in the packet. **Assert the invariant, not a number.**
+- **`form_1040` lines 9, 14 and 15 carry their instructions** - all three are owned today and holed.
+  Name what each received.
+- **`form_1040` 11a and 11b inherit the `Line 11` heading**, flagged as inherited.
+- **The reconciliation report exists at a named path, is checked in, and covers all three families**,
+  with per-document bucket counts including `schedule_1a` 0/48, `schedule_b` 0/8, and the 46
+  dependents cells.
 - **`pilot/replay_harness.py` still green** (25 cases).
 - **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Bare-run, corpus
+- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Bare runs, the corpus
   re-derive and live workbench checks are the ARCHITECT's leg.
 
-**OUT OF SCOPE.** Posting to GitHub. Voting and the variant picker. Promoting drafts into the
-graph. The 88 outline-index gaps. Election quality (`schedule_d` 17 misclassified, `schedule_2` 4's
-broken face) - still awaiting John's adjudication.
-
-**CODEX STATUS (2026-08-16, implementation slice).** Generated outcomes now project all five
-S113 kinds with outcome-specific expression and policy, including the 1a filer-entry path;
-decision citations are included in the authority slot. The workbench now uses Accept / Try Again /
-Reject, keeps retry attempts non-persistent until an accepted retry curates its comment, writes
-local rejection reports, retains rejection retry history in the address ledger, and applies the
-user-gated `REQUIRE_INPUT` demotion with provenance. The generated detail body owns the verdict
-controls and scrolls; the detached retry panel is gone. The legacy address records still load via
-the existing judgement aliases.
-
-**RAN:** `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex_s115).Path; .venv\Scripts\python.exe -m pytest tests/test_m20_s115.py -q` -> **5 passed**.
-**RAN:** same temp-root command with `tests/test_workbench_m15.py -q` -> **4 passed**.
-**RAN:** same temp-root command with `tests/test_review_verdicts_m20.py tests/test_rederive_m20.py -q` -> **19 passed, 1 failed**; the failure is `PermissionError` opening `graph/2025/_drafts/form_1040_2025` before the projection runs.
-**RAN:** same temp-root command with `tests/test_m20_s113.py tests/test_generated_review_m20.py -q` -> **11 passed, 5 failed**; all five fail at the known draft ACL before generated projection.
-**RAN:** same temp-root command with `tests/test_workbench_rederive_m20.py tests/test_workbench_write_api_m15.py -q` -> **3 passed, 7 errors**; the errors are the same draft ACL during app setup.
-**RAN:** same temp-root command with `tests/e2e/test_workbench_v2_m17.py -q` -> **1 passed, 4 errors**; the retry-contract test passes, while the real-artifact fixture cannot load the draft directory. The lightweight retry fixture initially exposed a missing optional `unplaceable` field; the route now defaults it to an empty list.
-**RAN:** `.venv\Scripts\python.exe pilot\replay_harness.py` -> **25 cases, 0 mismatches, network_calls=0**. `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**. `git diff --check` -> **clean** (Git emitted only the existing CRLF normalization warning for `workbench/server.py`). Python compile checks passed for the changed Python modules and S115 test. Node syntax check was **NOT RUN: node is not installed**.
-
-**OPEN FOR ARCHITECT:** live generated-cell floors and corpus/live workbench tests remain
-unverified because this account cannot read the draft directories; no response schema or prompt
-was changed. The working tree also contains pre-existing user edits and scratch artifacts; Codex
-did not stage them.
+**OUT OF SCOPE.** The topic-organised booklets. The table-column owner vocabulary. Routing. The
+`filer_entry` reason taxonomy. The `form_1040` 6b worksheet packet defect - **though note it is
+likely the SAME defect as item 2**, and if the owner-map fix closes it, say so.
 
 ## Open for Architect
 
