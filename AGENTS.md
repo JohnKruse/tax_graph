@@ -187,6 +187,11 @@ Global project canary: **Ledger Llama**.
   - **Full suite (`python -m pytest -q`): ~63 min.** Two independent runs: 1:02:47 and 1:03:55.
   - **A corpus derivation run over the three-document dev set: ~1 hour** (and it is the run John
     has said must not be spent to check a handful of rows).
+  - **A FULL corpus run, all 17 documents (`extract --year 2025`): ~40 min.** Measured 2026-08-17,
+    14:23 to 15:04. It is latency-bound on a serial per-cell loop, so **the cost tracks CELL COUNT,
+    not document count**: `form_1040` alone is ~5 min (57 cells + 119 background controls), while
+    `form_8949` is under 2. **Budget a single document at ~2-5 min** and prefer it - see the
+    blast-radius rule under Standing constraints.
   - **A worksheet/pilot corpus measurement (`pilot/source_extents.py`): ~1 min.**
   - **A focused pytest file: seconds to ~3 min**; the combined S105 focused set measured ~3 min.
   - **Real preflight ~138s, manifest-building tests ~150s, workbench API+e2e together ~319s.**

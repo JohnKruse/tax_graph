@@ -21,8 +21,31 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S118 is specced below - the AMBIGUOUS bucket is four different things and one of
-them ships duplicate bytes to the model.**
+**BALL: ARCHITECT. M20-S118 is accepted; the next round is not specced yet.**
+
+**M20-S118 IS ACCEPTED (`3181169` + `a4cd008`, Architect, 2026-08-17), VERIFIED BY RUNNING.**
+Recomputed independently rather than read off the report: the three named cells behave exactly as
+specced (`form_1040` 4a keeps `...0019` and drops `...0018`; `schedule_1` 8a keeps both, specific
+first; `schedule_1` 1 keeps the worksheet and records the stub), **nested text duplicates in any
+packet went 17 -> 0 across all 449 cells**, `AMBIGUOUS` went **60 -> 4** with `MATCHED` 202 -> 258
+(the 56 reconcile exactly), the **S117 invariant still reports 0 disagreements** and
+`test_m20_s117.py` is unmodified. **107 passed** across seven suites.
+
+**THE HARNESS'S 25/0/0 HERE MEANS "NOT COVERED", NOT "NOTHING MOVED".** 19 cell packets changed and
+**none of the 19 is among the harness's 25 cases** - disjoint sets, checked. **Do not read a green
+harness as evidence about a packet change again; check the overlap first.**
+
+**CORPUS, ALL 17 DOCUMENTS, 2026-08-17 (Architect's leg): rules 74, edges 181, gaps 154**, 41
+minutes, exit 0, 1446 auto-accepted / 31 human-review. **Against the S113 record of 78 / 224 / 153 -
+BUT THAT COMPARISON IS NOT SOUND AND MUST NOT BE QUOTED AS A DELTA**: these counts came from reading
+the draft YAMLs, the S113 numbers came from another session's method, and four rounds sit between
+them. **The sound check is the blast radius, and it is clean: 17 of the 19 changed cells derive with
+no review gap**, including `form_1040` 6b, which used to decline.
+
+**THE TWO THAT DID NOT, OPENED END TO END.** `form_1040` 5a fails with *"source line is not present
+in the deterministic outline index"* - an outline defect, unrelated to packets. `schedule_1` 1 fails
+with *"quote does not match the supplied form or instruction evidence"*, **and it is the finding of
+this round.**
 
 **M20-S117 IS ACCEPTED (`954c235`, Architect, 2026-08-17), VERIFIED BY RUNNING.** The Architect
 re-ran the invariant independently against the checked-in artifact: **449 cells, 0 disagreements**
@@ -217,119 +240,56 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S118 SPECCED BY ARCHITECT (2026-08-17). `AMBIGUOUS` IS FOUR DIFFERENT THINGS. TYPE THEM, AND
-STOP SENDING THE MODEL THE SAME BYTES TWICE.** **REAL ROUND - THIS ONE CHANGES PACKETS**, unlike
-S117. **NO response-schema change. NO prompt-template change. NO model call.**
+**NONE IN FLIGHT. The next round is not specced; the finding below is what it should be built on,
+and it wants John's read on sequencing first.**
 
-**WHY NOW.** S117 made the report trustworthy and the first thing it shows is that **60 of 449 cells
-hand the model two or more instruction sections with no ranking between them.** That was always true;
-it was hidden behind a broken matcher reading 18. **This is a packet-quality defect, and packet
-quality is the derivation linchpin John named on 2026-08-15.**
+**THE FINDING: `STUB SECTION` IS LAUNDERING A PARSER TRUNCATION, AND IT IS PROBABLY THE ROOT OF THE
+91 PARSER GAPS (Architect, 2026-08-17, opened end to end).**
 
-**FOUR CAUSES, OPENED END TO END (Architect, 2026-08-17). They are not one bucket.**
-1. **NESTED DUPLICATE - 17 cells.** `form_1040` `4a` gets `...0018` *"Lines 4a, 4b, and 4c"* and
-   `...0019` *"Lines 4a and 4b IRA Distributions"*, and **0019's text is a literal substring of
-   0018's.** The parser emitted a parent and its own child as two sections, so **the packet carries
-   the same bytes twice.** Byte-for-byte redundancy in an evidence packet is pure noise.
-2. **GENERAL PLUS SPECIFIC - the bulk of the rest.** `schedule_1` `8a` gets `...0067` *"Lines 8a
-   Through 8z"* and `...0069` *"Line 8a - Net operating loss (NOL) deduction"*. **Both legitimately
-   apply and neither is wrong**; what is missing is that the specific one is more specific.
-   `instruction_ownership.py`'s docstring already claims *"A specific heading wins"* - **that is only
-   implemented for the parent-inheritance path, never for two sections that both directly own the
-   token.**
-3. **EMPTY STUB SECTION.** `schedule_1` line `1` gets `...0060`, whose entire text is
-   `'#### Line 1\n\n'`. **A section with no body is competing with a real one.** That is a parser
-   defect showing up as ambiguity.
-4. **A WORKSHEET IS NOT A COMPETING INSTRUCTION.** The other claimant on `schedule_1` line 1 is
-   `...0068`, the *State and Local Income Tax Refund Worksheet*. **That is the worksheet the line
-   uses, and John already ruled on 2026-08-16 that it BELONGS in the packet** - *"we model the
-   worksheets so that they can support the forms."* Calling it ambiguous is the report mislabelling
-   correct content.
+`schedule_1` line 1 is the worked case. Its instruction section `...0060` is **13 bytes**:
+`'#### Line 1\n\n'`, locator lines 5343-5344, offsets 512124-512137 of
+`instructions_form_1040_2025`. **S118 typed it `STUB SECTION` and dropped it from the packet, which
+is correct for the packet and wrong as a name.** Reading the raw booklet at 512137 - the very next
+byte - gives:
 
----
+```
+#### Taxable Refunds, Credits, or Offsets of State and Local Income Taxes
+**TIP** None of your refund is taxable if, in the year you paid the tax, you either (a) didn't
+itemize deductions, or (b) elected to deduct state and local general sales taxes instead ...
+```
 
-### Item 1 - DEDUPE THE NESTED PAIR
+**That is the actual Schedule 1 line 1 instruction, and the section extent stopped at its heading.**
+The section is not empty; it is TRUNCATED. So the cell's only surviving evidence is `...0068`, the
+**30,083-byte** State and Local Income Tax Refund Worksheet, and micro-extraction fails
+`quote does not match the supplied form or instruction evidence` - the model has a worksheet and no
+instruction.
 
-**When one owned section's text contains another owned section's text, keep the more specific one -
-the child - and drop the parent from that cell's packet.** Record on the cell which section was
-dropped and why. **Do not dedupe on section_id or on locator overlap**; containment of the actual
-text is the evidence, and it is what was measured.
+**S118 IS NOT THE CAUSE AND DROPPING THE 13 BYTES WAS RIGHT** - a heading with no body cannot supply
+a quote. **What S118 got wrong is the LABEL**, and the label is the dangerous part: `STUB SECTION`
+reads as an accepted terminal state, so a truncation that should be repaired is now filed as a
+category that needs nothing. **That is precisely the laundering the S116 report was built to
+prevent, reappearing one level up.**
 
-### Item 2 - RANK GENERAL BELOW SPECIFIC, DO NOT DROP IT
+**WHY THIS IS PROBABLY THE BIG ONE.** The report's largest actionable bucket is
+**91 `CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT`** - by construction, cells whose instruction
+the booklet demonstrably contains and the parser did not attach. **A truncation that keeps the
+heading and drops the body would land in exactly that bucket**, and would also explain
+`form_6251` 33 and `schedule_d` 18. **Measure that before speccing a fix**: for every stub and every
+unmatched cell, read the raw text after the section's end offset and report how much body was left
+behind. **Do not assume the shape from this one instance - open several.**
 
-**A section owning one line token is more specific than a section owning many.** Order the packet
-specific-first and mark each attachment with its specificity. **Both stay in the packet** - the
-general heading carries the *"Do not report on lines 8a through 8z..."* exclusions that the specific
-one omits. **This is ordering and labelling, not selection.**
+**THE SEQUENCING QUESTION FOR JOHN, and it is a real fork.**
+1. **Extent repair** - fix the parser so line sections carry their bodies. Largest reach, touches
+   acquisition, and `../docs/source-extents.md` already pins direction for it.
+2. **Cell-loop concurrency** - the corpus is latency-bound on a serial per-cell loop while
+   `extraction.concurrency` already exists and only `background.py` reads it. **Does not improve
+   quality at all**; makes every future round cheaper to verify.
+3. **The 4 surviving ambiguities** - three headings that name another form's line
+   (*"Taxable Dependent Care Benefits From Form 2441, Line 26"* claiming 1040 line 26) plus a
+   `2i`/`2I` case-fold collision on `form_6251`. **Real, small, and 4 cells.**
 
-### Item 3 - TYPE THE OTHER TWO SO THE REPORT STOPS CALLING THEM AMBIGUOUS
-
-- **An owned section with an empty or heading-only body is a `STUB SECTION`** - its own report bucket,
-  and **it does not enter the packet.** Report the count per document; **do not repair the parser
-  here.**
-- **A section whose heading names a worksheet gets `WORKSHEET` provenance**, stays in the packet, and
-  **does not make its cell ambiguous.**
-
-After items 1-3, **`AMBIGUOUS` means what it says: two or more sections of equal specificity, neither
-containing the other, neither a stub, neither a worksheet.** Whatever survives is the real conflict
-list and is the input to the round after this one.
-
----
-
-**WHAT MUST NOT HAPPEN.**
-- **Do not drop a section that carries content the survivor lacks.** Item 1 is licensed ONLY by literal
-  text containment. **When in doubt, keep both and leave the cell ambiguous** - under-reporting a
-  conflict is recoverable, deleting evidence is not.
-- **Do not attach anything new.** No widening, no cross-document attachment, no new inheritance.
-  Ownership semantics are settled and pinned in `../AGENTS.md`.
-- **Do not re-implement the match.** Everything here happens inside or behind
-  `instruction_span_ids_for_line`; **the report keeps asking that one accessor and nothing else.**
-  That is the whole point of S117 and it must survive this round.
-- **Do not change the prompt template, the response schema, or any expected-count fixture.**
-
-**THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
-- **The S117 invariant still holds**: report matched-state equals the accessor for every cell in
-  every document. **The S117 test must still pass unmodified.**
-- **No cell's packet contains two sections where one's text contains the other's**, asserted by a
-  test that walks every document. **Prove the negative against `954c235` and say how many cells it
-  finds.**
-- **`form_1040` `4a` keeps `...0019` and drops `...0018`; `schedule_1` `8a` keeps BOTH, specific
-  first.** Name what each cell ends up with.
-- **`schedule_1` line `1` reports `STUB SECTION` for `...0060` and `WORKSHEET` for `...0068`, and is
-  no longer `AMBIGUOUS`.**
-- **The regenerated report is checked in**, bucket sums still hold per population, and the three
-  family rows are unchanged.
-- **`pilot/replay_harness.py` WILL move on this round and that is expected** - packets change, so
-  recorded prompts differ. **Report what it says; do NOT edit fixtures to make it green, and do not
-  treat a red harness here as a floor failure.** The corpus re-derive that settles it is the
-  ARCHITECT's leg.
-- **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **Targeted tests: run what your sandbox permits and REPORT THE COMMAND.** Pre-create your
-  `PYTEST_DEBUG_TEMPROOT` directory first.
-
-**OUT OF SCOPE.** Repairing the parser that emits stub and nested sections - **this round makes them
-visible and typed; fixing the extents is its own round.** The topic-organised booklets. The
-table-column owner vocabulary. Routing. The `filer_entry` reason taxonomy.
-
-**CODEX STATUS (2026-08-17): COMPLETE.** Implemented the typed resolver behind
-`instruction_span_ids_for_line`: literal nested containment drops only the parent, specificity rank
-orders surviving attachments, heading-only sections are `STUB SECTION`, and worksheet headings carry
-`WORKSHEET` provenance without making a cell ambiguous. Cell-frame assembly and reconciliation now
-consume the same packet resolution; no prompt, schema, fixture, or model call changed. The report
-preserves `round: M20-S117` for the unmodified S117 guard and records `packet_policy: M20-S118`.
-The regenerated report has 449 line cells across 12 documents; family totals remain 449,
-56 topic-organized, and 46 table-addressed. Form 1040 line 4a keeps section `...0019` and drops
-`...0018`; Schedule 1 line 8a keeps `...0069` then `...0067`; Schedule 1 line 1 keeps worksheet
-`...0068` and records stub `...0060`.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s118.py tests/test_m20_s116.py tests/test_m20_s117.py tests/test_instruction_sections_m20.py -q`
--> **19 passed, 1 warning in 98.74s (0:01:38)**; warning is the existing `.pytest_cache` ACL warning.
-**RAN:** `.venv\Scripts\python.exe -m pilot.reconcile_instructions --root . --year 2025 --output plans/m20_s116_instruction_reconciliation.yaml`
--> **wrote report, exit 0**. **RAN:** `.venv\Scripts\python.exe pilot/replay_harness.py`
--> **25 cases, 0 mismatches, 0 network calls, exit 0**. **RAN:** `.venv\Scripts\python.exe tools/check_ascii.py`
--> **ASCII check OK**; `git diff --check` -> **clean**. **COMMIT:** `3181169` contains the
-implementation, report, tests, and pilot updates; this handoff evidence update is the only
-remaining scoped change.
+**The Architect's recommendation is 1, measured first per the paragraph above.** 3 is a footnote and
+2 is a convenience.
 
 ## Open for Architect
 
