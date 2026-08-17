@@ -288,6 +288,12 @@ the round I nearly specced would have chased a defect that does not exist.**
 **THE LIVE 1040 SEGMENTATION RUN (Architect owes this; blocked on John's egress only).** 71
 windows, 71 paid calls, chapters and windows already built and verified at `6006c87`.
 
+**`_write_recording` CLOBBERS THE FIXTURE INSTEAD OF MERGING INTO IT (Architect, read 2026-08-17).**
+It writes a payload containing ONLY the booklet just run, so pointing `--output` at
+`instruction_segmenter_live_recordings.json` would **destroy the paid Schedule B and D recordings**
+that every floor since S121 rests on. A live recording is bought with money and is not regenerable
+output. **Merge by `source_document_id`, and until then the 1040 run writes to its own path.**
+
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
 
