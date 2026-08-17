@@ -4927,7 +4927,7 @@ booklets:
       - '15'
       - '16'
       - '18'
-      heading: &id003
+      heading:
         title: Taxable Refunds, Credits, or Offsets of State and Local Income Taxes
         level: 4
         line: 5345
@@ -6021,7 +6021,7 @@ booklets:
       - '13'
       - '21'
       - '24'
-      heading: &id001
+      heading:
         title: Keep for Your Records
         level: 1
         line: 773
@@ -6077,7 +6077,7 @@ booklets:
       - 8e
       - '4'
       - '3'
-      heading: &id002
+      heading:
         title: Keep for Your Records
         level: 3
         line: 931
@@ -9407,7 +9407,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9426,7 +9430,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9445,7 +9453,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9464,7 +9476,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9555,7 +9571,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9565,7 +9585,11 @@ s116_join:
       byte_end: 96300
       bytes: 2377
       classification: TRUNCATED_BODY
-      heading: *id002
+      heading:
+        title: Keep for Your Records
+        level: 3
+        line: 931
+        start: 93903
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0014
       following_section_id: instruction_section_instructions_form_1116_2025_0015
@@ -9584,7 +9608,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9594,7 +9622,11 @@ s116_join:
       byte_end: 96300
       bytes: 2377
       classification: TRUNCATED_BODY
-      heading: *id002
+      heading:
+        title: Keep for Your Records
+        level: 3
+        line: 931
+        start: 93903
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0014
       following_section_id: instruction_section_instructions_form_1116_2025_0015
@@ -9613,7 +9645,11 @@ s116_join:
       byte_end: 96300
       bytes: 2377
       classification: TRUNCATED_BODY
-      heading: *id002
+      heading:
+        title: Keep for Your Records
+        level: 3
+        line: 931
+        start: 93903
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0014
       following_section_id: instruction_section_instructions_form_1116_2025_0015
@@ -9632,7 +9668,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9651,7 +9691,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -9670,7 +9714,11 @@ s116_join:
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: exact
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -10330,14 +10378,18 @@ s116_join:
     section_id: instruction_section_instructions_form_1040_2025_0060
     truncated_body_found: true
     truncated_body_bytes: 2560
-    truncated_body_spans: &id004
+    truncated_body_spans:
     - start: 512137
       end: 514697
       byte_start: 512137
       byte_end: 514697
       bytes: 2560
       classification: TRUNCATED_BODY
-      heading: *id003
+      heading:
+        title: Taxable Refunds, Credits, or Offsets of State and Local Income Taxes
+        level: 4
+        line: 5345
+        start: 512137
       relation: immediately_follows_section
       preceding_section_id: instruction_section_instructions_form_1040_2025_0060
       following_section_id: instruction_section_instructions_form_1040_2025_0061
@@ -10347,7 +10399,21 @@ s116_join:
       heading_level: 4
     immediately_following_truncated_body: true
     immediately_following_truncated_body_bytes: 2560
-    immediately_following_truncated_body_spans: *id004
+    immediately_following_truncated_body_spans:
+    - start: 512137
+      end: 514697
+      byte_start: 512137
+      byte_end: 514697
+      bytes: 2560
+      classification: TRUNCATED_BODY
+      heading:
+        title: Taxable Refunds, Credits, or Offsets of State and Local Income Taxes
+        level: 4
+        line: 5345
+        start: 512137
+      relation: immediately_follows_section
+      preceding_section_id: instruction_section_instructions_form_1040_2025_0060
+      following_section_id: instruction_section_instructions_form_1040_2025_0061
   - target_type: stub_section
     booklet_id: instructions_form_1116_2025
     source_bucket: STUB SECTION
@@ -10356,14 +10422,18 @@ s116_join:
     section_id: instruction_section_instructions_form_1116_2025_0004
     truncated_body_found: true
     truncated_body_bytes: 3045
-    truncated_body_spans: &id005
+    truncated_body_spans:
     - start: 81416
       end: 84449
       byte_start: 81424
       byte_end: 84469
       bytes: 3045
       classification: TRUNCATED_BODY
-      heading: *id001
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
       relation: immediately_follows_section
       preceding_section_id: instruction_section_instructions_form_1116_2025_0004
       following_section_id: instruction_section_instructions_form_1116_2025_0005
@@ -10373,7 +10443,21 @@ s116_join:
       heading_level: 1
     immediately_following_truncated_body: true
     immediately_following_truncated_body_bytes: 3045
-    immediately_following_truncated_body_spans: *id005
+    immediately_following_truncated_body_spans:
+    - start: 81416
+      end: 84449
+      byte_start: 81424
+      byte_end: 84469
+      bytes: 3045
+      classification: TRUNCATED_BODY
+      heading:
+        title: Keep for Your Records
+        level: 1
+        line: 773
+        start: 81416
+      relation: immediately_follows_section
+      preceding_section_id: instruction_section_instructions_form_1116_2025_0004
+      following_section_id: instruction_section_instructions_form_1116_2025_0005
   - target_type: stub_section
     booklet_id: instructions_form_1116_2025
     source_bucket: STUB SECTION
@@ -10382,14 +10466,18 @@ s116_join:
     section_id: instruction_section_instructions_form_1116_2025_0014
     truncated_body_found: true
     truncated_body_bytes: 2377
-    truncated_body_spans: &id006
+    truncated_body_spans:
     - start: 93903
       end: 96280
       byte_start: 93923
       byte_end: 96300
       bytes: 2377
       classification: TRUNCATED_BODY
-      heading: *id002
+      heading:
+        title: Keep for Your Records
+        level: 3
+        line: 931
+        start: 93903
       relation: immediately_follows_section
       preceding_section_id: instruction_section_instructions_form_1116_2025_0014
       following_section_id: instruction_section_instructions_form_1116_2025_0015
@@ -10399,4 +10487,18 @@ s116_join:
       heading_level: 3
     immediately_following_truncated_body: true
     immediately_following_truncated_body_bytes: 2377
-    immediately_following_truncated_body_spans: *id006
+    immediately_following_truncated_body_spans:
+    - start: 93903
+      end: 96280
+      byte_start: 93923
+      byte_end: 96300
+      bytes: 2377
+      classification: TRUNCATED_BODY
+      heading:
+        title: Keep for Your Records
+        level: 3
+        line: 931
+        start: 93903
+      relation: immediately_follows_section
+      preceding_section_id: instruction_section_instructions_form_1116_2025_0014
+      following_section_id: instruction_section_instructions_form_1116_2025_0015

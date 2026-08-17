@@ -311,7 +311,7 @@ def _join_row(
                     "byte_end": span["byte_end"],
                     "bytes": span["bytes"],
                     "classification": span["classification"],
-                    "heading": span.get("heading"),
+                    "heading": dict(span.get("heading") or {}) or None,
                     "relation": relation,
                     "preceding_section_id": span.get("preceding_section_id"),
                     "following_section_id": span.get("following_section_id"),
@@ -350,7 +350,7 @@ def _join_row(
                     "byte_end": span["byte_end"],
                     "bytes": span["bytes"],
                     "classification": span["classification"],
-                    "heading": span.get("heading"),
+                    "heading": dict(span.get("heading") or {}) or None,
                     "relation": "immediately_follows_section",
                     "preceding_section_id": span.get("preceding_section_id"),
                     "following_section_id": span.get("following_section_id"),
@@ -371,7 +371,13 @@ def _join_row(
             row["immediately_following_truncated_body_bytes"] = sum(
                 int(span["bytes"]) for span in adjacent
             )
-            row["immediately_following_truncated_body_spans"] = adjacent_records
+            row["immediately_following_truncated_body_spans"] = [
+                {
+                    **item,
+                    "heading": dict(item.get("heading") or {}) or None,
+                }
+                for item in adjacent_records
+            ]
         else:
             row["section_extent"] = None
             row["immediately_following_truncated_body"] = False
