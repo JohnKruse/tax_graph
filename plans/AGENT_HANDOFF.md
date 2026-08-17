@@ -311,19 +311,25 @@ list and is the input to the round after this one.
 visible and typed; fixing the extents is its own round.** The topic-organised booklets. The
 table-column owner vocabulary. Routing. The `filer_entry` reason taxonomy.
 
-**CODEX STATUS (2026-08-17).** Implemented the typed resolver behind
+**CODEX STATUS (2026-08-17): COMPLETE.** Implemented the typed resolver behind
 `instruction_span_ids_for_line`: literal nested containment drops only the parent, specificity rank
 orders surviving attachments, heading-only sections are `STUB SECTION`, and worksheet headings carry
-`WORKSHEET` provenance without making a cell ambiguous. Cell-frame assembly now preserves a general
-section for every directly owned token, including range continuations. The report and packet paths
-remain accessor-backed; no prompt, schema, fixture, or model call changed.
+`WORKSHEET` provenance without making a cell ambiguous. Cell-frame assembly and reconciliation now
+consume the same packet resolution; no prompt, schema, fixture, or model call changed. The report
+preserves `round: M20-S117` for the unmodified S117 guard and records `packet_policy: M20-S118`.
+The regenerated report has 449 line cells across 12 documents; family totals remain 449,
+56 topic-organized, and 46 table-addressed. Form 1040 line 4a keeps section `...0019` and drops
+`...0018`; Schedule 1 line 8a keeps `...0069` then `...0067`; Schedule 1 line 1 keeps worksheet
+`...0068` and records stub `...0060`.
 
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s118.py tests\test_m20_s117.py tests\test_m20_s116.py -q`
--> **14 passed, 1 warning**. **RAN:** `.venv\Scripts\python.exe pilot\replay_harness.py --root .`
--> **replay cases=25 mismatches=0 network_calls=0**. **RAN:** `.venv\Scripts\python.exe pilot\reconcile_instructions.py --root . --year 2025 --output plans/m20_s116_instruction_reconciliation.yaml`
--> **wrote the regenerated report**. **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**;
-`git diff --check` -> **clean**. No model call was made. **COMMIT:** implementation committed on
-`main` (not pushed; Architect owns the push decision).
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s118.py tests/test_m20_s116.py tests/test_m20_s117.py tests/test_instruction_sections_m20.py -q`
+-> **19 passed, 1 warning in 98.74s (0:01:38)**; warning is the existing `.pytest_cache` ACL warning.
+**RAN:** `.venv\Scripts\python.exe -m pilot.reconcile_instructions --root . --year 2025 --output plans/m20_s116_instruction_reconciliation.yaml`
+-> **wrote report, exit 0**. **RAN:** `.venv\Scripts\python.exe pilot/replay_harness.py`
+-> **25 cases, 0 mismatches, 0 network calls, exit 0**. **RAN:** `.venv\Scripts\python.exe tools/check_ascii.py`
+-> **ASCII check OK**; `git diff --check` -> **clean**. **COMMIT:** `3181169` contains the
+implementation, report, tests, and pilot updates; this handoff evidence update is the only
+remaining scoped change.
 
 ## Open for Architect
 
