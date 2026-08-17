@@ -21,8 +21,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S119 is specced below - measure what the section extents leave on the floor.
-John chose extent repair, and chose to measure first (2026-08-17).**
+**BALL: CODEX. M20-S120 is specced below - split the coarse spans and name, per cell, why its
+instruction is unreachable.**
+
+**M20-S119 IS ACCEPTED (`0d7aa76` + `77e56c8` + `8c70a70`, Architect, 2026-08-17), VERIFIED BY
+RECOMPUTATION.** All **8 booklets** reconcile - I recomputed each `source_sha256` and file size from
+the raw bytes and summed the claim buckets myself; claimed-once + unclaimed + overlap equals file
+size everywhere. Every named floor case holds: `schedule_1`'s `...0060` is `TRUNCATED_BODY` starting
+at **512137** with the *"Taxable Refunds, Credits, or Offsets..."* heading recorded; `form_1040`
+`...0048` is **not** misclassified; the `...0010` overlap is in the overlap bucket. The join is
+**94 rows - all 91 cells and all 3 stubs - with the 81 negatives explicitly present.** 19 passed.
+
+**THE ROUND REFUTED THE ARCHITECT'S HYPOTHESIS, WHICH IS EXACTLY WHAT IT WAS FOR.** I specced it
+believing extent truncation was the root of the 91 parser gaps. **It is 10 of 91, and all ten are
+`form_1116`.** Zero on `form_1040`, zero on `form_6251` (33 gaps), zero on `schedule_d` (18).
+**Had we gone straight to the repair, we would have fixed one document and called 81 cells done.**
+That is the entire value of a measure round and it is why the next one is also a measurement.
+
+**I CHECKED THE ONE PLACE THE ROUND COULD HAVE UNDERCOUNTED.** S119 scopes `TRUNCATED_BODY` to stub
+sections, which is narrower than the spec's wording. I recomputed non-stub truncation independently
+across three booklets from the raw text and heading levels: **zero sections lose more than 200 bytes
+of body before the next same-or-higher heading.** The narrowing is sound and stays.
+
+**AND A CORRECTION I OWE CODEX.** I first read the census as omitting the governing heading on its
+largest spans. **It does not** - `heading`, `headings_in_span`, `governs` and `classification_reason`
+are all there, richly. I had checked for a key name that does not exist. **The spans are coarse, not
+incomplete**, and that distinction is what S120 is built on.
 
 **M20-S118 IS ACCEPTED (`3181169` + `a4cd008`, Architect, 2026-08-17), VERIFIED BY RUNNING.**
 Recomputed independently rather than read off the report: the three named cells behave exactly as
@@ -241,118 +265,84 @@ mechanism under it is right.**
 
 ## Current round
 
-**M20-S119 SPECCED BY ARCHITECT (2026-08-17). MEASURE WHAT THE SECTION EXTENTS LEAVE ON THE FLOOR.
-DO NOT REPAIR ANYTHING.** **MEASURE ROUND** - deterministic, read-only over acquired text.
-**NO model call. NO prompt, schema, packet, or extent change. NO parser fix.** John chose this line
-and chose to measure first (2026-08-17).
+**M20-S120 SPECCED BY ARCHITECT (2026-08-17). THE HEADINGS THAT NEVER BECAME SECTIONS. SPLIT THE
+COARSE SPANS AND NAME, PER CELL, WHY ITS INSTRUCTION IS UNREACHABLE.** **MEASURE ROUND, the second
+and last one on this line** - deterministic, read-only. **NO model call. NO parser fix. NO packet,
+prompt, schema, or extent change.**
 
-**THE TARGET STATE, IN ONE SENTENCE.** *Every byte of an acquired instruction booklet is either
-claimed by exactly one section or reported as unclaimed with the reason it is unclaimed* - so the
-next round can be specced against a census instead of an anecdote.
+**WHY THERE IS A SECOND MEASURE ROUND AND NOT THE REPAIR.** S119 was specced to confirm truncation
+as the root of the 91 parser gaps. **It refuted that: 10 of 91, all `form_1116`.** Speccing the
+repair now would fix `form_1116` and leave 81 cells untouched. **The census already contains the
+answer to "then what is it" and this round extracts it.**
 
-**THE ANECDOTE THIS REPLACES, and it is only one instance.** `schedule_1` line 1's section `...0060`
-is **13 bytes** (`'#### Line 1\n\n'`, offsets 512124-512137). The actual instruction begins at the
-very next byte - *"#### Taxable Refunds, Credits, or Offsets of State and Local Income Taxes"*, TIP
-and all - and **2,560 bytes sit unclaimed before the next section starts.** The cell's only evidence
-is a 30KB worksheet and micro-extraction fails on a quote that was never in the packet.
+**WHAT THE CENSUS SHOWS, READ END TO END (Architect, 2026-08-17).** The 1040 booklet is **683,265
+bytes with 142,173 claimed exactly once - 21%.** The unclaimed remainder is not truncation; it is
+**`heading_has_no_line_owned_section`**, in a handful of enormous spans:
+- **172,427 bytes containing 34 headings**, opening at *"Third Party Designee"*, and its `governs`
+  list carries real line tokens: `11, 16, 15, 12e, 7b, 37, 1a, 38, 10, 8, 26`.
+- **108,542 bytes** of *"Earned Income Credit (EIC) Table"* - a lookup table, **not a defect.**
+- **53,340 bytes** opening *"# Instructions for Schedule 1-A / Additional Deductions"* - **this is
+  `schedule_1a`'s entire instruction chapter, and `schedule_1a` sits at 0 of 48 matched.**
+- **90,083 bytes** of front matter, correctly `NON_LINE_REGION`.
 
-**THE PRINCIPLE IS ALREADY PINNED, DO NOT REDESIGN IT.** `../docs/source-extents.md`:
-*"Every chunk of the source is claimed by exactly one owner, and a chunk that is not a numbered row
-says what it is and what it governs."* **This round measures how far the instruction booklets are
-from that, and nothing more.**
+**THE SPANS ARE TOO COARSE TO ACT ON, AND THAT IS THE ONLY THING WRONG WITH S119.** One span holding
+34 headings cannot tell you which heading owns which line. **It is not a mislabel - the classifier's
+reasons are right and its headings are recorded - it is a granularity the next round has to break
+open.**
 
 ---
 
-### Item 1 - THE BYTE CENSUS, PER BOOKLET
+### Item 1 - SPLIT EVERY UNCLAIMED SPAN AT ITS HEADING BOUNDARIES
 
-For every acquired instruction booklet, walk the raw text once and attribute every byte to the
-section whose locator range covers it. **Report, at a named checked-in path:**
-- **bytes claimed by exactly one section**,
-- **bytes claimed by NONE**, as explicit ranges,
-- **bytes claimed by MORE THAN ONE.** Overlap is real and I have an instance: `form_1040` section
-  `...0010` ends **89 bytes past** the start of the section after it. **Report overlaps; do not
-  resolve them.**
+**One row per heading, not per span.** Each heading inside an unclaimed span becomes its own record
+with its own byte range, level, title, and the line tokens it governs. **The reconciliation from
+S119 must survive**: split ranges still sum to the parent span, and the per-booklet totals still
+reconcile to file size.
 
-Totals must reconcile: claimed + unclaimed + overlap-adjusted == file size, asserted per booklet.
+### Item 2 - PER CELL, NAME WHY THE INSTRUCTION IS UNREACHABLE
 
-### Item 2 - CLASSIFY EACH UNCLAIMED SPAN, AND THIS IS WHERE THE ROUND IS WON OR LOST
+For each of the **81** `BOOKLET MENTIONS IT` cells with no truncated body, locate the heading whose
+`governs` covers that cell's line and report which of these it is:
+- **`HEADING_NEVER_SECTIONED`** - a heading owns the line and no section was built from it. **This
+  is the expected majority and is the actionable bucket.** Report the heading title and level.
+- **`MENTIONED_IN_PROSE_ONLY`** - the line number appears in running text, no heading owns it. **Not
+  a parser defect** - the S116 bucket was generous and this is where the generosity shows.
+- **`NON_LINE_CONTENT`** - the governing text is a table, topic list, or chapter. **Not a defect.**
+- **`UNRESOLVED`** - none of the above fits. **Keep this bucket and report it honestly rather than
+  forcing a row into a category.**
 
-**A naive "bytes until the next section" number is WRONG and I have already produced it by mistake.**
-`form_1040` section `...0048` (line 27c) shows **138,288** bytes before the next section - because
-what follows is the *"Definitions and Special Rules"* chapter, which is nobody's line body. **A
-number built that way will be enormous, meaningless, and will get a round specced against it.**
+### Item 3 - RANK THE REPAIR BY WHAT IT WOULD RECOVER
 
-**Classify by the HEADING HIERARCHY in the raw text, which is the same rule
-`instruction_ownership.py` already documents** - a heading owns its body through deeper headings
-until the next heading at the same or a higher level:
-- **`TRUNCATED_BODY`** - the unclaimed span sits between a section's end and the next heading **at
-  the same or a higher level than that section's own heading**. **This is the actionable bucket**
-  and `schedule_1` `...0060` is its type specimen.
-- **`OTHER_SECTION_TERRITORY`** - the span is governed by a different heading that simply has no
-  section. Report which heading.
-- **`NON_LINE_REGION`** - front matter, chapters, tables, appendices; text outside any line-heading
-  hierarchy. **Report the size; it is not a defect.**
-
-### Item 3 - JOIN THE CENSUS TO THE CELLS THAT ARE HURTING
-
-For every cell in `m20_s116_instruction_reconciliation.yaml` bucketed
-`CELL WITH NO INSTRUCTION + BOOKLET MENTIONS IT` (the largest actionable bucket), and for every
-section S118 typed `STUB SECTION`, **state whether a `TRUNCATED_BODY` span sits where that cell's
-instruction should be, and how big it is.** **That join is the deliverable** - it is what turns
-"91 parser gaps" into a ranked, causal work list.
+Group `HEADING_NEVER_SECTIONED` by booklet and by governing heading level, and report **how many
+cells each group would recover.** `schedule_1a`'s 53KB chapter and its 48 unmatched cells should
+fall out as one group. **That ranking is the deliverable** - the repair round gets specced off it.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not repair a single extent, section, or packet.** Not one. **The moment this round edits the
-  parser it stops being a measurement and starts being an unreviewed fix.**
-- **Do not re-run the corpus or call a model.** This is deterministic over acquired text and the
-  checked-in report. **A measure round that needs egress is mis-specced - say so instead.**
-- **Do not rename or re-bucket anything in the S116/S117/S118 report.** Write a NEW artifact.
-- **Do not report a single headline number without its classification.** An unclassified total here
-  is worse than no total, for the `...0048` reason above.
+- **Do not repair, re-parse, or re-extent anything.** Still a measurement. **Two measure rounds in a
+  row is deliberate; do not "helpfully" start the fix.**
+- **Do not widen `TRUNCATED_BODY`.** S119's stub-scoped definition was checked independently against
+  three booklets and **found zero non-stub truncations**; it is sound and stays as it is.
+- **Do not restate the S119 census.** Extend it or write a sibling artifact; do not fork its numbers.
+- **Do not re-bucket the S116 report.**
 
 **THE FLOOR - OUTCOMES AND INVARIANTS, NOT COUNTS.**
-- **The census reconciles per booklet**: every byte is claimed once, unclaimed, or overlapped, and
-  the three sum to the file size. **Assert it for every acquired booklet, not a sample.**
-- **`schedule_1` `...0060` is classified `TRUNCATED_BODY`**, its unclaimed span starts at 512137,
-  and the report names the heading that follows. **Name what it found, do not assert my number** -
-  if you measure something other than 2,560 bytes, **your measurement wins and say so.**
-- **`form_1040` `...0048` is NOT classified `TRUNCATED_BODY`.** It is the negative case that proves
-  the classifier is doing hierarchy and not arithmetic.
-- **The overlap at `form_1040` `...0010` appears in the overlap bucket.**
-- **Every `STUB SECTION` and every `BOOKLET MENTIONS IT` cell gets a row in the item 3 join**, even
-  when the answer is "no truncated span found" - **absence is a result and must be visible.**
-- **`tools/check_ascii.py` OK**, `git diff --check` clean.
-- **Targeted tests only; pre-create your `PYTEST_DEBUG_TEMPROOT` directory.** No corpus leg on this
-  round for either of us - **there is nothing for a re-derive to show.**
+- **Every unclaimed span is split to one row per heading**, and **the split ranges sum to the parent
+  span for every span in every booklet** - asserted, not sampled.
+- **All 81 cells get a row with one of the four reasons**, including `UNRESOLVED`. **A cell with no
+  row is a failure of the round.**
+- **The `Third Party Designee` span resolves into its 34 headings**, and the cells whose lines appear
+  in its `governs` list (`11`, `15`, `16`, `26`, `37`, `38`, ...) are classified by the heading that
+  actually owns each one. **Name what several of them got.**
+- **`schedule_1a` appears in the item 3 ranking as a single recoverable group** naming its chapter.
+- **The EIC table and the front matter do NOT appear as actionable.** They are the negative controls.
+- **`tools/check_ascii.py` OK**, `git diff --check` clean. Targeted tests only; pre-create your
+  `PYTEST_DEBUG_TEMPROOT` directory. **No corpus leg for either of us.**
 
-**OUT OF SCOPE.** The fix. The `filer_entry` reason taxonomy. Routing. The topic-organised booklets.
-The table-column vocabulary. The 4 surviving ambiguities. Cell-loop concurrency.
-
-**CODEX STATUS (2026-08-17).** The canonical read-only census is
-`pilot/instruction_extent_census.py`; it measures UTF-8 byte ranges, records source fingerprints,
-classifies unclaimed spans, and joins the S116 targets without changing extraction, packets,
-prompts, schemas, or the corpus path. The checked-in artifact is
-`plans/m20_s119_instruction_extent_census.yaml`: all 8 manifest instruction booklets reconcile,
-and the join covers all 91 `BOOKLET MENTIONS IT` cells and all 3 S118 stubs. Schedule 1 line 1's
-stub joins to `TRUNCATED_BODY` at start 512137 with the following `Taxable Refunds, Credits, or
-Offsets of State and Local Income Taxes` heading; the measured span is 2,591 raw UTF-8 bytes
-(2,560 normalized text offsets). Form 1040 section 0048 is covered by its parent range and is not
-misclassified as `TRUNCATED_BODY`; the 0010 overlap is present in the overlap bucket.
-
-**RAN:** `New-Item -ItemType Directory -Force .test_tmp_s119_run; $env:PYTEST_DEBUG_TEMPROOT =
-(Resolve-Path .test_tmp_s119_run).Path; .venv\Scripts\python.exe -m pytest
-tests\test_m20_s119.py tests\test_m20_s116.py tests\test_m20_s118.py
-tests\test_instruction_sections_m20.py -q` -> **19 passed, 1 warning in 35.81s**.
-**RAN:** `.venv\Scripts\python.exe -m pilot.instruction_extent_census` -> **8 booklets, 252
-sections, 56 unclaimed spans, 80 overlap spans**. **RAN:** independent YAML/hash/raw-byte
-reconciliation witness -> **8 booklets and 94 join rows green**. **RAN:**
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**; `git diff --check` ->
-**clean**. No corpus run and no model call were made.
-
-**WHAT THE NEXT ROUND WILL BE, so you can see where this lands:** the extent repair itself, specced
-off this census and ranked by the item 3 join. **Do not start it here.**
+**OUT OF SCOPE.** The repair. `form_1116`'s 10 truncations - **they are real, they are S119's finding,
+and they get fixed in the repair round with everything else, not separately.** Routing, the
+`filer_entry` taxonomy, the 4 ambiguities, cell-loop concurrency.
 
 ## Open for Architect
 
