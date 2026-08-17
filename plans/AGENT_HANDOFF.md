@@ -246,11 +246,56 @@ wrong-owner, 4 reachable cells**. Schedule D is **82 canonical sections from 93 
 
 ## Open for Architect
 
-- **M20-S121 Architect leg remains:** re-run both live booklets with the updated prompt and
-  manifest-constrained schema. Codex has no provider egress; the provider-free replay is green.
-  The checked-in recording contains two source-offset-invalid proposals, which replay rejects
-  and records while the strict provider path fails closed. Confirm the live rerun has no rejected
-  sections before accepting the round.
+**ARCHITECT LIVE LEG RUN, 2026-08-17. S121 IS STILL NOT ACCEPTED - ONE NEW DEFECT, AND IT IS A
+DESIGN CALL I OWE, NOT A CODEX ERROR.**
+
+**WHAT PASSED, VERIFIED BY RECOMPUTING THE ARTIFACT, NOT BY READING THE REPORT.** Replay of the
+checked-in recording reproduces Codex's numbers exactly: `schedule_b` **31 raw -> 28 unique**, 3
+duplicates, 2 boundary-repaired, **0 rejected**; `schedule_d` **93 raw -> 82 unique**, 11 duplicates,
+5 boundary-repaired, **2 rejected** (bytes 33026, 51283, disclosed and unrepaired).
+**`reconciles_to_file_size` TRUE on both.** Provider-free suite **15 passed**.
+
+**LIVE RE-RUN: `schedule_b` SUCCEEDED (29 sections). `schedule_d` FAILED CLOSED:**
+
+```
+SegmenterError: overlapping windows disagree about governs at 10062
+```
+
+**THE RECORDING COULD NOT HAVE PREDICTED THIS. I checked: the recording contains ZERO `governs`
+disagreements on either booklet.** Its 3 and 4 conflicts are owner SPELLINGS
+(`instructions_schedule_b_2025` vs `Schedule B (Form 1040)`), which defect 1's manifest constraint
+already normalises. **This is a class that only a live call produces.**
+
+**THE CAUSE IS STRUCTURAL AND WILL RECUR ON EVERY BOOKLET.** Windows are 12,000 bytes with 2,000
+overlap. Byte 10062 is **62 bytes inside the overlap**: window 0 sees that section with ~1,900 bytes
+of trailing context, window 1 sees it jammed against its own start edge with nothing before it.
+**Two different views of the same text produce two different `governs`. That is not model
+flakiness - it is the overlap doing what an overlap does.**
+
+**RULING: A `governs` DISAGREEMENT IN AN OVERLAP IS A RECONCILIATION CASE, NOT A FATAL ERROR.**
+Failing the whole booklet over one contested section is wrong: **82 verified sections are discarded
+because of one.** The code already treats the analogous case correctly - `owner_conflict_count` is
+counted and normalised, and source-unbacked proposals go to `rejected_sections` without killing the
+run. **`governs` must behave the same way.**
+
+**THE TIEBREAK, AND IT IS DETERMINISTIC - DO NOT PICK ARBITRARILY AND DO NOT UNION.**
+1. **Prefer the observation from the window that gives the section the most following context** -
+   i.e. the greatest distance from the section start to that window's end. A window that sees the
+   whole section has better evidence than one that sees a fragment. At 10062 that is window 0.
+2. **If the distances tie, or if the section abuts an edge in every window that saw it, REJECT that
+   SECTION** - list it in `rejected_sections` with the competing claims - **and keep the rest of the
+   booklet.**
+3. **Never union the governs sets.** A union over-claims, and an over-claimed `governs` is exactly
+   the wrong-instruction failure this whole line of rounds exists to prevent.
+4. **Report the count** as `governs_conflict_count`, alongside `owner_conflict_count`.
+
+**THE STANDING LESSON, NOW TWICE.** A recording verifies CODE PATHS and never MODEL BEHAVIOUR. The
+replay harness taught this on S109 (`production prompt differs from recorded prompt` on 19 of 20
+cases); S121 repeats it. **A green replay is never evidence that a live run will pass** - and the
+Architect's leg exists precisely because Codex has no egress.
+
+**ALSO OBSERVED, NOT A DEFECT:** live `schedule_b` produced **29** sections against the recording's
+28. Ordinary run-to-run variance at the same order as the corpus's +/-2 rules.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
