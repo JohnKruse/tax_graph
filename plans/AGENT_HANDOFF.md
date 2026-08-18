@@ -43,11 +43,57 @@ one on three of the four, and every point of its net gain is Schedule 1-A, 0 -> 
 topic-organised chapter where the parser finds nothing and never could. **That is exactly the case
 John chose this direction for, and it is now proven on the biggest booklet we have.**
 
-**THE TWO ARMS ARE COMPLEMENTARY, NOT COMPETING, AND THE UNION IS THE BEST NUMBER ON THE TABLE.**
-`form_1040` is the tell: both arms score 42 and the union is 44, so **they disagree about WHICH
-cells, not just how many.** 173 of 248 beats either arm alone. **Replacing the deterministic
-sections with model sections would throw away real coverage.** Queued as the direction question;
-it is not folded into S126.
+**I RECOMMENDED TAKING THE UNION OF BOTH MATCHERS. JOHN PUSHED BACK - "I don't want to weave in
+kludges" - AND HE WAS RIGHT. I OPENED EVERY DISAGREEMENT AND THE UNION IS BUILT ON THE PARSER'S
+WRONG ANSWERS.** All four cells the parser wins and the model loses, opened end to end 2026-08-18:
+
+| cell | what is actually there | verdict |
+| --- | --- | --- |
+| `form_1040` 31 | heading *"Employer-Provided Adoption Benefits From Form 8839, Line 31"* at byte 93746, in the LINE 1 region. Model says `1f`, parser says `31`. | **PARSER WRONG** |
+| `schedule_1` 22 | the whole section body is *"Line 22 has been reserved for future use."* | **VACUOUS** |
+| `form_1040` 25 | model segmented the children `25a`/`25b`/`25c`, emitted nothing for the parent | rollup line |
+| `schedule_2` 1z | model segmented `1a`-`1f`,`1y`; parser matched the container *"Lines 1a Through 1z"* | rollup line |
+
+**THE PARSER'S 160 CONTAINS 3 CROSS-FORM COLLISIONS AND 2 VACUOUS MATCHES; ITS SOUND SCORE IS 155.**
+The three are `form_1040` 26, 31 and 38 - *"...From Form 2441, Line 26"*, *"...From Form 8839, Line
+31"*, *"...From Schedule 1-A, Line 38"* - **and the model resolves all three correctly to `1e`, `1f`
+and `13b`.** Those headings sit thousands of bytes BEFORE the line 7 section, which is positional
+proof they are line-1 instructions. **This is the S116 defect, still live in the baseline, scored as
+correct.** The model's own sound score is 168 of 169 (one vacuous: `schedule_2` 10, a section
+titled *"Reserved for Future Use"*).
+
+**SO THE UNION BUYS TWO REAL CELLS AND IMPORTS THREE WRONG ATTRIBUTIONS. IT IS OFF THE TABLE.**
+Both real cells are the rollup-line class, which has a structural answer, not a merge.
+
+**THE REMAINING GAP HAS ONE ROOT CAUSE AND IT IS A FIELD WE UNDER-SPECIFIED, NOT A MODEL FAILURE.**
+Measured 2026-08-18 on the live recording, chapter by chapter:
+
+- **On `form_1040`, `schedule_1`, `schedule_2` and `schedule_3` THE MODEL IS AT CEILING.** Every
+  cell whose chapter contains a `Line N` heading is found. **All 38 unreached cells in those four
+  chapters have no such heading anywhere in their own chapter** - `11a`, `1z`, `25d`, `32`, `33` and
+  the rest are rollups and arithmetic the IRS writes nothing for. **Zero recall failures.**
+- **Schedule 1-A is the entire remaining gap: 37 of 48.** The model segmented that chapter into
+  **51 byte-perfect sections and only 11 carry a line token.** The rest are topic prose -
+  `Qualified Tips`, `Net income limitation.`, `Maximum amount of deduction.`
+
+**`governs` IS ASKING TWO DIFFERENT QUESTIONS AND WE ONLY MADE ONE OF THEM ANSWERABLE.** For
+`Line 4a.` it is a mechanical copy out of the heading, and the model never gets that wrong. For
+`Qualified Tips` it is a SEMANTIC mapping from a topic to form lines, **which requires the form's
+line inventory - the exact thing we deliberately withhold to keep the model cell-naive.** Given no
+way to say *"this governs lines I am not allowed to name"*, the model filled the field with slugs of
+its own headings: **93 distinct non-line values, in three different spellings** (`additions-to-tax`,
+`adjustments_to_income`, `alimony paid`). **That is not misbehaviour; it is an under-specified field
+telling us so.**
+
+**THE FIX IS TWO STAGES, AND IT KEEPS JOHN'S RULING INTACT RATHER THAN BENDING IT.**
+1. **Segmentation stays cell-naive and MECHANICAL.** `governs` is a line token copied from the
+   heading, or EMPTY. Constrain it in the structured-output schema so free text cannot enter the
+   join key at all.
+2. **Attribution becomes its own stage over ALREADY-BOUNDED sections**, asking *"which form lines,
+   if any, does THIS span govern?"* with empty a first-class answer. **This is the INVERSE of the
+   question John vetoed.** He objected to *"find line 24's instructions"* because the demand makes
+   the model drag line 22's text in. **A fixed, byte-verified span cannot drag anything in - the
+   boundary is already decided and the model is only labelling it.**
 
 **WHAT THE CHAPTER WORK BOUGHT, MEASURED LIVE.** Across 586 sections in a five-form booklet:
 **0 owner conflicts and 0 chapter-owner disagreements.** The model never once claimed a foreign
@@ -351,11 +397,17 @@ the round I nearly specced would have chased a defect that does not exist.**
 HONEST.** `model_reachable` counts a foreign worksheet's row number as reach; add
 `instructed_cell_count` and `row_number_collision_count`.
 
-**TAKE THE UNION OF BOTH MATCHERS INSTEAD OF REPLACING ONE (Architect, measured 2026-08-17 on the
-live 1040 run).** Deterministic 160, model 169, **union 173 of 248** - and on `form_1040` both score
-42 while the union is 44, so they disagree about which cells. **This is a direction question, not a
-defect**: John ruled the matcher goes model-owned, which settles who segments, not whether the
-deterministic sections are discarded.
+**[WITHDRAWN 2026-08-18 AFTER JOHN PUSHED BACK - see BALL.] TAKE THE UNION OF BOTH MATCHERS.**
+Opening all four disagreements showed the union buys 2 real cells and imports 3 wrong attributions.
+
+**CONSTRAIN `governs` TO A LINE TOKEN OR EMPTY IN THE STRUCTURED-OUTPUT SCHEMA (Architect, measured
+2026-08-18).** 93 distinct non-line values are in the live 1040 frame; the join key currently
+accepts free text.
+
+**ATTRIBUTION AS ITS OWN STAGE OVER BOUNDED SECTIONS (Architect, 2026-08-18).** The inverse of the
+question John vetoed: a fixed byte span, "which lines does this govern, or none?" **This is the
+only thing that reaches Schedule 1-A's remaining 37 cells, and it needs John's ruling before it is
+specced.**
 
 **SCHEDULE 1-A IS 11 OF 48 AND I HAVE NOT OPENED THE OTHER 37 (Architect, 2026-08-17).** It may be
 the same instruction ceiling that made Schedule D's 12 of 24 a full score, or a real gap. **Do not
