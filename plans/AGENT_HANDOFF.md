@@ -21,8 +21,28 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S129 IS ACCEPTED. M20-S130 under Current round closes the 94-section parser gap
-that is the only thing keeping the HTML frame behind the OCR frame.**
+**BALL: CODEX. M20-S130 IS ACCEPTED. M20-S132 under Current round fixes an ownership rule that is
+MINE and is wrong in a way S130 exposed. M20-S131 was withdrawn unstarted.**
+
+**M20-S130 IS ACCEPTED (`b78dfd6`, Architect, 2026-08-18), VERIFIED BY RUNNING THE REAL CODE.**
+All 8 booklets still tile with **zero gaps and zero degenerate sections**, the TOC is still
+excluded, Schedule D `Line 4.`/`Line 12.` are still worksheet-owned and Form 1116's worksheet rows
+still rejected. **17 passed.** Codex opened the sample as asked and reported real markup -
+`span.bold`+`strong` (**correctly EXCLUDED as prose emphasis**), `p.title`, `h3.title.worksheet`,
+`h4`/`h5.title.role-step`, and semantic `role-teletax-topics` / `role-budget` / `role-figure`.
+
+**THE ROUND ADDED 208 SECTIONS AND ONE LINE ANCHOR. 287 -> 288 of 449.** The 1040 alone gains 99
+sections for +1. **That is not a failure - the added sections are charts, worksheets, dependent-flow
+steps and back matter, which is document coverage for augmenting context and the stage-2 read, and
+was never going to be line anchors.** But it settles something: **heading extraction is done. The
+remaining gap is not reachable by finding more headings.**
+
+**I SPECCED A FLOOR ITEM THAT WAS ALREADY SATISFIED, FOR THE SECOND TIME TODAY.** I required
+*"`Lines 6a and 6b` becomes a section owned by `form_1040_2025`"*. **It already was one in S129** -
+as `Lines 6a and 6b Social Security Benefits`. I generated the "94 missing" list by comparing
+against OCR heading text, **a method I had myself declared invalid in the S129 acceptance one hour
+earlier**, and the suffix drift made a present section look absent. **The 94 is unreliable and so is
+the 62-remaining that descends from it.** Codex flagged this in its own report and was right to.
 
 **M20-S129 IS ACCEPTED (`d1cec08` + `12bf6c4`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.**
 I re-derived the tiling myself over all 8 booklets: **zero gaps, zero overlaps, zero degenerate
@@ -372,85 +392,70 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S131 IS WITHDRAWN, UNSTARTED. THE TAX TABLE IS ALREADY MODELLED AND HAS BEEN ALL ALONG.
-ARCHITECT ERROR - DO NOT BUILD IT.**
+**M20-S132: THE OWNERSHIP RULE HAS THREE CASES AND WE HAVE ONLY EVER IMPLEMENTED TWO. THIS IS MY
+DEFECT, SPECCED WRONG IN S128 AND REPLACED WITH SOMETHING ALSO WRONG.**
 
-`tax_graph/compile/tax_table.py` compiles the under-$100k table from the authored bracket nodes,
-`graph/2025/tax_table.json` holds **2,062 bands**, and `tax_graph/engine/engine.py:87` loads it.
-**The compiled table returns 16909 for taxable income $99,999 Single, which is exactly the cached
-OTS value.** The engine was never wrong.
+**S128 SPEC (mine):** owner is the nearest naming ancestor, **else the booklet's own form.** Wrong -
+it assigns Form 1116's Qualified Dividends worksheet rows to `form_1116_2025`.
+**S128 IMPLEMENTATION (Codex's correction):** owner is the nearest naming ancestor, **else reject.**
+Also wrong, and S130 exposed it - **Schedule D's worked examples are now orphaned:**
 
-**HOW I GOT IT WRONG, SO IT DOES NOT RECUR.** I hand-rolled a bracket formula in a scratch script,
-compared THAT against OTS, and reported the engine as $5 off. **I never ran the engine.** I also
-never checked whether the machinery existed - `.cache/m13_step4_adjudicated_corpus/corpus.yaml`
-records **98 of 100 scenarios AGREED with OTS**, which should have stopped me on the spot, and the
-two disagreements are an adjudicated OTS Schedule D Tax Worksheet defect, not ours.
+    'Example 1-Basis Reported to the IRS'  <- ['Specific Instructions',
+                                               'Lines 1a and 8a- Transactions Not Reported on Form 8949']
+    'Example 1-gain.'                      <- ['Specific Instructions',
+                                               'Lines 1b, 2, 3, 8b, 9, and 10, Column (h)-...']
 
-**MY SPEC WAS ALSO LESS CORRECT THAN THE EXISTING CODE.** I wrote "$50 bands below $100,000". The
-real table, which the existing module implements, uses **0-5, 5-15, 15-25, then $25 bands to $3,000,
-then $50 bands** - so building my version would have produced wrong tax for low incomes.
+**Those sit under Schedule D's OWN line headings. They belong to `schedule_d_2025` and they are
+coming back with `owner=None`.** Schedule D rejections went 3 -> 6 as the vocabulary widened, and
+they will keep growing.
 
-**WHAT SURVIVES.** Only the queued question of whether a CLEAN copy of the printed table should be
-acquired to verify the compiled one against something other than its own inputs. That is worth
-doing and is not this round.
+### ITEM 1 - THE RULE IS THREE-WAY
+
+1. **Nearest naming ancestor IS in the booklet's manifest vocabulary** -> that document owns it.
+   (Schedule D's `Line 4.` under the Unrecaptured Section 1250 worksheet.)
+2. **Nearest naming ancestor names a document OUTSIDE the vocabulary** -> **REJECT.** It is another
+   booklet's worksheet printed here. (Form 1116's rows under *"Individuals Who Completed a Qualified
+   Dividends and Capital Gain Tax Worksheet"* - that worksheet belongs to the 1040 booklet.)
+3. **NO naming ancestor at all** -> **the booklet's own form.** A section with no worksheet above it
+   is the form's by definition. (Schedule D's examples.)
+
+**Case 2 and case 3 are currently conflated into "reject" and that is the whole bug.**
+
+### ITEM 2 - PROVE ALL THREE, NOT JUST THE ONE THAT CHANGED
+
+A test per case, each naming its real section: the Schedule D worksheet row (case 1), a Form 1116
+Qualified Dividends row (case 2), a Schedule D worked example (case 3). **Case 2 must still reject
+after the change** - that is the regression this round is most likely to cause.
+
+### ITEM 3 - REPORT THE MOVEMENT
+
+Per booklet, **rejections before and after**, and the per-document `line_anchored` scores. **I
+expect rejections to fall and line anchors to be unchanged; if line anchors MOVE, something else
+happened and I want to see it.**
 
 ---
 
-**M20-S130 CODEX STATUS: IMPLEMENTED; READY FOR ARCHITECT REVIEW.** The implementation is isolated
-to `pilot/html_document_frame_m20_s130.py`, its focused guards, and the pilot README. No production
-pipeline, acquisition, OCR, graph, or CLI file changed.
+**WHAT MUST NOT HAPPEN.**
+- **Nothing under `tax_graph/`, no acquisition change, no CLI wiring, no graph artifact.** Pilot plus
+  tests.
+- **Do not widen the heading vocabulary further.** S130 closed that; this round is ownership only.
+- **Do not make case 2 fall through to the booklet's form.** That is my original S128 error and
+  re-introducing it silently mis-attributes another booklet's worksheet rows.
+- **No model call and no network.**
 
-### ITEM 1 - OBSERVED MARKUP, OPENED END TO END
+**THE FLOOR.**
+- **All three cases proven by tests naming real sections.**
+- **Schedule D's six worked examples are owned by `schedule_d_2025`**, not `None`.
+- **Form 1116's worksheet rows are still rejected** - count reported before and after.
+- **All 8 booklets still tile with no gap or overlap; the TOC is still excluded; Schedule D
+  `Line 4.`/`Line 12.` still worksheet-owned.**
+- **Per-document `line_anchored` reported.**
+- **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-The named examples were opened in the acquired 1040 HTML, including their surrounding source:
-
-- `Form 1040 and 1040-SR Helpful Hints`, the TAS headings, and the EIC worksheet labels are
-  `span.bold` containing `strong`. This class is also used for prose emphasis, so generic bold is
-  explicitly excluded.
-- `Chart A`, `2025 Tax Computation Worksheet-Line 16`, and the chart/table titles are `p.title`.
-- The worksheet titles are `h3.title.worksheet` and the dependent flow steps are
-  `h4`/`h5.title.role-step` or `role-step-section`.
-- `List of Tax Topics`, `Major Categories of Federal Income and Outlays`, `Sample Check`, and
-  related headings use semantic `role-*` title classes such as `role-teletax-topics`, `role-budget`,
-  and `role-figure`.
-- `Lines 6a and 6b Social Security Benefits` is already an `h4.title.role-hd2` section owned by
-  `form_1040_2025`. Its apparent miss is OCR/HTML title suffix drift, not a missing boundary.
-
-### ITEM 2 - WIDENED VOCABULARY
-
-`M20-S130` adds only the observed semantic title tags and role classes. It keeps the S128 role tree
-as ownership authority, so nested worksheet titles cannot reassign a surrounding form cell. It
-does not add generic bold or strong runs.
-
-### ITEM 3 - INVARIANTS
-
-All 8 widened frames tile their `div.book` content with no gap or overlap, resolve their UTF-8 byte
-ranges, exclude the TOC, preserve unique opaque anchors, and retain S128 ownership behavior. The
-Schedule D `Line 4.` and `Line 12.` rows remain owned by
-`unrecaptured_section_1250_gain_worksheet_2025`; Form 1116 worksheet rows remain rejected.
-
-### ITEM 4 - REPORT
-
-The report's 1040 gap accounting starts from 123 non-page model-only sections and represents 61 by
-widened heading events, leaving **62 remaining**. The compact containment is explicitly telemetry
-for OCR punctuation and suffix damage, not a PDF-to-HTML accuracy score. Per-document
-`line_anchored` scores are: form_1040 41, form_1116 17, form_2441 20, form_6251 37, form_8949 4,
-schedule_1 52, schedule_1a 11, schedule_2 38, schedule_3 29, schedule_a 22, schedule_b 5,
-schedule_d 12. The S128 baseline is preserved for every document; Form 1040 gains the observed
-`27a` section.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s130.py -q` -> 6 passed,
-1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_section_frame_m20_s128.py pilot\test_html_document_frame_m20_s129.py pilot\test_html_document_frame_m20_s130.py -q` -> 17 passed,
-1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
-RAN: `.venv\Scripts\python.exe -m pilot.html_document_frame_m20_s130` -> 8 booklets,
-`structural_invariants_hold=True`, `remaining_unsectioned=62`, and the per-document scores above.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py pilot\html_document_frame_m20_s130.py pilot\test_html_document_frame_m20_s130.py pilot\README.md` -> `ASCII check OK`.
-RAN: `git diff --check` -> clean.
-NOT RUN: full suite; this round is pilot plus targeted tests by specification.
-
-**ARCHITECT'S LEG.** Whether the OCR path is retired, kept only for the lookup tables, or replaced
-by acquiring the IRS table pages. **That last one needs John and is not Codex's to touch.**
+**ARCHITECT'S LEG, AND IT IS THE REAL ONE.** Heading extraction is finished at 288 of 449. **The
+remaining gap is Schedule 1-A's body prose - lines 3 and 38 are stated in running text, not
+headings - and no frame work reaches it.** The next substantive round is the stage-2 body read, and
+it needs John's ChatGPT table as the Schedule 1-A reference answer.
 
 ## Open for Architect
 
