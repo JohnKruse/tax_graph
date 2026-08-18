@@ -380,6 +380,31 @@ Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
+**WE SEGMENT THE PDF TEXT WHILE THE IRS HTML - ALREADY ACQUIRED SINCE 2026-08-14 - CARRIES THE
+STRUCTURE WE HAVE SPENT SIX ROUNDS RECONSTRUCTING (Architect, measured 2026-08-18). JOHN ASKED THE
+QUESTION THAT FOUND THIS.** The manifest records `instruction_url` and `fetch.py` downloads it;
+`.cache/raw/2025/*.html` exists for every booklet. **The segmenter reads the `.txt`, which is
+PyMuPDF output** - that is where `# Page 102` markers come from, and they are what punch through the
+heading hierarchy at level 1.
+- **`<a name="en_US_2025_publink1000167507">` - 329 IRS-assigned anchor ids in the 1040 body.** A
+  stable published index, not one we compute. **Byte offsets just proved fragile in the worst way
+  (273 of 511 citations broken); these do not drift.**
+- **A NESTED table of contents with depth**, which is the section tree I concluded on 2026-08-18 was
+  unrecoverable - true of the PDF markdown, false of the HTML.
+- **`class="inlinehd"` marks the bold run-in labels.** Schedule B's HTML tags exactly seven:
+  `Line 1.`, `Line 3.`, `Line 5.`, `Line 7a-Question 1.`, `Line 7a-Question 2.`, `Line 7b.`,
+  `Line 8.` **Those are the 8 cells that motivated the entire model-owned direction on the grounds
+  that "no heading parser can ever see them." That was true of the PDF text, not of the document.**
+- Content volume is comparable, not a stub: html/pdf text ratio 0.94 (1040), 1.19 (B), 1.10 (D).
+
+**WHAT THIS DOES NOT OVERTURN.** The HTML is coarser - 329 anchors against 586 model sections - and
+it does NOT solve Schedule 1-A: lines 3 and 38 are stated in BODY PROSE, and `Qualified Tips` still
+names no line. **Stage 2 is still needed and the model is still needed. What changes is that five
+deterministic rounds were closed as impossible against the wrong artifact.** The old note "HTML does
+not fix it, the same headings appear there" is right about topic-organised booklets naming lines and
+was over-generalised into "HTML does not help."
+**MEASURE BEFORE RESPECCING: HTML anchors + inlinehd against the 586 live model sections.**
+
 **CITATION `ranges` ARE IN TWO COORDINATE SYSTEMS AND NOTHING SAYS WHICH (Architect, measured
 2026-08-18 over `graph/2025/citations/*.yaml`).** Of 511 citations with a range and a
 `quoted_text`, **238 resolve as BYTE offsets, 241 only after a CHARACTER->BYTE conversion, and 32
