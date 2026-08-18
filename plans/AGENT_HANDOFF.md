@@ -21,15 +21,44 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S126 IS ACCEPTED AND THE 1040 FRAME NOW VERIFIES AT 586 SECTIONS. M20-S127
-under Current round MEASURES THE IRS HTML against the PDF pipeline - John approved it ahead of the
-stage-2 body-read round, 2026-08-18.**
+**BALL: CODEX. M20-S127 IS ACCEPTED. M20-S128 under Current round rebuilds the anchor extraction
+on the HTML with containment-derived ownership. THE DIRECTION CALL IS MADE: THE EXTRACTION ARTIFACT
+MOVES FROM PDF TEXT TO THE IRS HTML.**
 
-**M20-S126 IS ACCEPTED (`bbd1c18`, Architect, 2026-08-18), VERIFIED BY PREDICTION.** I simulated the
-`start_byte`-only key against the recording BEFORE Codex implemented it and predicted **586 sections
-and 18 rejections**; the implementation returns exactly 586 and 18, byte conservation to EOF,
-**shortest section 6 bytes so the zero-length class is gone**, Schedule B and D unmoved at 29 and 93.
-**35 passed.** The paid 1040 run is now a verified frame.
+**M20-S127 IS ACCEPTED (`b94aa5d`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** I recomputed
+every arm from the raw cell-id sets and matched Codex's table exactly. **All 12 documents:
+PDF-deterministic 255, HTML-deterministic 293. On the 7 documents where all three arms exist:
+PDF-deterministic 171, PDF-model 189, HTML-deterministic 190.**
+
+**DO NOT READ THOSE TOTALS AS A RANKING. I OPENED THE DISAGREEMENTS AND ALL THREE ARMS ARE INFLATED,
+EACH BY A DIFFERENT MECHANISM.**
+- **PDF-deterministic** inflates on cross-form collisions and vacuous lines: `form_1040` 31 is
+  *"Employer-Provided Adoption Benefits From Form 8839, Line 31"* (really `1f`), `schedule_1` 22 is
+  *"reserved for future use"*.
+- **HTML-deterministic** inflates by ignoring heading containment. `schedule_d` 4 and 12 are scored
+  to `schedule_d_2025`, but they are ROWS OF A WORKSHEET, and **the HTML says so** - the nearest
+  preceding heading is `role-hd2 "Instructions for the Unrecaptured Section 1250 Gain Worksheet"`.
+  **Its true Schedule D score is 12, the same as the model, not 14.**
+- **PDF-model** inflates by attributing at topic level. **`schedule_b` 2, 4 and 6 match only through
+  `Part I. Interest` and `Part II. Ordinary Dividends`, not through any line instruction.**
+
+**CORRECTION I OWE JOHN: I TOLD HIM TWICE THAT SCHEDULE B GOES 0 -> 8 OF 8 AND THAT THIS WAS "THE
+WHOLE CASE FOR THIS DIRECTION." THE HONEST NUMBER IS 0 -> 5 LINE-LEVEL INSTRUCTIONS**, plus three
+more attributed to a Part heading. The direction still holds; the headline was overstated.
+
+**WHY THE ARTIFACT MOVES ANYWAY - THIS IS A MECHANISM ARGUMENT, NOT A SCORE.**
+- **`class="inlinehd"` tags the bold run-in labels the PDF text hides.** The gains land exactly where
+  the PDF parser was blind: `form_6251` **24 -> 37**, `schedule_1a` **0 -> 11**, `schedule_b`
+  **0 -> 5**, and +3 each on `form_1116`, `schedule_a`, `schedule_d`. **No model call.**
+- **`role-hd1/2/3` plus `inlinehd` IS the section tree**, and containment gives OWNERSHIP - the two
+  things I concluded on 2026-08-18 were unrecoverable, true of the PDF markdown and false of the
+  document.
+- **`publink` anchors are a published, stable address.** Byte offsets are not: 273 of 511 shipped
+  citations resolve to the wrong text.
+
+**WHAT THIS DOES NOT LICENSE. KEEP THE MODEL.** 190 against 189 is inside the noise of three
+inflation modes and is NOT evidence the model pass can be dropped. Schedule 1-A lines 3 and 38 are
+stated in body prose and no anchor scheme reaches them.
 
 **THE 1040 RUN ANSWERS THE QUESTION THIS WHOLE LINE OF ROUNDS WAS BUILT TO ASK, AND THE ANSWER IS
 NOT THE ONE I EXPECTED.** Measured against the same cell population, correctly-owned cells:
@@ -293,125 +322,69 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S127: MEASURE THE IRS HTML AGAINST THE PDF PIPELINE. MEASURE ONLY. CHANGE NOTHING.**
+**M20-S128: BUILD THE HTML SECTION FRAME WITH OWNERSHIP FROM CONTAINMENT. STILL A PILOT. STILL NO
+MODEL CALL.**
 
-**JOHN ASKED WHICH ARTIFACT WE SEGMENT AND THE ANSWER EXPOSED A SIX-ROUND MISTAKE - see BALL.** We
-fetch `instruction_url` into `.cache/raw/2025/*.html` and then segment the PyMuPDF `.txt`. **The
-HTML carries 329 IRS `publink` anchors, a nested table of contents, and `class="inlinehd"` on
-exactly the bold run-in labels we declared unreachable.** Before anything is respecced, **measure**.
-**JOHN APPROVED THIS AHEAD OF THE STAGE-2 BODY-READ ROUND, 2026-08-18.**
+**S127 SETTLED THE ARTIFACT: WE SEGMENT THE IRS HTML, NOT THE PyMuPDF TEXT.** S127 measured a flat
+extraction; this round builds the real one, and the one thing it must add is the ownership S127
+lacked.
 
-### ITEM 1 - EXTRACT THE HTML STRUCTURE, ALL 8 BOOKLETS
+### ITEM 1 - THE HEADING TREE IS THE STRUCTURE
 
-`.cache/raw/2025/instructions_*.html` - 1040, 1116, 2441, 6251, 8949, schedule_a, schedule_b,
-schedule_d. For each: the `publink` anchor ids and their titles and offsets, the page's own nested
-table of contents with its DEPTH, the `inlinehd` run-in labels, and the `role-hd` headings.
-**Do not use a network. The HTML is already on disk.**
+`role-hd1` / `role-hd2` / `role-hd3` nest, and `class="inlinehd"` run-in labels are leaves beneath
+the nearest preceding `role-hd`. **Build the tree. Every section carries its ancestor chain.**
+Page markers do not exist in HTML, so nothing punches through the hierarchy - that was a PDF
+artifact.
 
-**Structural invariants, asserted:** anchor ids unique within a document; every table-of-contents
-entry points at an anchor that exists in the body; every extracted section carries an offset into
-the HTML; no section is empty.
+### ITEM 2 - OWNERSHIP COMES FROM THE ANCESTOR CHAIN, NOT FROM THE BOOKLET
 
-### ITEM 2 - SCORE THREE ARMS ON THE SAME CELLS
+**This is the defect S127 exposed and the whole reason for this round.** `Line 4.` in the Schedule D
+booklet sits under `role-hd2 "Instructions for the Unrecaptured Section 1250 Gain Worksheet"`.
+**It is a worksheet row, not Schedule D line 4, and S127 scored it as Schedule D.**
 
-The population is `plans/m20_s116_instruction_reconciliation.yaml` - **449 cells over 12 documents**.
-Four of them (`schedule_1`, `schedule_1a`, `schedule_2`, `schedule_3`) live inside the 1040 booklet;
-map each document to its booklet through the manifest, not by guessing.
+**A section's owner is the nearest ancestor that names a document in the manifest's owner vocabulary
+for that booklet; failing that, the booklet's own form.** Reuse
+`manifest_owner_document_ids` / `manifest_worksheet_document_ids` - do not invent a second
+vocabulary. **A section whose ancestor names a document OUTSIDE the vocabulary is rejected
+section-locally, never fatally** (the M20-S123 rule, which is not reopened).
 
-- **Arm A, PDF-deterministic:** `build_instruction_sections` on the `.txt`. Today's baseline.
-- **Arm B, PDF-model:** the live frames. **Only `instructions_form_1040_2025` (586 sections),
-  `instructions_schedule_b_2025` (29) and `instructions_schedule_d_2025` (93) have paid recordings**,
-  so arm B covers three booklets and the table must say so rather than leaving blanks that read as
-  zeros.
-- **Arm C, HTML-deterministic:** anchors plus `inlinehd`, no model.
+### ITEM 3 - ADDRESS BY ANCHOR, CARRY THE RANGE
 
-Report per document: cells, and cells correctly owned by each available arm.
+Every section records its `publink` anchor id where the IRS gives one, plus its offsets in the HTML.
+**The anchor is the durable address; the offset is a convenience.** State which coordinate space the
+offsets are in, in the artifact itself - **273 of 511 shipped citations are broken precisely because
+nobody wrote that down.**
 
-### ITEM 3 - SCHEDULE B IS THE NAMED CASE
+### ITEM 4 - SCORE WITH THE INFLATION SEPARATED
 
-**Arm A scores 0 of 8 there and that is why the model direction was chosen.** Its HTML tags seven
-run-in labels. **Report arm C's Schedule B score explicitly, whatever it is.**
-
-### ITEM 4 - OPEN THE DISAGREEMENTS, DO NOT COUNT THEM
-
-**AGENTS.md hard rule, and it has cost me twice this week alone.** For **at least 8** cells where
-the arms disagree, print the cell, each arm's answer, and **the quoted source text** that settles
-it. A table of counts without the quotes does not satisfy this item.
+Reporting one "correct" number hid three different defects in S127. Report, per document:
+**`line_anchored`** (a section whose own heading names the line), **`topic_attributed`** (matched
+only through an ancestor topic), and **`foreign_owner_rejected`**. **`line_anchored` is the honest
+headline. Do not sum them into one score.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **This round changes no behaviour.** Nothing under `tax_graph/`, nothing in
-  `pilot/model_instruction_segmenter.py`, no fixture rewritten, no CLI wiring, no acquisition change.
-  **New pilot module plus its own test, and that is all.**
-- **Do not repair anything you find.** Not the citation coordinate defect, not the PDF path.
-  **Measuring and fixing in one round is how a bad number becomes a hardcoded constant.**
-- **Do not conclude.** Report the numbers; the direction call is mine and John's.
-- **No model call and no network.**
+- **Nothing under `tax_graph/` changes, no acquisition change, no CLI wiring, no graph artifact
+  written.** New pilot module plus tests. `pilot/model_instruction_segmenter.py` is NOT touched and
+  the paid recordings are NOT re-recorded.
+- **No model call and no network.** The HTML is on disk.
+- **Do not repair the citation coordinate defect here**, and do not delete the PDF path - it is the
+  comparison arm.
+- **Do not pin any score as an expected constant.** They are outputs. Pinning them is what M20-S115
+  got wrong.
 
 **THE FLOOR.**
-- **The extractor runs over all 8 acquired HTML booklets** and the structural invariants above hold.
-- **The three-arm table is COMPUTED for all 12 documents**, arm B marked unavailable where there is
-  no recording. **Do not pin any score as an expected constant** - they are outputs, and pinning
-  them is what M20-S115 got wrong.
-- **Schedule B arm C is reported.**
-- **At least 8 disagreements are opened with quoted source text.**
+- **All 8 acquired HTML booklets build a section frame** with an ancestor chain on every section.
+- **`schedule_d` `Line 4.` and `Line 12.` are owned by
+  `unrecaptured_section_1250_gain_worksheet_2025`**, proven by a test naming them. **That is the
+  S127 defect and it is the point of the round.**
+- **Anchor ids are unique per booklet; every section resolves to text; no section is empty.**
+- **The three-way score is reported per document with `line_anchored` separate.**
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**ARCHITECT'S LEG.** Reading the result and deciding whether the pipeline moves to HTML. Not Codex's
-call and not a floor item.
-
-**CODEX STATUS (2026-08-18): M20-S127 MEASURED (`b94aa5d`).** Added the offline-only
-`pilot/measure_html_pipeline_m20_s127.py` inventory and its own regression test. It reads all eight
-acquired HTML booklets, the acquired PDF text, the reconciliation cells, and the three paid model
-recordings; it does not call a provider, fetch the network, change production code, or write graph
-artifacts. The disagreement report compares arm answer states rather than section ids and prints
-the source quote for every available match.
-
-Observed run output (scores are measurements, not pinned expectations): **8 booklets, 12 documents,
-449 cells, 55 arm-answer disagreements, structural invariants true.**
-The available recorded model frames carried **586 sections for Form 1040, 29 for Schedule B, and
-93 for Schedule D**; Arm B is explicitly unavailable for the other five booklets. Schedule B Arm
-C found **5 of 8** cells while Arm A found **0 of 8**.
-
-| document | cells | PDF deterministic | HTML deterministic (Arm C) | PDF model (Arm B) |
-| --- | ---: | ---: | ---: | ---: |
-| `form_1040_2025` | 59 | 42 | 41 | 42 |
-| `form_1116_2025` | 39 | 17 | 20 | unavailable |
-| `form_2441_2025` | 35 | 20 | 20 | unavailable |
-| `form_6251_2025` | 63 | 24 | 37 | unavailable |
-| `form_8949_2025` | 4 | 4 | 4 | unavailable |
-| `schedule_1_2025` | 61 | 53 | 52 | 52 |
-| `schedule_1a_2025` | 48 | 0 | 11 | 11 |
-| `schedule_2_2025` | 45 | 38 | 38 | 37 |
-| `schedule_3_2025` | 35 | 27 | 29 | 27 |
-| `schedule_a_2025` | 28 | 19 | 22 | unavailable |
-| `schedule_b_2025` | 8 | 0 | 5 | 8 |
-| `schedule_d_2025` | 24 | 11 | 14 | 12 |
-
-The first eight disagreements opened end to end by the report, with acquired-source quotes:
-
-1. `form_1040_2025` line `1z`: PDF deterministic quotes `The original use of the vehicle starts
-   with you`; HTML quotes `Specific Instructions` and `Lines 1a Through 1z`; PDF model has no match.
-2. `form_1040_2025` line `24`: HTML quotes `Line 24.`; PDF model quotes `The amount on line 24 cannot
-   be more than $10,000`; PDF deterministic has no match.
-3. `form_1040_2025` line `25`: PDF deterministic quotes `Form 8839`; HTML quotes `Payments` and
-   `Line 25 Federal Income Tax Withheld`; PDF model has no match.
-4. `form_1040_2025` line `31`: PDF deterministic quotes `Form 8839, line 31`; HTML and PDF model
-   have no match.
-5. `form_1116_2025` line `4`: HTML quotes `Line 2.` and `Line 4.`; PDF deterministic has no match;
-   PDF model is unavailable.
-6. `form_1116_2025` line `6`: HTML quotes `Lines 2 through 5.` and `Line 6.`; PDF deterministic
-   has no match; PDF model is unavailable.
-7. `form_1116_2025` line `8`: HTML quotes `Line 6.` and `Line 8.`; PDF deterministic has no match;
-   PDF model is unavailable.
-8. `form_6251_2025` line `1a`: HTML quotes `Line 1a.`; PDF deterministic has no match; PDF model
-   is unavailable.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_measure_html_pipeline_m20_s127.py -q` -> **3 passed, 1 warning in 7.92s**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pilot.measure_html_pipeline_m20_s127 --output .test_tmp_codex\m20_s127_measurement_v2.json` -> **8 booklets, 12 documents, 449 cells, 55 disagreements**; the report printed the eight quoted disagreements above.
-The pytest warning is the known permission failure writing the pre-existing `.pytest_cache`; the
-short temp override was used. No provider, network, graph artifact, or production extraction run.
+**ARCHITECT'S LEG.** Deciding, once ownership is honest, whether the model pass still earns its
+place - and on what. Not a floor item.
 
 ## Open for Architect
 
