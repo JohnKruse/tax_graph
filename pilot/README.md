@@ -151,6 +151,22 @@ Print the eight-booklet report without writing an artifact:
 
     .venv\Scripts\python.exe -m pilot.html_section_frame_m20_s128
 
+## M20-S129 full-document HTML frame
+
+`html_document_frame_m20_s129.py` keeps the acquired `div.book` body as one explicit content
+region, excluding the IRS site shell and the left-column table of contents. Every role heading
+and `inlinehd` run-in label starts a section; accepted and foreign-owner-rejected intervals
+together tile the content region. The three checked-in model recordings are compared by
+normalized heading text only, because HTML and PDF offsets use different coordinate spaces.
+
+This is a provider-free measurement pilot. It does not fetch, call a model, change production
+extraction, or write graph artifacts.
+
+Run the focused guards and report from the repository root:
+
+    .venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s129.py -q
+    .venv\Scripts\python.exe -m pilot.html_document_frame_m20_s129
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction

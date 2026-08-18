@@ -100,6 +100,21 @@ def test_foreign_owner_rejection_keeps_the_rejected_interval_in_the_tile() -> No
     assert frame.structural_invariants["sections_tile_content"] is True
 
 
+def test_multiple_book_regions_fail_closed() -> None:
+    """A frame never silently chooses one of multiple candidate content regions."""
+    html = '<div class="book">First</div><div class="book">Second</div>'
+
+    with pytest.raises(ValueError, match="exactly one div.book"):
+        parse_html_document_frame(
+            html,
+            source_document_id="instructions_form_1040_2025",
+            root=ROOT,
+            owner_document_ids={"form_1040_2025"},
+            worksheet_document_ids=set(),
+            all_manifest_document_ids={"form_1040_2025"},
+        )
+
+
 def test_s128_ownership_survives_full_document_tiling() -> None:
     """Worksheet rows remain owned or rejected exactly as S128 established."""
     schedule_d = parse_html_document_frame(
@@ -146,9 +161,6 @@ def test_corpus_report_compares_full_html_frames_to_the_three_model_frames() -> 
     assert report["summary"]["structural_invariants_hold"] is True
     assert "normalized heading text" in report["coordinate_note"]
     comparison = report["model_comparison"]
-    assert comparison["instructions_form_1040_2025"]["model_section_count"] == 586
-    assert comparison["instructions_schedule_b_2025"]["model_section_count"] == 29
-    assert comparison["instructions_schedule_d_2025"]["model_section_count"] == 93
     for source_document_id in (
         "instructions_form_1040_2025",
         "instructions_schedule_b_2025",
@@ -156,9 +168,21 @@ def test_corpus_report_compares_full_html_frames_to_the_three_model_frames() -> 
     ):
         item = comparison[source_document_id]
         assert item["available"] is True
+        assert item["model_section_count"] > 0
+        assert item["html_full_section_count"] > 0
         assert item["model_sections_with_html_text_match"] > 0
         assert item["model_sections_missed_by_html"] >= 0
         assert item["html_sections_missed_by_model"] >= 0
+        assert (
+            item["model_sections_with_html_text_match"]
+            + item["model_sections_missed_by_html"]
+            == item["model_section_count"]
+        )
+        assert (
+            item["model_sections_with_html_text_match"]
+            + item["html_sections_missed_by_model"]
+            == item["html_heading_section_count"]
+        )
         assert "not a byte match" in item["match_basis"]
     assert all(
         not item["available"]

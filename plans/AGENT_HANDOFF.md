@@ -414,26 +414,31 @@ match, not a byte match.**
 **ARCHITECT'S LEG.** Deciding, once there are two comparable frames, whether the model pass still
 earns its cost. Not a floor item and not Codex's call.
 
-**CODEX STATUS (2026-08-18, M20-S129).** Implemented the pilot in
-`pilot/html_document_frame_m20_s129.py` and its guards in
-`pilot/test_html_document_frame_m20_s129.py`. The frame uses the semantic `div.book` as the
-single content region, creates a preamble interval when needed, then tiles every role heading and
-`inlinehd` start to the next start. Rejected foreign-owner intervals stay in the tile with
-`owner_document_id: null`, preserving S128 rejection semantics without creating a byte gap. The
-report covers all 8 booklets and compares the recorded model frames by owner-qualified normalized
-heading text: Form 1040 586 model sections / 374 text matches / 212 model-missed / 244 HTML-missed;
-Schedule B 29 / 20 / 9 / 3; Schedule D 93 / 69 / 24 / 14. The report explicitly states that
-the comparison is text, not byte, because HTML and PDF offsets differ.
+**CODEX STATUS (2026-08-18, M20-S129).** The full-document pilot is in
+`pilot/html_document_frame_m20_s129.py`, with guards in
+`pilot/test_html_document_frame_m20_s129.py` and usage documented in `pilot/README.md`. The
+frame uses the semantic `div.book` as the single content region, creates a preamble interval when
+needed, then tiles every role heading and `inlinehd` start to the next start. Rejected
+foreign-owner intervals stay in the tile with `owner_document_id: null`, preserving S128
+rejection semantics without creating a byte gap. This verification pass also made the content
+region fail closed when more than one `div.book` exists, and made the corpus summary check the
+tile and TOC-exclusion invariants explicitly. The score guard no longer pins model section-count
+constants, per the round spec.
 
-RAN: `.venv\\Scripts\\python.exe -m pytest pilot/test_html_document_frame_m20_s129.py -q` ->
-5 passed, 1 PytestCacheWarning about the pre-existing unwritable `.pytest_cache`.
-RAN: `.venv\\Scripts\\python.exe -m pytest pilot/test_html_section_frame_m20_s128.py pilot/test_html_document_frame_m20_s129.py -q` ->
-10 passed, 1 PytestCacheWarning about the pre-existing unwritable `.pytest_cache`.
-RAN: `.venv\\Scripts\\python.exe -m pilot.html_document_frame_m20_s129` -> 8 booklets,
+The report covers all 8 booklets and compares the recorded model frames by owner-qualified
+normalized heading text: Form 1040 586 model sections / 374 text matches / 212 model-missed /
+244 HTML-missed; Schedule B 29 / 20 / 9 / 3; Schedule D 93 / 69 / 24 / 14. The report explicitly
+states that the comparison is text, not byte, because HTML and PDF offsets differ.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s129.py -q` ->
+6 passed, 1 PytestCacheWarning about the pre-existing unwritable `.pytest_cache`.
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_section_frame_m20_s128.py pilot\test_html_document_frame_m20_s129.py -q` ->
+11 passed, 1 PytestCacheWarning about the pre-existing unwritable `.pytest_cache`.
+RAN: `.venv\Scripts\python.exe -m pilot.html_document_frame_m20_s129` -> 8 booklets,
 `structural_invariants_hold=True`; section counts 619, 164, 55, 122, 65, 107, 24, 87 in
 `BOOKLET_IDS` order; rejected counts 0, 21, 0, 0, 0, 2, 0, 3. Model comparisons are the
 values above.
-RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py pilot\\html_document_frame_m20_s129.py pilot\\test_html_document_frame_m20_s129.py` -> `ASCII check OK`.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py pilot\html_document_frame_m20_s129.py pilot\test_html_document_frame_m20_s129.py pilot\README.md` -> `ASCII check OK`.
 RAN: `git diff --check` -> clean.
 NOT RUN: full suite; this round is pilot plus targeted tests by specification.
 

@@ -53,6 +53,17 @@ MODEL_FIXTURES = {
     "instructions_schedule_d_2025": "pilot/fixtures/instruction_segmenter_live_recordings.json",
 }
 _BOOK_RE = re.compile(r"^book$", re.IGNORECASE)
+_REQUIRED_FRAME_INVARIANTS = (
+    "content_region_valid",
+    "sections_tile_content",
+    "section_offsets_valid",
+    "section_source_resolves",
+    "sections_nonempty",
+    "no_toc_sections",
+    "anchor_ids_unique",
+    "anchor_ranges_valid",
+    "ancestor_chain_present",
+)
 
 
 @dataclass(frozen=True)
@@ -256,7 +267,12 @@ def parse_html_document_frame(
     book_parser.close()
     if not book_parser.ranges:
         raise ValueError(f"no div.book content region in {source_document_id}")
-    content = min(book_parser.ranges, key=lambda item: item.start_char)
+    if len(book_parser.ranges) != 1:
+        raise ValueError(
+            f"expected exactly one div.book content region in {source_document_id}; "
+            f"found {len(book_parser.ranges)}"
+        )
+    content = book_parser.ranges[0]
     if content.end_char <= content.start_char:
         raise ValueError(f"empty div.book content region in {source_document_id}")
 
@@ -432,9 +448,8 @@ def measure_corpus(root: str | Path = ROOT, *, year: str = YEAR) -> dict[str, An
             "booklet_count": len(frames),
             "structural_invariants_hold": all(
                 all(
-                    bool(value)
-                    for key, value in frame.structural_invariants.items()
-                    if key.endswith(("valid", "resolves", "nonempty", "unique", "present"))
+                    frame.structural_invariants[key] is True
+                    for key in _REQUIRED_FRAME_INVARIANTS
                 )
                 for frame in frames.values()
             ),
