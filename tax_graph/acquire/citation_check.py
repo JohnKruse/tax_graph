@@ -4,12 +4,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
-from html.parser import HTMLParser
 from pathlib import Path
 import re
 from typing import Any
 
 from tax_graph.acquire.text_normalize import normalize_punctuation
+from tax_graph.acquire.source_ranges import (
+    SourceDocumentNotFound,
+    SourceRangeOutOfBounds,
+    SourceTextIndex,
+    resolve_source_range,
+)
 
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.io.loader import load_graph
@@ -69,16 +74,24 @@ def check_citation_integrity(
     source_map: dict[str, str] | None = None,
     source_pins: dict[str, str] | None = None,
 ) -> CitationIntegrityReport:
-    """Check citation quoted_text against acquired text files."""
+    """Check range-bearing citation quotes against acquired text spans."""
     text_root = Path(text_dir)
     document_map = source_map or {}
     pin_map = source_pins or {}
     mismatches: list[CitationMismatch] = []
+    checked = 0
     checked_sources: set[str] = set()
 
     for citation in citations:
         document_id = citation["document_id"]
         source_document_id = _resolve_source_document_id(citation, document_map)
+        ranges = citation.get("ranges") or ()
+        if citation.get("kind") != "computed_table" and not ranges:
+            # Legacy HTML and intake citations predate source ranges.  They
+            # are outside this range contract and cannot use a substrate
+            # fallback without recreating the defect this check prevents.
+            continue
+        checked += 1
         if source_document_id not in checked_sources:
             checked_sources.add(source_document_id)
             drift_reason = _detect_source_drift(text_root, source_document_id, pin_map)
@@ -92,18 +105,6 @@ def check_citation_integrity(
                     )
                 )
                 continue
-        text_path = text_root / f"{source_document_id}.txt"
-        if not text_path.exists():
-            mismatches.append(
-                CitationMismatch(
-                    citation_id=citation["citation_id"],
-                    document_id=document_id,
-                    source_document_id=source_document_id,
-                    reason="missing text",
-                )
-            )
-            continue
-
         if citation.get("kind") == "computed_table":
             # A computed-table citation proves the source table and records
             # the derivation, but it must not impersonate a verbatim quote.
@@ -118,30 +119,54 @@ def check_citation_integrity(
                 )
             continue
 
-        text = text_path.read_text(encoding="utf-8")
-        undecorated = _undecorated_text(text)
-        if _contains_normalized(undecorated, citation["quoted_text"]):
+        if not ranges:
+            # Computed-table citations are checked for their typed metadata
+            # above, so this branch is only defensive for malformed input.
             continue
-        html_path = text_root / f"{source_document_id}.html"
-        if html_path.exists() and _contains_normalized(
-            _html_text(html_path.read_text(encoding="ascii")), citation["quoted_text"]
-        ):
-            continue
-        pdf_path = text_root / f"{source_document_id}.pdf"
-        pdf_text = _load_pdf_text(pdf_path)
-        if pdf_text is not None and _contains_normalized(pdf_text, citation["quoted_text"]):
-            continue
-        if not _contains_normalized(undecorated, citation["quoted_text"]):
+        try:
+            first = ranges[0]
+            last = ranges[-1]
+            span = resolve_source_range(
+                source_document_id,
+                int(first["start"]),
+                int(last["end"]),
+                text_dir=text_root,
+            )
+        except SourceDocumentNotFound:
             mismatches.append(
                 CitationMismatch(
                     citation_id=citation["citation_id"],
                     document_id=document_id,
                     source_document_id=source_document_id,
-                    reason="quote not found",
+                    reason="missing text",
                 )
             )
+            continue
+        except (KeyError, TypeError, ValueError, SourceRangeOutOfBounds) as exc:
+            mismatches.append(
+                CitationMismatch(
+                    citation_id=citation["citation_id"],
+                    document_id=document_id,
+                    source_document_id=source_document_id,
+                    reason=f"invalid source range: {exc}",
+                )
+            )
+            continue
+        quote = str(citation["quoted_text"])
+        if _contains_normalized(span, quote):
+            continue
+        if _ordered_tokens_in_span(span, quote):
+            continue
+        mismatches.append(
+            CitationMismatch(
+                citation_id=citation["citation_id"],
+                document_id=document_id,
+                source_document_id=source_document_id,
+                reason="quote not found in cited range",
+            )
+        )
 
-    return CitationIntegrityReport(checked=len(citations), mismatches=mismatches)
+    return CitationIntegrityReport(checked=checked, mismatches=mismatches)
 
 
 def _resolve_source_document_id(citation: dict[str, Any], source_map: dict[str, str]) -> str:
@@ -166,65 +191,31 @@ def _detect_source_drift(text_root: Path, source_document_id: str, source_pins: 
     return None
 
 
-def _load_pdf_text(pdf_path: Path) -> str | None:
-    if not pdf_path.exists():
-        return None
-    try:
-        import fitz
-    except ImportError:
-        return None
-
-    pages: list[str] = []
-    with fitz.open(pdf_path) as document:
-        for page in document:
-            pages.append(page.get_text("text"))
-    return "\n".join(pages)
-
-
 def _contains_normalized(haystack: str, needle: str) -> bool:
     normalized_haystack = _normalize_ws(haystack)
     normalized_needle = _normalize_ws(needle)
     return normalized_needle in normalized_haystack
 
 
-def _undecorated_text(value: str) -> str:
-    lines: list[str] = []
-    for raw_line in value.splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("# Page "):
-            continue
-        if line.startswith("Header:"):
-            lines.append(line.removeprefix("Header:").strip())
-            continue
-        lines.append(line)
-    return "\n".join(lines)
-
-
-def _html_text(value: str) -> str:
-    """Extract stored HTML text for citation verification without network access."""
-
-    class _TextParser(HTMLParser):
-        _BLOCK_TAGS = {"br", "div", "h1", "h2", "h3", "h4", "h5", "h6", "li", "p", "table", "td", "tr"}
-
-        def __init__(self) -> None:
-            super().__init__(convert_charrefs=True)
-            self.parts: list[str] = []
-
-        def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-            if tag.lower() in self._BLOCK_TAGS:
-                self.parts.append(" ")
-
-        def handle_endtag(self, tag: str) -> None:
-            if tag.lower() in self._BLOCK_TAGS:
-                self.parts.append(" ")
-
-        def handle_data(self, data: str) -> None:
-            self.parts.append(data)
-
-    parser = _TextParser()
-    parser.feed(value)
-    parser.close()
-    return "".join(parser.parts)
+def _ordered_tokens_in_span(span: str, quote: str) -> bool:
+    """Allow source-layout elision while keeping the cited span anchored."""
+    source_tokens = SourceTextIndex(span).tokens
+    quote_tokens = SourceTextIndex(quote).tokens
+    if not source_tokens or not quote_tokens:
+        return False
+    if (
+        source_tokens[0].start != quote_tokens[0].start
+        or source_tokens[0].value != quote_tokens[0].value
+    ):
+        return False
+    cursor = 0
+    for wanted in quote_tokens:
+        while cursor < len(source_tokens) and source_tokens[cursor].value != wanted.value:
+            cursor += 1
+        if cursor == len(source_tokens):
+            return False
+        cursor += 1
+    return True
 
 
 def _normalize_ws(value: str) -> str:

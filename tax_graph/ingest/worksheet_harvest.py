@@ -22,6 +22,7 @@ from typing import Any, Iterable, Mapping, Protocol
 import yaml
 
 from tax_graph.acquire.instruction_html import InstructionHeading, parse_headings
+from tax_graph.acquire.source_ranges import resolve_source_range
 from tax_graph.documents import document_class_for
 
 
@@ -1084,7 +1085,14 @@ def harvest_worksheet(
             )
     all_findings.extend(_count_findings(resolved_target, line_rows, parameter_nodes))
     all_objects = [document, *nodes, *edges, *citations]
-    all_findings.extend(_verify_harvest_objects(source_text, all_objects, oracle_source_text=oracle_source_text))
+    all_findings.extend(
+        _verify_harvest_objects(
+            source_text,
+            all_objects,
+            source_document_id=source_id,
+            oracle_source_text=oracle_source_text,
+        )
+    )
     markdown_lines: tuple[str, ...] | None = None
     if oracle_source_text is not None:
         markdown_lines = _markdown_extent_lines(
@@ -1736,7 +1744,11 @@ def rebind_worksheet_draft_ranges(
                 for line in lines
                 for source_range in line_ranges[line]
             )
-            citation["quoted_text"] = _source_quote_for_ranges(source_text, ranges)
+            citation["quoted_text"] = _source_quote_for_ranges(
+                source_text,
+                ranges,
+                source_document_id=target.source_document_id or target.document_id,
+            )
             citation["ranges"] = list(ranges)
         citation.setdefault("kind", "row")
     for gap_index, gap in enumerate(gaps):
@@ -1757,7 +1769,11 @@ def rebind_worksheet_draft_ranges(
                     f"source_document={target.source_document_id or ''};"
                     f"worksheet={target.title};after={gap['after_line']}"
                 ),
-                "quoted_text": _source_quote_for_ranges(source_text, ranges),
+                "quoted_text": _source_quote_for_ranges(
+                    source_text,
+                    ranges,
+                    source_document_id=target.source_document_id or target.document_id,
+                ),
                 "kind": gap["kind"],
                 "governs": gap["governs"],
                 "ranges": list(ranges),
@@ -2135,7 +2151,11 @@ def _build_citations(
             for source_range in source_line_ranges.get(line, ())
         )
         quote = (
-            _source_quote_for_ranges(oracle_source_text, ranges)
+            _source_quote_for_ranges(
+                oracle_source_text,
+                ranges,
+                source_document_id=source_document_id,
+            )
             if oracle_source_text is not None and ranges
             else _visible_text(source_text[first.start:last.end])
         )
@@ -2178,7 +2198,11 @@ def _build_citations(
         after_line = gap["after_line"]
         suffix = _slug(f"{kind}_after_{after_line}_{gap_index}")
         citation_id = f"cite_{_slug(target.document_id)}_{suffix}"
-        quote = _source_quote_for_ranges(oracle_source_text, gap["ranges"])
+        quote = _source_quote_for_ranges(
+            oracle_source_text,
+            gap["ranges"],
+            source_document_id=source_document_id,
+        )
         data = {
             "citation_id": citation_id,
             "document_id": target.document_id,
@@ -2741,12 +2765,22 @@ def _source_ranges_for_fragment(
 def _source_quote_for_ranges(
     source_text: str | None,
     ranges: Iterable[Mapping[str, int]],
+    *,
+    source_document_id: str = "worksheet_source",
 ) -> str:
     """Render source ranges into the stored quote without inventing prose."""
     if source_text is None:
         return ""
     return _normalize_text(
-        " ".join(source_text[int(item["start"]):int(item["end"])] for item in ranges)
+        " ".join(
+            resolve_source_range(
+                source_document_id,
+                int(item["start"]),
+                int(item["end"]),
+                source_text=source_text,
+            )
+            for item in ranges
+        )
     )
 
 
@@ -3045,6 +3079,7 @@ def _verify_harvest_objects(
     source_text: str,
     objects: Iterable[HarvestObject],
     *,
+    source_document_id: str = "worksheet_source",
     oracle_source_text: str | None = None,
 ) -> list[WorksheetFinding]:
     findings: list[WorksheetFinding] = []
@@ -3060,7 +3095,11 @@ def _verify_harvest_objects(
             continue
         ranged = obj.data.get("ranges")
         if oracle_source_text is not None and ranged:
-            expected = _source_quote_for_ranges(oracle_source_text, ranged)
+            expected = _source_quote_for_ranges(
+                oracle_source_text,
+                ranged,
+                source_document_id=source_document_id,
+            )
             if _normalize_text(obj.source_quote) != expected:
                 findings.append(
                     WorksheetFinding(

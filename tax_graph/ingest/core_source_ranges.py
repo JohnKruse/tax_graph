@@ -18,7 +18,12 @@ from typing import Any, Iterable, Mapping
 import yaml
 
 from tax_graph.acquire.manifest import load_manifest
-from tax_graph.acquire.source_ranges import SourceTextIndex, normalize_source_quote
+from tax_graph.acquire.source_ranges import (
+    SourceRangeError,
+    SourceTextIndex,
+    normalize_source_quote,
+    resolve_source_range,
+)
 from tax_graph.config import get_config_value, load_config
 from tax_graph.ingest.worksheet_harvest import (
     QDCGT_WORKSHEET_TARGET,
@@ -190,10 +195,23 @@ def _tax_table_section_extent(
     return ({"start": heading.start(), "end": end},)
 
 
-def _source_quote(source: str, ranges: Iterable[Mapping[str, int]]) -> str:
+def _source_quote(
+    source: str,
+    ranges: Iterable[Mapping[str, int]],
+    *,
+    source_document_id: str = "core_source",
+) -> str:
     """Render a new quote only from the acquired ranges that own it."""
     return normalize_source_quote(
-        " ".join(source[int(item["start"]) : int(item["end"])] for item in ranges)
+        " ".join(
+            resolve_source_range(
+                source_document_id,
+                int(item["start"]),
+                int(item["end"]),
+                source_text=source,
+            )
+            for item in ranges
+        )
     )
 
 
@@ -437,6 +455,7 @@ def _reextract_paraphrase_citation(
     citation: dict[str, Any],
     *,
     source: str,
+    source_document_id: str,
 ) -> bool:
     """Replace one A9 paraphrase with the exact source-owned text and ranges."""
     citation_id = str(citation.get("citation_id") or "")
@@ -445,7 +464,11 @@ def _reextract_paraphrase_citation(
     ranges = _paraphrase_ranges(source, citation_id)
     if ranges is None:
         raise ValueError(f"source span not found for paraphrase citation {citation_id}")
-    citation["quoted_text"] = _source_quote(source, ranges)
+    citation["quoted_text"] = _source_quote(
+        source,
+        ranges,
+        source_document_id=source_document_id,
+    )
     citation["ranges"] = [dict(item) for item in ranges]
     return True
 
@@ -454,16 +477,23 @@ def _ranges_match_quote(
     source: str,
     quote: str,
     ranges: Iterable[Mapping[str, Any]],
+    *,
+    source_document_id: str = "core_source",
 ) -> bool:
     """Return whether ranges reproduce the pinned quote without rewriting it."""
     try:
         reconstructed = normalize_source_quote(
             " ".join(
-                source[int(item["start"]) : int(item["end"])]
+                resolve_source_range(
+                    source_document_id,
+                    int(item["start"]),
+                    int(item["end"]),
+                    source_text=source,
+                )
                 for item in ranges
             )
         )
-    except (KeyError, TypeError, ValueError):
+    except (KeyError, TypeError, ValueError, SourceRangeError):
         return False
     return reconstructed == normalize_source_quote(quote)
 
@@ -476,9 +506,15 @@ def _bind_citation(
     used_starts: set[int],
 ) -> bool:
     citation_id = str(citation.get("citation_id") or "")
+    source_document_id = str(citation.get("source_document_id") or citation.get("document_id") or "")
     quote = str(citation.get("quoted_text") or "")
     existing_ranges = citation.get("ranges") or ()
-    if existing_ranges and _ranges_match_quote(source, quote, existing_ranges):
+    if existing_ranges and _ranges_match_quote(
+        source,
+        quote,
+        existing_ranges,
+        source_document_id=source_document_id,
+    ):
         return True
     ranges = _tax_liability_ranges(source, citation_id)
     special_ranges = ranges is not None
@@ -491,7 +527,12 @@ def _bind_citation(
         )
         if ranges is None and bounds is not None:
             ranges = index.ranges_for_quote(quote)
-    if ranges is not None and not _ranges_match_quote(source, quote, ranges):
+    if ranges is not None and not _ranges_match_quote(
+        source,
+        quote,
+        ranges,
+        source_document_id=source_document_id,
+    ):
         ranges = index.ranges_for_quote(quote)
         special_ranges = False
     if ranges is None:
@@ -503,7 +544,12 @@ def _bind_citation(
             quote,
             start=first_start + 1,
         ) or ranges
-    if not _ranges_match_quote(source, quote, ranges):
+    if not _ranges_match_quote(
+        source,
+        quote,
+        ranges,
+        source_document_id=source_document_id,
+    ):
         citation.pop("ranges", None)
         return False
     used_starts.add(int(ranges[0]["start"]))
@@ -580,6 +626,7 @@ def rebind_core_source_ranges(
             if source_id in sources and _reextract_paraphrase_citation(
                 citation,
                 source=sources[source_id],
+                source_document_id=source_id,
             ):
                 changed += 1
                 continue

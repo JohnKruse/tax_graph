@@ -240,6 +240,42 @@ consumer does not have to guess.
 - **Full suite against the 18-red baseline** - this touches `tax_graph/`.
 - **Protected set byte-identical**, `tools/check_ascii.py` OK, `git diff --check` clean.
 
+### WORKER STATUS - M20-S133
+
+Implemented the worker leg. `tax_graph/acquire/source_ranges.py` now owns the single typed
+`resolve_source_range` accessor over acquired `.txt` text with universal-newline handling. The
+checker now verifies each range-bearing quote against its outer cited span, accepts the measured
+layout-elision class only when lexical tokens remain anchored and ordered, and has no whole-file,
+HTML, or PDF fallback. `extract/inputs.py`, `ingest/worksheet_harvest.py`, and
+`ingest/core_source_ranges.py` use the accessor. The schema states both the coordinate contract and
+the ordered-token elision rule. A producer edge case where a leading row marker was separated from
+its first token by whitespace was corrected in `SourceTextIndex`, without changing promoted
+citations.
+
+Corpus evidence: the 511 range-bearing quoted citations classify as 474 exact containment, 37
+anchored ordered-token elision, and 0 bad ranges. `check_graph_citations` checks 515 range-bearing
+records (including 4 computed-table records) and reports 0 mismatches. A deliberately neighboring
+row range fails the checker.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py tests\test_source_ranges_m133.py -q`
+-> 15 passed, 1 warning.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_core_source_ranges_m106.py tests\test_worksheet_harvest_m20.py tests\test_batch_bundle_m10.py tests\test_schedule_d_bundle_m9.py tests\test_schedule_d_extraction_m9.py -q`
+-> 29 passed, 1 failed. The one failure is the standing 18-red baseline:
+`test_schedule_d_extraction_m9.py::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`
+(3 unexpected model prompts).
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py tests\test_source_ranges_m133.py tests\test_core_source_ranges_m106.py tests\test_worksheet_harvest_m20.py tests\test_batch_bundle_m10.py tests\test_schedule_d_bundle_m9.py tests\test_extract_outline_m4.py -q`
+-> 62 passed, 1 failed. The failure is the unrelated pre-existing
+`test_extract_outline_m4.py::test_instruction_section_body_survives_deeper_heading`; S133 files
+are not in that test's dependency path and `outline_pipeline.py` is unchanged.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_graph_validator.py tests\test_acquire_citation_check.py tests\test_source_ranges_m133.py -q`
+-> 18 passed, 11 failed during graph-copy setup with `WinError 5` on existing protected
+`graph/2025/_drafts` directories; no S133 assertion failed. The full suite is NOT RUN: it is an
+Architect-side run under the standing partition rule. `tools/check_ascii.py` reports `ASCII check
+OK`; `git diff --check` is clean. No model call, network, or citation artifact edit was made.
+
 **ARCHITECT'S LEG, OWED IN PARALLEL.**
 1. **Open Schedule 1-A's 37 unreached cells.** It is the whole remaining coverage gap and I have
    never opened them. It may be the instruction ceiling that made Schedule D's 12 of 24 a full

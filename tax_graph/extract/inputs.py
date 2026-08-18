@@ -8,6 +8,7 @@ import re
 from typing import Any
 
 from tax_graph.acquire.manifest import AcquisitionManifest, load_manifest
+from tax_graph.acquire.source_ranges import resolve_source_range
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
 from tax_graph.io.loader import load_graph
@@ -158,7 +159,7 @@ def _load_region_document_input(
             f"promoted region line nodes are missing from graph: {document_id}"
         )
     source_path = root / ".cache" / "raw" / year / f"{parent_id}.txt"
-    source_text = source_path.read_text(encoding="ascii") if source_path.exists() else ""
+    source_text = source_path.read_text(encoding="utf-8") if source_path.exists() else ""
     html_faces = _worksheet_html_faces(
         document_id,
         entry=entry,
@@ -332,8 +333,16 @@ def _worksheet_face_from_ranges(
     """Project a transient HTML face onto a citation's source ranges."""
     if not html_face or not source_text or not citation.get("ranges"):
         return html_face
+    source_document_id = str(
+        citation.get("source_document_id") or citation.get("document_id") or ""
+    )
     source_value = " ".join(
-        source_text[int(item["start"]):int(item["end"])]
+        resolve_source_range(
+            source_document_id,
+            int(item["start"]),
+            int(item["end"]),
+            source_text=source_text,
+        )
         for item in citation["ranges"]
     )
     expected = tuple(_FACE_TOKEN_RE.finditer(source_value))

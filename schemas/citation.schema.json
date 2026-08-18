@@ -34,7 +34,7 @@
     },
     "ranges": {
       "type": "array",
-      "description": "Ordered half-open character ranges into source_document_id.",
+      "description": "Ordered half-open character ranges into the acquired .txt text for source_document_id, read with universal-newline handling. When quoted_text elides table layout, its lexical tokens must still appear in order within the cited span.",
       "items": {
         "type": "object",
         "additionalProperties": false,

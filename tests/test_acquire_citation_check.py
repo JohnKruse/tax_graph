@@ -11,15 +11,16 @@ from tax_graph.acquire.citation_check import check_citation_integrity
 def test_citation_integrity_accepts_matching_quote_with_normalized_whitespace(tmp_path):
     text_dir = tmp_path / "2025"
     text_dir.mkdir()
-    (text_dir / "form_8949_2025.txt").write_text(
+    source = (
         "Subtract column (e) from column (d)\n"
-        "and combine the result with column (g) to figure your gain or loss.",
-        encoding="utf-8",
+        "and combine the result with column (g) to figure your gain or loss."
     )
+    (text_dir / "form_8949_2025.txt").write_text(source, encoding="utf-8")
     citations = [
         {
             "citation_id": "cite_8949_col_h_gain",
             "document_id": "form_8949_2025",
+            "ranges": [{"start": 0, "end": len(source)}],
             "quoted_text": "Subtract column (e) from column (d) and combine the result with column (g)",
         }
     ]
@@ -60,6 +61,7 @@ def test_citation_integrity_flags_doctored_quote(tmp_path):
         {
             "citation_id": "cite_bad",
             "document_id": "form_8949_2025",
+            "ranges": [{"start": 0, "end": len("Real IRS text")}],
             "quoted_text": "Doctored text",
         }
     ]
@@ -68,7 +70,7 @@ def test_citation_integrity_flags_doctored_quote(tmp_path):
 
     assert not report.ok
     assert report.mismatches[0].citation_id == "cite_bad"
-    assert report.mismatches[0].reason == "quote not found"
+    assert report.mismatches[0].reason == "quote not found in cited range"
 
 
 @pytest.mark.m3
@@ -80,6 +82,7 @@ def test_citation_integrity_uses_source_map(tmp_path):
         {
             "citation_id": "cite_mapped",
             "document_id": "form_8949_2025",
+            "ranges": [{"start": 0, "end": len("Mapped instruction quote")}],
             "quoted_text": "Mapped instruction quote",
         }
     ]
@@ -97,23 +100,22 @@ def test_citation_integrity_uses_source_map(tmp_path):
 def test_citation_integrity_ignores_header_decoration_when_quote_spans_injected_lines(tmp_path):
     text_dir = tmp_path / "2025"
     text_dir.mkdir()
-    (text_dir / "instructions_form_8949_2025.txt").write_text(
-        "\n".join(
-            [
-                "# Page 1",
-                "Subtract column (e)",
-                "Header: from column (d) and combine the result",
-                "Header: with column (g)",
-                "to figure your gain or loss.",
-            ]
-        ),
-        encoding="utf-8",
+    source = "\n".join(
+        [
+            "# Page 1",
+            "Subtract column (e)",
+            "Header: from column (d) and combine the result",
+            "Header: with column (g)",
+            "to figure your gain or loss.",
+        ]
     )
+    (text_dir / "instructions_form_8949_2025.txt").write_text(source, encoding="utf-8")
     citations = [
         {
             "citation_id": "cite_header_shift",
             "document_id": "form_8949_2025",
             "source_document_id": "instructions_form_8949_2025",
+            "ranges": [{"start": source.index("Subtract"), "end": len(source)}],
             "quoted_text": "Subtract column (e) from column (d) and combine the result with column (g)",
         }
     ]
@@ -136,6 +138,7 @@ def test_citation_integrity_reports_explicit_source_drift(tmp_path):
         {
             "citation_id": "cite_pinned",
             "document_id": "form_8949_2025",
+            "ranges": [{"start": 0, "end": len("Pinned IRS text")}],
             "quoted_text": "Pinned IRS text",
         }
     ]
@@ -162,6 +165,10 @@ def test_citation_integrity_prefers_explicit_source_document_id_over_source_map(
             "citation_id": "cite_explicit_source",
             "document_id": "form_1040_2025",
             "source_document_id": "form_1040_2025",
+            "ranges": [{
+                "start": 0,
+                "end": len("Capital gain or (loss). Attach Schedule D if required."),
+            }],
             "quoted_text": "Capital gain or (loss). Attach Schedule D if required.",
         }
     ]
@@ -175,7 +182,7 @@ def test_citation_integrity_prefers_explicit_source_document_id_over_source_map(
     assert report.ok
 
 
-def test_citation_integrity_checks_stored_html_instruction_source(tmp_path):
+def test_citation_integrity_does_not_fallback_to_stored_html(tmp_path):
     text_dir = tmp_path / "2025"
     text_dir.mkdir()
     (text_dir / "instructions_form_1040_2025.txt").write_text(
@@ -191,17 +198,19 @@ def test_citation_integrity_checks_stored_html_instruction_source(tmp_path):
                 "citation_id": "cite_html_source",
                 "document_id": "instructions_form_1040_2025",
                 "source_document_id": "instructions_form_1040_2025",
+                "ranges": [{"start": 0, "end": len("PDF extraction does not carry this HTML-only paragraph.")}],
                 "quoted_text": "Enter the HTML-acquired instruction text.",
             }
         ],
         text_dir=text_dir,
     )
 
-    assert report.ok
+    assert not report.ok
+    assert report.mismatches[0].reason == "quote not found in cited range"
 
 
 @pytest.mark.m3
-def test_citation_integrity_falls_back_to_pdf_text_when_rendered_text_misses(tmp_path, monkeypatch):
+def test_citation_integrity_does_not_fallback_to_pdf_text(tmp_path):
     text_dir = tmp_path / "2025"
     text_dir.mkdir()
     (text_dir / "schedule_d_2025.txt").write_text("rendered text misses the quote", encoding="utf-8")
@@ -210,18 +219,59 @@ def test_citation_integrity_falls_back_to_pdf_text_when_rendered_text_misses(tmp
         {
             "citation_id": "cite_pdf_fallback",
             "document_id": "schedule_d_2025",
+            "ranges": [{"start": 0, "end": len("rendered text misses the quote")}],
             "quoted_text": "Enter the amount from line 16 on Form 1040 or 1040-SR, line 7.",
         }
     ]
 
-    monkeypatch.setattr(
-        "tax_graph.acquire.citation_check._load_pdf_text",
-        lambda path: "Enter the amount from line 16 on Form 1040 or 1040-SR, line 7.",
-    )
-
     report = check_citation_integrity(citations, text_dir=text_dir)
 
+    assert not report.ok
+    assert report.mismatches[0].reason == "quote not found in cited range"
+
+
+def test_citation_integrity_accepts_quote_elision_inside_the_cited_span(tmp_path):
+    text_dir = tmp_path / "2025"
+    text_dir.mkdir()
+    source = "3. Combine lines 1 and 2. | 3. _____ | | 4. Enter the smaller of line 2 or line 3"
+    (text_dir / "schedule_d_2025.txt").write_text(source, encoding="utf-8")
+
+    report = check_citation_integrity(
+        [
+            {
+                "citation_id": "cite_elided_table_furniture",
+                "document_id": "schedule_d_2025",
+                "ranges": [{"start": 0, "end": len(source)}],
+                "quoted_text": "3. Combine lines 1 and 2. 4. Enter the smaller of line 2 or line 3",
+            }
+        ],
+        text_dir=text_dir,
+    )
+
     assert report.ok
+
+
+def test_citation_integrity_rejects_quote_found_only_in_a_neighboring_row(tmp_path):
+    text_dir = tmp_path / "2025"
+    text_dir.mkdir()
+    source = "Target row has the unique alpha phrase.\nNeighbor row has different beta text."
+    (text_dir / "schedule_d_2025.txt").write_text(source, encoding="utf-8")
+    start = source.index("Neighbor")
+
+    report = check_citation_integrity(
+        [
+            {
+                "citation_id": "cite_perturbed_range",
+                "document_id": "schedule_d_2025",
+                "ranges": [{"start": start, "end": len(source)}],
+                "quoted_text": "Target row has the unique alpha phrase.",
+            }
+        ],
+        text_dir=text_dir,
+    )
+
+    assert not report.ok
+    assert report.mismatches[0].reason == "quote not found in cited range"
 
 
 @pytest.mark.m20
@@ -239,16 +289,19 @@ def test_citation_integrity_rejects_legacy_row_renderer_formatting(tmp_path):
             {
                 "citation_id": "legacy_wrapper",
                 "document_id": "form_2441_2025",
+                "ranges": [{"start": 0, "end": 105}],
                 "quoted_text": "- 3: Add the amounts in column (d) of line 2. Dont enter more than $3,000 if you had one qualifying person",
             },
             {
                 "citation_id": "legacy_dots",
                 "document_id": "form_2441_2025",
+                "ranges": [{"start": 105, "end": 147}],
                 "quoted_text": "Tax-exempt interest 2a b Taxable interest",
             },
             {
                 "citation_id": "legacy_quotes",
                 "document_id": "form_2441_2025",
+                "ranges": [{"start": 147, "end": 242}],
                 "quoted_text": "- 25: Excluded benefits. If you checked No on line 22, enter the smaller of line 20 or line 21.",
             },
         ],

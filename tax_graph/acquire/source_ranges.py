@@ -7,12 +7,67 @@ of the acquired bytes and must be reconstructable from the range list.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 import re
 from typing import Iterable, Mapping
 
 
 TOKEN_RE = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)?|[0-9]+(?:[A-Za-z]+)?")
 DOT_LEADER_RE = re.compile(r"(?:\.{2,}|\.\s+\.|_{2,}|\\_{2,})")
+
+
+class SourceRangeError(Exception):
+    """Base class for typed failures while resolving an acquired source range."""
+
+
+class SourceDocumentNotFound(SourceRangeError):
+    """The acquired text file for a source document does not exist."""
+
+
+class SourceRangeOutOfBounds(SourceRangeError):
+    """A source range is outside the acquired text's character coordinates."""
+
+
+def resolve_source_range(
+    source_document_id: str,
+    start: int,
+    end: int,
+    *,
+    text_dir: str | Path | None = None,
+    source_text: str | None = None,
+) -> str:
+    """Resolve a half-open character range in the acquired source text.
+
+    Ranges are character offsets into the acquired ``<source_document_id>.txt``
+    file after universal-newline handling.  The ``source_text`` escape hatch is
+    only for callers that already hold that same acquired text; it does not
+    permit an HTML or PDF fallback.  Missing files and invalid ranges raise
+    distinct typed failures, so neither can be mistaken for an empty span.
+    """
+    if (text_dir is None) == (source_text is None):
+        raise ValueError("provide exactly one of text_dir or source_text")
+    if source_text is None:
+        source_path = Path(text_dir) / f"{source_document_id}.txt"
+        if not source_path.exists():
+            raise SourceDocumentNotFound(
+                f"missing acquired source text for {source_document_id}: {source_path}"
+            )
+        with source_path.open("r", encoding="utf-8", newline=None) as handle:
+            source_text = handle.read()
+    if (
+        isinstance(start, bool)
+        or isinstance(end, bool)
+        or not isinstance(start, int)
+        or not isinstance(end, int)
+        or start < 0
+        or end < start
+        or end > len(source_text)
+    ):
+        raise SourceRangeOutOfBounds(
+            f"range {start}:{end} is outside {source_document_id} character text "
+            f"of length {len(source_text)}"
+        )
+    return source_text[start:end]
 
 
 @dataclass(frozen=True)
@@ -171,15 +226,24 @@ class SourceTextIndex:
     def _token_start_with_punctuation(self, token_index: int) -> int:
         """Include an opening marker attached to the first source token."""
         start = self.tokens[token_index].start
-        while start > 0 and self.text[start - 1] in "([{+-":
-            start -= 1
+        cursor = start
+        while cursor > 0 and self.text[cursor - 1].isspace():
+            cursor -= 1
+        if cursor > 0 and self.text[cursor - 1] in "([{+-":
+            start = cursor - 1
         return start
 
     def quote_for_ranges(self, ranges: Iterable[Mapping[str, int]]) -> str:
         """Render a normalized quote from source ranges without adding prose."""
         return normalize_source_quote(
             " ".join(
-                self.text[int(item["start"]) : int(item["end"])] for item in ranges
+                resolve_source_range(
+                    "source_index",
+                    int(item["start"]),
+                    int(item["end"]),
+                    source_text=self.text,
+                )
+                for item in ranges
             )
         )
 

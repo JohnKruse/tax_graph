@@ -67,6 +67,9 @@ def test_qdcgt_canary_survives_rewritten_publink_ids_and_keeps_citations_verbati
         rewritten,
         QDCGT_WORKSHEET_TARGET,
         source_document_id="instructions_form_1040_2025",
+        oracle_source_text=(ROOT / ".cache" / "raw" / "2025" / "instructions_form_1040_2025.txt").read_text(
+            encoding="ascii"
+        ),
     )
 
     assert result.ok
