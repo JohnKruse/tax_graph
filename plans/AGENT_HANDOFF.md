@@ -380,6 +380,22 @@ Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
+**CITATION `ranges` ARE IN TWO COORDINATE SYSTEMS AND NOTHING SAYS WHICH (Architect, measured
+2026-08-18 over `graph/2025/citations/*.yaml`).** Of 511 citations with a range and a
+`quoted_text`, **238 resolve as BYTE offsets, 241 only after a CHARACTER->BYTE conversion, and 32
+resolve neither way.** So roughly half the shipped citations point at the wrong text - one lands on
+a neighbouring worksheet row, which is the "line 22's text under line 24" failure **already live in
+the artifact the agent reads.** Same CR-drift trap as M20-S124.
+**THE STORED COPY IS THE ONLY REASON THIS WAS DETECTABLE.** `docs/source-extents.md` is right that
+a citation should carry a range and not a copy, but **dropping `quoted_text` before the ranges are
+sound would freeze this defect where nothing can see it.** Order: one coordinate system, a test that
+511 of 511 resolve, THEN derive text from the range.
+
+**NO MCP TOOL RESOLVES A BYTE RANGE TO TEXT (Architect, 2026-08-18).** `get_document` returns a
+document object, not source text, and `get_citation` returns the stored record. Attaching augmenting
+context by reference needs a resolver that serves `(source_document_id, start, end) -> text` from
+the acquired file.
+
 **`sibling_worksheet_owner` MASKS WORKSHEET-TO-WORKSHEET MISATTRIBUTION (Architect, measured
 2026-08-17).** The bucket is correct today only because all four Schedule D worksheets have **0
 cells** in the reconciliation population, so the denominator is zero. **The moment worksheet cells
