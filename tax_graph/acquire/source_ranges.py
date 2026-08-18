@@ -28,6 +28,17 @@ class SourceRangeOutOfBounds(SourceRangeError):
     """A source range is outside the acquired text's character coordinates."""
 
 
+def load_source_text(source_document_id: str, *, text_dir: str | Path) -> str:
+    """Load one acquired source text with the range contract's newline rule."""
+    source_path = Path(text_dir) / f"{source_document_id}.txt"
+    if not source_path.exists():
+        raise SourceDocumentNotFound(
+            f"missing acquired source text for {source_document_id}: {source_path}"
+        )
+    with source_path.open("r", encoding="utf-8", newline=None) as handle:
+        return handle.read()
+
+
 def resolve_source_range(
     source_document_id: str,
     start: int,
@@ -47,13 +58,7 @@ def resolve_source_range(
     if (text_dir is None) == (source_text is None):
         raise ValueError("provide exactly one of text_dir or source_text")
     if source_text is None:
-        source_path = Path(text_dir) / f"{source_document_id}.txt"
-        if not source_path.exists():
-            raise SourceDocumentNotFound(
-                f"missing acquired source text for {source_document_id}: {source_path}"
-            )
-        with source_path.open("r", encoding="utf-8", newline=None) as handle:
-            source_text = handle.read()
+        source_text = load_source_text(source_document_id, text_dir=text_dir)
     if (
         isinstance(start, bool)
         or isinstance(end, bool)

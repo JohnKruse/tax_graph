@@ -300,7 +300,7 @@ def test_deterministic_checks_flag_missing_line_and_bad_quote(tmp_path):
 
     reasons = [issue.reason for issue in report.issues]
     assert "line 1 has no node" in reasons
-    assert "citation quote: quote not found" in reasons
+    assert "citation quote: quote not found in cited range" in reasons
     assert batch.objects[0].flags
 
 
@@ -793,6 +793,7 @@ def _good_response(*, confidence: float) -> dict:
                 "citation_id": "cite_8949_line_1",
                 "document_id": "form_8949_2025",
                 "locator": "line 1",
+                "ranges": [{"start": 14, "end": 22}],
                 "quoted_text": "Proceeds",
                 "url": "https://www.irs.gov/pub/irs-pdf/f8949.pdf",
                 "retrieved_date": "2026-06-29",

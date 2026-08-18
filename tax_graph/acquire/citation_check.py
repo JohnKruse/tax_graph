@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
 from pathlib import Path
 import re
@@ -12,7 +12,9 @@ from tax_graph.acquire.text_normalize import normalize_punctuation
 from tax_graph.acquire.source_ranges import (
     SourceDocumentNotFound,
     SourceRangeOutOfBounds,
+    SourceAlignment,
     SourceTextIndex,
+    load_source_text,
     resolve_source_range,
 )
 
@@ -36,11 +38,39 @@ class CitationIntegrityReport:
 
     checked: int
     mismatches: list[CitationMismatch]
+    range_telltales: list["CitationRangeTelltale"] = field(default_factory=list)
+    provenance_findings: list["CitationProvenanceFinding"] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
         """Whether every checked citation matched."""
         return not self.mismatches
+
+
+@dataclass(frozen=True)
+class CitationRangeTelltale:
+    """Non-gating evidence about fragmented citation ranges."""
+
+    citation_id: str
+    document_id: str
+    source_document_id: str
+    fragment_lengths: tuple[int, ...]
+    short_fragment_count: int
+    gaps: tuple[int, ...]
+    large_gap_count: int
+
+
+@dataclass(frozen=True)
+class CitationProvenanceFinding:
+    """A range list whose quote also has a contiguous source location."""
+
+    citation_id: str
+    document_id: str
+    source_document_id: str
+    stored_ranges: tuple[dict[str, int], ...]
+    correct_ranges: tuple[dict[str, int], ...]
+    fragments: tuple[str, ...]
+    gaps: tuple[int, ...]
 
 
 def check_graph_citations(
@@ -64,6 +94,7 @@ def check_graph_citations(
         text_dir=text_dir,
         source_map=source_map,
         source_pins=source_pins,
+        require_ranges=False,
     )
 
 
@@ -73,22 +104,42 @@ def check_citation_integrity(
     text_dir: str | Path,
     source_map: dict[str, str] | None = None,
     source_pins: dict[str, str] | None = None,
+    require_ranges: bool = True,
 ) -> CitationIntegrityReport:
-    """Check range-bearing citation quotes against acquired text spans."""
+    """Check citation quotes against acquired text spans.
+
+    Promoted legacy HTML and intake citations may omit source ranges, so the
+    graph-wide check leaves those records outside the range contract. Draft
+    extraction checks pass ``require_ranges=True`` so an unverifiable model
+    citation is reported instead of passing silently.
+    """
     text_root = Path(text_dir)
     document_map = source_map or {}
     pin_map = source_pins or {}
     mismatches: list[CitationMismatch] = []
+    range_telltales: list[CitationRangeTelltale] = []
+    provenance_findings: list[CitationProvenanceFinding] = []
     checked = 0
     checked_sources: set[str] = set()
+    source_text_cache: dict[str, str] = {}
 
     for citation in citations:
         document_id = citation["document_id"]
         source_document_id = _resolve_source_document_id(citation, document_map)
         ranges = citation.get("ranges") or ()
         if citation.get("kind") != "computed_table" and not ranges:
-            # Legacy HTML and intake citations predate source ranges.  They
-            # are outside this range contract and cannot use a substrate
+            if require_ranges:
+                checked += 1
+                mismatches.append(
+                    CitationMismatch(
+                        citation_id=citation["citation_id"],
+                        document_id=document_id,
+                        source_document_id=source_document_id,
+                        reason="missing source ranges",
+                    )
+                )
+            # Promoted legacy HTML and intake citations predate source ranges.
+            # They are outside this range contract and cannot use a substrate
             # fallback without recreating the defect this check prevents.
             continue
         checked += 1
@@ -124,14 +175,23 @@ def check_citation_integrity(
             # above, so this branch is only defensive for malformed input.
             continue
         try:
-            first = ranges[0]
-            last = ranges[-1]
-            span = resolve_source_range(
-                source_document_id,
-                int(first["start"]),
-                int(last["end"]),
-                text_dir=text_root,
+            resolved_ranges = tuple(
+                {
+                    "start": int(item["start"]),
+                    "end": int(item["end"]),
+                }
+                for item in ranges
             )
+            fragments = tuple(
+                resolve_source_range(
+                    source_document_id,
+                    item["start"],
+                    item["end"],
+                    text_dir=text_root,
+                )
+                for item in resolved_ranges
+            )
+            span = " ".join(fragments)
         except SourceDocumentNotFound:
             mismatches.append(
                 CitationMismatch(
@@ -153,9 +213,32 @@ def check_citation_integrity(
             )
             continue
         quote = str(citation["quoted_text"])
+        telltale = _range_telltale(
+            citation,
+            source_document_id=source_document_id,
+            ranges=resolved_ranges,
+            fragments=fragments,
+        )
+        range_telltales.append(telltale)
+        if telltale.large_gap_count:
+            source_text = source_text_cache.get(source_document_id)
+            if source_text is None:
+                source_text = load_source_text(source_document_id, text_dir=text_root)
+                source_text_cache[source_document_id] = source_text
+            correct_ranges = _contiguous_quote_ranges(source_text, quote)
+            if correct_ranges and correct_ranges != resolved_ranges:
+                provenance_findings.append(
+                    CitationProvenanceFinding(
+                        citation_id=str(citation["citation_id"]),
+                        document_id=document_id,
+                        source_document_id=source_document_id,
+                        stored_ranges=resolved_ranges,
+                        correct_ranges=correct_ranges,
+                        fragments=fragments,
+                        gaps=telltale.gaps,
+                    )
+                )
         if _contains_normalized(span, quote):
-            continue
-        if _ordered_tokens_in_span(span, quote):
             continue
         mismatches.append(
             CitationMismatch(
@@ -166,7 +249,12 @@ def check_citation_integrity(
             )
         )
 
-    return CitationIntegrityReport(checked=checked, mismatches=mismatches)
+    return CitationIntegrityReport(
+        checked=checked,
+        mismatches=mismatches,
+        range_telltales=range_telltales,
+        provenance_findings=provenance_findings,
+    )
 
 
 def _resolve_source_document_id(citation: dict[str, Any], source_map: dict[str, str]) -> str:
@@ -197,25 +285,46 @@ def _contains_normalized(haystack: str, needle: str) -> bool:
     return normalized_needle in normalized_haystack
 
 
-def _ordered_tokens_in_span(span: str, quote: str) -> bool:
-    """Allow source-layout elision while keeping the cited span anchored."""
-    source_tokens = SourceTextIndex(span).tokens
+def _range_telltale(
+    citation: dict[str, Any],
+    *,
+    source_document_id: str,
+    ranges: tuple[dict[str, int], ...],
+    fragments: tuple[str, ...],
+) -> CitationRangeTelltale:
+    """Summarize fragmented ranges without making the summary a gate."""
+    gaps = tuple(
+        following["start"] - preceding["end"]
+        for preceding, following in zip(ranges, ranges[1:])
+    )
+    fragment_lengths = tuple(len(fragment) for fragment in fragments)
+    return CitationRangeTelltale(
+        citation_id=str(citation["citation_id"]),
+        document_id=str(citation["document_id"]),
+        source_document_id=source_document_id,
+        fragment_lengths=fragment_lengths,
+        short_fragment_count=sum(length < 12 for length in fragment_lengths),
+        gaps=gaps,
+        large_gap_count=sum(gap > 1000 for gap in gaps),
+    )
+
+
+def _contiguous_quote_ranges(source_text: str, quote: str) -> tuple[dict[str, int], ...] | None:
+    """Find a single contiguous token passage for provenance diagnosis."""
+    source_index = SourceTextIndex(source_text)
     quote_tokens = SourceTextIndex(quote).tokens
-    if not source_tokens or not quote_tokens:
-        return False
-    if (
-        source_tokens[0].start != quote_tokens[0].start
-        or source_tokens[0].value != quote_tokens[0].value
-    ):
-        return False
-    cursor = 0
-    for wanted in quote_tokens:
-        while cursor < len(source_tokens) and source_tokens[cursor].value != wanted.value:
-            cursor += 1
-        if cursor == len(source_tokens):
-            return False
-        cursor += 1
-    return True
+    if not source_index.tokens or not quote_tokens:
+        return None
+    wanted = tuple(token.value for token in quote_tokens)
+    width = len(wanted)
+    for start in range(len(source_index.tokens) - width + 1):
+        if tuple(
+            source_index.tokens[start + offset].value for offset in range(width)
+        ) != wanted:
+            continue
+        alignment = SourceAlignment(tuple(range(start, start + width)))
+        return source_index.ranges_for_alignment(alignment)
+    return None
 
 
 def _normalize_ws(value: str) -> str:

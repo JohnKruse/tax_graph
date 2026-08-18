@@ -21,7 +21,7 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S133 IS NOT ACCEPTED - M20-S134 UNDER CURRENT ROUND FINISHES IT. DO NOT REVERT
+**BALL: ARCHITECT. M20-S134 WORKER IMPLEMENTATION IS COMPLETE AND AWAITS ACCEPTANCE. DO NOT REVERT
 `b1cd5a4`.** The accessor, the fallback deletion, the rewiring and the schema are right. The checker
 collapses the range list into one outer span, and the rule it added to tolerate that admits a
 citation whose provenance is stitched from two wrong places. **Details and the fix are in Current
@@ -318,6 +318,25 @@ must fail on it. **Silently passing an unverifiable citation is the defect, not 
 **ARCHITECT'S LEG.** The full suite over `b1cd5a4` is DONE and attributed - see BALL. **29 failed,
 1019 passed, 1:13:12**, of which exactly one is S133's (ITEM 5) and six are the S115 review
 contract, which is now the round after S134.
+
+**WORKER COMPLETION (2026-08-18; M20-S134, awaiting Architect acceptance).** The checker now
+verifies each stored range fragment and joins those fragments for exact normalized containment;
+the subsequence fallback is deleted. It emits non-gating fragment and gap telltales and names the
+two bad-provenance records with their correct contiguous spans. `cite_1040_qdcgt_line_4` stores
+`4.`, `Add lines`, `2`, `and`, and `3.` from distant source locations, while the complete quote
+`4. Add lines 2 and 3.` is at `157403..157425`. Missing ranges are an explicit
+`missing source ranges` finding in strict mode, and the extraction deterministic check enables
+strict mode; the promoted graph check keeps legacy HTML and intake omissions outside the range
+contract.
+
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT = (Join-Path (Get-Location) '.test_tmp_codex_s134');
+.venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py
+tests/test_acquire_citation_check_m134.py tests/test_extract_m4.py -q` -> **42 passed, 1 warning**.
+The warning is the known permission failure writing the pre-existing `.pytest_cache`.
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+**RAN:** `git diff --check` -> **clean**. **NOT RUN:** full suite; the Architect's baseline run
+over `b1cd5a4` is recorded above and the Worker command cap reserves that run for the Architect.
+No model call, network access, or citation artifact edit was made.
 
 ## Open for Architect
 

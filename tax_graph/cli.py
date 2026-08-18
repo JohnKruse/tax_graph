@@ -1773,6 +1773,27 @@ def _print_acquire_summary(report: Any, citation_report: Any, *, instruction_htm
                 f"  - {mismatch.citation_id}: {mismatch.reason} "
                 f"(doc={mismatch.document_id}, source={mismatch.source_document_id})"
             )
+    telltales = getattr(citation_report, "range_telltales", ())
+    visible_telltales = tuple(
+        telltale
+        for telltale in telltales
+        if telltale.short_fragment_count or telltale.gaps
+    )
+    if visible_telltales:
+        print("  range telltales (non-gating):")
+        for telltale in visible_telltales:
+            print(
+                f"  - {telltale.citation_id}: short_fragments={telltale.short_fragment_count}; "
+                f"gaps={list(telltale.gaps)}"
+            )
+    findings = getattr(citation_report, "provenance_findings", ())
+    if findings:
+        print("  bad provenance (repair is separate):")
+        for finding in findings:
+            print(
+                f"  - {finding.citation_id}: stored={list(finding.stored_ranges)}; "
+                f"correct={list(finding.correct_ranges)}; gaps={list(finding.gaps)}"
+            )
 
 
 def _build_typer_app():

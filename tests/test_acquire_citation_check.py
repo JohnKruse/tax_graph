@@ -97,26 +97,32 @@ def test_citation_integrity_uses_source_map(tmp_path):
 
 
 @pytest.mark.m3
-def test_citation_integrity_ignores_header_decoration_when_quote_spans_injected_lines(tmp_path):
+def test_citation_integrity_concatenates_explicit_ranges_across_source_lines(tmp_path):
     text_dir = tmp_path / "2025"
     text_dir.mkdir()
     source = "\n".join(
         [
             "# Page 1",
-            "Subtract column (e)",
-            "Header: from column (d) and combine the result",
-            "Header: with column (g)",
-            "to figure your gain or loss.",
+            "Subtract column (e) - page furniture",
+            "from column (d) and combine the result",
+            "with column (g).",
         ]
     )
     (text_dir / "instructions_form_8949_2025.txt").write_text(source, encoding="utf-8")
+    first = source.index("Subtract")
+    second = source.index("from column")
+    third = source.index("with column")
     citations = [
         {
             "citation_id": "cite_header_shift",
             "document_id": "form_8949_2025",
             "source_document_id": "instructions_form_8949_2025",
-            "ranges": [{"start": source.index("Subtract"), "end": len(source)}],
-            "quoted_text": "Subtract column (e) from column (d) and combine the result with column (g)",
+            "ranges": [
+                {"start": first, "end": first + len("Subtract column (e)")},
+                {"start": second, "end": second + len("from column (d) and combine the result")},
+                {"start": third, "end": third + len("with column (g).")},
+            ],
+            "quoted_text": "Subtract column (e) from column (d) and combine the result with column (g).",
         }
     ]
 
@@ -230,7 +236,7 @@ def test_citation_integrity_does_not_fallback_to_pdf_text(tmp_path):
     assert report.mismatches[0].reason == "quote not found in cited range"
 
 
-def test_citation_integrity_accepts_quote_elision_inside_the_cited_span(tmp_path):
+def test_citation_integrity_requires_explicit_ranges_for_table_elision(tmp_path):
     text_dir = tmp_path / "2025"
     text_dir.mkdir()
     source = "3. Combine lines 1 and 2. | 3. _____ | | 4. Enter the smaller of line 2 or line 3"
@@ -241,7 +247,10 @@ def test_citation_integrity_accepts_quote_elision_inside_the_cited_span(tmp_path
             {
                 "citation_id": "cite_elided_table_furniture",
                 "document_id": "schedule_d_2025",
-                "ranges": [{"start": 0, "end": len(source)}],
+                "ranges": [
+                    {"start": 0, "end": source.index("|")},
+                    {"start": source.index("4."), "end": len(source)},
+                ],
                 "quoted_text": "3. Combine lines 1 and 2. 4. Enter the smaller of line 2 or line 3",
             }
         ],

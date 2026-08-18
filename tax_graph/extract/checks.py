@@ -133,7 +133,11 @@ def _citation_quote_issues(document: SourceDocumentInput, batch: ExtractionBatch
     citations = [obj.data for obj in batch.items("citations")]
     if not citations:
         return []
-    report = check_citation_integrity(citations, text_dir=document.text_path.parent)
+    report = check_citation_integrity(
+        citations,
+        text_dir=document.text_path.parent,
+        require_ranges=True,
+    )
     return [
         CheckIssue("citations", mismatch.citation_id, f"citation quote: {mismatch.reason}")
         for mismatch in report.mismatches
