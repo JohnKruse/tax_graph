@@ -33,11 +33,22 @@ class CitationMismatch:
 
 
 @dataclass(frozen=True)
+class CitationUnverifiable:
+    """A citation intentionally outside the current source-range contract."""
+
+    citation_id: str
+    document_id: str
+    source_document_id: str
+    reason: str
+
+
+@dataclass(frozen=True)
 class CitationIntegrityReport:
     """Citation integrity result."""
 
     checked: int
     mismatches: list[CitationMismatch]
+    unverifiable_citations: list[CitationUnverifiable] = field(default_factory=list)
     range_telltales: list["CitationRangeTelltale"] = field(default_factory=list)
     provenance_findings: list["CitationProvenanceFinding"] = field(default_factory=list)
 
@@ -71,6 +82,8 @@ class CitationProvenanceFinding:
     correct_ranges: tuple[dict[str, int], ...]
     fragments: tuple[str, ...]
     gaps: tuple[int, ...]
+    repair_quote: str | None = None
+    repair_blocker: str | None = None
 
 
 def check_graph_citations(
@@ -117,6 +130,7 @@ def check_citation_integrity(
     document_map = source_map or {}
     pin_map = source_pins or {}
     mismatches: list[CitationMismatch] = []
+    unverifiable_citations: list[CitationUnverifiable] = []
     range_telltales: list[CitationRangeTelltale] = []
     provenance_findings: list[CitationProvenanceFinding] = []
     checked = 0
@@ -128,6 +142,14 @@ def check_citation_integrity(
         source_document_id = _resolve_source_document_id(citation, document_map)
         ranges = citation.get("ranges") or ()
         if citation.get("kind") != "computed_table" and not ranges:
+            unverifiable_citations.append(
+                CitationUnverifiable(
+                    citation_id=citation["citation_id"],
+                    document_id=document_id,
+                    source_document_id=source_document_id,
+                    reason="missing source ranges",
+                )
+            )
             if require_ranges:
                 checked += 1
                 mismatches.append(
@@ -226,6 +248,11 @@ def check_citation_integrity(
                 source_text = load_source_text(source_document_id, text_dir=text_root)
                 source_text_cache[source_document_id] = source_text
             correct_ranges = _contiguous_quote_ranges(source_text, quote)
+            repair_quote, repair_blocker = _repair_provenance(source_text, quote)
+            if repair_quote is not None:
+                correct_ranges = _contiguous_quote_ranges(source_text, repair_quote)
+                if correct_ranges is not None:
+                    correct_ranges = _split_table_separator_ranges(source_text, correct_ranges)
             if correct_ranges and correct_ranges != resolved_ranges:
                 provenance_findings.append(
                     CitationProvenanceFinding(
@@ -236,6 +263,8 @@ def check_citation_integrity(
                         correct_ranges=correct_ranges,
                         fragments=fragments,
                         gaps=telltale.gaps,
+                        repair_quote=repair_quote,
+                        repair_blocker=repair_blocker,
                     )
                 )
         if _contains_normalized(span, quote):
@@ -252,6 +281,7 @@ def check_citation_integrity(
     return CitationIntegrityReport(
         checked=checked,
         mismatches=mismatches,
+        unverifiable_citations=unverifiable_citations,
         range_telltales=range_telltales,
         provenance_findings=provenance_findings,
     )
@@ -325,6 +355,42 @@ def _contiguous_quote_ranges(source_text: str, quote: str) -> tuple[dict[str, in
         alignment = SourceAlignment(tuple(range(start, start + width)))
         return source_index.ranges_for_alignment(alignment)
     return None
+
+
+def _repair_provenance(source_text: str, quote: str) -> tuple[str | None, str | None]:
+    """Describe a minimal quote repair when the source lacks final punctuation."""
+    trimmed = quote.rstrip()
+    if trimmed.endswith("."):
+        trimmed = trimmed[:-1].rstrip()
+        if _contiguous_quote_ranges(source_text, trimmed) is not None:
+            return (
+                trimmed,
+                "quoted_text has a trailing period that is absent from the source span",
+            )
+    return None, None
+
+
+def _split_table_separator_ranges(
+    source_text: str,
+    ranges: tuple[dict[str, int], ...],
+) -> tuple[dict[str, int], ...]:
+    """Omit table pipe separators while retaining the surrounding source text."""
+    split: list[dict[str, int]] = []
+    for item in ranges:
+        start = int(item["start"])
+        end = int(item["end"])
+        cursor = start
+        for match in re.finditer(r"\|", source_text[start:end]):
+            separator = start + match.start()
+            before_end = separator
+            while before_end > cursor and source_text[before_end - 1].isspace():
+                before_end -= 1
+            if before_end > cursor:
+                split.append({"start": cursor, "end": before_end})
+            cursor = separator + 1
+        if cursor < end:
+            split.append({"start": cursor, "end": end})
+    return tuple(split)
 
 
 def _normalize_ws(value: str) -> str:

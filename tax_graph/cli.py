@@ -1763,7 +1763,8 @@ def _print_acquire_summary(report: Any, citation_report: Any, *, instruction_htm
     print("  changed:", ", ".join(report.changed) if report.changed else "-")
     print("  unchanged:", ", ".join(report.unchanged) if report.unchanged else "-")
     print("\n=== citation integrity ===")
-    print(f"  checked: {citation_report.checked}")
+    unverifiable = getattr(citation_report, "unverifiable_citations", ())
+    print(f"  checked: {citation_report.checked} (unverifiable: {len(unverifiable)})")
     if citation_report.ok:
         print("  result: OK")
     else:
@@ -1772,6 +1773,13 @@ def _print_acquire_summary(report: Any, citation_report: Any, *, instruction_htm
             print(
                 f"  - {mismatch.citation_id}: {mismatch.reason} "
                 f"(doc={mismatch.document_id}, source={mismatch.source_document_id})"
+            )
+    if unverifiable:
+        print("  unverifiable citations (not checked):")
+        for citation in unverifiable:
+            print(
+                f"  - {citation.citation_id}: {citation.reason} "
+                f"(doc={citation.document_id}, source={citation.source_document_id})"
             )
     telltales = getattr(citation_report, "range_telltales", ())
     visible_telltales = tuple(
@@ -1794,6 +1802,8 @@ def _print_acquire_summary(report: Any, citation_report: Any, *, instruction_htm
                 f"  - {finding.citation_id}: stored={list(finding.stored_ranges)}; "
                 f"correct={list(finding.correct_ranges)}; gaps={list(finding.gaps)}"
             )
+            if finding.repair_blocker:
+                print(f"    repair blocked: {finding.repair_blocker}")
 
 
 def _build_typer_app():

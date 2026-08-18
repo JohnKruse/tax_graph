@@ -43,7 +43,10 @@ def test_real_citation_check_concatenates_ranges_and_emits_two_bad_provenance_fi
     assert carryover.correct_ranges == ({"start": 62388, "end": 62452},)
     qdcgt = findings["cite_1040_qdcgt_line_4"]
     assert qdcgt.gaps == (3068, 1394, 1717, 13)
-    assert qdcgt.correct_ranges == ({"start": 157403, "end": 157425},)
+    assert qdcgt.correct_ranges == (
+        {"start": 157403, "end": 157405},
+        {"start": 157407, "end": 157425},
+    )
 
 
 def test_real_range_perturbation_is_rejected_by_exact_containment() -> None:

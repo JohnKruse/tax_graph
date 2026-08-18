@@ -301,6 +301,20 @@ ask.**
 - **Full suite against the baseline** - at least 22 red; see BALL.
 - **Protected set byte-identical**, `check_ascii` OK, `git diff --check` clean.
 
+**WORKER COMPLETION (2026-08-19; M20-S135, awaiting Architect acceptance).** The graph citation
+report preserves non-failing legacy mode while exposing all 114 no-range citations as
+`unverifiable_citations`; the CLI prints `checked: 515 (unverifiable: 114)` and every id. The
+accounting closes: 511 ranged + 114 unverifiable + 4 computed-table = 629. The two S134
+provenance findings now carry a source-verifiable `repair_quote` and a `repair_blocker`; applying
+each proposed range set and quote passes the checker. No citation artifacts were edited.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py tests\test_acquire_citation_check_m134.py tests\test_acquire_citation_check_m135.py tests\test_source_ranges_m133.py tests\test_worksheet_harvest_m20.py tests\test_cli.py tests\test_extract_m4.py -q` -> **64 passed in 39.40s**.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check_m135.py tests\test_acquire_citation_check_m134.py -q` -> **6 passed in 6.78s**.
+**RAN:** `.venv\Scripts\python.exe -m pytest -q` -> **28 failed, 1026 passed, 8 skipped, 1 xfailed**; the known baseline reds remain and no M135 test failed.
+**RAN:** `.venv\Scripts\python.exe -c "from pathlib import Path; from tax_graph.acquire.citation_check import check_graph_citations; root=Path('.').resolve(); r=check_graph_citations(year='2025', raw_store=root/'.cache/raw', root=root); print(r.checked, len(r.unverifiable_citations), len(r.range_telltales), len(r.provenance_findings), r.checked + len(r.unverifiable_citations))"` -> **515 114 511 2 629**.
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py tax_graph\acquire\citation_check.py tax_graph\cli.py tests\test_acquire_citation_check_m134.py tests\test_acquire_citation_check_m135.py plans\AGENT_HANDOFF.md` -> **ASCII check OK**.
+**RAN:** `git diff --check` -> **clean**.
+
 ## Open for Architect
 
 Nothing open. Raise items here.
