@@ -435,6 +435,21 @@ Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
+**THE TAX TABLE IS NOT A REASON TO KEEP OCR - WE DO NOT CONSUME IT (Architect, measured 2026-08-18
+after John's question).** `graph/2025/nodes/tax-liability.yaml` holds **rate brackets with cumulative
+amounts**, so line 16 is computed by formula and the table is never read. **Its absence from the
+HTML blocks nothing**, which removes the objection I raised to retiring the OCR path. The OCR copy
+would not be usable anyway: the extracted rows have their column separators merged
+(`| 111120 | 360 |` is a collapsed range), and dense numeric tables are where OCR is weakest.
+
+**BUT FORMULA-ONLY TAX IS NOT WHAT THE IRS PRESCRIBES BELOW $100,000 (Architect, 2026-08-18).** The
+instructions say *"If your taxable income is less than $100,000, you MUST use the Tax Table"* and
+the Tax Table charges tax on the **midpoint of each $50 band**, not on the exact figure. **Measured
+against our own bracket parameters, the largest gap below $100,000 is $4.40** - e.g. taxable income
+$97,595 computes $16,384.90 by formula against a $16,380.50 table basis. **Every sub-$100k return we
+produce can differ from the prescribed value by a few dollars.** Decide whether the graph must
+reproduce the table's banding; if so it needs a CLEAN table source, which is not OCR.
+
 **THE OCR CHOICE WAS EVALUATED AND WAS RIGHT; THE EVAL IS SIMPLY OBE (John, 2026-08-18).** He
 selected Mistral OCR on an eval showing ~99% word recognition and good structure recognition on
 instructions, and it broke on FORMS because they are oddly structured - which is why forms stay on
