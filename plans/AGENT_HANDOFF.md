@@ -348,12 +348,24 @@ for that booklet; failing that, the booklet's own form.** Reuse
 vocabulary. **A section whose ancestor names a document OUTSIDE the vocabulary is rejected
 section-locally, never fatally** (the M20-S123 rule, which is not reopened).
 
-### ITEM 3 - ADDRESS BY ANCHOR, CARRY THE RANGE
+### ITEM 3 - ADDRESS BY ANCHOR, CARRY THE RANGE, AND DO NOT TRUST THE TOC
 
 Every section records its `publink` anchor id where the IRS gives one, plus its offsets in the HTML.
 **The anchor is the durable address; the offset is a convenience.** State which coordinate space the
 offsets are in, in the artifact itself - **273 of 511 shipped citations are broken precisely because
 nobody wrote that down.**
+
+**TWO TRAPS I MEASURED 2026-08-18 AFTER SPECCING THIS ROUND, BOTH OF WHICH WOULD HAVE COST A ROUND:**
+- **ANCHOR IDS ARE NOT YEAR-CONSISTENT AND MUST BE TREATED AS OPAQUE.** The 2025 Schedule D booklet
+  carries **44 anchors spelled `en_US_2024_publink...` against 17 spelled `en_US_2025_`.** The year
+  in the id tracks when the IRS last revised that passage, not the document's year. **Never parse a
+  year out of an anchor id and never filter on one.**
+- **THE TABLE OF CONTENTS IS NOT AN INDEX OF THE BODY. DO NOT ENUMERATE SECTIONS FROM IT.**
+  Dangling TOC links: **322 of 762 in the 1040**, 21 of 96 in Schedule D, 7 of 25 in Schedule B.
+  **Enumerate from the body anchors and the `role-hd`/`inlinehd` headings.** I told John the page
+  "links every section"; that is wrong and this is the correction.
+- **There are fewer anchors than sections** - 329 in the 1040 against 586 model sections - so a
+  section without an anchor is normal. **Fall back to offsets; do not drop the section.**
 
 ### ITEM 4 - SCORE WITH THE INFLATION SEPARATED
 
