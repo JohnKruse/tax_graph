@@ -244,6 +244,16 @@ not satisfy this item.
 at the text they quote, each with the correct span. The repair is a separate decision and it belongs
 to whatever regenerates these records, not to a hand edit.
 
+**THE REPAIR IS SMALLER THAN IT LOOKS AND THE SCOPE IS ALREADY TRACED (Architect, 2026-08-18).**
+Nothing in `tax_graph/` mints `cite_schedule_d_carryover_line_13` - the only hits outside the
+protected set are pytest temp copies - so it is hand-authored, as its shape suggested. It IS
+load-bearing: referenced from `graph/2025/edges/capital-gains.yaml:104`,
+`graph/2025/nodes/capital-gains.yaml:332` and three places in `graph/2025/frontier.yaml:500-508`.
+**But the QUOTE is correct and so is every rule built on it** - only the two ranges are wrong.
+The fix is `69931..69992` + `75265..75268` becomes the single span `62388..62452`, which changes no
+graph semantics and no derived value. **It is a protected-set edit of four numbers in one file, and
+that is John's call, not this round's.**
+
 ---
 
 **WHAT MUST NOT HAPPEN.**
