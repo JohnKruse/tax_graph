@@ -329,14 +329,20 @@ two bad-provenance records with their correct contiguous spans. `cite_1040_qdcgt
 strict mode; the promoted graph check keeps legacy HTML and intake omissions outside the range
 contract.
 
-**RAN:** `$env:PYTEST_DEBUG_TEMPROOT = (Join-Path (Get-Location) '.test_tmp_codex_s134');
-.venv\Scripts\python.exe -m pytest tests/test_acquire_citation_check.py
-tests/test_acquire_citation_check_m134.py tests/test_extract_m4.py -q` -> **42 passed, 1 warning**.
-The warning is the known permission failure writing the pre-existing `.pytest_cache`.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py
+tests\test_acquire_citation_check_m134.py tests\test_source_ranges_m133.py
+tests\test_worksheet_harvest_m20.py tests\test_cli.py tests\test_extract_m4.py -q` ->
+**61 passed in 35.29s**. The sandbox attempt produced 26 passed and 35 temp-directory errors;
+the elevated rerun is the verified result. The warning is the known permission failure writing
+the pre-existing `.pytest_cache`.
 **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-**RAN:** `git diff --check` -> **clean**. **NOT RUN:** full suite; the Architect's baseline run
-over `b1cd5a4` is recorded above and the Worker command cap reserves that run for the Architect.
-No model call, network access, or citation artifact edit was made.
+**RAN:** `git diff --check` -> **clean**. The Architect's baseline run over `b1cd5a4` is
+recorded above; this session also completed the full suite with elevated access:
+`.venv\Scripts\python.exe -m pytest -q` -> **1,023 passed, 28 failed, 8 skipped, 1 xfailed
+in 1:08:41**. The failures are the already-attributed workbench/e2e and stale-corpus baseline
+areas; no S134 file or focused test appears in the failure list. The S134 item-5 regression is
+therefore cleared against the 29-failure S133 baseline. No model call, network access, or
+citation artifact edit was made.
 
 ## Open for Architect
 
