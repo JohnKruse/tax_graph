@@ -372,62 +372,68 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S130: CLOSE THE 94-SECTION PARSER GAP. THE TEXT IS IN THE HTML AND WE ARE NOT SECTIONING IT.**
+**M20-S131: MODEL THE TAX TABLE. JOHN RULED IT 2026-08-18: "we should model the tax table. it isn't
+hard, we have lookup tables for other things."**
 
-**MEASURED, NOT GUESSED.** Of 123 sections the OCR-based model frame has and the S129 HTML frame
-does not (page markers excluded), **94 have their text present in the acquired HTML.** Examples:
-`Form 1040 and 1040-SR Helpful Hints`, `The Taxpayer Advocate Service Is Here To Help You`,
-`What can TAS do for you?`, `Lines 6a and 6b`, `2025 Tax Computation WorksheetLine 16`,
-`State and Local Income Tax Refund WorksheetSchedule 1, Line 1`, `Who Qualifies as Your Dependent`.
-**`Lines 6a and 6b` is a real line instruction and we are dropping it.**
+**WE COMPUTE LINE 16 FROM RATE BRACKETS AND THE IRS DOES NOT.** Below $100,000 the instructions say
+*"you MUST use the Tax Table"*, and the table charges tax on the **midpoint of each $50 band**.
+**Measured against a cached OpenTaxSolver run: taxable income $99,999, OTS line 16 = $16,909, the
+banded rule = $16,908.50 -> $16,909, our current formula = $16,913.78 -> $16,914.** We are wrong by
+$5 on a real scenario, and OTS is the oracle we diff against with an EXACT comparator
+(`_values_equal`, `tax_graph/verify/properties.py:489`, six decimal places), so this is a live
+false-failure source as well as a correctness one.
 
-### ITEM 1 - FIND OUT WHAT MARKS THEM, DO NOT GUESS
+### ITEM 1 - THE TABLE IS A RULE, NOT 1,418 ROWS
 
-S129 sections on `role-hd*` and `inlinehd`. **These 94 are marked some other way.** Open a sample
-**end to end in the HTML** - AGENTS.md hard rule - and report the actual element and class for each
-class of miss before widening anything. **A list of counts does not satisfy this item.**
+**Do NOT ingest table data.** The IRS generates the table from the same brackets we already hold in
+`form_1040_2025_brackets_*`: for taxable income in `[lo, lo+50)`, tax is computed on `lo+25`.
+**Our only copy of the printed table is Mistral OCR output with merged columns
+(`| 111120 | 360 |` is a collapsed range) and it must not be used as a source.**
 
-### ITEM 2 - WIDEN THE HEADING VOCABULARY TO WHAT YOU FOUND, AND ONLY THAT
+### ITEM 2 - BAND ONLY WHERE THE TABLE APPLIES
 
-Add the element/class patterns the sample proves are headings. **Do not add a pattern no observed
-section needs, and do not fall back to "any bold" - that is the OCR failure mode we are leaving.**
-Each added pattern is named in the round report with the section it was added for.
+**Below $100,000 only.** At $100,000 and above the Tax Computation Worksheet applies and the
+unbanded computation is correct. **Do not band the QDCGT or Schedule D Tax Worksheet paths** - those
+compute line 16 by their own method and the cached OTS scenarios that use them differ from ordinary
+rates by hundreds of dollars, which is not a banding effect.
 
-### ITEM 3 - THE FRAME INVARIANTS DO NOT MOVE
+### ITEM 3 - ROUNDING IS PART OF THE RULE
 
-Byte conservation over the content region with no gap or overlap; no section sourced from the table
-of contents; ownership from the ancestor chain with foreign owners rejected, never reassigned;
-opaque anchor ids. **Widening the vocabulary must not break any of these** - a wider vocabulary that
-swallows the TOC or breaks tiling is a worse frame, not a better one.
+The banded result lands on a half-dollar (`$16,908.50`). **OTS reports `$16,909`, so the rule is
+round-half-up, not Python's banker's rounding** - `round(16908.50)` returns 16908 and would be
+wrong. **State the rounding mode in the node and test the .50 case explicitly.**
 
-### ITEM 4 - REPORT THE GAP AGAIN THE SAME WAY
+### ITEM 4 - CITE IT
 
-Recompute **how many of the 123 remain unsectioned**, and report the per-document `line_anchored`
-score from S128's measure so we can see whether the added sections carry line anchors.
-**Do not compare heading text against the OCR frame** - that measures OCR damage, which is what I
-got wrong in S129.
+The rule carries a citation to the instruction text that states it
+(*"If your taxable income is less than $100,000, you must use the Tax Table"*). **A tax rule without
+a citation does not go in** - standing rule, `AGENTS.md`.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Nothing under `tax_graph/`, no acquisition change, no CLI wiring, no graph artifact, no OCR
-  change.** Pilot plus tests.
-- **No model call and no network.** In particular **do not fetch the IRS tax-table pages** - whether
-  we acquire those is John's call and is not part of this round.
-- **Do not delete or rewrite the S128 or S129 modules.**
-- **Do not pin any score as an expected constant.**
+- **Do not ingest, OCR, or fetch tax-table data.** The rule needs none.
+- **Do not change the bracket parameters themselves** - they are shared with the QDCGT path.
+- **Do not widen `_values_equal` or add a tolerance to the oracle comparator** to make a mismatch go
+  away. **If a diff remains after banding, report it; do not absorb it.**
+- **No network.**
 
 **THE FLOOR.**
-- **A sample of the 94 is opened with its actual HTML element and class**, grouped by cause.
-- **`Lines 6a and 6b` becomes a section owned by `form_1040_2025`**, proven by a test naming it.
-- **All 8 booklets still tile with no gap and no overlap**, no section from the TOC, Schedule D
-  `Line 4.`/`Line 12.` still owned by `unrecaptured_section_1250_gain_worksheet_2025`, Form 1116's
-  worksheet rows still rejected.
-- **The remaining unsectioned count and the per-document `line_anchored` scores are reported.**
-- **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
+- **Taxable income $99,999, Single, computes $16,909** - the cached OTS value - proven by a test
+  naming it, and the same case fails before the change.
+- **The `.50` half-up rounding case is tested explicitly.**
+- **At $100,000 and above the result is unchanged**, proven by a test at the boundary.
+- **The QDCGT and Schedule D Tax Worksheet paths are unchanged**, proven by re-running the existing
+  suites that cover them.
+- **The rule carries a citation.**
+- **Full suite green** - this one touches the engine, so the pilot exemption does not apply.
+- **`tools/check_ascii.py` OK**, `git diff --check` clean.
 
-**ARCHITECT'S LEG.** Whether the OCR path is retired, kept only for the lookup tables, or replaced
-by acquiring the IRS table pages. **That last one needs John and is not Codex's to touch.**
+**ARCHITECT'S LEG.** Full verification against a CLEAN copy of the printed table. **We do not have
+one** - the OCR copy is mangled and the IRS HTML page does not carry the table. That needs John's
+egress or an accepted alternative source, and it is NOT a floor item for this round.
+
+**M20-S130 (the 94-section HTML parser gap) IS DEFERRED, NOT DROPPED.** Its spec is at `a2e95e0`.
 
 ## Open for Architect
 
