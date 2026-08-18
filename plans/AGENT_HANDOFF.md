@@ -27,10 +27,36 @@ collapses the range list into one outer span, and the rule it added to tolerate 
 citation whose provenance is stitched from two wrong places. **Details and the fix are in Current
 round.**
 
-**THE BASELINE IS 19 RED, NOT 18. I HAVE BEEN QUOTING A STALE NUMBER.**
-`test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading` fails identically
-at `6522da4`, which I checked in a clean worktree rather than assuming. Codex flagged it as
-pre-existing and was right. **Add it to the list below and stop reading a 19th red as a regression.**
+**FULL SUITE OVER `b1cd5a4`: 29 failed, 1019 passed, 8 skipped, 1 xfailed, 1:13:12 (Architect,
+2026-08-18).** I attributed every one of the 29 rather than reading the count.
+
+**EXACTLY ONE IS AN S133 REGRESSION, AND IT IS THE SAME DEFECT AS THE MAIN FINDING - A CHECK THAT
+STOPPED CHECKING.** `test_extract_m4::test_deterministic_checks_flag_missing_line_and_bad_quote`
+**passes at `6522da4` and fails at `b1cd5a4`**, which I ran in a clean worktree. The new checker
+does `if not ranges: continue`, commented *"only defensive for malformed input."* **It is not.
+Model-generated citations arrive with no ranges yet, and they are exactly the ones whose quotes must
+be checked** - the test plants an absent quote in generated output and the deterministic check no
+longer flags it. **The pipeline's own anti-fabrication guard is a no-op for any citation without a
+range.** Fixed as ITEM 5 below.
+
+**THE BASELINE IS AT LEAST 22, NOT 18, AND I HAVE BEEN QUOTING A STALE LIST FOR WEEKS.** Verified
+failing at `6522da4` in the parent worktree, none of them S133's doing:
+`test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading`,
+`test_citation_cleanup_m18::test_real_citation_corpus_has_source_verified_cleanups`
+(`cite_1040_standard_deduction` cleanup returns `changed=False`), and both
+`test_generated_review_m20` cases.
+**My "output-neutral over 515 quotes" check stands** - I re-ran the cleanup failure at the parent and
+it is identical there, so the `_token_start_with_punctuation` change did not cause it.
+
+**SIX MORE ARE THE S115 REVIEW CONTRACT AND THEY ARE THE DEBT I KEEP RECORDING AND NOT PAYING.**
+`test_workbench_cells_api_m17` (2), `test_workbench_write_api_m15` (3) and
+`e2e/test_workbench_v2_m17` (1) all die at `workbench/server.py:640`,
+`AttributeError: 'NoneType' object has no attribute 'get'` on `object_ref`. **Nothing in
+`workbench/` imports `citation_check`, `source_ranges` or `resolve_source_range`** - I grepped - so
+this is not S133. I could not bisect them: they skip in a fresh worktree for want of `_drafts` and
+error at setup once it is supplied. **That is itself the finding - the review surface John reviews
+is only exercisable against live local state, and it has been broken and unverified since
+2026-08-16.** It moves from "Architect's leg, owed" to the round after S134.
 
 **TWO THINGS S133 PROVED THAT ARE WORTH KEEPING SEPARATE FROM THE VERDICT.**
 - **The check has real teeth where it matters.** Perturbing every one of the 511 stored ranges by
@@ -164,7 +190,8 @@ the graph contains, and *"we model the worksheets so that they can support the f
 **ROUTING IS ITS OWN CONSTRUCT** - `schedule_d` 17 is flow control, so `election` must be validated
 until routing exists, or it keeps absorbing branches.
 
-**THE 19-RED BASELINE, corrected 2026-08-18.** Eleven `tests/e2e/*_m15.py`, plus:
+**THE RED BASELINE, corrected 2026-08-18 - AT LEAST 22, and the six S115 workbench failures may
+make it 28.** Eleven `tests/e2e/*_m15.py`, plus:
 `test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
 `test_field_identity_m16::test_schedule_2_raw_cache_reproduces_target_fields`,
 `test_m20_s71::test_real_candidate_node_labels_use_clean_text`,
@@ -172,8 +199,14 @@ until routing exists, or it keeps absorbing branches.
 `test_review_scope_migration_m15::test_live_queue_migration_gives_every_pending_entry_a_primary_target`,
 `test_schedule_2_m16::test_schedule_2_part_i_raw_acroform_identity`,
 `test_schedule_d_extraction_m9::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`,
-`test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading` (added 2026-08-18,
-verified failing at `6522da4` in a clean worktree - it was always red and never recorded).
+`test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading`,
+`test_citation_cleanup_m18::test_real_citation_corpus_has_source_verified_cleanups`,
+`test_generated_review_m20::test_generated_review_keeps_form_and_instruction_slots_separate`,
+`test_generated_review_m20::test_generated_review_renders_resolved_external_sources_and_hides_sentinels`
+(the last four added 2026-08-18, each verified failing at `6522da4` in a clean worktree - all were
+always red and never recorded).
+**PLUS the six S115 workbench failures in BALL**, which are real and not baseline-by-right: they are
+a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
@@ -254,6 +287,16 @@ The fix is `69931..69992` + `75265..75268` becomes the single span `62388..62452
 graph semantics and no derived value. **It is a protected-set edit of four numbers in one file, and
 that is John's call, not this round's.**
 
+### ITEM 5 - A CITATION WITH NO RANGES MUST NOT PASS SILENTLY
+
+`if not ranges: continue` is commented *"only defensive for malformed input"* and that assumption is
+wrong: **model-generated citations have no ranges yet and are exactly the ones whose quotes need
+checking.** `test_extract_m4::test_deterministic_checks_flag_missing_line_and_bad_quote` proves it -
+it plants an absent quote in generated output and the check no longer fires. **Do not restore the
+whole-file search to fix this.** A citation with no range cannot be verified against a span, so it
+must be REPORTED as unverifiable, with its own reason, and the extract path's deterministic check
+must fail on it. **Silently passing an unverifiable citation is the defect, not the missing range.**
+
 ---
 
 **WHAT MUST NOT HAPPEN.**
@@ -268,13 +311,13 @@ that is John's call, not this round's.**
   fixture: shift a stored range by a few hundred characters and watch the checker fail.
 - **`cite_1040_qdcgt_line_4` opened end to end and classified.**
 - **The bad-provenance list emitted**, each entry with the correct span.
-- **Full suite against the baseline** - which is **19 red, not 18**; see BALL.
+- **`test_extract_m4::test_deterministic_checks_flag_missing_line_and_bad_quote` GREEN.**
+- **Full suite against the baseline** - which is **at least 22 red, not 18**; see BALL.
 - **Protected set byte-identical**, `tools/check_ascii.py` OK, `git diff --check` clean.
 
-**ARCHITECT'S LEG.** The full suite over `b1cd5a4` is RUNNING on my side as of 2026-08-18 19:35 and
-its result is not in this file yet - **do not read its absence as a pass.** I will post the count
-here. Also still owed: the live check on the S115 review contract, unverified on the remote since
-2026-08-16.
+**ARCHITECT'S LEG.** The full suite over `b1cd5a4` is DONE and attributed - see BALL. **29 failed,
+1019 passed, 1:13:12**, of which exactly one is S133's (ITEM 5) and six are the S115 review
+contract, which is now the round after S134.
 
 ## Open for Architect
 
