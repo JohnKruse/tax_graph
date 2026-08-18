@@ -457,6 +457,28 @@ remaining gap is Schedule 1-A's body prose - lines 3 and 38 are stated in runnin
 headings - and no frame work reaches it.** The next substantive round is the stage-2 body read, and
 it needs John's ChatGPT table as the Schedule 1-A reference answer.
 
+**CODEX STATUS (2026-08-18, M20-S132).** Implemented the ownership-only pilot in
+`pilot/html_document_frame_m20_s132.py` with guards in
+`pilot/test_html_document_frame_m20_s132.py`. It reuses S130's accepted heading vocabulary and
+byte tiling, then applies the three cases: an in-vocabulary naming ancestor owns, an out-of-
+vocabulary worksheet ancestor rejects, and no naming ancestor falls back to the booklet form.
+Document mentions inside a line heading are not treated as naming ancestors, which returns
+Schedule D's six worked examples to `schedule_d_2025` without weakening the Form 1116 worksheet
+rejection.
+
+RAN: `.venv\\Scripts\\python.exe -m pytest pilot\\test_html_document_frame_m20_s132.py -q` ->
+3 passed, 1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
+RAN: `.venv\\Scripts\\python.exe -m pytest pilot\\test_html_section_frame_m20_s128.py pilot\\test_html_document_frame_m20_s129.py pilot\\test_html_document_frame_m20_s130.py pilot\\test_html_document_frame_m20_s132.py -q` ->
+20 passed, 1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
+RAN: `.venv\\Scripts\\python.exe -m pilot.html_document_frame_m20_s132` -> 8 booklets;
+rejected `29 -> 23`; Schedule D `6 -> 0`; Form 1116 `21 -> 21`; all other booklet rejection
+counts unchanged. Per-document line anchors are unchanged: 1040 41, 1116 17, 2441 20, 6251
+37, 8949 4, Schedule 1 52, Schedule 1-A 11, Schedule 2 38, Schedule 3 29, Schedule A 22,
+Schedule B 5, Schedule D 12.
+RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py pilot\\html_document_frame_m20_s132.py pilot\\test_html_document_frame_m20_s132.py` -> `ASCII check OK`.
+RAN: `git diff --check` -> clean.
+NOT RUN: full suite; this round is pilot plus targeted tests by specification.
+
 ## Open for Architect
 
 Nothing open. Raise items here.
