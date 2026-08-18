@@ -361,7 +361,7 @@ it. A table of counts without the quotes does not satisfy this item.
 **ARCHITECT'S LEG.** Reading the result and deciding whether the pipeline moves to HTML. Not Codex's
 call and not a floor item.
 
-**CODEX STATUS (2026-08-18): M20-S127 MEASURED.** Added the offline-only
+**CODEX STATUS (2026-08-18): M20-S127 MEASURED (`b94aa5d`).** Added the offline-only
 `pilot/measure_html_pipeline_m20_s127.py` inventory and its own regression test. It reads all eight
 acquired HTML booklets, the acquired PDF text, the reconciliation cells, and the three paid model
 recordings; it does not call a provider, fetch the network, change production code, or write graph
