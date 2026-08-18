@@ -21,8 +21,27 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S132 IS ACCEPTED. M20-S133 UNDER CURRENT ROUND IS THE NEXT ROUND: THE CITATION
-RANGE IS UNVERIFIED AND THE ONLY CODE THAT READS A CITATION IGNORES IT.**
+**BALL: CODEX. M20-S133 IS NOT ACCEPTED - M20-S134 UNDER CURRENT ROUND FINISHES IT. DO NOT REVERT
+`b1cd5a4`.** The accessor, the fallback deletion, the rewiring and the schema are right. The checker
+collapses the range list into one outer span, and the rule it added to tolerate that admits a
+citation whose provenance is stitched from two wrong places. **Details and the fix are in Current
+round.**
+
+**THE BASELINE IS 19 RED, NOT 18. I HAVE BEEN QUOTING A STALE NUMBER.**
+`test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading` fails identically
+at `6522da4`, which I checked in a clean worktree rather than assuming. Codex flagged it as
+pre-existing and was right. **Add it to the list below and stop reading a 19th red as a regression.**
+
+**TWO THINGS S133 PROVED THAT ARE WORTH KEEPING SEPARATE FROM THE VERDICT.**
+- **The check has real teeth where it matters.** Perturbing every one of the 511 stored ranges by
+  +/-200 or +/-1000 characters, or truncating its end, rejects **511 of 511**. The whole-file search
+  it replaced passed all of them. **The range is now load-bearing for the first time.**
+- **What it still does not constrain is EXTENT in the widening direction.** A range extended 500
+  characters past its end still passes for 491 of 511, because containment does not care what else
+  the span holds. **That matters for `docs/source-extents.md`'s end state**: the moment `quoted_text`
+  is dropped and the text is derived FROM the range, an over-wide range silently serves a
+  neighbouring row. **Do not drop the stored copy until extent is checked, not just containment.**
+
 
 **M20-S132 IS ACCEPTED (`85a8daa`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** I re-ran
 every booklet and diffed S130 ownership against S132 section by section: **exactly 6 sections
@@ -145,142 +164,107 @@ the graph contains, and *"we model the worksheets so that they can support the f
 **ROUTING IS ITS OWN CONSTRUCT** - `schedule_d` 17 is flow control, so `election` must be validated
 until routing exists, or it keeps absorbing branches.
 
-**THE 18-RED BASELINE, unchanged and still current.** Eleven `tests/e2e/*_m15.py`, plus:
+**THE 19-RED BASELINE, corrected 2026-08-18.** Eleven `tests/e2e/*_m15.py`, plus:
 `test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
 `test_field_identity_m16::test_schedule_2_raw_cache_reproduces_target_fields`,
 `test_m20_s71::test_real_candidate_node_labels_use_clean_text`,
 `test_review_preflight_m15::test_real_2025_preflight_passes_with_all_coverage_dimensions`,
 `test_review_scope_migration_m15::test_live_queue_migration_gives_every_pending_entry_a_primary_target`,
 `test_schedule_2_m16::test_schedule_2_part_i_raw_acroform_identity`,
-`test_schedule_d_extraction_m9::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`.
+`test_schedule_d_extraction_m9::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`,
+`test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading` (added 2026-08-18,
+verified failing at `6522da4` in a clean worktree - it was always red and never recorded).
 
 ## Current round
 
-**M20-S133: THE CITATION RANGE IS UNVERIFIED, THE ONLY CODE THAT CHECKS A CITATION IGNORES IT, AND
-FOUR SEPARATE SITES SLICE IT WITH THEIR OWN IDEA OF WHAT THE TEXT IS.**
+**M20-S134: USE THE RANGE LIST. THE SUBSEQUENCE RULE IS COMPENSATING FOR A BUG IN THE SAME FILE,
+AND IT LETS A FABRICATED CITATION THROUGH.**
 
-**MEASURED BY THE ARCHITECT, 2026-08-18, over `graph/2025/citations/*.yaml` - 511 citations carrying
-both a `quoted_text` and a `ranges`.**
+**M20-S133 IS NOT ACCEPTED. MOST OF IT IS RIGHT AND STAYS** - `b1cd5a4` is not to be reverted, it is
+to be finished. **What I verified myself and what holds:** `resolve_source_range` with typed absence
+and universal-newline handling, no HTML or PDF fallback anywhere, the three improvising slice sites
+rewired, the schema stating the coordinate contract, and **511 checked with 0 mismatches, which I
+reproduced.** The teeth are real and this is the round's genuine win: **perturbing every stored range
+by +/-200 or +/-1000 characters, or truncating its end, rejects 511 of 511.** Against the whole-file
+search it replaced - which passed everything - that is a large improvement. The
+`_token_start_with_punctuation` producer change is **output-neutral over all 515 quotes**, which I
+checked against `6522da4` rather than taking on trust.
 
-- **The stored ranges are ONE coordinate system and it is the one the schema already declares.**
-  **474 of 511** resolve as half-open CHARACTER offsets into the acquired `.txt` read with universal
-  newlines. **Zero** resolve under any other reading. My earlier note in this file claiming two
-  coordinate systems was wrong and is corrected in BALL.
-- **THE HAZARD IS THE CONSUMERS, AND IT IS THE S124 TRAP SITTING LIVE IN THE CODE.** Four booklets
-  carry CRLF - `instructions_form_1040_2025` is **683,265 bytes against 675,580 characters, 7,685
-  CRs of drift** - so any consumer that byte-slices a stored range lands kilobytes off its heading.
-  The remaining fourteen sources have zero CRs, where byte and character coincide, **which is
-  exactly why nothing has caught this.**
-- **`tax_graph/acquire/citation_check.py` NEVER READS `ranges`.** It searches the WHOLE FILE for
-  `quoted_text` across `.txt`, then `.html`, then `.pdf`. **A citation whose range points at a
-  neighbouring worksheet row passes this check today.** That is the "line 22's text under line 24"
-  failure, unguarded, in the artifact the agent reads.
-- **FOUR SITES IMPROVISE THE SLICE INDEPENDENTLY:** `extract/inputs.py:333`
-  (`source_text[start:end]`, source read as **ascii**), `ingest/worksheet_harvest.py`
-  `_source_quote_for_ranges` (**ascii**), `ingest/core_source_ranges.py:89` (**utf-8**), plus the
-  writers in `extract/assembly.py:635`, `extract/outline.py:683`,
-  `extract/outline_pipeline.py:1221`. **They agree today by luck** - all happen to use `read_text`.
-- **The 37 that do not resolve are ONE class, and in every one I opened THE RANGE IS RIGHT.** The
-  stored quote is a de-noised reading of a span that carries table pipes and empty cells:
-  `cite_schedule_d_carryover_line_3_4`'s span reads
-  *"3. Combine lines 1 and 2. If zero or less, enter -0- | 3. _____ | | 4. Enter the smaller..."*
-  and the quote drops the `| 3. _____ | |`. `cite_schedule_d_line20_gate`'s span **starts exactly at
-  the quote's first character** and is merely too wide - it covers both the `Yes.` and `No.`
-  branches and the quote keeps only `No.`
+### WHAT IS WRONG, MEASURED
 
-### ITEM 1 - ONE ACCESSOR, AND IT IS THE ONLY THING THAT MAY TURN A RANGE INTO TEXT
+**`check_citation_integrity` RESOLVES ONE SPAN FROM `ranges[0]["start"]` TO `ranges[-1]["end"]` AND
+THROWS THE RANGE LIST AWAY.** Every one of the 37 "layout elision" citations is that bug and nothing
+else - **all 37 carry between 2 and 10 ranges.** Resolving and concatenating EACH range verifies
+**511 of 511 by EXACT containment.** *The elision class does not exist.* The ranges were authored
+precisely; the checker widened them and then built a rule to tolerate what it had widened.
 
-`resolve_source_range(source_document_id, start, end) -> str` in ONE module. It decides the
-coordinate system ONCE and states it in the docstring. **Absence is typed, never `""`**: a missing
-source file and an out-of-bounds range are distinct, named failures that a caller cannot mistake for
-empty text. **No substrate fallback** - it reads the acquired `.txt` and does not silently try
-`.html` or `.pdf`. The invariant test lives AT the accessor: the coordinate contract on a CRLF file
-and on a CR-free one, and both absence cases.
+**SO THE SUBSEQUENCE RULE IS STRICTLY WEAKER THAN THE CHECK IT REPLACED THE NEED FOR, AND IT ADMITS
+A FABRICATED CITATION.** `cite_schedule_d_carryover_line_13` passes `_ordered_tokens_in_span` while
+its two ranges stitch together:
 
-### ITEM 2 - REWIRE THE CONSUMERS, DO NOT ADD A SECOND PATH
+    69931..69992  "If more than zero, also enter this amount on Schedule D, line"   <- the LINE 18 row
+    75265..75268  "14."                                                             <- 5,273 chars away
 
-`check_citation_integrity` verifies the quote against **the span**, not the file. **The whole-file
-search is DELETED, not kept as a fallback** - keeping it would let a wrong range keep passing, which
-is the entire defect. The three improvising slice sites in ITEM 1's list call the accessor.
-**`grep` evidence in the round report that no `[start:end]` slice of a source text survives outside
-it.**
+**and the complete, correct sentence sits verbatim at 62388..62452.** The quote is accurate; its
+provenance is manufactured out of two wrong places, one of which is a different worksheet's row.
+**That is the "line 22's text under line 24" failure, in the shipped artifact, passing the check
+written to catch it.** It is a hand-authored A9-era record (`retrieved_date: 2026-07-10`) - pipeline
+debt, not a pipeline output.
 
-### ITEM 3 - THE 37 GET A STATED RULE, DECIDED FROM THE ARTIFACT
+**MY FLOOR SAID THIS EXACTLY AND IT WAS NOT MET:** *"If any turn out to be a genuine range error,
+name them by `citation_id` with the correct span and do NOT let the elision rule paper over them"*
+and *"a rule that cannot fail is not a check."*
+**ITEM 3 ALSO ASKED FOR 5 OF THE 37 OPENED END TO END WITH THE REAL CLASS OF EACH, AND WAS ANSWERED
+WITH COUNTS.** Had any five been opened, the stitched one was one in seven.
 
-**Open at least 5 more of the 37 end to end and report the real class of each BEFORE choosing a
-rule** - AGENTS.md hard rule, and a list of counts does not satisfy it. If they are all
-quote-elision as the four I opened were, the rule is that **the quote's tokens appear IN ORDER
-within the span**, stated in the schema description. **If any turn out to be a genuine range error,
-name them by `citation_id` with the correct span and do NOT let the elision rule paper over them.**
+### ITEM 1 - CONCATENATE THE RANGES; DELETE THE SUBSEQUENCE RULE
 
-**WHATEVER RULE YOU CHOOSE MUST STILL REJECT A RANGE THAT POINTS AT THE WRONG ROW.** Prove it:
-perturb a known-good range by a few hundred characters and the check must FAIL. **A rule that
-cannot fail is not a check.**
+Resolve each range through the accessor and join them. Verify by exact normalized containment.
+**`_ordered_tokens_in_span` goes away entirely** - not kept behind a flag, not kept as a fallback.
+**511 of 511 pass this way; I ran it.**
 
-### ITEM 4 - SAY IT IN THE SCHEMA
+### ITEM 2 - THE TWO TELLTALES THAT MAKE STITCHED PROVENANCE VISIBLE
 
-`schemas/citation.schema.json` says *"half-open character ranges"*. Add **which text** (the acquired
-`.txt` for `source_document_id`) and **which newline handling** (universal newlines), so the next
-consumer does not have to guess.
+Report per citation, **as a printed telltale and NOT a gate**: range fragments under ~12 characters,
+and the gap between consecutive ranges. Measured: **40 fragments under 12 characters, most of them
+legitimate** form-face labels (`1a`, `Exemption.`, `Enter: }`), and **4 gaps over 1,000 characters
+in exactly 2 citations** - `cite_schedule_d_carryover_line_13` at 5,273 and `cite_1040_qdcgt_line_4`
+at 3,068 / 1,717 / 1,394. **A fragment alone is normal; a fragment across a kilobyte gap is the
+smell.**
+
+### ITEM 3 - OPEN `cite_1040_qdcgt_line_4` END TO END AND SAY WHAT IT IS
+
+It is the only other citation with the same signature. **Report what its ranges actually contain and
+where the quoted sentence really lives** - the same way this round's defect was found. A count does
+not satisfy this item.
+
+### ITEM 4 - NAME THE BAD PROVENANCE, DO NOT EDIT IT
+
+**No re-authoring of `graph/2025/citations/`.** Emit the list of citations whose ranges do not point
+at the text they quote, each with the correct span. The repair is a separate decision and it belongs
+to whatever regenerates these records, not to a hand edit.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **No re-authoring of `graph/2025/citations/`.** Protected set, and the ranges are not the defect.
-- **Do not "fix" the 37 by editing `quoted_text`.**
-- **No model call and no network.**
-- **No second resolver.** One accessor is the point of the round.
+- **Do not revert `b1cd5a4`.** The accessor, the fallback deletion and the rewiring are correct.
+- **Do not edit `quoted_text` to make a check pass** - see From Architect; that is what got the S106
+  rework rejected.
+- **No model call, no network, no citation artifact edit.**
 
 **THE FLOOR.**
-- **One accessor, and every range-to-text path goes through it**, with grep evidence.
-- **511 of 511 verified THROUGH THE SPAN** - 474 by containment plus the 37 by the stated rule, or a
-  named list of genuine range errors.
-- **A perturbed range FAILS the check.**
-- **The whole-file quote search is gone from `citation_check.py`.**
-- **Full suite against the 18-red baseline** - this touches `tax_graph/`.
+- **511 of 511 by exact containment over CONCATENATED ranges**, `_ordered_tokens_in_span` deleted.
+- **The perturbation guard survives and is extended to a REAL citation**, not only the synthetic
+  fixture: shift a stored range by a few hundred characters and watch the checker fail.
+- **`cite_1040_qdcgt_line_4` opened end to end and classified.**
+- **The bad-provenance list emitted**, each entry with the correct span.
+- **Full suite against the baseline** - which is **19 red, not 18**; see BALL.
 - **Protected set byte-identical**, `tools/check_ascii.py` OK, `git diff --check` clean.
 
-### WORKER STATUS - M20-S133
-
-Implemented the worker leg. `tax_graph/acquire/source_ranges.py` now owns the single typed
-`resolve_source_range` accessor over acquired `.txt` text with universal-newline handling. The
-checker now verifies each range-bearing quote against its outer cited span, accepts the measured
-layout-elision class only when lexical tokens remain anchored and ordered, and has no whole-file,
-HTML, or PDF fallback. `extract/inputs.py`, `ingest/worksheet_harvest.py`, and
-`ingest/core_source_ranges.py` use the accessor. The schema states both the coordinate contract and
-the ordered-token elision rule. A producer edge case where a leading row marker was separated from
-its first token by whitespace was corrected in `SourceTextIndex`, without changing promoted
-citations.
-
-Corpus evidence: the 511 range-bearing quoted citations classify as 474 exact containment, 37
-anchored ordered-token elision, and 0 bad ranges. `check_graph_citations` checks 515 range-bearing
-records (including 4 computed-table records) and reports 0 mismatches. A deliberately neighboring
-row range fails the checker.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py tests\test_source_ranges_m133.py -q`
--> 15 passed, 1 warning.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_core_source_ranges_m106.py tests\test_worksheet_harvest_m20.py tests\test_batch_bundle_m10.py tests\test_schedule_d_bundle_m9.py tests\test_schedule_d_extraction_m9.py -q`
--> 29 passed, 1 failed. The one failure is the standing 18-red baseline:
-`test_schedule_d_extraction_m9.py::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`
-(3 unexpected model prompts).
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py tests\test_source_ranges_m133.py tests\test_core_source_ranges_m106.py tests\test_worksheet_harvest_m20.py tests\test_batch_bundle_m10.py tests\test_schedule_d_bundle_m9.py tests\test_extract_outline_m4.py -q`
--> 62 passed, 1 failed. The failure is the unrelated pre-existing
-`test_extract_outline_m4.py::test_instruction_section_body_survives_deeper_heading`; S133 files
-are not in that test's dependency path and `outline_pipeline.py` is unchanged.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_graph_validator.py tests\test_acquire_citation_check.py tests\test_source_ranges_m133.py -q`
--> 18 passed, 11 failed during graph-copy setup with `WinError 5` on existing protected
-`graph/2025/_drafts` directories; no S133 assertion failed. The full suite is NOT RUN: it is an
-Architect-side run under the standing partition rule. `tools/check_ascii.py` reports `ASCII check
-OK`; `git diff --check` is clean. No model call, network, or citation artifact edit was made.
-
-**ARCHITECT'S LEG, OWED IN PARALLEL.**
-1. **Open Schedule 1-A's 37 unreached cells.** It is the whole remaining coverage gap and I have
-   never opened them. It may be the instruction ceiling that made Schedule D's 12 of 24 a full
-   score, or a real gap - and I must not spec it as a defect before opening several.
-2. **The live check on the S115 review contract**, still unverified on the remote.
+**ARCHITECT'S LEG.** The full suite over `b1cd5a4` is RUNNING on my side as of 2026-08-18 19:35 and
+its result is not in this file yet - **do not read its absence as a pass.** I will post the count
+here. Also still owed: the live check on the S115 review contract, unverified on the remote since
+2026-08-16.
 
 ## Open for Architect
 
