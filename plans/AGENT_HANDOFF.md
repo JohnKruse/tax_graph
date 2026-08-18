@@ -21,10 +21,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S124 IS ACCEPTED AND THE LIVE 1040 RUN IS BOUGHT, RECORDED AND CHECKED IN
-(`instruction_segmenter_live_1040.json`, 71 windows, 670 claims). M20-S126 under Current round is
-the one defect standing between that recording and a verified 1040 frame. M20-S125 is re-queued
-behind it.**
+**BALL: CODEX. M20-S126 IS ACCEPTED AND THE 1040 FRAME NOW VERIFIES AT 586 SECTIONS. M20-S127
+under Current round MEASURES THE IRS HTML against the PDF pipeline - John approved it ahead of the
+stage-2 body-read round, 2026-08-18.**
+
+**M20-S126 IS ACCEPTED (`bbd1c18`, Architect, 2026-08-18), VERIFIED BY PREDICTION.** I simulated the
+`start_byte`-only key against the recording BEFORE Codex implemented it and predicted **586 sections
+and 18 rejections**; the implementation returns exactly 586 and 18, byte conservation to EOF,
+**shortest section 6 bytes so the zero-length class is gone**, Schedule B and D unmoved at 29 and 93.
+**35 passed.** The paid 1040 run is now a verified frame.
 
 **THE 1040 RUN ANSWERS THE QUESTION THIS WHOLE LINE OF ROUNDS WAS BUILT TO ASK, AND THE ANSWER IS
 NOT THE ONE I EXPECTED.** Measured against the same cell population, correctly-owned cells:
@@ -288,91 +293,73 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S126: A START BYTE IS A SECTION'S IDENTITY. THE DEDUP KEY IS `(start_byte, heading)` AND THAT
-IS WHY THE PAID 1040 RUN DIED ON ITS LAST STEP.**
+**M20-S127: MEASURE THE IRS HTML AGAINST THE PDF PIPELINE. MEASURE ONLY. CHANGE NOTHING.**
 
-**THE LIVE 1040 RUN IS RECORDED AND IT IS MOSTLY GOOD NEWS - read the acceptance in BALL.** It made
-all 71 calls, then `ModelFrameVerificationError: section range is outside source: 140474:140474`.
-**One zero-length section, 586 real ones.**
+**JOHN ASKED WHICH ARTIFACT WE SEGMENT AND THE ANSWER EXPOSED A SIX-ROUND MISTAKE - see BALL.** We
+fetch `instruction_url` into `.cache/raw/2025/*.html` and then segment the PyMuPDF `.txt`. **The
+HTML carries 329 IRS `publink` anchors, a nested table of contents, and `class="inlinehd"` on
+exactly the bold run-in labels we declared unreachable.** Before anything is respecced, **measure**.
+**JOHN APPROVED THIS AHEAD OF THE STAGE-2 BODY-READ ROUND, 2026-08-18.**
 
-`_reconcile_window_sections` groups on `(section.start_byte, section.heading)`. Two overlapping
-windows returned the same section with two heading spellings, so both survived as distinct
-sections, and the tiling step - which sets each end from the NEXT start - gave the first one a
-length of zero. **Measured on the recording: 586 unique start bytes, 591 sections under the current
-key, and every one of those 5 extras is fatal.**
+### ITEM 1 - EXTRACT THE HTML STRUCTURE, ALL 8 BOOKLETS
 
-    140474: ['### Line 12d', 'Line 12d']   -> same heading, markdown prefix only
-    180034: ['### Line 27b', 'Line 27b']
-    180449: ['### Line 27c', 'Line 27c']
-    350823: ['Practitioner PIN', 'Practitioner PIN.']  -> run-in label, trailing period
-    351330: ['Form 8453', 'Form 8453.']
+`.cache/raw/2025/instructions_*.html` - 1040, 1116, 2441, 6251, 8949, schedule_a, schedule_b,
+schedule_d. For each: the `publink` anchor ids and their titles and offsets, the page's own nested
+table of contents with its DEPTH, the `inlinehd` run-in labels, and the `role-hd` headings.
+**Do not use a network. The HTML is already on disk.**
 
-**DO NOT FIX THESE TWO SPELLING CLASSES.** Three of the five already collapse under
-`_normalize_heading_markup`, which the codebase HAS and the key does not use; the other two are a
-trailing period. **Patch those and the next booklet brings a third spelling.** That is the same
-mistake I made three times running before S123.
+**Structural invariants, asserted:** anchor ids unique within a document; every table-of-contents
+entry points at an anchor that exists in the body; every extracted section carries an offset into
+the HTML; no section is empty.
 
-### ITEM 1 - KEY ON `start_byte` ALONE
+### ITEM 2 - SCORE THREE ARMS ON THE SAME CELLS
 
-**In a tiling, two claims that start at the same byte ARE the same section. There is no
-representation for two.** The heading is a witness, not an identity. Group on `start_byte`.
+The population is `plans/m20_s116_instruction_reconciliation.yaml` - **449 cells over 12 documents**.
+Four of them (`schedule_1`, `schedule_1a`, `schedule_2`, `schedule_3`) live inside the 1040 booklet;
+map each document to its booklet through the manifest, not by guessing.
 
-### ITEM 2 - CHOOSE THE HEADING DETERMINISTICALLY
+- **Arm A, PDF-deterministic:** `build_instruction_sections` on the `.txt`. Today's baseline.
+- **Arm B, PDF-model:** the live frames. **Only `instructions_form_1040_2025` (586 sections),
+  `instructions_schedule_b_2025` (29) and `instructions_schedule_d_2025` (93) have paid recordings**,
+  so arm B covers three booklets and the table must say so rather than leaving blanks that read as
+  zeros.
+- **Arm C, HTML-deterministic:** anchors plus `inlinehd`, no model.
 
-When grouped claims spell the heading differently, keep **the longest normalized heading that the
-source line at that byte still starts with**, ties broken by lowest window index. It is the most
-faithful witness and it is stable across runs. **I simulated exactly this against the recording:
-586 sections, byte conservation from 0 to 683,265, every heading witnessed in the source, 0 owner
-conflicts.**
+Report per document: cells, and cells correctly owned by each available arm.
 
-### ITEM 3 - CLOSE THE LAST FATAL PATH S123 MISSED
+### ITEM 3 - SCHEDULE B IS THE NAMED CASE
 
-`_reconcile_window_sections` still RAISES `ModelFrameVerificationError` when grouped claims
-disagree about `document_id`. **S123 made every per-section failure a rejection and this one was
-left behind.** Collapsing the key to `start_byte` groups more claims together, so this raise gets
-more likely, not less. **Make it a section-local rejection like every other per-section failure.**
-Measured today it would not fire - 0 owner disagreements across all 586 start bytes - so this is
-cheap now and expensive later.
+**Arm A scores 0 of 8 there and that is why the model direction was chosen.** Its HTML tags seven
+run-in labels. **Report arm C's Schedule B score explicitly, whatever it is.**
+
+### ITEM 4 - OPEN THE DISAGREEMENTS, DO NOT COUNT THEM
+
+**AGENTS.md hard rule, and it has cost me twice this week alone.** For **at least 8** cells where
+the arms disagree, print the cell, each arm's answer, and **the quoted source text** that settles
+it. A table of counts without the quotes does not satisfy this item.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not weaken `verify_model_sections`.** Byte conservation, the heading witness and the manifest
-  owner check stay exactly as they are. **The zero-length section SHOULD be impossible, not
-  tolerated** - do not make the verifier skip it.
-- **Do not touch the segmenter prompt, the chapters, the windows or the heading repair**, and do not
-  re-record anything. The 1040 recording is paid evidence and is checked in.
-- **Do not normalize the stored heading text.** Choose among the spellings the model returned;
-  do not invent a canonical one.
+- **This round changes no behaviour.** Nothing under `tax_graph/`, nothing in
+  `pilot/model_instruction_segmenter.py`, no fixture rewritten, no CLI wiring, no acquisition change.
+  **New pilot module plus its own test, and that is all.**
+- **Do not repair anything you find.** Not the citation coordinate defect, not the PDF path.
+  **Measuring and fixing in one round is how a bad number becomes a hardcoded constant.**
+- **Do not conclude.** Report the numbers; the direction call is mine and John's.
+- **No model call and no network.**
 
-**THE FLOOR - ALL OF IT PROVABLE WITHOUT A MODEL CALL.**
-- **The 1040 booklet completes** from `pilot/fixtures/instruction_segmenter_live_1040.json`:
-  **586 sections, byte conservation to EOF at 683,265, 18 section-local rejections, 0 owner
-  conflicts, 0 chapter-owner disagreements.**
-- **A test names byte 140474** and proves the two spellings collapse to one section.
-- **Schedule B and Schedule D are unchanged**: 29 and 93 sections, 0 rejected, 0 `wrong_form_owner`,
-  58 `sibling_worksheet_owner`.
-- **A synthetic owner disagreement at one start byte is REJECTED, not raised**, with the booklet
-  still tiling around it.
+**THE FLOOR.**
+- **The extractor runs over all 8 acquired HTML booklets** and the structural invariants above hold.
+- **The three-arm table is COMPUTED for all 12 documents**, arm B marked unavailable where there is
+  no recording. **Do not pin any score as an expected constant** - they are outputs, and pinning
+  them is what M20-S115 got wrong.
+- **Schedule B arm C is reported.**
+- **At least 8 disagreements are opened with quoted source text.**
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**ARCHITECT'S LEG.** None outstanding. The run is bought and recorded; everything above replays.
-
-**CODEX STATUS (2026-08-18): M20-S126 IMPLEMENTED (`bbd1c18`).** `_reconcile_window_sections` now keys
-duplicate claims on `start_byte` alone, chooses the longest source-backed normalized heading with
-the lowest window index as tie-break, and rejects grouped `document_id` disagreements
-section-locally. `verify_model_sections` is unchanged. Added
-`pilot/test_model_instruction_segmenter_m20_s126.py` with the live 1040 replay (including byte
-140474) and a synthetic owner-conflict case. No prompt, chapter, window, heading-repair, or
-recording changes; no provider call.
-
-RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s126.py -q` -> **2 passed, 1 warning in 1.03s**.
-RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s123.py pilot\test_model_instruction_segmenter_m20_s124.py pilot\test_model_instruction_segmenter_m20_s126.py tests\test_instruction_sections_m20.py -q` -> **40 passed, 1 warning in 3.16s**.
-RAN: `.venv\Scripts\python.exe -m py_compile pilot\model_instruction_segmenter.py pilot\test_model_instruction_segmenter_m20_s126.py` -> passed.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check -- pilot/model_instruction_segmenter.py pilot/test_model_instruction_segmenter_m20_s126.py` -> clean.
-The pytest warning is the known permission failure writing the pre-existing `.pytest_cache`; the
-short temp override was used. Full suite and provider leg were not run.
+**ARCHITECT'S LEG.** Reading the result and deciding whether the pipeline moves to HTML. Not Codex's
+call and not a floor item.
 
 ## Open for Architect
 
