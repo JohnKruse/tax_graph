@@ -130,6 +130,27 @@ fixtures:
 
     .venv\Scripts\python.exe -m pytest pilot\test_model_instruction_segmenter_m20_s124.py -q
 
+## M20-S128 containment-owned HTML section frame
+
+`html_section_frame_m20_s128.py` builds a provider-free section frame from the eight acquired IRS
+instruction HTML booklets. It reads body `publink` targets and the IRS role heading tree, keeps
+`inlinehd` run-in labels as line-bearing leaves, and assigns ownership from the nearest ancestor
+that names a document in the manifest owner vocabulary. A foreign owner is rejected locally and
+does not abort the booklet. The table of contents is not used as a section index.
+
+Every frame records an opaque `publink` id when present, the ancestor chain, and explicit UTF-8
+byte offsets into the acquired HTML. The report keeps `line_anchored`, `topic_attributed`, and
+`foreign_owner_rejected` separate. It is a pilot measurement only: it does not call a provider,
+fetch a URL, change production extraction, or write graph artifacts.
+
+Run the focused guards from the repository root:
+
+    .venv\Scripts\python.exe -m pytest pilot\test_html_section_frame_m20_s128.py -q
+
+Print the eight-booklet report without writing an artifact:
+
+    .venv\Scripts\python.exe -m pilot.html_section_frame_m20_s128
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction

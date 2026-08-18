@@ -395,6 +395,20 @@ headline. Do not sum them into one score.**
 - **The three-way score is reported per document with `line_anchored` separate.**
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
+**CODEX STATUS 2026-08-18 - COMPLETE.** Added `pilot/html_section_frame_m20_s128.py`, its
+focused guards, and the pilot README entry. The frame reads body anchors and role headings from
+the acquired HTML, includes `role-major-section`/`role-subsect` owner parents around the required
+`role-hd1`/`role-hd2`/`role-hd3` tree, carries ancestor titles and opaque `publink` ids, records
+UTF-8 byte offsets, and rejects foreign owners section-locally. It uses the existing manifest
+owner and worksheet helpers. No `tax_graph/` file, model segmenter, recording, graph artifact,
+provider call, or network path changed. The live pilot reports 8 booklets, 12 documents, and 449
+cells; `schedule_d` has 12 line-anchored cells after worksheet containment is applied.
+
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_section_frame_m20_s128.py -q` -> **5 passed, 1 warning** (pytest cache permission warning only).
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `git diff --check` -> **clean** (Git emitted the existing README CRLF normalization warning).
+RAN: `.venv\Scripts\python.exe -m pilot.html_section_frame_m20_s128` -> **8 booklets, 12 documents, 449 cells; schedule_d line_anchored=12; all printed invariants hold**.
+
 **ARCHITECT'S LEG.** Deciding, once ownership is honest, whether the model pass still earns its
 place - and on what. Not a floor item.
 
