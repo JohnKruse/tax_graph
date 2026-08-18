@@ -194,8 +194,9 @@ the graph contains, and *"we model the worksheets so that they can support the f
 **ROUTING IS ITS OWN CONSTRUCT** - `schedule_d` 17 is flow control, so `election` must be validated
 until routing exists, or it keeps absorbing branches.
 
-**THE RED BASELINE, corrected 2026-08-18 - AT LEAST 22, and the six S115 workbench failures may
-make it 28.** Eleven `tests/e2e/*_m15.py`, plus:
+**THE RED BASELINE IS 22, AND THE FULL SUITE SITS AT 28 - the difference is the six broken S115
+workbench cases, which are a defect awaiting a round, not an accepted red.** Confirmed by two
+independent full-suite runs on 2026-08-18. Eleven `tests/e2e/*_m15.py`, plus:
 `test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
 `test_field_identity_m16::test_schedule_2_raw_cache_reproduces_target_fields`,
 `test_m20_s71::test_real_candidate_node_labels_use_clean_text`,
@@ -217,10 +218,12 @@ a broken surface awaiting the live check, not an accepted red.
 **M20-S135: 114 PROMOTED CITATIONS ARE VERIFIED BY NOTHING AND THE REPORT DOES NOT SAY SO; AND A
 PROPOSED REPAIR THAT FAILS THE CHECKER IS A TRAP.**
 
-**M20-S134 IS VERIFIED AND ACCEPTED (`4f858e1`, Architect, 2026-08-18).** My own full-suite run was
-still going when this was written; **Codex ran one too and reported 1,023 passed / 28 failed /
-1:08:41 (`ffc6d3f`), one fewer red than my 29 over `b1cd5a4`, which is exactly the ITEM 5 regression
-clearing.** I will post my own count beside it and amend here rather than silently if it disagrees.
+**M20-S134 IS VERIFIED AND ACCEPTED (`4f858e1`, Architect, 2026-08-18), AND THE FULL SUITE IS IN.**
+**28 failed, 1023 passed, 8 skipped, 1 xfailed, 1:09:40** - and **Codex's independent run agrees to
+the test: 1,023 / 28 / 1:08:41 (`ffc6d3f`).** I diffed my S133 and S134 failure sets rather than
+comparing counts: **the set difference is exactly one test, `test_extract_m4::
+test_deterministic_checks_flag_missing_line_and_bad_quote`, cleared, and NOTHING new went red.**
+**The 28 close arithmetically: 22 accepted baseline + the 6 broken S115 workbench cases.**
 I reproduced every claim independently: **511 of 511 pass by per-range join containment**,
 `_ordered_tokens_in_span` is gone, `checked=515`, `mismatches=0`, **40 short fragments and 4 large
 gaps - the same numbers I measured before speccing the round**, and the real-citation perturbation
