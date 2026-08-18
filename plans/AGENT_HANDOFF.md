@@ -21,8 +21,26 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S128 IS ACCEPTED. M20-S129 under Current round builds the FULL-DOCUMENT HTML
-frame - S128 emits only line-bearing sections, which is not yet a replacement for the model frame.**
+**BALL: CODEX. M20-S129 IS ACCEPTED. M20-S130 under Current round closes the 94-section parser gap
+that is the only thing keeping the HTML frame behind the OCR frame.**
+
+**M20-S129 IS ACCEPTED (`d1cec08` + `12bf6c4`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.**
+I re-derived the tiling myself over all 8 booklets: **zero gaps, zero overlaps, zero degenerate
+sections**, content regions bounded well inside the file (1040 155,397..2,495,159 of 2,514,825), and
+the S128 ownership behaviour preserved. **11 passed.**
+
+**I AM DISCOUNTING THE REPORTED AGREEMENT FIGURES AND CODEX IS NOT AT FAULT - I ASKED FOR THE WRONG
+COMPARISON.** Matching on OCR-derived heading text cannot work, because the OCR headings are the
+damaged copy. Of the 1040's model-only sections, **85 are `# Page N` markers our own OCR wrapper
+injects and no HTML counterpart can ever exist**, and more are dash mangling
+(`Example 1Basis Reported to the IRS` against the HTML's `Example 1-Basis Reported to the IRS`).
+**Text agreement between a clean source and a lossy one measures the loss, not the frames.**
+
+**THE REAL NUMBER, AND IT IS THE ONE WORTH ACTING ON.** Of **123** model-only 1040 sections with
+page markers excluded, **94 have their text present in the HTML and our parser simply did not make
+them a section.** That is a parser gap and it is fixable. **Only 29 are content the page does not
+carry**, and the clean case is the lookup tables: `2025 Tax Table` appears **0 times in the HTML
+against 13 in the OCR text**.
 
 **M20-S128 IS ACCEPTED (`809d897`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** The named
 floor item is met and I checked it directly, not through a count: in the Schedule D booklet
@@ -354,99 +372,83 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S129: EMIT THE FULL-DOCUMENT HTML FRAME. EVERY BYTE OF THE BOOKLET IN EXACTLY ONE SECTION,
-THE WAY THE MODEL FRAME ALREADY DOES.**
+**M20-S130: CLOSE THE 94-SECTION PARSER GAP. THE TEXT IS IN THE HTML AND WE ARE NOT SECTIONING IT.**
 
-**S128 EMITS ONLY SECTIONS WHOSE HEADING NAMES A LINE** - Schedule D 10, Form 8949 2, Form 1040 194.
-That was right for scoring ownership and it is **not** a document frame. **Three things we have
-already decided all need one:** replacing the PDF/model frame, serving John's augmenting-context
-window, and giving the stage-2 body-read pass bounded spans to read.
+**MEASURED, NOT GUESSED.** Of 123 sections the OCR-based model frame has and the S129 HTML frame
+does not (page markers excluded), **94 have their text present in the acquired HTML.** Examples:
+`Form 1040 and 1040-SR Helpful Hints`, `The Taxpayer Advocate Service Is Here To Help You`,
+`What can TAS do for you?`, `Lines 6a and 6b`, `2025 Tax Computation WorksheetLine 16`,
+`State and Local Income Tax Refund WorksheetSchedule 1, Line 1`, `Who Qualifies as Your Dependent`.
+**`Lines 6a and 6b` is a real line instruction and we are dropping it.**
 
-### ITEM 1 - TILE THE WHOLE DOCUMENT
+### ITEM 1 - FIND OUT WHAT MARKS THEM, DO NOT GUESS
 
-**Every `role-hd*` heading and every `inlinehd` run-in label starts a section, whether or not its
-title names a line.** A section runs to the next section start; the last runs to end of content.
-**Byte conservation over the content region, exactly as `verify_model_sections` does it** - that
-invariant is the reason the model frame is trustworthy and it carries over unchanged.
+S129 sections on `role-hd*` and `inlinehd`. **These 94 are marked some other way.** Open a sample
+**end to end in the HTML** - AGENTS.md hard rule - and report the actual element and class for each
+class of miss before widening anything. **A list of counts does not satisfy this item.**
 
-**Define the content region once and state it in the artifact.** IRS site chrome - nav, header,
-footer, script, style, and the table of contents - is NOT content. **The TOC especially: it repeats
-every heading title, and 322 of 762 of its links in the 1040 dangle.** A frame that swallows the TOC
-will emit phantom duplicate sections.
+### ITEM 2 - WIDEN THE HEADING VOCABULARY TO WHAT YOU FOUND, AND ONLY THAT
 
-### ITEM 2 - KEEP EVERYTHING S128 ESTABLISHED
+Add the element/class patterns the sample proves are headings. **Do not add a pattern no observed
+section needs, and do not fall back to "any bold" - that is the OCR failure mode we are leaving.**
+Each added pattern is named in the round report with the section it was added for.
 
-Ownership from the ancestor chain, **including the rejection Codex was right about: a section whose
-nearest naming ancestor is outside the booklet's manifest vocabulary is REJECTED, never reassigned
-to the booklet's form.** Opaque anchor ids. Ancestor chain on every section. Offsets in a stated
-coordinate space.
+### ITEM 3 - THE FRAME INVARIANTS DO NOT MOVE
 
-### ITEM 3 - REPORT COVERAGE AGAINST THE MODEL FRAME
+Byte conservation over the content region with no gap or overlap; no section sourced from the table
+of contents; ownership from the ancestor chain with foreign owners rejected, never reassigned;
+opaque anchor ids. **Widening the vocabulary must not break any of these** - a wider vocabulary that
+swallows the TOC or breaks tiling is a worse frame, not a better one.
 
-For the three booklets with paid recordings, report **how many of the model's sections have an HTML
-section starting at the same place**, and **how many HTML sections the model missed**. Model frames:
-Form 1040 **586**, Schedule B **29**, Schedule D **93**. **Report both directions; do not report a
-single agreement percentage.** The two frames are in different coordinate spaces - HTML offsets
-against PDF-text bytes - **so match on normalized heading text, and say plainly that this is a text
-match, not a byte match.**
+### ITEM 4 - REPORT THE GAP AGAIN THE SAME WAY
+
+Recompute **how many of the 123 remain unsectioned**, and report the per-document `line_anchored`
+score from S128's measure so we can see whether the added sections carry line anchors.
+**Do not compare heading text against the OCR frame** - that measures OCR damage, which is what I
+got wrong in S129.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Nothing under `tax_graph/`, no acquisition change, no CLI wiring, no graph artifact.** Pilot plus
-  tests. `pilot/model_instruction_segmenter.py` is not touched and no recording is re-made.
-- **No model call and no network.**
-- **Do not delete or rewrite the S128 module** - its scoring is the accepted baseline this round is
-  measured against.
+- **Nothing under `tax_graph/`, no acquisition change, no CLI wiring, no graph artifact, no OCR
+  change.** Pilot plus tests.
+- **No model call and no network.** In particular **do not fetch the IRS tax-table pages** - whether
+  we acquire those is John's call and is not part of this round.
+- **Do not delete or rewrite the S128 or S129 modules.**
 - **Do not pin any score as an expected constant.**
 
 **THE FLOOR.**
-- **All 8 booklets tile their content region with no gap and no overlap**, proven by a test, and the
-  frame states which coordinate space its offsets are in.
-- **No section comes from the table of contents**, proven by a test - the 1040 is the case that
-  would show it.
-- **Ownership behaviour from S128 is unchanged**: Schedule D `Line 4.`/`Line 12.` still owned by
-  `unrecaptured_section_1250_gain_worksheet_2025`, Form 1116's 13 worksheet rows still rejected.
-- **Section counts and the two-direction comparison against the 586/29/93 model frames are
-  reported.**
+- **A sample of the 94 is opened with its actual HTML element and class**, grouped by cause.
+- **`Lines 6a and 6b` becomes a section owned by `form_1040_2025`**, proven by a test naming it.
+- **All 8 booklets still tile with no gap and no overlap**, no section from the TOC, Schedule D
+  `Line 4.`/`Line 12.` still owned by `unrecaptured_section_1250_gain_worksheet_2025`, Form 1116's
+  worksheet rows still rejected.
+- **The remaining unsectioned count and the per-document `line_anchored` scores are reported.**
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**ARCHITECT'S LEG.** Deciding, once there are two comparable frames, whether the model pass still
-earns its cost. Not a floor item and not Codex's call.
-
-**CODEX STATUS (2026-08-18, M20-S129).** The full-document pilot is in
-`pilot/html_document_frame_m20_s129.py`, with guards in
-`pilot/test_html_document_frame_m20_s129.py` and usage documented in `pilot/README.md`. The
-frame uses the semantic `div.book` as the single content region, creates a preamble interval when
-needed, then tiles every role heading and `inlinehd` start to the next start. Rejected
-foreign-owner intervals stay in the tile with `owner_document_id: null`, preserving S128
-rejection semantics without creating a byte gap. This verification pass also made the content
-region fail closed when more than one `div.book` exists, and made the corpus summary check the
-tile and TOC-exclusion invariants explicitly. The score guard no longer pins model section-count
-constants, per the round spec.
-
-The report covers all 8 booklets and compares the recorded model frames by owner-qualified
-normalized heading text: Form 1040 586 model sections / 374 text matches / 212 model-missed /
-244 HTML-missed; Schedule B 29 / 20 / 9 / 3; Schedule D 93 / 69 / 24 / 14. The report explicitly
-states that the comparison is text, not byte, because HTML and PDF offsets differ.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s129.py -q` ->
-6 passed, 1 PytestCacheWarning about the pre-existing unwritable `.pytest_cache`.
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_section_frame_m20_s128.py pilot\test_html_document_frame_m20_s129.py -q` ->
-11 passed, 1 PytestCacheWarning about the pre-existing unwritable `.pytest_cache`.
-RAN: `.venv\Scripts\python.exe -m pilot.html_document_frame_m20_s129` -> 8 booklets,
-`structural_invariants_hold=True`; section counts 619, 164, 55, 122, 65, 107, 24, 87 in
-`BOOKLET_IDS` order; rejected counts 0, 21, 0, 0, 0, 2, 0, 3. Model comparisons are the
-values above.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py pilot\html_document_frame_m20_s129.py pilot\test_html_document_frame_m20_s129.py pilot\README.md` -> `ASCII check OK`.
-RAN: `git diff --check` -> clean.
-NOT RUN: full suite; this round is pilot plus targeted tests by specification.
+**ARCHITECT'S LEG.** Whether the OCR path is retired, kept only for the lookup tables, or replaced
+by acquiring the IRS table pages. **That last one needs John and is not Codex's to touch.**
 
 ## Open for Architect
 
 Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+**THE OCR CHOICE WAS EVALUATED AND WAS RIGHT; THE EVAL IS SIMPLY OBE (John, 2026-08-18).** He
+selected Mistral OCR on an eval showing ~99% word recognition and good structure recognition on
+instructions, and it broke on FORMS because they are oddly structured - which is why forms stay on
+the PDF/field path. **I reproduced the word number: 99.0% of Schedule B's OCR words and 99.4% of
+Schedule D's appear in the HTML.** Mistral does what he measured.
+
+**THE EVAL MEASURED WORDS. WHAT THE NEW DIRECTION DEPENDS ON IS THE DISTINCTION BETWEEN KINDS OF
+MARKUP, WHICH WORDS CANNOT CARRY.** Schedule B: OCR emits **23 undifferentiated bold runs** where
+the HTML marks **7 `inlinehd`** labels - bold conflates "this is a line instruction heading" with
+"this phrase is emphasized." Schedule D: **47 bold runs** against **61 `role-hd` headings at three
+levels plus 19 `inlinehd`**. Markdown can spell `#`/`##`/`###`, but OCR assigns them from visual
+size, which is why page markers land at level 1 and topic headings at level 3 in one booklet while
+line headings are level 3 in another. **The eval is not wrong. It is measuring the wrong axis for
+segmentation, exactly as John suspected.**
 
 **WE PAY MISTRAL OCR TO TURN A PDF INTO MARKDOWN WHILE THE IRS PUBLISHES THE SAME CONTENT AS
 STRUCTURED HTML WE ALREADY DOWNLOAD (John asked, 2026-08-18; confirmed in
