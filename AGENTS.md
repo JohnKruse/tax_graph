@@ -670,7 +670,30 @@ real form defeats the borrowed shape.
   the S2d/S2e span-resolver ruling. Do not promote a draft or hand-edit a citation or label to get
   past an ambiguity.
 
+- **THE MATCHER IS MODEL-OWNED AND THE MODEL MUST BE NAIVE ABOUT THE CELLS (John, 2026-08-17).**
+  *"I'm afraid to give a model too much if it is to pick out the instructions. We have the example
+  of line 24 referencing line 22 and the instructions for line 22 get jammed in."* **Asking a model
+  for one cell's instruction is a question with a demand in it; asking it to describe a document's
+  sections is not.** So the model segments the booklet, never sees a cell, and CODE does the join.
+  This is the same boundary as 2026-08-02 - form face exact, instruction pages loose, AI reconciles.
+  **The inverse question is permitted and is not a bend of this rule:** over a span whose boundaries
+  are ALREADY fixed and byte-verified, *"which lines does this span govern, or none?"* cannot drag a
+  neighbour's text in, because the model is labelling a boundary it did not choose.
+  **Corollary, proven over five rounds S116-S120: the DETERMINISTIC matcher line is closed.** Each
+  round found the previous one's blind spot - cross-form `Line 9`, multi-line headings, nested
+  duplicates, worksheet row numbers read as form lines - all semantics a person reads instantly and
+  a heading parser cannot. **Do not spec another one.**
+
 ## Standing constraints (every M20 round)
+
+- **A RECORDING VERIFIES CODE PATHS AND NEVER MODEL BEHAVIOUR (Architect, learned three times:
+  S109, S121, S124).** A replay harness cannot predict what a CHANGED prompt makes the live model
+  emit - on the S109 tree it reported `production prompt differs from recorded prompt` on 19 of 20
+  cases. **Never accept a reconciliation or prompt change on replay evidence alone**, and never read
+  a green harness as permission to skip the re-derive. Nor is the model deterministic under a fixed
+  seed: Schedule D returned 93 raw sections recorded and 105 live.
+  **A live recording is bought with money and is NOT regenerable output.** Merge into it; never
+  clobber it.
 
 - **RE-DERIVE THE BLAST RADIUS, NOT THE CORPUS. WE ARE IN WALK, NOT RUN (John, 2026-08-17).** *"I
   remember when we thought things were working that I urged you to input all docs. Now, however, we

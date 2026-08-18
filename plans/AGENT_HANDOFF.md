@@ -21,365 +21,90 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S130 IS ACCEPTED. M20-S132 under Current round fixes an ownership rule that is
-MINE and is wrong in a way S130 exposed. M20-S131 was withdrawn unstarted.**
+**BALL: CODEX. M20-S132 IS ACCEPTED. M20-S133 UNDER CURRENT ROUND IS THE NEXT ROUND: THE CITATION
+RANGE IS UNVERIFIED AND THE ONLY CODE THAT READS A CITATION IGNORES IT.**
 
-**M20-S130 IS ACCEPTED (`b78dfd6`, Architect, 2026-08-18), VERIFIED BY RUNNING THE REAL CODE.**
-All 8 booklets still tile with **zero gaps and zero degenerate sections**, the TOC is still
-excluded, Schedule D `Line 4.`/`Line 12.` are still worksheet-owned and Form 1116's worksheet rows
-still rejected. **17 passed.** Codex opened the sample as asked and reported real markup -
-`span.bold`+`strong` (**correctly EXCLUDED as prose emphasis**), `p.title`, `h3.title.worksheet`,
-`h4`/`h5.title.role-step`, and semantic `role-teletax-topics` / `role-budget` / `role-figure`.
+**M20-S132 IS ACCEPTED (`85a8daa`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** I re-ran
+every booklet and diffed S130 ownership against S132 section by section: **exactly 6 sections
+changed, all six the Schedule D worked examples, all `rejected -> default_form`, and nothing else in
+the corpus moved at all.** Rejections **29 -> 23**, Schedule D **6 -> 0**, Form 1116 **21 -> 21**,
+Schedule A 2 -> 2. Per-document `line_anchored` unchanged on all 12, still summing to **288**.
+**20 passed** across S128/S129/S130/S132; `check_ascii` OK; `git diff --check` clean.
+- **The three-way rule is right and the fix is minimal.** Case 2 did not regress, which was the
+  risk I named in the spec.
+- **The mechanism Codex added that I did not spec is the load-bearing one and it is correct:** a
+  document mention inside a LINE heading is not an ownership boundary. *"Lines 1a and 8a-
+  Transactions Not Reported on Form 8949"* mentions Form 8949 while remaining Schedule D's own line
+  instruction. Without that, case 3 could never fire under a line heading.
+- **`foreign_owner_rejected` is the only rejection reason in the frame**, so reassigning every
+  section's rejection cannot silently drop a different rejection class. I checked before accepting.
 
-**THE ROUND ADDED 208 SECTIONS AND ONE LINE ANCHOR. 287 -> 288 of 449.** The 1040 alone gains 99
-sections for +1. **That is not a failure - the added sections are charts, worksheets, dependent-flow
-steps and back matter, which is document coverage for augmenting context and the stage-2 read, and
-was never going to be line anchors.** But it settles something: **heading extraction is done. The
-remaining gap is not reachable by finding more headings.**
+**HEADING EXTRACTION IS FINISHED. 288 OF 449, AND THE REMAINING GAP IS NOT REACHABLE BY FINDING MORE
+HEADINGS.** Per document: `form_1040` 41, `form_1116` 17, `form_2441` 20, `form_6251` 37,
+`form_8949` 4, `schedule_1` 52, `schedule_1a` 11, `schedule_2` 38, `schedule_3` 29, `schedule_a` 22,
+`schedule_b` 5, `schedule_d` 12. **Against PDF-deterministic 255, with no model call.** S130 added
+208 sections for +1 anchor - charts, worksheets and back matter, which is document coverage for the
+stage-2 read and was never going to be line anchors. **Do not spec another heading round.**
 
-**I SPECCED A FLOOR ITEM THAT WAS ALREADY SATISFIED, FOR THE SECOND TIME TODAY.** I required
-*"`Lines 6a and 6b` becomes a section owned by `form_1040_2025`"*. **It already was one in S129** -
-as `Lines 6a and 6b Social Security Benefits`. I generated the "94 missing" list by comparing
-against OCR heading text, **a method I had myself declared invalid in the S129 acceptance one hour
-earlier**, and the suffix drift made a present section look absent. **The 94 is unreliable and so is
-the 62-remaining that descends from it.** Codex flagged this in its own report and was right to.
+**THE ARTIFACT WE SEGMENT IS THE DAMAGED COPY, AND THIS IS THE DURABLE ACQUISITION FINDING.** We pay
+Mistral OCR to turn a PDF into markdown while the IRS publishes the same content as structured HTML
+we already download (`.cache/raw/2025/*.html`, since 2026-08-14). **Every structural defect of six
+rounds is an artifact of the OCR path**: injected `# Page N` markers at heading level 1, lost em
+dashes (`Example 1Basis Reported to the IRS`), and run-in labels arriving as undifferentiated bold -
+Schedule B's HTML tags exactly 7 `inlinehd` labels where the OCR emits 23 undifferentiated bold runs.
+**John's OCR eval was right and is simply OBE: it measured WORDS (99.0% of Schedule B's OCR words
+appear in the HTML) and segmentation depends on the distinction between KINDS of markup, which words
+cannot carry.**
+**DO NOT DELETE THE OCR PATH YET.** The lookup tables live in the PDF only - `2025 Tax Table`
+appears 0 times in the HTML against 13 in the OCR text, and the EIC tables are referenced but not
+reproduced. Check whether the IRS publishes those as their own pages first.
 
-**M20-S129 IS ACCEPTED (`d1cec08` + `12bf6c4`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.**
-I re-derived the tiling myself over all 8 booklets: **zero gaps, zero overlaps, zero degenerate
-sections**, content regions bounded well inside the file (1040 155,397..2,495,159 of 2,514,825), and
-the S128 ownership behaviour preserved. **11 passed.**
+**KEEP THE MODEL, AND THE REMAINING GAP IS SCHEDULE 1-A.** On the four line-organised chapters the
+model is at CEILING - every cell whose chapter contains a `Line N` heading is found, and all 38
+unreached cells there are rollups and arithmetic the IRS writes nothing for. **Schedule 1-A is the
+entire remaining gap: 37 of 48.** Its chapter segments into 51 byte-perfect sections of which only
+11 carry a line token; the rest is topic prose (`Qualified Tips`, `Net income limitation.`), and
+lines 3 and 38 are stated in BODY PROSE that no anchor scheme reaches.
+**THE UNION OF BOTH MATCHERS IS OFF THE TABLE (John pushed back, and opening all four disagreements
+proved him right): it buys 2 real cells and imports 3 wrong attributions**, all three the S116
+cross-form collision still live in the baseline (`form_1040` 26, 31, 38 are Form 2441/8839/Schedule
+1-A references the model resolves correctly to `1e`, `1f`, `13b`).
 
-**I AM DISCOUNTING THE REPORTED AGREEMENT FIGURES AND CODEX IS NOT AT FAULT - I ASKED FOR THE WRONG
-COMPARISON.** Matching on OCR-derived heading text cannot work, because the OCR headings are the
-damaged copy. Of the 1040's model-only sections, **85 are `# Page N` markers our own OCR wrapper
-injects and no HTML counterpart can ever exist**, and more are dash mangling
-(`Example 1Basis Reported to the IRS` against the HTML's `Example 1-Basis Reported to the IRS`).
-**Text agreement between a clean source and a lossy one measures the loss, not the frames.**
+**`governs` IS ASKING TWO QUESTIONS AND ONLY ONE IS ANSWERABLE.** For `Line 4a.` it is a mechanical
+copy out of the heading and the model never gets it wrong; for `Qualified Tips` it is a SEMANTIC
+mapping to form lines, which needs the line inventory we deliberately withhold to keep the model
+cell-naive. Given no way to say *"this governs lines I may not name"*, the model filled the field
+with **93 distinct non-line values in three spellings**. **That is an under-specified field telling
+us so, not misbehaviour.** The fix is two stages and it keeps John's ruling intact - segmentation
+stays mechanical with `governs` constrained to a line token or EMPTY in the structured-output
+schema, and attribution becomes its own stage over already-bounded spans. Both are queued.
 
-**THE REAL NUMBER, AND IT IS THE ONE WORTH ACTING ON.** Of **123** model-only 1040 sections with
-page markers excluded, **94 have their text present in the HTML and our parser simply did not make
-them a section.** That is a parser gap and it is fixable. **Only 29 are content the page does not
-carry**, and the clean case is the lookup tables: `2025 Tax Table` appears **0 times in the HTML
-against 13 in the OCR text**.
+**A CORRECTION I OWE, AND IT SHRINKS A ROUND I WAS ABOUT TO SPEC WRONG.** I wrote here that citation
+`ranges` are in TWO coordinate systems and that roughly half the shipped citations point at the wrong
+text. **Measured properly today: they are in ONE. 474 of 511 resolve as the schema already declares
+them** - half-open CHARACTER offsets into the acquired `.txt` read with universal newlines - and
+**none resolve as any system the schema does not declare.** My earlier split counted the same
+citations twice under two readings of the same numbers. **The data is consistent; the CONSUMERS are
+the hazard**, and that is what M20-S133 addresses.
 
-**M20-S128 IS ACCEPTED (`809d897`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** The named
-floor item is met and I checked it directly, not through a count: in the Schedule D booklet
-**`Line 4.` and `Line 12.` are now owned by `unrecaptured_section_1250_gain_worksheet_2025`.**
-Across all 8 booklets: **no duplicate anchors, no empty sections, no blank section text**, one
-section without an anchor (Schedule A), which the spec permits.
+**CORRECTION I OWE JOHN, STILL STANDING: I TOLD HIM TWICE THAT SCHEDULE B GOES 0 -> 8 OF 8 AND THAT
+THIS WAS "THE WHOLE CASE FOR THIS DIRECTION." THE HONEST NUMBER IS 0 -> 5 LINE-LEVEL
+INSTRUCTIONS**, plus three attributed to a Part heading. The direction holds; the headline was
+overstated.
 
-**CODEX OVERRODE MY OWNERSHIP FALLBACK AND WAS RIGHT TO. THE SPEC WAS WRONG.** I wrote *"failing
-that, the booklet's own form."* In the Form 1116 booklet, 13 sections spelled `Line 2.` / `Line 4.` /
-`Line 6.` / `Line 8.` / `Line 10.` sit under
-`Specific Instructions > Part III-Figuring the Credit > Line 18 > "Individuals Who Completed a
-Qualified Dividends and Capital Gain Tax Worksheet"` and two sibling variants. **They are worksheet
-rows. My fallback would have assigned every one of them to `form_1116_2025` - reproducing exactly
-the defect this round exists to fix.** Codex rejected them section-locally instead.
+**M20-S115 IS DELIVERED AND WAS NEVER ACCEPTED (`4f7abf9`, Codex, 2026-08-16). ARCHITECT MISS.** The
+review contract - `workbench/server.py`, `generated_review.py`, `review_defects.py`,
+`test_m20_s115.py` and the workbench front end - is on `main` and on the remote, unverified. It
+touches the surface John reviews, so it needs a LIVE check, not a test read. **That is the
+Architect's leg and it is owed before the review contract is trusted**, because John does not review
+while the contract keeps moving.
 
-**CONTAINMENT REMOVED SIX MATCHES AND EVERY ONE IS THE SAME CLASS:** `schedule_d` 4 and 12,
-`form_1116` 4, 6 and 8, `form_1040` 27a. **All were worksheet rows scored to the form.**
-
-**THE HONEST SCOREBOARD.** HTML line-anchored, per document: `form_1040` 40, `form_1116` 17,
-`form_2441` 20, `form_6251` 37, `form_8949` 4, `schedule_1` 52, `schedule_1a` 11, `schedule_2` 38,
-`schedule_3` 29, `schedule_a` 22, `schedule_b` 5, `schedule_d` 12 - **287 of 449, against
-PDF-deterministic 255.** On the 7 documents with a model arm: **HTML 187, model 189, PDF 171** - and
-the model's 189 still contains the three Schedule B lines attributed at Part level, so the two are
-effectively tied. **HTML gets there with no model call.**
-
-**TWO GAPS I AM NAMING RATHER THAN HIDING.**
-- **`topic_attributed` is 0 everywhere and carries no information.** It was implemented on a
-  different axis than I specced - claim source (body anchor vs heading) rather than ancestry - so it
-  never answers "which cells are covered only by their enclosing topic." Not wrong, not misleading,
-  but the question is still open. **That question belongs with the topic-block grounding work.**
-- **The frame emits ONLY line-bearing sections** - Schedule D 10, Form 8949 2, Form 1040 194.
-  Correct for scoring, but **it is not a document frame and cannot yet replace the model's 586
-  sections or serve an augmenting-context window.** That is M20-S129.
-
-**M20-S127 IS ACCEPTED (`b94aa5d`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** I recomputed
-every arm from the raw cell-id sets and matched Codex's table exactly. **All 12 documents:
-PDF-deterministic 255, HTML-deterministic 293. On the 7 documents where all three arms exist:
-PDF-deterministic 171, PDF-model 189, HTML-deterministic 190.**
-
-**DO NOT READ THOSE TOTALS AS A RANKING. I OPENED THE DISAGREEMENTS AND ALL THREE ARMS ARE INFLATED,
-EACH BY A DIFFERENT MECHANISM.**
-- **PDF-deterministic** inflates on cross-form collisions and vacuous lines: `form_1040` 31 is
-  *"Employer-Provided Adoption Benefits From Form 8839, Line 31"* (really `1f`), `schedule_1` 22 is
-  *"reserved for future use"*.
-- **HTML-deterministic** inflates by ignoring heading containment. `schedule_d` 4 and 12 are scored
-  to `schedule_d_2025`, but they are ROWS OF A WORKSHEET, and **the HTML says so** - the nearest
-  preceding heading is `role-hd2 "Instructions for the Unrecaptured Section 1250 Gain Worksheet"`.
-  **Its true Schedule D score is 12, the same as the model, not 14.**
-- **PDF-model** inflates by attributing at topic level. **`schedule_b` 2, 4 and 6 match only through
-  `Part I. Interest` and `Part II. Ordinary Dividends`, not through any line instruction.**
-
-**CORRECTION I OWE JOHN: I TOLD HIM TWICE THAT SCHEDULE B GOES 0 -> 8 OF 8 AND THAT THIS WAS "THE
-WHOLE CASE FOR THIS DIRECTION." THE HONEST NUMBER IS 0 -> 5 LINE-LEVEL INSTRUCTIONS**, plus three
-more attributed to a Part heading. The direction still holds; the headline was overstated.
-
-**WHY THE ARTIFACT MOVES ANYWAY - THIS IS A MECHANISM ARGUMENT, NOT A SCORE.**
-- **`class="inlinehd"` tags the bold run-in labels the PDF text hides.** The gains land exactly where
-  the PDF parser was blind: `form_6251` **24 -> 37**, `schedule_1a` **0 -> 11**, `schedule_b`
-  **0 -> 5**, and +3 each on `form_1116`, `schedule_a`, `schedule_d`. **No model call.**
-- **`role-hd1/2/3` plus `inlinehd` IS the section tree**, and containment gives OWNERSHIP - the two
-  things I concluded on 2026-08-18 were unrecoverable, true of the PDF markdown and false of the
-  document.
-- **`publink` anchors are a published, stable address.** Byte offsets are not: 273 of 511 shipped
-  citations resolve to the wrong text.
-
-**WHAT THIS DOES NOT LICENSE. KEEP THE MODEL.** 190 against 189 is inside the noise of three
-inflation modes and is NOT evidence the model pass can be dropped. Schedule 1-A lines 3 and 38 are
-stated in body prose and no anchor scheme reaches them.
-
-**THE 1040 RUN ANSWERS THE QUESTION THIS WHOLE LINE OF ROUNDS WAS BUILT TO ASK, AND THE ANSWER IS
-NOT THE ONE I EXPECTED.** Measured against the same cell population, correctly-owned cells:
-
-| document | deterministic | model | union | cells |
-| --- | --- | --- | --- | --- |
-| `form_1040_2025` | 42 | 42 | **44** | 59 |
-| `schedule_1_2025` | **53** | 52 | 53 | 61 |
-| `schedule_1a_2025` | **0** | **11** | 11 | 48 |
-| `schedule_2_2025` | **38** | 37 | 38 | 45 |
-| `schedule_3_2025` | 27 | 27 | 27 | 35 |
-| **TOTAL** | **160** | **169** | **173** | 248 |
-
-**THE MODEL DOES NOT BEAT THE DETERMINISTIC PARSER ON LINE-ORGANISED BOOKLETS. It ties or loses by
-one on three of the four, and every point of its net gain is Schedule 1-A, 0 -> 11** - the
-topic-organised chapter where the parser finds nothing and never could. **That is exactly the case
-John chose this direction for, and it is now proven on the biggest booklet we have.**
-
-**I RECOMMENDED TAKING THE UNION OF BOTH MATCHERS. JOHN PUSHED BACK - "I don't want to weave in
-kludges" - AND HE WAS RIGHT. I OPENED EVERY DISAGREEMENT AND THE UNION IS BUILT ON THE PARSER'S
-WRONG ANSWERS.** All four cells the parser wins and the model loses, opened end to end 2026-08-18:
-
-| cell | what is actually there | verdict |
-| --- | --- | --- |
-| `form_1040` 31 | heading *"Employer-Provided Adoption Benefits From Form 8839, Line 31"* at byte 93746, in the LINE 1 region. Model says `1f`, parser says `31`. | **PARSER WRONG** |
-| `schedule_1` 22 | the whole section body is *"Line 22 has been reserved for future use."* | **VACUOUS** |
-| `form_1040` 25 | model segmented the children `25a`/`25b`/`25c`, emitted nothing for the parent | rollup line |
-| `schedule_2` 1z | model segmented `1a`-`1f`,`1y`; parser matched the container *"Lines 1a Through 1z"* | rollup line |
-
-**THE PARSER'S 160 CONTAINS 3 CROSS-FORM COLLISIONS AND 2 VACUOUS MATCHES; ITS SOUND SCORE IS 155.**
-The three are `form_1040` 26, 31 and 38 - *"...From Form 2441, Line 26"*, *"...From Form 8839, Line
-31"*, *"...From Schedule 1-A, Line 38"* - **and the model resolves all three correctly to `1e`, `1f`
-and `13b`.** Those headings sit thousands of bytes BEFORE the line 7 section, which is positional
-proof they are line-1 instructions. **This is the S116 defect, still live in the baseline, scored as
-correct.** The model's own sound score is 168 of 169 (one vacuous: `schedule_2` 10, a section
-titled *"Reserved for Future Use"*).
-
-**SO THE UNION BUYS TWO REAL CELLS AND IMPORTS THREE WRONG ATTRIBUTIONS. IT IS OFF THE TABLE.**
-Both real cells are the rollup-line class, which has a structural answer, not a merge.
-
-**THE REMAINING GAP HAS ONE ROOT CAUSE AND IT IS A FIELD WE UNDER-SPECIFIED, NOT A MODEL FAILURE.**
-Measured 2026-08-18 on the live recording, chapter by chapter:
-
-- **On `form_1040`, `schedule_1`, `schedule_2` and `schedule_3` THE MODEL IS AT CEILING.** Every
-  cell whose chapter contains a `Line N` heading is found. **All 38 unreached cells in those four
-  chapters have no such heading anywhere in their own chapter** - `11a`, `1z`, `25d`, `32`, `33` and
-  the rest are rollups and arithmetic the IRS writes nothing for. **Zero recall failures.**
-- **Schedule 1-A is the entire remaining gap: 37 of 48.** The model segmented that chapter into
-  **51 byte-perfect sections and only 11 carry a line token.** The rest are topic prose -
-  `Qualified Tips`, `Net income limitation.`, `Maximum amount of deduction.`
-
-**`governs` IS ASKING TWO DIFFERENT QUESTIONS AND WE ONLY MADE ONE OF THEM ANSWERABLE.** For
-`Line 4a.` it is a mechanical copy out of the heading, and the model never gets that wrong. For
-`Qualified Tips` it is a SEMANTIC mapping from a topic to form lines, **which requires the form's
-line inventory - the exact thing we deliberately withhold to keep the model cell-naive.** Given no
-way to say *"this governs lines I am not allowed to name"*, the model filled the field with slugs of
-its own headings: **93 distinct non-line values, in three different spellings** (`additions-to-tax`,
-`adjustments_to_income`, `alimony paid`). **That is not misbehaviour; it is an under-specified field
-telling us so.**
-
-**THE FIX IS TWO STAGES, AND IT KEEPS JOHN'S RULING INTACT RATHER THAN BENDING IT.**
-1. **Segmentation stays cell-naive and MECHANICAL.** `governs` is a line token copied from the
-   heading, or EMPTY. Constrain it in the structured-output schema so free text cannot enter the
-   join key at all.
-2. **Attribution becomes its own stage over ALREADY-BOUNDED sections**, asking *"which form lines,
-   if any, does THIS span govern?"* with empty a first-class answer. **This is the INVERSE of the
-   question John vetoed.** He objected to *"find line 24's instructions"* because the demand makes
-   the model drag line 22's text in. **A fixed, byte-verified span cannot drag anything in - the
-   boundary is already decided and the model is only labelling it.**
-
-**WHAT THE CHAPTER WORK BOUGHT, MEASURED LIVE.** Across 586 sections in a five-form booklet:
-**0 owner conflicts and 0 chapter-owner disagreements.** The model never once claimed a foreign
-form. The 18-document vocabulary narrowed to 14 per chapter, and 18 of 670 claims rejected
-section-locally on heading resolution, none of them fatal. **S123's rule and S124's chapters both
-did their jobs on the first booklet that could actually stress them.**
-
-**M20-S124 IS ACCEPTED (`6006c87`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.** I derived
-the chapter boundaries in the raw-byte space my own way and checked them against the source rather
-than against Codex's offset table: **five chapters, every boundary landing exactly on the raw line
-that triggered the context change** - `# Instructions for Schedule 2` and the rest - tiling 0 to
-683,265 with no gap. **71 windows, every one inside exactly one chapter, covering each chapter with
-no gap.**
-- **The CR conversion is right, and it is not a rounding detail.** 683,265 bytes on disk against
-  675,580 characters after newline collapse, **7,685 CRs of drift** that accumulates: the Schedule 2
-  boundary is at character 508,434 and byte 513,738. **A character offset passed into the byte API
-  would have put every late chapter kilobytes off its heading.**
-- **Item 2 landed in both directions, which is the part that was easy to get wrong.** Each chapter
-  narrows the vocabulary from 18 documents to **14 - one form plus all 13 worksheets.** I drove my
-  own synthetic booklet through it: a Schedule 3 claim inside the Schedule 2 chapter is rejected as
-  `chapter_owner_disagreement` with the booklet still tiling around it, **and a worksheet owner in
-  the same position is kept.** Narrowing the worksheet half too would have re-broken what S123 had
-  just fixed.
-- **The no-op floor holds exactly.** Schedule B 29 sections, Schedule D 93 from 104 raw claims, 0
-  rejected, 0 `wrong_form_owner`, 58 `sibling_worksheet_owner`, byte conservation to EOF on both.
-- **The prompt now names the chapter's form**, so the constraint reaches the model as a prior and
-  not only as a punishment. Still document ids only; no cells.
-
-**CODEX DID NOT COPY MY SPEC'S NUMBERS, AND IT WAS RIGHT NOT TO.** The chapter table I wrote into
-S124 was in the collapsed-character space; the real raw-byte chapters are ~1% larger. It derived
-them from the tracker instead of pinning my table.
-
-**M20-S123 IS ACCEPTED (`129cb0f` + `72555bc`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.**
-I reimplemented the parser, the bounded heading repair, the dedup, the end-recomputation and the
-owner split myself and reproduced every number Codex reported: Schedule B **29 raw claims -> 29
-sections**, Schedule D **104 raw claims -> 93 sections, 0 rejected, 1 governs conflict**, both
-tiling from byte 0 to EOF with every heading witnessed in the source. **The structural change did
-what it was specced to do: a fixture that used to abort the booklet now completes with nothing
-rejected at all.**
-- **The `Line 4.` run-in label at byte 71963 is recovered**, owned by
-  `unrecaptured_section_1250_gain_worksheet_2025`, governing `4`, end recomputed to 72117. That is
-  the construct this whole line of rounds exists to reach, and it was being discarded over a field
-  the code never used.
-- **`verify_model_sections` is untouched** - byte conservation from 0 to EOF, the heading witness
-  and the manifest owner check all still fail closed, and the rejection matrix proves a malformed
-  section drops out while its neighbours still verify.
-- **The owner split is real, not a relabelling.** `wrong_form_owner` is **0** on both booklets and
-  all **58** `sibling_worksheet_owner` rows name one of the four Schedule D worksheets, which the
-  manifest links to this booklet by `region.source_document_id`. **Not one names a foreign form.**
-
-**THE COVERAGE NUMBER IS THE ONE TO READ, AND SCHEDULE B IS THE WHOLE CASE FOR THIS DIRECTION.**
-Schedule B goes **0 -> 8 of 8**. **Schedule D goes 11 -> 12 of 24, and that is the ceiling, not a
-shortfall** - the booklet writes instructions for exactly those twelve lines and the segmenter
-finds all twelve, as I confirmed by opening every one of the other twelve on 2026-08-17. **Schedule
-D was never the case for this work; the deterministic parser was already at 11 of 12 there.**
-
-**I WROTE THE OWNER SPLIT DOWN BACKWARDS BEFORE I READ THE MANIFEST.** My first re-derivation
-returned 58 `wrong_form_owner` and 0 sibling, the exact inverse, because I read `region_of` off the
-top level of the entry when the manifest nests it under `region:`. **Codex was right and my
-recomputation was wrong.** Same lesson as always: open the artifact before believing the number.
-
-**M20-S122 (`13e0937`) AND M20-S121 (`faded97` + `119e88a` + `ad846d2`) ARE ACCEPTED, both verified
-by recomputation and by live runs on both booklets - narration pruned 2026-08-17, all in git.
-What survives of them:**
-- **The direction John chose is proven end to end on the case it was chosen for.** On
-  `instructions_schedule_b_2025` the deterministic parser finds **0 sections and 0 of 8 cells**;
-  the model segments it live into 29 sections and **8 of 8 cells correctly owned**. Those line
-  instructions are bold run-in labels inside a paragraph, which no heading parser can ever see.
-- **The manifest owner constraint killed the owner-spelling problem outright** -
-  `owner_conflict_count` is 0 on both booklets live - and the governs context tiebreak resolves
-  every overlap conflict with none rejected for ambiguity.
-- **The bounded unique-line-boundary heading repair keeps the anti-fabrication property.** Do not
-  widen it.
-- **The CLI persists each window BEFORE it verifies.** That paid for itself the same hour it
-  landed: the next live failure kept its recording instead of burning 9 paid calls again.
-
-**A RECORDING VERIFIES CODE PATHS AND NEVER MODEL BEHAVIOUR - THIS IS NOW THE THIRD TIME.** The
-checked-in S121 recording contains **zero** governs conflicts on either booklet, so the entire
-rework was covered only by synthetic tests until I ran it. S109 taught this with `production prompt
-differs from recorded prompt` on 19 of 20 cases. **Never accept a reconciliation change on replay
-evidence alone.** Related: seed 7 does NOT make this deterministic - Schedule D returned 93 raw
-sections recorded and **105** live.
-
-**JOHN RULED THE FORK, 2026-08-17: THE MATCHER GOES MODEL-OWNED, AND THE MODEL MUST BE NAIVE ABOUT
-THE CELLS.** He raised the objection that decides the design: *"I'm afraid to give a model too much
-if it is to pick out the instructions. We have the example of line 24 referencing line 22 and the
-instructions for line 22 get jammed in."* **Asking a model for one cell's instruction is a question
-with a demand in it. Asking it to describe a document's sections is not.** So the model segments the
-booklet, never sees a cell, and code does the join. **This is also the boundary John set on
-2026-08-02** - the form face is exact, the instruction pages are loose, the AI reconciles.
-
-**THE DETERMINISTIC MATCHER LINE IS CLOSED. Five rounds, S116 through S120, and every one found the
-previous one's blind spot** - cross-form `Line 9`, multi-line headings, nested duplicates, worksheet
-row numbers read as form lines. **Those are all semantics a person reads instantly and a heading
-parser cannot. Do not spec another one.** The topic-organised booklets settle it: `schedule_1a`'s 48
-cells and `schedule_b`'s 8 have no line token to match and **no deterministic matcher can ever
-reach them.**
-
-**M20-S120 IS ACCEPTED (`e2294b8`, Architect, 2026-08-17), VERIFIED BY RECOMPUTATION.** I re-tiled
-every one of S119's **56** parent spans from the artifact myself: the **414** split rows are
-contiguous, non-overlapping, hit the parent endpoints exactly and sum to the parent length, in every
-booklet - **zero conservation failures**. All **81** cells are classified with **0 omitted and 0
-extras** against S119's negatives, and the EIC table and front matter are marked non-actionable.
-**9 passed.** The round did exactly what it was asked; **what it was asked was partly wrong, and
-that is recorded under Current round.**
-
-**M20-S119 IS ACCEPTED (`0d7aa76` + `77e56c8` + `8c70a70`, Architect, 2026-08-17), VERIFIED BY
-RECOMPUTATION.** All 8 booklets reconcile against recomputed hashes and file sizes; every named
-floor case holds. **Its finding stands and is the durable one: extent truncation is 10 of 91 cells,
-all `form_1116`.**
-
-**M20-S118 IS ACCEPTED (`3181169` + `a4cd008`), M20-S117 (`954c235`), M20-S116 (`6beb1f4` +
-`29cbbcd`), M20-S114 (`9f856a9`), M20-S113 (`6b855b4`)** - all verified by recomputation, narration
-in git. **What survives of them:**
-- **Nested duplicates in evidence packets are gone** (17 -> 0) and `AMBIGUOUS` is 4, not 60.
-- **The reconciliation report asks `instruction_span_ids_for_line` and nothing re-implements the
-  match.** Report state equals packet state, asserted over every cell.
-- **THE RULE COUNT IS NOT A QUALITY METRIC. NEVER USE IT AS A FLOOR AGAIN.**
-- **A green replay harness is not evidence about a packet change** - check whether its cases even
-  cover the changed cells first. On S118 the two sets were disjoint.
-- **Verify an artifact by recomputing what it asserts**, not by checking it exists and is green.
-  Three rounds in a row, that is what found the defect.
-
-**CORPUS, ALL 17 DOCUMENTS, 2026-08-17: rules 74, edges 181, gaps 154**, 41 minutes. **Not
-comparable to the S113 record of 78/224/153** - different counting method, four rounds between.
-**Blast-radius check was clean: 17 of 19 changed cells derive**, `form_1040` 6b now derives, and the
-two that do not are an outline-index defect and `schedule_1` line 1.
-
-**M20-S115 IS DELIVERED AND WAS NEVER ACCEPTED (`4f7abf9`, Codex, 2026-08-16). ARCHITECT MISS,
-CAUGHT WHILE REVIEWING THE PUSH RANGE 2026-08-17.** The review contract - `workbench/server.py`,
-`generated_review.py`, the new `review_defects.py`, `test_m20_s115.py` and the workbench front end -
-went in and the Architect specced S116 the next morning without verifying it. **It is on `main` and
-now on the remote, unverified.** It touches the surface John reviews, so it needs a live check, not
-a test read: **that is the Architect's leg and it is owed before the review contract is trusted** - and John does
-not review while the contract keeps moving, so an unverified contract change is worse than none.
-
-**THE RULE COUNT IS NOT A QUALITY METRIC. NEVER USE IT AS A FLOOR AGAIN.** `rules >= 107` was
-unsatisfiable by construction: the round's purpose was to stop treating non-computations as
-computations. **That was the sixth floor written that the work could not satisfy.** Rulings are
-pinned in `../docs/derivation-architecture.md`.
-
-**THREE JOHN RULINGS, 2026-08-16, NOW QUEUED AS WORK:**
-1. **`filer_entry` needs a reason taxonomy** - `derivation_failed` (a defect) vs
-   `source_form_not_modelled` (a scope fact). `form_1040` 1f is the second: Form 8839 is not
-   acquired. **Fold into S115 if cheap; otherwise its own round.**
-2. **`form_1040` 6b's decline is a PACKET DEFECT.** It declined for want of the Social Security
-   Benefits Worksheet, **which the graph contains**. *"We model the worksheets so that they can
-   support the forms."* When a line's evidence names a worksheet the graph has, that worksheet
-   belongs in the packet.
-3. **ROUTING IS ITS OWN CONSTRUCT.** `schedule_d` 17 is flow control, not an election. Until routing
-   exists, **`election` must be validated so it stops absorbing branches** - the same failure mode
-   as `COPY` absorbing line 36.
-
-**ARCHITECT NOTE.** John: *"do what you think best. I don't understand why this is such a big deal
-for you."* **Acceptance is the Architect's call and was being escalated unnecessarily.** Bring John
-decisions only where the answer changes what gets built.
-
-**DIRECTION IS PINNED IN `../docs/derivation-architecture.md`. READ IT FIRST.** Sequencing: harness
-(DONE, `80980e7`) -> model owns the path (DONE, `6b855b4`) -> **review surface (THIS ROUND)** ->
-voting.
-
-**M20-S112 IS ACCEPTED (`80980e7`, Architect, 2026-08-16), VERIFIED BY RUNNING.**
-`pilot/replay_harness.py` -> **21 cases, 0 mismatches, 5 seconds, network_calls=0**, over the
-production validator, resolver and assembler. Corpus untouched at **rules 108, edges 369, gaps 33**.
-Codex proved the negative against `9b9333f`; the Architect additionally ran it against `c47f5fa`
-(S109) -> **20 of 21 mismatches, exit 1**.
-
-**KNOW THE HARNESS'S LIMIT.** It replays OLD responses and **cannot predict what a CHANGED PROMPT
-will make the live model emit** - on the S109 tree it reports `production prompt differs from
-recorded prompt` on 19 of 20 cases. **That tripwire is the point: the fixtures are stale, go run the
-corpus. A GREEN HARNESS IS NEVER PERMISSION TO SKIP THE CORPUS RE-DERIVE**, and S113 changes the
-prompt, which is exactly the case it cannot predict.
-
-**ARCHITECT SPEC DEFECTS TO STOP REPEATING.** S112's floor said "NO model call" and also "run
-`extract --year 2025`". Codex correctly took the conservative reading and said so - the fifth floor
-written that the work could not satisfy as specified. **Corpus verification and bare test runs are
-the Architect's leg and never belong in a Worker floor.**
-
-**M20-S108 (`c2dc0d8` ...), S107 (delivered, not accepted), S106 (`d8accca`), S105 (`98d81dc` +
-`82962eb`) - narration pruned 2026-08-17, all in git. **What survives: the corpus varies +/-2 rules and
-+/-5 edges run to run, so a single-run delta smaller than that is not evidence; and `prompt-bench`
-accepts rows the corpus then rejects, so never quote its verdict as the corpus verdict.**
+**THREE JOHN RULINGS, 2026-08-16, STILL QUEUED AS WORK:** `filer_entry` needs a reason taxonomy
+(`derivation_failed` the defect vs `source_form_not_modelled` the scope fact); **`form_1040` 6b's
+decline is a PACKET DEFECT** - it declined for want of the Social Security Benefits Worksheet, which
+the graph contains, and *"we model the worksheets so that they can support the forms"*; and
+**ROUTING IS ITS OWN CONSTRUCT** - `schedule_d` 17 is flow control, so `election` must be validated
+until routing exists, or it keeps absorbing branches.
 
 **THE 18-RED BASELINE, unchanged and still current.** Eleven `tests/e2e/*_m15.py`, plus:
 `test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
@@ -392,92 +117,95 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S132: THE OWNERSHIP RULE HAS THREE CASES AND WE HAVE ONLY EVER IMPLEMENTED TWO. THIS IS MY
-DEFECT, SPECCED WRONG IN S128 AND REPLACED WITH SOMETHING ALSO WRONG.**
+**M20-S133: THE CITATION RANGE IS UNVERIFIED, THE ONLY CODE THAT CHECKS A CITATION IGNORES IT, AND
+FOUR SEPARATE SITES SLICE IT WITH THEIR OWN IDEA OF WHAT THE TEXT IS.**
 
-**S128 SPEC (mine):** owner is the nearest naming ancestor, **else the booklet's own form.** Wrong -
-it assigns Form 1116's Qualified Dividends worksheet rows to `form_1116_2025`.
-**S128 IMPLEMENTATION (Codex's correction):** owner is the nearest naming ancestor, **else reject.**
-Also wrong, and S130 exposed it - **Schedule D's worked examples are now orphaned:**
+**MEASURED BY THE ARCHITECT, 2026-08-18, over `graph/2025/citations/*.yaml` - 511 citations carrying
+both a `quoted_text` and a `ranges`.**
 
-    'Example 1-Basis Reported to the IRS'  <- ['Specific Instructions',
-                                               'Lines 1a and 8a- Transactions Not Reported on Form 8949']
-    'Example 1-gain.'                      <- ['Specific Instructions',
-                                               'Lines 1b, 2, 3, 8b, 9, and 10, Column (h)-...']
+- **The stored ranges are ONE coordinate system and it is the one the schema already declares.**
+  **474 of 511** resolve as half-open CHARACTER offsets into the acquired `.txt` read with universal
+  newlines. **Zero** resolve under any other reading. My earlier note in this file claiming two
+  coordinate systems was wrong and is corrected in BALL.
+- **THE HAZARD IS THE CONSUMERS, AND IT IS THE S124 TRAP SITTING LIVE IN THE CODE.** Four booklets
+  carry CRLF - `instructions_form_1040_2025` is **683,265 bytes against 675,580 characters, 7,685
+  CRs of drift** - so any consumer that byte-slices a stored range lands kilobytes off its heading.
+  The remaining fourteen sources have zero CRs, where byte and character coincide, **which is
+  exactly why nothing has caught this.**
+- **`tax_graph/acquire/citation_check.py` NEVER READS `ranges`.** It searches the WHOLE FILE for
+  `quoted_text` across `.txt`, then `.html`, then `.pdf`. **A citation whose range points at a
+  neighbouring worksheet row passes this check today.** That is the "line 22's text under line 24"
+  failure, unguarded, in the artifact the agent reads.
+- **FOUR SITES IMPROVISE THE SLICE INDEPENDENTLY:** `extract/inputs.py:333`
+  (`source_text[start:end]`, source read as **ascii**), `ingest/worksheet_harvest.py`
+  `_source_quote_for_ranges` (**ascii**), `ingest/core_source_ranges.py:89` (**utf-8**), plus the
+  writers in `extract/assembly.py:635`, `extract/outline.py:683`,
+  `extract/outline_pipeline.py:1221`. **They agree today by luck** - all happen to use `read_text`.
+- **The 37 that do not resolve are ONE class, and in every one I opened THE RANGE IS RIGHT.** The
+  stored quote is a de-noised reading of a span that carries table pipes and empty cells:
+  `cite_schedule_d_carryover_line_3_4`'s span reads
+  *"3. Combine lines 1 and 2. If zero or less, enter -0- | 3. _____ | | 4. Enter the smaller..."*
+  and the quote drops the `| 3. _____ | |`. `cite_schedule_d_line20_gate`'s span **starts exactly at
+  the quote's first character** and is merely too wide - it covers both the `Yes.` and `No.`
+  branches and the quote keeps only `No.`
 
-**Those sit under Schedule D's OWN line headings. They belong to `schedule_d_2025` and they are
-coming back with `owner=None`.** Schedule D rejections went 3 -> 6 as the vocabulary widened, and
-they will keep growing.
+### ITEM 1 - ONE ACCESSOR, AND IT IS THE ONLY THING THAT MAY TURN A RANGE INTO TEXT
 
-### ITEM 1 - THE RULE IS THREE-WAY
+`resolve_source_range(source_document_id, start, end) -> str` in ONE module. It decides the
+coordinate system ONCE and states it in the docstring. **Absence is typed, never `""`**: a missing
+source file and an out-of-bounds range are distinct, named failures that a caller cannot mistake for
+empty text. **No substrate fallback** - it reads the acquired `.txt` and does not silently try
+`.html` or `.pdf`. The invariant test lives AT the accessor: the coordinate contract on a CRLF file
+and on a CR-free one, and both absence cases.
 
-1. **Nearest naming ancestor IS in the booklet's manifest vocabulary** -> that document owns it.
-   (Schedule D's `Line 4.` under the Unrecaptured Section 1250 worksheet.)
-2. **Nearest naming ancestor names a document OUTSIDE the vocabulary** -> **REJECT.** It is another
-   booklet's worksheet printed here. (Form 1116's rows under *"Individuals Who Completed a Qualified
-   Dividends and Capital Gain Tax Worksheet"* - that worksheet belongs to the 1040 booklet.)
-3. **NO naming ancestor at all** -> **the booklet's own form.** A section with no worksheet above it
-   is the form's by definition. (Schedule D's examples.)
+### ITEM 2 - REWIRE THE CONSUMERS, DO NOT ADD A SECOND PATH
 
-**Case 2 and case 3 are currently conflated into "reject" and that is the whole bug.**
+`check_citation_integrity` verifies the quote against **the span**, not the file. **The whole-file
+search is DELETED, not kept as a fallback** - keeping it would let a wrong range keep passing, which
+is the entire defect. The three improvising slice sites in ITEM 1's list call the accessor.
+**`grep` evidence in the round report that no `[start:end]` slice of a source text survives outside
+it.**
 
-### ITEM 2 - PROVE ALL THREE, NOT JUST THE ONE THAT CHANGED
+### ITEM 3 - THE 37 GET A STATED RULE, DECIDED FROM THE ARTIFACT
 
-A test per case, each naming its real section: the Schedule D worksheet row (case 1), a Form 1116
-Qualified Dividends row (case 2), a Schedule D worked example (case 3). **Case 2 must still reject
-after the change** - that is the regression this round is most likely to cause.
+**Open at least 5 more of the 37 end to end and report the real class of each BEFORE choosing a
+rule** - AGENTS.md hard rule, and a list of counts does not satisfy it. If they are all
+quote-elision as the four I opened were, the rule is that **the quote's tokens appear IN ORDER
+within the span**, stated in the schema description. **If any turn out to be a genuine range error,
+name them by `citation_id` with the correct span and do NOT let the elision rule paper over them.**
 
-### ITEM 3 - REPORT THE MOVEMENT
+**WHATEVER RULE YOU CHOOSE MUST STILL REJECT A RANGE THAT POINTS AT THE WRONG ROW.** Prove it:
+perturb a known-good range by a few hundred characters and the check must FAIL. **A rule that
+cannot fail is not a check.**
 
-Per booklet, **rejections before and after**, and the per-document `line_anchored` scores. **I
-expect rejections to fall and line anchors to be unchanged; if line anchors MOVE, something else
-happened and I want to see it.**
+### ITEM 4 - SAY IT IN THE SCHEMA
+
+`schemas/citation.schema.json` says *"half-open character ranges"*. Add **which text** (the acquired
+`.txt` for `source_document_id`) and **which newline handling** (universal newlines), so the next
+consumer does not have to guess.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Nothing under `tax_graph/`, no acquisition change, no CLI wiring, no graph artifact.** Pilot plus
-  tests.
-- **Do not widen the heading vocabulary further.** S130 closed that; this round is ownership only.
-- **Do not make case 2 fall through to the booklet's form.** That is my original S128 error and
-  re-introducing it silently mis-attributes another booklet's worksheet rows.
+- **No re-authoring of `graph/2025/citations/`.** Protected set, and the ranges are not the defect.
+- **Do not "fix" the 37 by editing `quoted_text`.**
 - **No model call and no network.**
+- **No second resolver.** One accessor is the point of the round.
 
 **THE FLOOR.**
-- **All three cases proven by tests naming real sections.**
-- **Schedule D's six worked examples are owned by `schedule_d_2025`**, not `None`.
-- **Form 1116's worksheet rows are still rejected** - count reported before and after.
-- **All 8 booklets still tile with no gap or overlap; the TOC is still excluded; Schedule D
-  `Line 4.`/`Line 12.` still worksheet-owned.**
-- **Per-document `line_anchored` reported.**
-- **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
+- **One accessor, and every range-to-text path goes through it**, with grep evidence.
+- **511 of 511 verified THROUGH THE SPAN** - 474 by containment plus the 37 by the stated rule, or a
+  named list of genuine range errors.
+- **A perturbed range FAILS the check.**
+- **The whole-file quote search is gone from `citation_check.py`.**
+- **Full suite against the 18-red baseline** - this touches `tax_graph/`.
+- **Protected set byte-identical**, `tools/check_ascii.py` OK, `git diff --check` clean.
 
-**ARCHITECT'S LEG, AND IT IS THE REAL ONE.** Heading extraction is finished at 288 of 449. **The
-remaining gap is Schedule 1-A's body prose - lines 3 and 38 are stated in running text, not
-headings - and no frame work reaches it.** The next substantive round is the stage-2 body read, and
-it needs John's ChatGPT table as the Schedule 1-A reference answer.
-
-**CODEX STATUS (2026-08-18, M20-S132).** Implemented the ownership-only pilot in
-`pilot/html_document_frame_m20_s132.py` with guards in
-`pilot/test_html_document_frame_m20_s132.py`. It reuses S130's accepted heading vocabulary and
-byte tiling, then applies the three cases: an in-vocabulary naming ancestor owns, an out-of-
-vocabulary worksheet ancestor rejects, and no naming ancestor falls back to the booklet form.
-Document mentions inside a line heading are not treated as naming ancestors, which returns
-Schedule D's six worked examples to `schedule_d_2025` without weakening the Form 1116 worksheet
-rejection.
-
-RAN: `.venv\\Scripts\\python.exe -m pytest pilot\\test_html_document_frame_m20_s132.py -q` ->
-3 passed, 1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
-RAN: `.venv\\Scripts\\python.exe -m pytest pilot\\test_html_section_frame_m20_s128.py pilot\\test_html_document_frame_m20_s129.py pilot\\test_html_document_frame_m20_s130.py pilot\\test_html_document_frame_m20_s132.py -q` ->
-20 passed, 1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
-RAN: `.venv\\Scripts\\python.exe -m pilot.html_document_frame_m20_s132` -> 8 booklets;
-rejected `29 -> 23`; Schedule D `6 -> 0`; Form 1116 `21 -> 21`; all other booklet rejection
-counts unchanged. Per-document line anchors are unchanged: 1040 41, 1116 17, 2441 20, 6251
-37, 8949 4, Schedule 1 52, Schedule 1-A 11, Schedule 2 38, Schedule 3 29, Schedule A 22,
-Schedule B 5, Schedule D 12.
-RAN: `.venv\\Scripts\\python.exe tools\\check_ascii.py pilot\\html_document_frame_m20_s132.py pilot\\test_html_document_frame_m20_s132.py` -> `ASCII check OK`.
-RAN: `git diff --check` -> clean.
-NOT RUN: full suite; this round is pilot plus targeted tests by specification.
+**ARCHITECT'S LEG, OWED IN PARALLEL.**
+1. **Open Schedule 1-A's 37 unreached cells.** It is the whole remaining coverage gap and I have
+   never opened them. It may be the instruction ceiling that made Schedule D's 12 of 24 a full
+   score, or a real gap - and I must not spec it as a defect before opening several.
+2. **The live check on the S115 review contract**, still unverified on the remote.
 
 ## Open for Architect
 
@@ -485,144 +213,48 @@ Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-**THE TAX TABLE IS NOT A REASON TO KEEP OCR - WE DO NOT CONSUME IT (Architect, measured 2026-08-18
-after John's question).** `graph/2025/nodes/tax-liability.yaml` holds **rate brackets with cumulative
-amounts**, so line 16 is computed by formula and the table is never read. **Its absence from the
-HTML blocks nothing**, which removes the objection I raised to retiring the OCR path. The OCR copy
-would not be usable anyway: the extracted rows have their column separators merged
-(`| 111120 | 360 |` is a collapsed range), and dense numeric tables are where OCR is weakest.
-
-**BUT FORMULA-ONLY TAX IS NOT WHAT THE IRS PRESCRIBES BELOW $100,000 (Architect, 2026-08-18).** The
-instructions say *"If your taxable income is less than $100,000, you MUST use the Tax Table"* and
-the Tax Table charges tax on the **midpoint of each $50 band**, not on the exact figure. **Measured
-against our own bracket parameters, the largest gap below $100,000 is $4.40** - e.g. taxable income
-$97,595 computes $16,384.90 by formula against a $16,380.50 table basis. **Every sub-$100k return we
-produce can differ from the prescribed value by a few dollars.** Decide whether the graph must
-reproduce the table's banding; if so it needs a CLEAN table source, which is not OCR.
-
-**THE OCR CHOICE WAS EVALUATED AND WAS RIGHT; THE EVAL IS SIMPLY OBE (John, 2026-08-18).** He
-selected Mistral OCR on an eval showing ~99% word recognition and good structure recognition on
-instructions, and it broke on FORMS because they are oddly structured - which is why forms stay on
-the PDF/field path. **I reproduced the word number: 99.0% of Schedule B's OCR words and 99.4% of
-Schedule D's appear in the HTML.** Mistral does what he measured.
-
-**THE EVAL MEASURED WORDS. WHAT THE NEW DIRECTION DEPENDS ON IS THE DISTINCTION BETWEEN KINDS OF
-MARKUP, WHICH WORDS CANNOT CARRY.** Schedule B: OCR emits **23 undifferentiated bold runs** where
-the HTML marks **7 `inlinehd`** labels - bold conflates "this is a line instruction heading" with
-"this phrase is emphasized." Schedule D: **47 bold runs** against **61 `role-hd` headings at three
-levels plus 19 `inlinehd`**. Markdown can spell `#`/`##`/`###`, but OCR assigns them from visual
-size, which is why page markers land at level 1 and topic headings at level 3 in one booklet while
-line headings are level 3 in another. **The eval is not wrong. It is measuring the wrong axis for
-segmentation, exactly as John suspected.**
-
-**WE PAY MISTRAL OCR TO TURN A PDF INTO MARKDOWN WHILE THE IRS PUBLISHES THE SAME CONTENT AS
-STRUCTURED HTML WE ALREADY DOWNLOAD (John asked, 2026-08-18; confirmed in
-`tax_graph/acquire/render_ocr.py`).** `render_instructions_ocr` calls `mistral-ocr-latest` and
-writes `# Page {index}` at line 76. **Every structural defect of the last six rounds is an artifact
-of that path**: the injected page markers that punch through the heading hierarchy at level 1, the
-lost em dashes (`Capital Loss Carryover WorksheetLines 6 and 14`, `Example 1Basis Reported to the
-IRS`), and run-in labels arriving as undifferentiated bold. **The HTML marks all three natively and
-costs nothing.**
-
-**BUT THE HTML PAGE IS NOT COMPLETE, SO DO NOT DELETE THE OCR PATH YET (Architect, measured
-2026-08-18).** Of 123 model-only 1040 sections (page markers excluded), **94 have their text in the
-HTML and our parser simply did not section them - a parser gap, fixable.** The rest are content the
-page does not carry: **`2025 Tax Table` appears 0 times in the HTML against 13 in the OCR text**,
-and the EIC tables are referenced but not reproduced (`Earned Income Credit (EIC) Table` html 1,
-OCR 12). **The lookup tables live in the PDF only.** Check whether the IRS publishes them as their
-own pages before concluding we need OCR for them.
-
-**WE SEGMENT THE PDF TEXT WHILE THE IRS HTML - ALREADY ACQUIRED SINCE 2026-08-14 - CARRIES THE
-STRUCTURE WE HAVE SPENT SIX ROUNDS RECONSTRUCTING (Architect, measured 2026-08-18). JOHN ASKED THE
-QUESTION THAT FOUND THIS.** The manifest records `instruction_url` and `fetch.py` downloads it;
-`.cache/raw/2025/*.html` exists for every booklet. **The segmenter reads the `.txt`, which is
-PyMuPDF output** - that is where `# Page 102` markers come from, and they are what punch through the
-heading hierarchy at level 1.
-- **`<a name="en_US_2025_publink1000167507">` - 329 IRS-assigned anchor ids in the 1040 body.** A
-  stable published index, not one we compute. **Byte offsets just proved fragile in the worst way
-  (273 of 511 citations broken); these do not drift.**
-- **A NESTED table of contents with depth**, which is the section tree I concluded on 2026-08-18 was
-  unrecoverable - true of the PDF markdown, false of the HTML.
-- **`class="inlinehd"` marks the bold run-in labels.** Schedule B's HTML tags exactly seven:
-  `Line 1.`, `Line 3.`, `Line 5.`, `Line 7a-Question 1.`, `Line 7a-Question 2.`, `Line 7b.`,
-  `Line 8.` **Those are the 8 cells that motivated the entire model-owned direction on the grounds
-  that "no heading parser can ever see them." That was true of the PDF text, not of the document.**
-- Content volume is comparable, not a stub: html/pdf text ratio 0.94 (1040), 1.19 (B), 1.10 (D).
-
-**WHAT THIS DOES NOT OVERTURN.** The HTML is coarser - 329 anchors against 586 model sections - and
-it does NOT solve Schedule 1-A: lines 3 and 38 are stated in BODY PROSE, and `Qualified Tips` still
-names no line. **Stage 2 is still needed and the model is still needed. What changes is that five
-deterministic rounds were closed as impossible against the wrong artifact.** The old note "HTML does
-not fix it, the same headings appear there" is right about topic-organised booklets naming lines and
-was over-generalised into "HTML does not help."
-**MEASURE BEFORE RESPECCING: HTML anchors + inlinehd against the 586 live model sections.**
-
-**CITATION `ranges` ARE IN TWO COORDINATE SYSTEMS AND NOTHING SAYS WHICH (Architect, measured
-2026-08-18 over `graph/2025/citations/*.yaml`).** Of 511 citations with a range and a
-`quoted_text`, **238 resolve as BYTE offsets, 241 only after a CHARACTER->BYTE conversion, and 32
-resolve neither way.** So roughly half the shipped citations point at the wrong text - one lands on
-a neighbouring worksheet row, which is the "line 22's text under line 24" failure **already live in
-the artifact the agent reads.** Same CR-drift trap as M20-S124.
-**THE STORED COPY IS THE ONLY REASON THIS WAS DETECTABLE.** `docs/source-extents.md` is right that
-a citation should carry a range and not a copy, but **dropping `quoted_text` before the ranges are
-sound would freeze this defect where nothing can see it.** Order: one coordinate system, a test that
-511 of 511 resolve, THEN derive text from the range.
-
-**NO MCP TOOL RESOLVES A BYTE RANGE TO TEXT (Architect, 2026-08-18).** `get_document` returns a
-document object, not source text, and `get_citation` returns the stored record. Attaching augmenting
-context by reference needs a resolver that serves `(source_document_id, start, end) -> text` from
-the acquired file.
-
-**`sibling_worksheet_owner` MASKS WORKSHEET-TO-WORKSHEET MISATTRIBUTION (Architect, measured
-2026-08-17).** The bucket is correct today only because all four Schedule D worksheets have **0
-cells** in the reconciliation population, so the denominator is zero. **The moment worksheet cells
-enter it, a worksheet row attributed to the WRONG sibling worksheet scores as correct behaviour.**
-Split it again then, or key it on whether the owner is the cell's own document.
-
-**[WITHDRAWN 2026-08-17, THE SAME DAY I WROTE IT - THERE IS NO SCHEDULE D JOIN DEFECT.]** I read
-"12 of 24 cells owned" as a shortfall without opening the twelve. They are the arithmetic and carry
-lines the IRS writes no instruction for. **The metric that misled me is being fixed as M20-S125;
-the round I nearly specced would have chased a defect that does not exist.**
-
-**[DONE 2026-08-17] THE LIVE 1040 SEGMENTATION RUN.** Recorded at 71 windows / 670 claims.
-
-**[SPECCED, DEFERRED BEHIND S126 - full spec at `5e9230c`] M20-S125: MAKE THE COVERAGE METRIC
-HONEST.** `model_reachable` counts a foreign worksheet's row number as reach; add
-`instructed_cell_count` and `row_number_collision_count`.
-
-**[WITHDRAWN 2026-08-18 AFTER JOHN PUSHED BACK - see BALL.] TAKE THE UNION OF BOTH MATCHERS.**
-Opening all four disagreements showed the union buys 2 real cells and imports 3 wrong attributions.
-
-**CONSTRAIN `governs` TO A LINE TOKEN OR EMPTY IN THE STRUCTURED-OUTPUT SCHEMA (Architect, measured
-2026-08-18).** 93 distinct non-line values are in the live 1040 frame; the join key currently
-accepts free text.
-
-**ATTRIBUTION AS ITS OWN STAGE OVER BOUNDED SECTIONS (Architect, 2026-08-18).** The inverse of the
-question John vetoed: a fixed byte span, "which lines does this govern, or none?" **This is the
-only thing that reaches Schedule 1-A's remaining 37 cells, and it needs John's ruling before it is
-specced.**
-
-**SCHEDULE 1-A IS 11 OF 48 AND I HAVE NOT OPENED THE OTHER 37 (Architect, 2026-08-17).** It may be
-the same instruction ceiling that made Schedule D's 12 of 24 a full score, or a real gap. **Do not
-spec it as a defect before opening several**, which is precisely the mistake M20-S125 exists to
-stop me repeating.
-
-**`_write_recording` CLOBBERS THE FIXTURE INSTEAD OF MERGING INTO IT (Architect, read 2026-08-17).**
-It writes a payload containing ONLY the booklet just run, so pointing `--output` at
-`instruction_segmenter_live_recordings.json` would **destroy the paid Schedule B and D recordings**
-that every floor since S121 rests on. A live recording is bought with money and is not regenerable
-output. **Merge by `source_document_id`, and until then the 1040 run writes to its own path.**
-
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
 
+**THE ACQUISITION FINDING AND THE SCOREBOARD IT PRODUCED LIVE IN BALL.** What remains queued off it:
+
+- **CONSTRAIN `governs` TO A LINE TOKEN OR EMPTY IN THE STRUCTURED-OUTPUT SCHEMA (Architect,
+  measured 2026-08-18).** 93 distinct non-line values are in the live 1040 frame; the join key
+  accepts free text today. **Prompt/schema change - no blast radius, runs wide, needs a live call.**
+- **ATTRIBUTION AS ITS OWN STAGE OVER BOUNDED SPANS (Architect, 2026-08-18).** *"Which lines does
+  THIS span govern, or none?"* over boundaries already fixed. **Permitted by the 2026-08-17 binding
+  ruling now pinned in AGENTS.md, but it is the inverse of a question John vetoed, so it gets his
+  yes before it is specced.** It is the only thing that reaches Schedule 1-A's remaining 37 cells.
+- **SCHEDULE 1-A IS 11 OF 48 AND NOBODY HAS OPENED THE OTHER 37 (Architect, 2026-08-17).** May be
+  the instruction ceiling that made Schedule D's 12 of 24 a full score, or a real gap. **Architect's
+  leg, and it gates the item above.**
+- **DOES THE IRS PUBLISH THE LOOKUP TABLES AS THEIR OWN PAGES?** The 2025 Tax Table and the EIC
+  tables are the only content the HTML does not carry, and they are the last thing holding the OCR
+  path open. **The tax table itself is already modelled** - `tax_graph/compile/tax_table.py` builds
+  2,062 bands from the authored brackets and the engine matches OTS - so what a clean copy buys is
+  verification against something other than our own inputs, not a new capability.
+- **NO MCP TOOL RESOLVES A RANGE TO TEXT (Architect, 2026-08-18).** `get_document` returns a
+  document object and `get_citation` the stored record. Attaching augmenting context BY REFERENCE
+  needs the accessor M20-S133 builds, exposed as a tool.
+- **`sibling_worksheet_owner` MASKS WORKSHEET-TO-WORKSHEET MISATTRIBUTION (Architect, measured
+  2026-08-17).** Correct today only because all four Schedule D worksheets have 0 cells in the
+  reconciliation population. **The moment worksheet cells enter it, a row attributed to the WRONG
+  sibling scores as correct.** Key it on whether the owner is the cell's own document.
+- **[SPECCED, DEFERRED - full spec at `5e9230c`] M20-S125: MAKE THE COVERAGE METRIC HONEST.**
+  `model_reachable` counts a foreign worksheet's row number as reach.
+- **`_write_recording` CLOBBERS THE FIXTURE INSTEAD OF MERGING (Architect, read 2026-08-17).** It
+  writes only the booklet just run, so pointing `--output` at
+  `instruction_segmenter_live_recordings.json` **destroys the paid Schedule B and D recordings**
+  every floor since S121 rests on. Merge by `source_document_id`; until then write to a new path.
+
 **DIRECTION PINNED 2026-08-13 IN `../docs/source-extents.md`. DO NOT REDESIGN IT HERE.** A citation
 should record WHERE its text is, not carry a copy of it, and a source chunk that is not a numbered
-row should say what it is and what it governs. **The queue has NOT been reshaped around it yet -
-that is John's call.** What the doc settles is that items 2, 3, 6 and the recurring extent defects
-are one root cause and should stop being specced as separate cue-matching repairs.
-**M20-S103 is the first round off that direction and it MEASURES rather than wires**; the storage
-round is specced from its output.
+row should say what it is and what it governs. **ORDER MATTERS AND M20-S133 IS THE FIRST STEP:
+dropping `quoted_text` before the ranges are checkable would freeze an unverified range where
+nothing can ever see it.** The stored copy is the only reason the defect was detectable at all.
+**The queue has NOT been reshaped around the doc yet - that is John's call.** What the doc settles
+is that items 2, 3, 6 and the recurring extent defects are one root cause and should stop being
+specced as separate cue-matching repairs.
 
 **ITEM 1 IS DELIVERED.** Prior-year documents were M20-S102, accepted at `ee6eb55`. The graph now
 has the concept, the gate is correct on the real rows, and `status: unresolved` prior-year stubs
@@ -888,28 +520,21 @@ was performed, per pilot rules.
 
 ## From Architect
 
-**NO NEW WORKER IMPLEMENTATION SLICE IS SPECCED AFTER M20-S108 ITEM 1.** The next action is
-Architect-owned live re-derivation against the corrected schema, followed by the reported corpus
-numbers and constant-case ids. The Worker has completed the offline correction and guard evidence
-above; do not start a new provenance or citation round.
+**ACTIVE DIRECTION: M20-S133 UNDER CURRENT ROUND.** Heading extraction is finished; the citation
+range is the next thing that is wrong in the artifact the agent actually reads.
 
-**HISTORICAL S107 NOTE - SUPERSEDED.** M20-S107 closed the
-last A9 scaffolding seam in the core citations: re-extract 30 hand-authored paraphrases from their
-acquired source, and give the 4 synthesized tax-bracket citations a provenance kind that admits they
-are computed.
+**A PRECEDENT THAT BINDS M20-S133 DIRECTLY, AND IT IS WHY THE SPEC FORBIDS TOUCHING `quoted_text`.**
+The S106 rework was REJECTED for truncating real quotes to fit wrong ranges. S107 was allowed to
+change `quoted_text` only in the opposite direction - replacing hand-authored paraphrase with what
+the document actually says, with the source pinned and the changed set asserted to be exactly the
+named 30. **When a quote and a range disagree, the range is the thing under suspicion; editing the
+quote to make a check pass is how the defect gets buried.**
 
-**THE FAILURE MODE TO AVOID IS SPECIFIC AND IT HAS ALREADY HAPPENED ONCE.** S107 changes
-`quoted_text` on purpose, which is the exact operation that got the S106 rework rejected. **The
-difference is direction: the rejected pass truncated real quotes to fit wrong ranges; S107 replaces
-hand-authored text with what the document actually says.** The guard must keep the SOURCE pinned and
-assert the changed set is exactly the named 30. **A diff count other than 30 is a stop, not a
-judgment call.**
-
-**AND A NOTE TO MYSELF.** Two of my last three specs set a floor the data could not meet - `7ba64be`
-(the drop-to-zero target) and S106 (every core citation binds). Both times the Worker hit the target
-honestly and the spec was wrong. **Before writing the next floor, check that the corpus can satisfy
-it**; the 34-citation characterization that produced S107 took twenty minutes and would have
-prevented S106's red guard entirely.
+**A NOTE TO MYSELF THAT KEEPS EARNING ITS PLACE.** Repeated specs have set a floor the data could
+not meet - `7ba64be`, S106, S112, S130 - and twice this week I specced a floor item that was ALREADY
+SATISFIED. **Before writing the next floor, check that the corpus can satisfy it and that the
+machinery does not already exist.** S131 is the worst case: I hand-rolled a formula, compared THAT
+against OTS, never ran the engine, and specced a round to rebuild a tax table the repo already had.
 
 ## History
 
