@@ -21,9 +21,41 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S127 IS ACCEPTED. M20-S128 under Current round rebuilds the anchor extraction
-on the HTML with containment-derived ownership. THE DIRECTION CALL IS MADE: THE EXTRACTION ARTIFACT
-MOVES FROM PDF TEXT TO THE IRS HTML.**
+**BALL: CODEX. M20-S128 IS ACCEPTED. M20-S129 under Current round builds the FULL-DOCUMENT HTML
+frame - S128 emits only line-bearing sections, which is not yet a replacement for the model frame.**
+
+**M20-S128 IS ACCEPTED (`809d897`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** The named
+floor item is met and I checked it directly, not through a count: in the Schedule D booklet
+**`Line 4.` and `Line 12.` are now owned by `unrecaptured_section_1250_gain_worksheet_2025`.**
+Across all 8 booklets: **no duplicate anchors, no empty sections, no blank section text**, one
+section without an anchor (Schedule A), which the spec permits.
+
+**CODEX OVERRODE MY OWNERSHIP FALLBACK AND WAS RIGHT TO. THE SPEC WAS WRONG.** I wrote *"failing
+that, the booklet's own form."* In the Form 1116 booklet, 13 sections spelled `Line 2.` / `Line 4.` /
+`Line 6.` / `Line 8.` / `Line 10.` sit under
+`Specific Instructions > Part III-Figuring the Credit > Line 18 > "Individuals Who Completed a
+Qualified Dividends and Capital Gain Tax Worksheet"` and two sibling variants. **They are worksheet
+rows. My fallback would have assigned every one of them to `form_1116_2025` - reproducing exactly
+the defect this round exists to fix.** Codex rejected them section-locally instead.
+
+**CONTAINMENT REMOVED SIX MATCHES AND EVERY ONE IS THE SAME CLASS:** `schedule_d` 4 and 12,
+`form_1116` 4, 6 and 8, `form_1040` 27a. **All were worksheet rows scored to the form.**
+
+**THE HONEST SCOREBOARD.** HTML line-anchored, per document: `form_1040` 40, `form_1116` 17,
+`form_2441` 20, `form_6251` 37, `form_8949` 4, `schedule_1` 52, `schedule_1a` 11, `schedule_2` 38,
+`schedule_3` 29, `schedule_a` 22, `schedule_b` 5, `schedule_d` 12 - **287 of 449, against
+PDF-deterministic 255.** On the 7 documents with a model arm: **HTML 187, model 189, PDF 171** - and
+the model's 189 still contains the three Schedule B lines attributed at Part level, so the two are
+effectively tied. **HTML gets there with no model call.**
+
+**TWO GAPS I AM NAMING RATHER THAN HIDING.**
+- **`topic_attributed` is 0 everywhere and carries no information.** It was implemented on a
+  different axis than I specced - claim source (body anchor vs heading) rather than ancestry - so it
+  never answers "which cells are covered only by their enclosing topic." Not wrong, not misleading,
+  but the question is still open. **That question belongs with the topic-block grounding work.**
+- **The frame emits ONLY line-bearing sections** - Schedule D 10, Form 8949 2, Form 1040 194.
+  Correct for scoring, but **it is not a document frame and cannot yet replace the model's 586
+  sections or serve an augmenting-context window.** That is M20-S129.
 
 **M20-S127 IS ACCEPTED (`b94aa5d`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** I recomputed
 every arm from the raw cell-id sets and matched Codex's table exactly. **All 12 documents:
@@ -322,95 +354,65 @@ accepts rows the corpus then rejects, so never quote its verdict as the corpus v
 
 ## Current round
 
-**M20-S128: BUILD THE HTML SECTION FRAME WITH OWNERSHIP FROM CONTAINMENT. STILL A PILOT. STILL NO
-MODEL CALL.**
+**M20-S129: EMIT THE FULL-DOCUMENT HTML FRAME. EVERY BYTE OF THE BOOKLET IN EXACTLY ONE SECTION,
+THE WAY THE MODEL FRAME ALREADY DOES.**
 
-**S127 SETTLED THE ARTIFACT: WE SEGMENT THE IRS HTML, NOT THE PyMuPDF TEXT.** S127 measured a flat
-extraction; this round builds the real one, and the one thing it must add is the ownership S127
-lacked.
+**S128 EMITS ONLY SECTIONS WHOSE HEADING NAMES A LINE** - Schedule D 10, Form 8949 2, Form 1040 194.
+That was right for scoring ownership and it is **not** a document frame. **Three things we have
+already decided all need one:** replacing the PDF/model frame, serving John's augmenting-context
+window, and giving the stage-2 body-read pass bounded spans to read.
 
-### ITEM 1 - THE HEADING TREE IS THE STRUCTURE
+### ITEM 1 - TILE THE WHOLE DOCUMENT
 
-`role-hd1` / `role-hd2` / `role-hd3` nest, and `class="inlinehd"` run-in labels are leaves beneath
-the nearest preceding `role-hd`. **Build the tree. Every section carries its ancestor chain.**
-Page markers do not exist in HTML, so nothing punches through the hierarchy - that was a PDF
-artifact.
+**Every `role-hd*` heading and every `inlinehd` run-in label starts a section, whether or not its
+title names a line.** A section runs to the next section start; the last runs to end of content.
+**Byte conservation over the content region, exactly as `verify_model_sections` does it** - that
+invariant is the reason the model frame is trustworthy and it carries over unchanged.
 
-### ITEM 2 - OWNERSHIP COMES FROM THE ANCESTOR CHAIN, NOT FROM THE BOOKLET
+**Define the content region once and state it in the artifact.** IRS site chrome - nav, header,
+footer, script, style, and the table of contents - is NOT content. **The TOC especially: it repeats
+every heading title, and 322 of 762 of its links in the 1040 dangle.** A frame that swallows the TOC
+will emit phantom duplicate sections.
 
-**This is the defect S127 exposed and the whole reason for this round.** `Line 4.` in the Schedule D
-booklet sits under `role-hd2 "Instructions for the Unrecaptured Section 1250 Gain Worksheet"`.
-**It is a worksheet row, not Schedule D line 4, and S127 scored it as Schedule D.**
+### ITEM 2 - KEEP EVERYTHING S128 ESTABLISHED
 
-**A section's owner is the nearest ancestor that names a document in the manifest's owner vocabulary
-for that booklet; failing that, the booklet's own form.** Reuse
-`manifest_owner_document_ids` / `manifest_worksheet_document_ids` - do not invent a second
-vocabulary. **A section whose ancestor names a document OUTSIDE the vocabulary is rejected
-section-locally, never fatally** (the M20-S123 rule, which is not reopened).
+Ownership from the ancestor chain, **including the rejection Codex was right about: a section whose
+nearest naming ancestor is outside the booklet's manifest vocabulary is REJECTED, never reassigned
+to the booklet's form.** Opaque anchor ids. Ancestor chain on every section. Offsets in a stated
+coordinate space.
 
-### ITEM 3 - ADDRESS BY ANCHOR, CARRY THE RANGE, AND DO NOT TRUST THE TOC
+### ITEM 3 - REPORT COVERAGE AGAINST THE MODEL FRAME
 
-Every section records its `publink` anchor id where the IRS gives one, plus its offsets in the HTML.
-**The anchor is the durable address; the offset is a convenience.** State which coordinate space the
-offsets are in, in the artifact itself - **273 of 511 shipped citations are broken precisely because
-nobody wrote that down.**
-
-**TWO TRAPS I MEASURED 2026-08-18 AFTER SPECCING THIS ROUND, BOTH OF WHICH WOULD HAVE COST A ROUND:**
-- **ANCHOR IDS ARE NOT YEAR-CONSISTENT AND MUST BE TREATED AS OPAQUE.** The 2025 Schedule D booklet
-  carries **44 anchors spelled `en_US_2024_publink...` against 17 spelled `en_US_2025_`.** The year
-  in the id tracks when the IRS last revised that passage, not the document's year. **Never parse a
-  year out of an anchor id and never filter on one.**
-- **THE TABLE OF CONTENTS IS NOT AN INDEX OF THE BODY. DO NOT ENUMERATE SECTIONS FROM IT.**
-  Dangling TOC links: **322 of 762 in the 1040**, 21 of 96 in Schedule D, 7 of 25 in Schedule B.
-  **Enumerate from the body anchors and the `role-hd`/`inlinehd` headings.** I told John the page
-  "links every section"; that is wrong and this is the correction.
-- **There are fewer anchors than sections** - 329 in the 1040 against 586 model sections - so a
-  section without an anchor is normal. **Fall back to offsets; do not drop the section.**
-
-### ITEM 4 - SCORE WITH THE INFLATION SEPARATED
-
-Reporting one "correct" number hid three different defects in S127. Report, per document:
-**`line_anchored`** (a section whose own heading names the line), **`topic_attributed`** (matched
-only through an ancestor topic), and **`foreign_owner_rejected`**. **`line_anchored` is the honest
-headline. Do not sum them into one score.**
+For the three booklets with paid recordings, report **how many of the model's sections have an HTML
+section starting at the same place**, and **how many HTML sections the model missed**. Model frames:
+Form 1040 **586**, Schedule B **29**, Schedule D **93**. **Report both directions; do not report a
+single agreement percentage.** The two frames are in different coordinate spaces - HTML offsets
+against PDF-text bytes - **so match on normalized heading text, and say plainly that this is a text
+match, not a byte match.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Nothing under `tax_graph/` changes, no acquisition change, no CLI wiring, no graph artifact
-  written.** New pilot module plus tests. `pilot/model_instruction_segmenter.py` is NOT touched and
-  the paid recordings are NOT re-recorded.
-- **No model call and no network.** The HTML is on disk.
-- **Do not repair the citation coordinate defect here**, and do not delete the PDF path - it is the
-  comparison arm.
-- **Do not pin any score as an expected constant.** They are outputs. Pinning them is what M20-S115
-  got wrong.
+- **Nothing under `tax_graph/`, no acquisition change, no CLI wiring, no graph artifact.** Pilot plus
+  tests. `pilot/model_instruction_segmenter.py` is not touched and no recording is re-made.
+- **No model call and no network.**
+- **Do not delete or rewrite the S128 module** - its scoring is the accepted baseline this round is
+  measured against.
+- **Do not pin any score as an expected constant.**
 
 **THE FLOOR.**
-- **All 8 acquired HTML booklets build a section frame** with an ancestor chain on every section.
-- **`schedule_d` `Line 4.` and `Line 12.` are owned by
-  `unrecaptured_section_1250_gain_worksheet_2025`**, proven by a test naming them. **That is the
-  S127 defect and it is the point of the round.**
-- **Anchor ids are unique per booklet; every section resolves to text; no section is empty.**
-- **The three-way score is reported per document with `line_anchored` separate.**
+- **All 8 booklets tile their content region with no gap and no overlap**, proven by a test, and the
+  frame states which coordinate space its offsets are in.
+- **No section comes from the table of contents**, proven by a test - the 1040 is the case that
+  would show it.
+- **Ownership behaviour from S128 is unchanged**: Schedule D `Line 4.`/`Line 12.` still owned by
+  `unrecaptured_section_1250_gain_worksheet_2025`, Form 1116's 13 worksheet rows still rejected.
+- **Section counts and the two-direction comparison against the 586/29/93 model frames are
+  reported.**
 - **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
 
-**CODEX STATUS 2026-08-18 - COMPLETE.** Added `pilot/html_section_frame_m20_s128.py`, its
-focused guards, and the pilot README entry. The frame reads body anchors and role headings from
-the acquired HTML, includes `role-major-section`/`role-subsect` owner parents around the required
-`role-hd1`/`role-hd2`/`role-hd3` tree, carries ancestor titles and opaque `publink` ids, records
-UTF-8 byte offsets, and rejects foreign owners section-locally. It uses the existing manifest
-owner and worksheet helpers. No `tax_graph/` file, model segmenter, recording, graph artifact,
-provider call, or network path changed. The live pilot reports 8 booklets, 12 documents, and 449
-cells; `schedule_d` has 12 line-anchored cells after worksheet containment is applied.
-
-RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_section_frame_m20_s128.py -q` -> **5 passed, 1 warning** (pytest cache permission warning only).
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `git diff --check` -> **clean** (Git emitted the existing README CRLF normalization warning).
-RAN: `.venv\Scripts\python.exe -m pilot.html_section_frame_m20_s128` -> **8 booklets, 12 documents, 449 cells; schedule_d line_anchored=12; all printed invariants hold**.
-
-**ARCHITECT'S LEG.** Deciding, once ownership is honest, whether the model pass still earns its
-place - and on what. Not a floor item.
+**ARCHITECT'S LEG.** Deciding, once there are two comparable frames, whether the model pass still
+earns its cost. Not a floor item and not Codex's call.
 
 ## Open for Architect
 
