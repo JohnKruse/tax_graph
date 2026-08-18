@@ -361,6 +361,55 @@ it. A table of counts without the quotes does not satisfy this item.
 **ARCHITECT'S LEG.** Reading the result and deciding whether the pipeline moves to HTML. Not Codex's
 call and not a floor item.
 
+**CODEX STATUS (2026-08-18): M20-S127 MEASURED.** Added the offline-only
+`pilot/measure_html_pipeline_m20_s127.py` inventory and its own regression test. It reads all eight
+acquired HTML booklets, the acquired PDF text, the reconciliation cells, and the three paid model
+recordings; it does not call a provider, fetch the network, change production code, or write graph
+artifacts. The disagreement report compares arm answer states rather than section ids and prints
+the source quote for every available match.
+
+Observed run output (scores are measurements, not pinned expectations): **8 booklets, 12 documents,
+449 cells, 55 arm-answer disagreements, structural invariants true.**
+
+| document | cells | PDF deterministic | HTML deterministic (Arm C) | PDF model (Arm B) |
+| --- | ---: | ---: | ---: | ---: |
+| `form_1040_2025` | 59 | 42 | 41 | 42 |
+| `form_1116_2025` | 39 | 17 | 20 | unavailable |
+| `form_2441_2025` | 35 | 20 | 20 | unavailable |
+| `form_6251_2025` | 63 | 24 | 37 | unavailable |
+| `form_8949_2025` | 4 | 4 | 4 | unavailable |
+| `schedule_1_2025` | 61 | 53 | 52 | 52 |
+| `schedule_1a_2025` | 48 | 0 | 11 | 11 |
+| `schedule_2_2025` | 45 | 38 | 38 | 37 |
+| `schedule_3_2025` | 35 | 27 | 29 | 27 |
+| `schedule_a_2025` | 28 | 19 | 22 | unavailable |
+| `schedule_b_2025` | 8 | 0 | 5 | 8 |
+| `schedule_d_2025` | 24 | 11 | 14 | 12 |
+
+The first eight disagreements opened end to end by the report, with acquired-source quotes:
+
+1. `form_1040_2025` line `1z`: PDF deterministic quotes `The original use of the vehicle starts
+   with you`; HTML quotes `Specific Instructions` and `Lines 1a Through 1z`; PDF model has no match.
+2. `form_1040_2025` line `24`: HTML quotes `Line 24.`; PDF model quotes `The amount on line 24 cannot
+   be more than $10,000`; PDF deterministic has no match.
+3. `form_1040_2025` line `25`: PDF deterministic quotes `Form 8839`; HTML quotes `Payments` and
+   `Line 25 Federal Income Tax Withheld`; PDF model has no match.
+4. `form_1040_2025` line `31`: PDF deterministic quotes `Form 8839, line 31`; HTML and PDF model
+   have no match.
+5. `form_1116_2025` line `4`: HTML quotes `Line 2.` and `Line 4.`; PDF deterministic has no match;
+   PDF model is unavailable.
+6. `form_1116_2025` line `6`: HTML quotes `Lines 2 through 5.` and `Line 6.`; PDF deterministic
+   has no match; PDF model is unavailable.
+7. `form_1116_2025` line `8`: HTML quotes `Line 6.` and `Line 8.`; PDF deterministic has no match;
+   PDF model is unavailable.
+8. `form_6251_2025` line `1a`: HTML quotes `Line 1a.`; PDF deterministic has no match; PDF model
+   is unavailable.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_measure_html_pipeline_m20_s127.py -q` -> **3 passed, 1 warning in 7.66s**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pilot.measure_html_pipeline_m20_s127 --output .test_tmp_codex\m20_s127_measurement_v2.json` -> **8 booklets, 12 documents, 449 cells, 55 disagreements**; the report printed the eight quoted disagreements above.
+The pytest warning is the known permission failure writing the pre-existing `.pytest_cache`; the
+short temp override was used. No provider, network, graph artifact, or production extraction run.
+
 ## Open for Architect
 
 Nothing open. Raise items here.
