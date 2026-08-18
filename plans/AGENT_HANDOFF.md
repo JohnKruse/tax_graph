@@ -396,59 +396,58 @@ doing and is not this round.
 
 ---
 
-**M20-S130: CLOSE THE 94-SECTION PARSER GAP. THE TEXT IS IN THE HTML AND WE ARE NOT SECTIONING IT.**
+**M20-S130 CODEX STATUS: IMPLEMENTED; READY FOR ARCHITECT REVIEW.** The implementation is isolated
+to `pilot/html_document_frame_m20_s130.py`, its focused guards, and the pilot README. No production
+pipeline, acquisition, OCR, graph, or CLI file changed.
 
-**MEASURED, NOT GUESSED.** Of 123 sections the OCR-based model frame has and the S129 HTML frame
-does not (page markers excluded), **94 have their text present in the acquired HTML.** Examples:
-`Form 1040 and 1040-SR Helpful Hints`, `The Taxpayer Advocate Service Is Here To Help You`,
-`What can TAS do for you?`, `Lines 6a and 6b`, `2025 Tax Computation WorksheetLine 16`,
-`State and Local Income Tax Refund WorksheetSchedule 1, Line 1`, `Who Qualifies as Your Dependent`.
-**`Lines 6a and 6b` is a real line instruction and we are dropping it.**
+### ITEM 1 - OBSERVED MARKUP, OPENED END TO END
 
-### ITEM 1 - FIND OUT WHAT MARKS THEM, DO NOT GUESS
+The named examples were opened in the acquired 1040 HTML, including their surrounding source:
 
-S129 sections on `role-hd*` and `inlinehd`. **These 94 are marked some other way.** Open a sample
-**end to end in the HTML** - AGENTS.md hard rule - and report the actual element and class for each
-class of miss before widening anything. **A list of counts does not satisfy this item.**
+- `Form 1040 and 1040-SR Helpful Hints`, the TAS headings, and the EIC worksheet labels are
+  `span.bold` containing `strong`. This class is also used for prose emphasis, so generic bold is
+  explicitly excluded.
+- `Chart A`, `2025 Tax Computation Worksheet-Line 16`, and the chart/table titles are `p.title`.
+- The worksheet titles are `h3.title.worksheet` and the dependent flow steps are
+  `h4`/`h5.title.role-step` or `role-step-section`.
+- `List of Tax Topics`, `Major Categories of Federal Income and Outlays`, `Sample Check`, and
+  related headings use semantic `role-*` title classes such as `role-teletax-topics`, `role-budget`,
+  and `role-figure`.
+- `Lines 6a and 6b Social Security Benefits` is already an `h4.title.role-hd2` section owned by
+  `form_1040_2025`. Its apparent miss is OCR/HTML title suffix drift, not a missing boundary.
 
-### ITEM 2 - WIDEN THE HEADING VOCABULARY TO WHAT YOU FOUND, AND ONLY THAT
+### ITEM 2 - WIDENED VOCABULARY
 
-Add the element/class patterns the sample proves are headings. **Do not add a pattern no observed
-section needs, and do not fall back to "any bold" - that is the OCR failure mode we are leaving.**
-Each added pattern is named in the round report with the section it was added for.
+`M20-S130` adds only the observed semantic title tags and role classes. It keeps the S128 role tree
+as ownership authority, so nested worksheet titles cannot reassign a surrounding form cell. It
+does not add generic bold or strong runs.
 
-### ITEM 3 - THE FRAME INVARIANTS DO NOT MOVE
+### ITEM 3 - INVARIANTS
 
-Byte conservation over the content region with no gap or overlap; no section sourced from the table
-of contents; ownership from the ancestor chain with foreign owners rejected, never reassigned;
-opaque anchor ids. **Widening the vocabulary must not break any of these** - a wider vocabulary that
-swallows the TOC or breaks tiling is a worse frame, not a better one.
+All 8 widened frames tile their `div.book` content with no gap or overlap, resolve their UTF-8 byte
+ranges, exclude the TOC, preserve unique opaque anchors, and retain S128 ownership behavior. The
+Schedule D `Line 4.` and `Line 12.` rows remain owned by
+`unrecaptured_section_1250_gain_worksheet_2025`; Form 1116 worksheet rows remain rejected.
 
-### ITEM 4 - REPORT THE GAP AGAIN THE SAME WAY
+### ITEM 4 - REPORT
 
-Recompute **how many of the 123 remain unsectioned**, and report the per-document `line_anchored`
-score from S128's measure so we can see whether the added sections carry line anchors.
-**Do not compare heading text against the OCR frame** - that measures OCR damage, which is what I
-got wrong in S129.
+The report's 1040 gap accounting starts from 123 non-page model-only sections and represents 61 by
+widened heading events, leaving **62 remaining**. The compact containment is explicitly telemetry
+for OCR punctuation and suffix damage, not a PDF-to-HTML accuracy score. Per-document
+`line_anchored` scores are: form_1040 41, form_1116 17, form_2441 20, form_6251 37, form_8949 4,
+schedule_1 52, schedule_1a 11, schedule_2 38, schedule_3 29, schedule_a 22, schedule_b 5,
+schedule_d 12. The S128 baseline is preserved for every document; Form 1040 gains the observed
+`27a` section.
 
----
-
-**WHAT MUST NOT HAPPEN.**
-- **Nothing under `tax_graph/`, no acquisition change, no CLI wiring, no graph artifact, no OCR
-  change.** Pilot plus tests.
-- **No model call and no network.** In particular **do not fetch the IRS tax-table pages** - whether
-  we acquire those is John's call and is not part of this round.
-- **Do not delete or rewrite the S128 or S129 modules.**
-- **Do not pin any score as an expected constant.**
-
-**THE FLOOR.**
-- **A sample of the 94 is opened with its actual HTML element and class**, grouped by cause.
-- **`Lines 6a and 6b` becomes a section owned by `form_1040_2025`**, proven by a test naming it.
-- **All 8 booklets still tile with no gap and no overlap**, no section from the TOC, Schedule D
-  `Line 4.`/`Line 12.` still owned by `unrecaptured_section_1250_gain_worksheet_2025`, Form 1116's
-  worksheet rows still rejected.
-- **The remaining unsectioned count and the per-document `line_anchored` scores are reported.**
-- **`tools/check_ascii.py` OK**, `git diff --check` clean, targeted tests only.
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s130.py -q` -> 6 passed,
+1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
+RAN: `.venv\Scripts\python.exe -m pytest pilot\test_html_section_frame_m20_s128.py pilot\test_html_document_frame_m20_s129.py pilot\test_html_document_frame_m20_s130.py -q` -> 17 passed,
+1 pre-existing PytestCacheWarning about the unwritable `.pytest_cache`.
+RAN: `.venv\Scripts\python.exe -m pilot.html_document_frame_m20_s130` -> 8 booklets,
+`structural_invariants_hold=True`, `remaining_unsectioned=62`, and the per-document scores above.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py pilot\html_document_frame_m20_s130.py pilot\test_html_document_frame_m20_s130.py pilot\README.md` -> `ASCII check OK`.
+RAN: `git diff --check` -> clean.
+NOT RUN: full suite; this round is pilot plus targeted tests by specification.
 
 **ARCHITECT'S LEG.** Whether the OCR path is retired, kept only for the lookup tables, or replaced
 by acquiring the IRS table pages. **That last one needs John and is not Codex's to touch.**

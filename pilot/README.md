@@ -167,6 +167,23 @@ Run the focused guards and report from the repository root:
     .venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s129.py -q
     .venv\Scripts\python.exe -m pilot.html_document_frame_m20_s129
 
+## M20-S130 observed semantic title expansion
+
+`html_document_frame_m20_s130.py` extends the S129 byte-conserving frame with semantic title
+markup observed in the acquired HTML: unhandled `role-*` title classes, `h1` through `h6` title
+elements, and `p.title` worksheet/table headings. It keeps the S128 role tree as the ownership
+authority, so a nested worksheet title cannot reassign a surrounding form cell. Generic bold and
+strong runs are excluded because the source uses them for both headings and prose emphasis.
+
+The report records the eight-booklet structural invariants, the remaining 1040 model-only gap, and
+the per-document line-anchored score. Its compact heading comparison is accounting telemetry for
+OCR punctuation damage, not a PDF-to-HTML accuracy score.
+
+Run the focused guards and report from the repository root:
+
+    .venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s130.py -q
+    .venv\Scripts\python.exe -m pilot.html_document_frame_m20_s130
+
 ## M20-S88 context arms
 
 `context_arms.py` measures the S88 hypothesis without changing the production instruction
