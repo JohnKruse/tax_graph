@@ -370,6 +370,9 @@ the source quote for every available match.
 
 Observed run output (scores are measurements, not pinned expectations): **8 booklets, 12 documents,
 449 cells, 55 arm-answer disagreements, structural invariants true.**
+The available recorded model frames carried **586 sections for Form 1040, 29 for Schedule B, and
+93 for Schedule D**; Arm B is explicitly unavailable for the other five booklets. Schedule B Arm
+C found **5 of 8** cells while Arm A found **0 of 8**.
 
 | document | cells | PDF deterministic | HTML deterministic (Arm C) | PDF model (Arm B) |
 | --- | ---: | ---: | ---: | ---: |
@@ -405,7 +408,7 @@ The first eight disagreements opened end to end by the report, with acquired-sou
 8. `form_6251_2025` line `1a`: HTML quotes `Line 1a.`; PDF deterministic has no match; PDF model
    is unavailable.
 
-RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_measure_html_pipeline_m20_s127.py -q` -> **3 passed, 1 warning in 7.66s**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pytest pilot\test_measure_html_pipeline_m20_s127.py -q` -> **3 passed, 1 warning in 7.92s**.
 RAN: `$env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_codex).Path; .venv\Scripts\python.exe -m pilot.measure_html_pipeline_m20_s127 --output .test_tmp_codex\m20_s127_measurement_v2.json` -> **8 booklets, 12 documents, 449 cells, 55 disagreements**; the report printed the eight quoted disagreements above.
 The pytest warning is the known permission failure writing the pre-existing `.pytest_cache`; the
 short temp override was used. No provider, network, graph artifact, or production extraction run.
