@@ -448,6 +448,23 @@ Nothing open. Raise items here.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
+**WE PAY MISTRAL OCR TO TURN A PDF INTO MARKDOWN WHILE THE IRS PUBLISHES THE SAME CONTENT AS
+STRUCTURED HTML WE ALREADY DOWNLOAD (John asked, 2026-08-18; confirmed in
+`tax_graph/acquire/render_ocr.py`).** `render_instructions_ocr` calls `mistral-ocr-latest` and
+writes `# Page {index}` at line 76. **Every structural defect of the last six rounds is an artifact
+of that path**: the injected page markers that punch through the heading hierarchy at level 1, the
+lost em dashes (`Capital Loss Carryover WorksheetLines 6 and 14`, `Example 1Basis Reported to the
+IRS`), and run-in labels arriving as undifferentiated bold. **The HTML marks all three natively and
+costs nothing.**
+
+**BUT THE HTML PAGE IS NOT COMPLETE, SO DO NOT DELETE THE OCR PATH YET (Architect, measured
+2026-08-18).** Of 123 model-only 1040 sections (page markers excluded), **94 have their text in the
+HTML and our parser simply did not section them - a parser gap, fixable.** The rest are content the
+page does not carry: **`2025 Tax Table` appears 0 times in the HTML against 13 in the OCR text**,
+and the EIC tables are referenced but not reproduced (`Earned Income Credit (EIC) Table` html 1,
+OCR 12). **The lookup tables live in the PDF only.** Check whether the IRS publishes them as their
+own pages before concluding we need OCR for them.
+
 **WE SEGMENT THE PDF TEXT WHILE THE IRS HTML - ALREADY ACQUIRED SINCE 2026-08-14 - CARRIES THE
 STRUCTURE WE HAVE SPENT SIX ROUNDS RECONSTRUCTING (Architect, measured 2026-08-18). JOHN ASKED THE
 QUESTION THAT FOUND THIS.** The manifest records `instruction_url` and `fetch.py` downloads it;
