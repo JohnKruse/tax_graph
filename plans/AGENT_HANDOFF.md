@@ -21,11 +21,15 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT. M20-S134 WORKER IMPLEMENTATION IS COMPLETE AND AWAITS ACCEPTANCE. DO NOT REVERT
-`b1cd5a4`.** The accessor, the fallback deletion, the rewiring and the schema are right. The checker
-collapses the range list into one outer span, and the rule it added to tolerate that admits a
-citation whose provenance is stitched from two wrong places. **Details and the fix are in Current
-round.**
+**BALL: CODEX. M20-S134 IS VERIFIED AND ACCEPTED. M20-S135 UNDER CURRENT ROUND IS THE NEXT ROUND:
+114 promoted citations are checked by nothing and the report does not say so.**
+
+**THE CITATION RANGE IS NOW LOAD-BEARING, WHICH IT WAS NOT THREE ROUNDS AGO.** S133 built the
+accessor and deleted the substrate fallbacks; S134 made the check exact over the range LIST. Between
+them: **511 of 511 verify by exact containment, a stored range shifted 200 characters is rejected,
+and two fabricated citations were found that no text-level check could ever have caught.** The
+`quoted_text` copy that `docs/source-extents.md` wants to drop is what made all of this detectable -
+**do not drop it until extent is checked too, not just containment.**
 
 **FULL SUITE OVER `b1cd5a4`: 29 failed, 1019 passed, 8 skipped, 1 xfailed, 1:13:12 (Architect,
 2026-08-18).** I attributed every one of the 29 rather than reading the count.
@@ -210,139 +214,87 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S134: USE THE RANGE LIST. THE SUBSEQUENCE RULE IS COMPENSATING FOR A BUG IN THE SAME FILE,
-AND IT LETS A FABRICATED CITATION THROUGH.**
+**M20-S135: 114 PROMOTED CITATIONS ARE VERIFIED BY NOTHING AND THE REPORT DOES NOT SAY SO; AND A
+PROPOSED REPAIR THAT FAILS THE CHECKER IS A TRAP.**
 
-**M20-S133 IS NOT ACCEPTED. MOST OF IT IS RIGHT AND STAYS** - `b1cd5a4` is not to be reverted, it is
-to be finished. **What I verified myself and what holds:** `resolve_source_range` with typed absence
-and universal-newline handling, no HTML or PDF fallback anywhere, the three improvising slice sites
-rewired, the schema stating the coordinate contract, and **511 checked with 0 mismatches, which I
-reproduced.** The teeth are real and this is the round's genuine win: **perturbing every stored range
-by +/-200 or +/-1000 characters, or truncating its end, rejects 511 of 511.** Against the whole-file
-search it replaced - which passed everything - that is a large improvement. The
-`_token_start_with_punctuation` producer change is **output-neutral over all 515 quotes**, which I
-checked against `6522da4` rather than taking on trust.
+**M20-S134 IS VERIFIED AND ACCEPTED (`4f858e1`, Architect, 2026-08-18) - the full suite was still
+running when this was written; if it comes back dirty I will amend here rather than silently.**
+I reproduced every claim independently: **511 of 511 pass by per-range join containment**,
+`_ordered_tokens_in_span` is gone, `checked=515`, `mismatches=0`, **40 short fragments and 4 large
+gaps - the same numbers I measured before speccing the round**, and the real-citation perturbation
+guard rejects a stored range shifted 200 characters. **The round did what it was asked.**
 
-### WHAT IS WRONG, MEASURED
+**AND IT FOUND A SECOND FABRICATED CITATION THAT IS WORSE THAN THE FIRST.**
+`cite_1040_qdcgt_line_4` spells its 21-character quote *"4. Add lines 2 and 3."* out of **five
+fragments scraped from five locations spanning 550434 to 556643 - over six kilobytes** - including
+the bare word `and` and the bare digit `2` lifted separately. The real text sits at 157403. **That
+is not a citation, and no text-level check would ever have found it; the gap telltale did.**
 
-**`check_citation_integrity` RESOLVES ONE SPAN FROM `ranges[0]["start"]` TO `ranges[-1]["end"]` AND
-THROWS THE RANGE LIST AWAY.** Every one of the 37 "layout elision" citations is that bug and nothing
-else - **all 37 carry between 2 and 10 ranges.** Resolving and concatenating EACH range verifies
-**511 of 511 by EXACT containment.** *The elision class does not exist.* The ranges were authored
-precisely; the checker widened them and then built a rule to tolerate what it had widened.
+### ITEM 1 - THE 114 THAT ARE CHECKED BY NOTHING
 
-**SO THE SUBSEQUENCE RULE IS STRICTLY WEAKER THAN THE CHECK IT REPLACED THE NEED FOR, AND IT ADMITS
-A FABRICATED CITATION.** `cite_schedule_d_carryover_line_13` passes `_ordered_tokens_in_span` while
-its two ranges stitch together:
+**Measured by the Architect, 2026-08-18: the promoted graph holds 629 citations. 625 carry a
+`quoted_text`. Only 511 of those carry ranges.** `check_graph_citations` passes `require_ranges`
+false and `continue`s past the other **114** - they are not checked, not counted, and **not
+reported**. `report.checked` says 515 and reads like full coverage of a 629-citation corpus.
+**Before S133 they were at least searched for; now they are verified by nothing at all, and nothing
+says so.** Most are the `cite_instruction_form_1040_2025_en_us_2025_publink...` records.
 
-    69931..69992  "If more than zero, also enter this amount on Schedule D, line"   <- the LINE 18 row
-    75265..75268  "14."                                                             <- 5,273 chars away
+**THE MODE ITSELF IS FINE AND SHOULD STAY** - turning the graph check red on 114 legacy records
+would be a false alarm, and Codex was right not to. **What must change is that they stop being
+invisible:** the report carries an explicit unverifiable count and list, and the CLI prints it.
+**A failure that reports itself is acceptable; a failure that hides is not** - AGENTS.md, John,
+2026-08-11.
 
-**and the complete, correct sentence sits verbatim at 62388..62452.** The quote is accurate; its
-provenance is manufactured out of two wrong places, one of which is a different worksheet's row.
-**That is the "line 22's text under line 24" failure, in the shipped artifact, passing the check
-written to catch it.** It is a hand-authored A9-era record (`retrieved_date: 2026-07-10`) - pipeline
-debt, not a pipeline output.
+**AND THE 114 NEED JOHN'S RULING, WHICH IS ONE HE HAS ALREADY GIVEN IN ANOTHER PLACE.** This is
+exactly the `filer_entry` distinction from 2026-08-16: **`derivation_failed` (a defect) versus
+`source_form_not_modelled` (a scope fact).** Either these publink citations are supposed to acquire
+ranges - pipeline work, and they are a backlog - or they never will, and they are a permanent
+exempt class that must be named as such. **Report which, do not decide it.**
 
-**MY FLOOR SAID THIS EXACTLY AND IT WAS NOT MET:** *"If any turn out to be a genuine range error,
-name them by `citation_id` with the correct span and do NOT let the elision rule paper over them"*
-and *"a rule that cannot fail is not a check."*
-**ITEM 3 ALSO ASKED FOR 5 OF THE 37 OPENED END TO END WITH THE REAL CLASS OF EACH, AND WAS ANSWERED
-WITH COUNTS.** Had any five been opened, the stitched one was one in seven.
+### ITEM 2 - A PROPOSED REPAIR MUST ITSELF VERIFY
 
-### ITEM 1 - CONCATENATE THE RANGES; DELETE THE SUBSEQUENCE RULE
+**Neither `correct_ranges` the round emits would pass the checker, and I tested both.** They are
+right about WHERE the text is and wrong as a remedy, because in both cases the stored quote is not
+verbatim source text:
+- `cite_schedule_d_carryover_line_13`'s quote ends in a period **the source does not have.** That is
+  why the original author stitched `75265..75268` = `"14."` - to manufacture it.
+- `cite_1040_qdcgt_line_4`'s quote also drops a table pipe: the source reads `4. | Add lines 2 and 3`.
 
-Resolve each range through the accessor and join them. Verify by exact normalized containment.
-**`_ordered_tokens_in_span` goes away entirely** - not kept behind a flag, not kept as a fallback.
-**511 of 511 pass this way; I ran it.**
+**Verified repairs, which I ran:**
 
-### ITEM 2 - THE TWO TELLTALES THAT MAKE STITCHED PROVENANCE VISIBLE
+    cite_schedule_d_carryover_line_13   ranges -> [62388..62452]                  + drop the trailing period
+    cite_1040_qdcgt_line_4              ranges -> [157403..157405, 157407..157425] + drop the trailing period
 
-Report per citation, **as a printed telltale and NOT a gate**: range fragments under ~12 characters,
-and the gap between consecutive ranges. Measured: **40 fragments under 12 characters, most of them
-legitimate** form-face labels (`1a`, `Exemption.`, `Enter: }`), and **4 gaps over 1,000 characters
-in exactly 2 citations** - `cite_schedule_d_carryover_line_13` at 5,273 and `cite_1040_qdcgt_line_4`
-at 3,068 / 1,717 / 1,394. **A fragment alone is normal; a fragment across a kilobyte gap is the
-smell.**
+**So a provenance finding must either emit ranges that VERIFY, or say plainly that the quote itself
+blocks the repair and why.** A finding that hands the next agent a fix which fails the check it
+came from is worse than no finding.
 
-### ITEM 3 - OPEN `cite_1040_qdcgt_line_4` END TO END AND SAY WHAT IT IS
+### ITEM 3 - DO NOT APPLY THE REPAIRS
 
-It is the only other citation with the same signature. **Report what its ranges actually contain and
-where the quoted sentence really lives** - the same way this round's defect was found. A count does
-not satisfy this item.
-
-### ITEM 4 - NAME THE BAD PROVENANCE, DO NOT EDIT IT
-
-**No re-authoring of `graph/2025/citations/`.** Emit the list of citations whose ranges do not point
-at the text they quote, each with the correct span. The repair is a separate decision and it belongs
-to whatever regenerates these records, not to a hand edit.
-
-**THE REPAIR IS SMALLER THAN IT LOOKS AND THE SCOPE IS ALREADY TRACED (Architect, 2026-08-18).**
-Nothing in `tax_graph/` mints `cite_schedule_d_carryover_line_13` - the only hits outside the
-protected set are pytest temp copies - so it is hand-authored, as its shape suggested. It IS
-load-bearing: referenced from `graph/2025/edges/capital-gains.yaml:104`,
-`graph/2025/nodes/capital-gains.yaml:332` and three places in `graph/2025/frontier.yaml:500-508`.
-**But the QUOTE is correct and so is every rule built on it** - only the two ranges are wrong.
-The fix is `69931..69992` + `75265..75268` becomes the single span `62388..62452`, which changes no
-graph semantics and no derived value. **It is a protected-set edit of four numbers in one file, and
-that is John's call, not this round's.**
-
-### ITEM 5 - A CITATION WITH NO RANGES MUST NOT PASS SILENTLY
-
-`if not ranges: continue` is commented *"only defensive for malformed input"* and that assumption is
-wrong: **model-generated citations have no ranges yet and are exactly the ones whose quotes need
-checking.** `test_extract_m4::test_deterministic_checks_flag_missing_line_and_bad_quote` proves it -
-it plants an absent quote in generated output and the check no longer fires. **Do not restore the
-whole-file search to fix this.** A citation with no range cannot be verified against a span, so it
-must be REPORTED as unverifiable, with its own reason, and the extract path's deterministic check
-must fail on it. **Silently passing an unverifiable citation is the defect, not the missing range.**
+**Both need a `quoted_text` edit inside the protected set and that is John's call, not this round's.**
+Note for whoever writes it up: dropping an authored period that the source never contained is the
+**S107 direction** (make hand-authored text say what the document says), not the S106 direction that
+got a rework rejected (truncating a real quote to fit a wrong range). **Say which one it is when you
+ask.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not revert `b1cd5a4`.** The accessor, the fallback deletion and the rewiring are correct.
-- **Do not edit `quoted_text` to make a check pass** - see From Architect; that is what got the S106
-  rework rejected.
-- **No model call, no network, no citation artifact edit.**
+- **No re-authoring of `graph/2025/citations/`** and no `quoted_text` edit.
+- **Do not make the graph check fail on the 114.** Count them, name them, print them.
+- **Do not reintroduce a substrate or whole-file fallback for them.**
+- **No model call, no network.**
 
 **THE FLOOR.**
-- **511 of 511 by exact containment over CONCATENATED ranges**, `_ordered_tokens_in_span` deleted.
-- **The perturbation guard survives and is extended to a REAL citation**, not only the synthetic
-  fixture: shift a stored range by a few hundred characters and watch the checker fail.
-- **`cite_1040_qdcgt_line_4` opened end to end and classified.**
-- **The bad-provenance list emitted**, each entry with the correct span.
-- **`test_extract_m4::test_deterministic_checks_flag_missing_line_and_bad_quote` GREEN.**
-- **Full suite against the baseline** - which is **at least 22 red, not 18**; see BALL.
-- **Protected set byte-identical**, `tools/check_ascii.py` OK, `git diff --check` clean.
-
-**ARCHITECT'S LEG.** The full suite over `b1cd5a4` is DONE and attributed - see BALL. **29 failed,
-1019 passed, 1:13:12**, of which exactly one is S133's (ITEM 5) and six are the S115 review
-contract, which is now the round after S134.
-
-**WORKER COMPLETION (2026-08-18; M20-S134, awaiting Architect acceptance).** The checker now
-verifies each stored range fragment and joins those fragments for exact normalized containment;
-the subsequence fallback is deleted. It emits non-gating fragment and gap telltales and names the
-two bad-provenance records with their correct contiguous spans. `cite_1040_qdcgt_line_4` stores
-`4.`, `Add lines`, `2`, `and`, and `3.` from distant source locations, while the complete quote
-`4. Add lines 2 and 3.` is at `157403..157425`. Missing ranges are an explicit
-`missing source ranges` finding in strict mode, and the extraction deterministic check enables
-strict mode; the promoted graph check keeps legacy HTML and intake omissions outside the range
-contract.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py
-tests\test_acquire_citation_check_m134.py tests\test_source_ranges_m133.py
-tests\test_worksheet_harvest_m20.py tests\test_cli.py tests\test_extract_m4.py -q` ->
-**61 passed in 35.29s**. The sandbox attempt produced 26 passed and 35 temp-directory errors;
-the elevated rerun is the verified result. The warning is the known permission failure writing
-the pre-existing `.pytest_cache`.
-**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-**RAN:** `git diff --check` -> **clean**. The Architect's baseline run over `b1cd5a4` is
-recorded above; this session also completed the full suite with elevated access:
-`.venv\Scripts\python.exe -m pytest -q` -> **1,023 passed, 28 failed, 8 skipped, 1 xfailed
-in 1:08:41**. The failures are the already-attributed workbench/e2e and stale-corpus baseline
-areas; no S134 file or focused test appears in the failure list. The S134 item-5 regression is
-therefore cleared against the 29-failure S133 baseline. No model call, network access, or
-citation artifact edit was made.
+- **The report carries the unverifiable citations explicitly** - count and ids - and the CLI prints
+  the number next to `checked`.
+- **All 629 accounted for in one place and the arithmetic closes:** 511 quoted-and-ranged,
+  114 quoted-with-no-ranges, 4 computed-table (ranged, no quote by schema rule). **511 + 114 + 4 =
+  629, so there is no fourth bucket to discover** - the report must simply show all three.
+- **Every `correct_ranges` a finding emits passes the checker when applied**, or the finding states
+  why the quote blocks it. **Prove it with a test that applies its own proposed repair.**
+- **Full suite against the baseline** - at least 22 red; see BALL.
+- **Protected set byte-identical**, `check_ascii` OK, `git diff --check` clean.
 
 ## Open for Architect
 
