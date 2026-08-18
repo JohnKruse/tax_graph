@@ -217,8 +217,10 @@ a broken surface awaiting the live check, not an accepted red.
 **M20-S135: 114 PROMOTED CITATIONS ARE VERIFIED BY NOTHING AND THE REPORT DOES NOT SAY SO; AND A
 PROPOSED REPAIR THAT FAILS THE CHECKER IS A TRAP.**
 
-**M20-S134 IS VERIFIED AND ACCEPTED (`4f858e1`, Architect, 2026-08-18) - the full suite was still
-running when this was written; if it comes back dirty I will amend here rather than silently.**
+**M20-S134 IS VERIFIED AND ACCEPTED (`4f858e1`, Architect, 2026-08-18).** My own full-suite run was
+still going when this was written; **Codex ran one too and reported 1,023 passed / 28 failed /
+1:08:41 (`ffc6d3f`), one fewer red than my 29 over `b1cd5a4`, which is exactly the ITEM 5 regression
+clearing.** I will post my own count beside it and amend here rather than silently if it disagrees.
 I reproduced every claim independently: **511 of 511 pass by per-range join containment**,
 `_ordered_tokens_in_span` is gone, `checked=515`, `mismatches=0`, **40 short fragments and 4 large
 gaps - the same numbers I measured before speccing the round**, and the real-citation perturbation
