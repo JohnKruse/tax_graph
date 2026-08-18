@@ -59,12 +59,51 @@ cannot carry.**
 appears 0 times in the HTML against 13 in the OCR text, and the EIC tables are referenced but not
 reproduced. Check whether the IRS publishes those as their own pages first.
 
+**JOHN APPROVED THE ATTRIBUTION STAGE, 2026-08-18. IT IS THE NEXT ROUND AFTER M20-S133 AND ITS
+SPEC IS IN Queued.** Before speccing it I opened Schedule 1-A's 37 unreached cells, which I had
+never done. **The finding inverts the obvious design and it must be read before anyone writes that
+prompt.**
+
+**SCHEDULE 1-A'S CEILING IS ABOUT 30 OF 48, NOT 48, AND I HAVE BEEN QUOTING THE WRONG PRIZE.** I
+told John the attribution stage "reaches Schedule 1-A's remaining 37 cells." **The honest number is
+19.** Opening all 37 against the 69 sections the S132 frame owns for `schedule_1a_2025`:
+- **19 have governing prose that names no line** - `1`, `2b`, `2c`, `2d`, `4`, `7`, `9`, `15`, `17`,
+  `26`, `32`, `33`, `34`, `35`, `36a`, `36b` and the Part I MAGI entries. Their instruction is a
+  topic section stating the parameter: *"You can't deduct more than $25,000"*, *"$6,000 per
+  person"*, *"born before January 2, 1961"*, *"Married filing jointly-$150,000."*
+- **18 are arithmetic the IRS writes nothing for and never will** - `6`, `8`, `11`, `12`, `13`,
+  `14c`, `16`, `19`, `20`, `21`, `23`, `25`, `28`, `29`, `30`, `31`, `37`, `38` are *"Add lines 4c
+  and 5"*, *"Enter the amount from line 3"*, *"Multiply line 11 by $100"*. **The form face IS the
+  instruction.** This is the same ceiling that made Schedule D's 12 of 24 a full score.
+
+**MENTIONING A LINE AND GOVERNING A LINE ARE ANTI-CORRELATED IN THIS CHAPTER. THIS IS THE RESULT
+THAT DECIDES THE DESIGN.** I searched all 69 section bodies for each unreached cell:
+- **Every prose section that GOVERNS a line states its parameter and never names it.** All four
+  *"Maximum amount of deduction."* sections name exactly ONE line - **line 3** - and line 3 is the
+  one line none of them governs. It is the MAGI they all read FROM.
+- **Every cell that IS named in prose is named by something that does not govern it.** `Line 10.`'s
+  body reads *"Skip lines 11 and 12 and enter the amount from Schedule 1-A, line 7, on Schedule 1-A,
+  line 13"* - it governs line 10, stated in its HEADING, and mentions 7, 11, 12, 13, which it does
+  not. `Line 18.` and `Line 27.` are the identical shape. Worse, `1`, `31` and `34` "match" only
+  through **Schedule C line 31, Schedule F line 34 and Form 4137 line 1** - cross-form collisions,
+  the S116 defect again.
+- **So a line-reference miner over body prose would attribute all four max-deduction sections to
+  line 3, hand line 10's text to lines 7, 11, 12 and 13, and import three cross-form collisions -
+  while reaching NONE of the 19 cells that actually have prose.** It would score well and be wrong
+  in every instance.
+
+**THIS IS JOHN'S LINE-24/LINE-22 OBJECTION, MEASURED, IN THE ONE CHAPTER THAT IS THE WHOLE REMAINING
+GAP.** *"We have the example of line 24 referencing line 22 and the instructions for line 22 get
+jammed in."* `Line 10.` mentioning line 13 IS that example, in the live artifact. **His veto was not
+a worry about model quality; it is a property of how the IRS writes.**
+
 **KEEP THE MODEL, AND THE REMAINING GAP IS SCHEDULE 1-A.** On the four line-organised chapters the
 model is at CEILING - every cell whose chapter contains a `Line N` heading is found, and all 38
-unreached cells there are rollups and arithmetic the IRS writes nothing for. **Schedule 1-A is the
-entire remaining gap: 37 of 48.** Its chapter segments into 51 byte-perfect sections of which only
-11 carry a line token; the rest is topic prose (`Qualified Tips`, `Net income limitation.`), and
-lines 3 and 38 are stated in BODY PROSE that no anchor scheme reaches.
+unreached cells there are rollups and arithmetic the IRS writes nothing for. **Schedule 1-A carries
+the rest of the gap at 11 of 48**, and the S132 frame owns 69 sections for it of which only 11 carry
+a line token; the rest is topic prose (`Qualified Tips`, `Maximum amount of deduction.`).
+**Of its 37 unreached cells, 19 have governing prose and 18 are the same instruction ceiling - the
+breakdown and the design constraint it imposes are directly below.**
 **THE UNION OF BOTH MATCHERS IS OFF THE TABLE (John pushed back, and opening all four disagreements
 proved him right): it buys 2 real cells and imports 3 wrong attributions**, all three the S116
 cross-form collision still live in the baseline (`form_1040` 26, 31, 38 are Form 2441/8839/Schedule
@@ -221,13 +260,30 @@ Nothing open. Raise items here.
 - **CONSTRAIN `governs` TO A LINE TOKEN OR EMPTY IN THE STRUCTURED-OUTPUT SCHEMA (Architect,
   measured 2026-08-18).** 93 distinct non-line values are in the live 1040 frame; the join key
   accepts free text today. **Prompt/schema change - no blast radius, runs wide, needs a live call.**
-- **ATTRIBUTION AS ITS OWN STAGE OVER BOUNDED SPANS (Architect, 2026-08-18).** *"Which lines does
-  THIS span govern, or none?"* over boundaries already fixed. **Permitted by the 2026-08-17 binding
-  ruling now pinned in AGENTS.md, but it is the inverse of a question John vetoed, so it gets his
-  yes before it is specced.** It is the only thing that reaches Schedule 1-A's remaining 37 cells.
-- **SCHEDULE 1-A IS 11 OF 48 AND NOBODY HAS OPENED THE OTHER 37 (Architect, 2026-08-17).** May be
-  the instruction ceiling that made Schedule D's 12 of 24 a full score, or a real gap. **Architect's
-  leg, and it gates the item above.**
+- **[APPROVED BY JOHN 2026-08-18 - THE NEXT ROUND AFTER M20-S133] ATTRIBUTION AS ITS OWN STAGE OVER
+  BOUNDED SPANS.** Ask, of a span whose boundaries are ALREADY fixed and byte-verified, *"which of
+  this form's lines does this span govern, or none?"* **Permitted by the binding ruling pinned in
+  AGENTS.md**: the model is labelling a boundary it did not choose, so it cannot drag a neighbour's
+  text in. **Its honest prize is 19 Schedule 1-A cells, not 37** - see BALL.
+  **FOUR CONSTRAINTS, ALL FROM OPENING THE 37, AND THE FIRST IS THE ROUND:**
+  1. **IT MUST NOT BE A LINE-REFERENCE MINER.** Measured: in this chapter, prose that GOVERNS a
+     line never names it, and prose that NAMES a line does not govern it. A miner reaches none of
+     the 19 and gets every mention wrong. **If the round produces a regex over body prose, it has
+     failed regardless of its score.**
+  2. **THE MODEL NEEDS THE FORM'S LINE INVENTORY AND THAT DOES NOT BREAK CELL-NAIVETY.** It cannot
+     answer *"which lines does this govern"* without knowing which lines exist. **A closed menu
+     attached to a fixed span is a lookup; a demand to go find one cell's instruction is not.**
+     The inventory is the printed anchors we already hold - no model call to build it.
+  3. **EMPTY IS A FIRST-CLASS ANSWER AND MOST SPANS MUST TAKE IT.** 18 of 37 cells have no prose at
+     all, and 50 of the 69 sections govern no line. **A run where few spans answer "none" is
+     evidence of fabrication, not coverage** - report the "none" rate as a headline, not a footnote.
+  4. **SCORE IT AGAINST WHAT THE PROSE ACTUALLY SAYS, NOT AGAINST 48.** The reference answer is the
+     19, and the 18 arithmetic cells are a CEILING - reaching them would mean the model invented an
+     instruction. **Do not write a floor that counts them as misses.**
+  **NEEDS JOHN'S EGRESS - it is a live model call**, and it changes the prompt, so it has no blast
+  radius and runs wide.
+- **[DONE 2026-08-18 - see BALL] SCHEDULE 1-A'S 37 UNREACHED CELLS ARE OPENED.** 19 have governing
+  prose, 18 are the instruction ceiling, and mentioning a line is anti-correlated with governing it.
 - **DOES THE IRS PUBLISH THE LOOKUP TABLES AS THEIR OWN PAGES?** The 2025 Tax Table and the EIC
   tables are the only content the HTML does not carry, and they are the last thing holding the OCR
   path open. **The tax table itself is already modelled** - `tax_graph/compile/tax_table.py` builds
