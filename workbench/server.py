@@ -633,11 +633,14 @@ def create_app(
                 if queue_id in GENERATED_REVIEW_DOCUMENTS
                 else []
             )
+            # Queue-level verdicts intentionally omit object_ref.  Only the
+            # address-ledger and generated-cell defect paths need a target.
+            object_id = str(object_ref.get("object_id") or "") if object_ref else ""
             review_cell = next(
                 (
                     item for item in review_cells
                     if str(item.get("address_id") or "")
-                    == str(object_ref.get("object_id") or "")
+                    == object_id
                 ),
                 {},
             )
