@@ -131,8 +131,8 @@ def test_generated_review_projects_all_multiline_schedule_instruction_owners() -
 
 
 @pytest.mark.m20
-def test_generated_review_s142_splits_run_in_labels_and_keeps_unlabelled_lines_shared() -> None:
-    """Run-in labels narrow a packet; an unlabelled owner keeps the block."""
+def test_generated_review_s142_splits_run_labels_and_s143_prioritizes_narrow_owners() -> None:
+    """Run-in labels narrow packets before family spans are used as context."""
     schedule_1 = build_generated_document_cells(ROOT, 2025, "schedule_1_2025").cells
     line_24a = next(item for item in schedule_1 if item["official_ref"] == "24a")
     line_24f = next(item for item in schedule_1 if item["official_ref"] == "24f")
@@ -146,17 +146,33 @@ def test_generated_review_s142_splits_run_in_labels_and_keeps_unlabelled_lines_s
     assert citation_24a["citation_id"].endswith("__line_24a")
     assert citation_24a["quoted_text"].startswith("##### Line 24a")
     assert "##### Line 24b" not in citation_24a["quoted_text"]
-    assert citation_24f["citation_id"] == "span_instructions_form_1040_2025_section_0109"
-    assert citation_8a["citation_id"] == citation_8b["citation_id"]
-    assert citation_8a["quoted_text"] == citation_8b["quoted_text"]
+    assert citation_24f["citation_id"].endswith("__line_24f")
+    assert citation_24f["quoted_text"].startswith("# **Line 24f**")
+    assert citation_8a["citation_id"].endswith("__line_8a")
+    assert citation_8b["citation_id"].endswith("__line_8b")
+    assert any(
+        item["citation_id"] == "span_instructions_form_1040_2025_section_0067"
+        for item in line_8a["instruction_citations"]
+    )
+    assert any(
+        item["citation_id"] == "span_instructions_form_1040_2025_section_0067"
+        for item in line_8b["instruction_citations"]
+    )
 
     schedule_2 = build_generated_document_cells(ROOT, 2025, "schedule_2_2025").cells
-    for anchor in ("17b", "17q", "17z"):
+    for anchor in ("17b", "17q"):
         citation = next(
             item for item in schedule_2 if item["official_ref"] == anchor
         )["instruction_citations"][0]
         assert citation["citation_id"].endswith(f"__line_{anchor}")
         assert f"**Line {anchor}." in citation["quoted_text"]
+    line_17z = next(
+        item for item in schedule_2 if item["official_ref"] == "17z"
+    )["instruction_citations"]
+    assert line_17z[0]["citation_id"] == (
+        "span_instructions_form_1040_2025_section_0138"
+    )
+    assert line_17z[1]["citation_id"].endswith("__line_17z")
 
     schedule_3 = build_generated_document_cells(ROOT, 2025, "schedule_3_2025").cells
     for anchor in ("6b", "6m"):

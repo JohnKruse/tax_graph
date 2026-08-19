@@ -434,6 +434,8 @@ def _instruction_span_index(
     sidecars may lack it, so their first non-empty heading line remains a
     compatibility fallback.  When a shared booklet carries explicit ownership,
     the requested form's owner is applied before indexing the line packet.
+    Several spans may own one line: the narrowest owner is indexed first, while
+    a content-bearing span wins a tie with an empty heading stub.
     """
     scoped_spans = [
         (span_id, span)
@@ -449,6 +451,15 @@ def _instruction_span_index(
     current_document = ""
     current_lines: set[str] = set()
     current_level: int | None = None
+    span_order = {span_id: index for index, (span_id, _) in enumerate(scoped_spans)}
+    owner_widths: dict[str, int] = {}
+    has_body: dict[str, bool] = {}
+
+    def add_span(line: str, span_id: str, owned_lines: set[str], span: dict[str, Any]) -> None:
+        result.setdefault(line, []).append(span_id)
+        owner_widths[span_id] = len(owned_lines)
+        has_body[span_id] = _instruction_span_has_body(str(span.get("text") or ""))
+
     for span_id, span in scoped_spans:
         document_id = str(span.get("document_id") or "")
         if document_id != current_document:
@@ -465,7 +476,7 @@ def _instruction_span_index(
             current_lines = explicit_lines
             current_level = None
             for line in current_lines:
-                result.setdefault(line, []).append(span_id)
+                add_span(line, span_id, current_lines, span)
             continue
         heading_line = next((line for line in text.splitlines() if line.strip()), "")
         line_heading = re.match(
@@ -481,7 +492,7 @@ def _instruction_span_index(
             }
             current_level = len(line_heading.group(1))
             for line in current_lines:
-                result.setdefault(line, []).append(span_id)
+                add_span(line, span_id, current_lines, span)
             continue
         heading = re.match(r"^\s*(#{1,6})\s+", text)
         if heading:
@@ -489,13 +500,34 @@ def _instruction_span_index(
                 current_lines = set()
                 current_level = None
             for line in current_lines:
-                result.setdefault(line, []).append(span_id)
+                add_span(line, span_id, current_lines, span)
             continue
         table_line = re.match(r"^\s*\|\s*(?:\*\*)?([0-9]+[a-z]?)\.", text, re.IGNORECASE)
         owned_lines = {table_line.group(1).lower()} if table_line else current_lines
         for line in owned_lines:
-            result.setdefault(line, []).append(span_id)
+            add_span(line, span_id, owned_lines, span)
+    for line, span_ids in result.items():
+        span_ids.sort(
+            key=lambda span_id: (
+                owner_widths[span_id],
+                0 if has_body[span_id] else 1,
+                span_order[span_id],
+            )
+        )
     return result
+
+
+def _instruction_span_has_body(text: str) -> bool:
+    """Return whether a span contains content beyond a line heading."""
+    return any(
+        line.strip()
+        and not re.match(
+            r"^\s*(?:#{1,6}\s*)?(?:\*\*)?Lines?\b",
+            line,
+            re.IGNORECASE,
+        )
+        for line in text.splitlines()
+    )
 
 
 def _provenance(metrics: Any) -> dict[str, str]:

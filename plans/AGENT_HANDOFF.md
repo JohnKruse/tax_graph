@@ -21,9 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S142 IS ACCEPTED - the run-in split is real and 17f now shows 17f's own text.
-M20-S143 under Current round takes the last big block: 30 Schedule 1 lines are handed a family
-preamble while the span that owns their line alone already sits in the same artifact.**
+**BALL: CODEX. M20-S143 is implemented and verified below. The narrowest owner is now primary;
+family spans remain as context.**
 
 **M20-S142 IS ACCEPTED (`c613c78`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION AND BY OPENING
 THE CELLS.** My independent count reproduces Codex's table to the cell: `form_1040` 55/22,
@@ -61,7 +60,7 @@ workbench cases - a defect awaiting a round, not an accepted red. Eleven `tests/
 `test_schedule_d_extraction_m9::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`,
 `test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading`,
 `test_citation_cleanup_m18::test_real_citation_corpus_has_source_verified_cleanups`, and both
-`test_generated_review_m20` cases. **`test_generated_review_m20` line 1a is red for the reason in
+`test_generated_review_m20` line 1a is red for the reason in
 Queued below (W-2 box 1 versus `entered by filer`); do not silence it.**
 
 **STILL OWED, UNCHANGED:** the S115 review contract needs a LIVE check, not a test read - six cases
@@ -92,38 +91,37 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S143: THE NARROWEST OWNER WINS. WHEN A LINE HAS BOTH A FAMILY SPAN AND A SPAN THAT OWNS IT
-ALONE, THE SINGULAR OWNER IS THE PRIMARY CITATION.**
+**M20-S143 IS ACCEPTED.** `instruction_ids_by_line` now orders candidates by the number of
+explicit or inferred owner lines. Equal-width ties prefer a content-bearing span over a heading
+stub, then retain artifact order. The family citation is never dropped.
 
-### ITEM 1 - THE RULE
+Distinct-line recomputation (covered / own text / shared block):
 
-`instruction_ids_by_line[line]` may hold several spans. **Order them so the primary citation
-(`instruction_citations[0]`) is the span whose `owner_lines` covers the FEWEST lines while still
-covering this line.** A family span (`owner_lines` of 26) is context; a span with
-`owner_lines == [this line]` is the instruction. **Do not drop the family span** - it keeps its
-place further down the list, exactly as ITEM 2 of S142 kept a block rather than fabricating a run.
+- `form_1040`: 62/56/6 -> 62/56/6
+- `schedule_1`: 60/30/30 -> 60/60/0
+- `schedule_2`: 38/38/0 -> 38/38/0
+- `schedule_3`: 29/27/2 -> 29/27/2
+- total: 189/151/38 -> 189/181/8
 
-**Break a tie between two equally narrow owners deliberately and say what you chose.** Schedule 1
-line `1` has two spans both owning `['1']`: `section_0060` is 13 characters (`#### Line 1` and
-nothing) and `section_0068` is 30,083 (the State and Local Income Tax Refund Worksheet). **Report
-what line 1 ends up showing.** A 13-character heading is not an instruction and a 30,000-character
-worksheet may not be one either; I want to see it before we rule.
+The 1040 generated gap-cell count stayed 55 before and after. The three opened Schedule 1
+projections changed as follows:
 
-### ITEM 2 - THE RUN-IN SPLIT STILL APPLIES ON TOP
+- `8j`: the family preamble was primary; now `#### Line 8j` and `Activity not engaged in for
+  profit income. See Pub. 525.` is primary, with the family span retained second.
+- `24z`: the `Lines 24a Through 24z` block was primary; now `Line 24z` / `Leave line 24z blank.`
+  is primary, with the family span retained second.
+- `1`: the empty `#### Line 1` stub was primary; the deliberate content-over-stub tie-break now
+  makes the 30,083-character State and Local Income Tax Refund Worksheet primary. The existing
+  third cross-document candidate and the heading stub remain later in the list; no citation was
+  dropped and no artifact was edited.
 
-S142's split is unchanged and runs against whichever span wins. A family span that survives as
-primary because no narrower owner exists must still be split at its run-in labels.
-
-### ITEM 3 - REPORT PER LINE, NOT PER CELL
-
-**The metric is DISTINCT LINES.** Per document, before and after: covered lines, lines owning their
-own text, lines sharing a block with another line. **151 of 189 is the figure to beat.** Report the
-per-cell count too if you like, but the headline is lines.
-
-### ITEM 4 - OPEN THREE BEFORE AND AFTER
-
-Quote the projected text for `8j`, `24z` and one Schedule 1 line of your choosing, before and after.
-**A count that rises while the text gets worse is not progress**, and only the artifact shows that.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s143.py -q` -> 3 passed in 2.63s.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s142.py tests/test_m20_s143.py tests/test_generated_review_m20.py -q` -> 15 passed, 1 failed; the only failure is the known line 1a W-2-box-1 guard red, not S143.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed in 0.38s.
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py tests/e2e/test_workbench_v2_m17.py -q` -> 18 passed, 1 xpassed in 360.78s.
+RAN: `.venv\Scripts\python.exe tools/check_ascii.py workbench/generated_review.py tests/test_generated_review_m20.py tests/test_m20_s143.py` -> ASCII check OK.
+RAN: `git diff --check` -> clean.
+NOT RUN: full suite -> prohibited for this round.
 
 ---
 
