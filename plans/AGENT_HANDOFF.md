@@ -21,41 +21,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S143 IS VERIFIED IN ITS CORE AND IS NOT ACCEPTED. M20-S144 IS THE ROUND: the
-owner-width sort is blind to S142 and demotes the text S142 built.**
+**BALL: JOHN. M20-S143 AND M20-S144 ARE BOTH ACCEPTED AND VERIFIED. No round is in flight; the
+next one is a decision, not a defect - see Queued.**
 
-**M20-S143 IS VERIFIED IN ITS CORE AND NOT ACCEPTED (Architect, 2026-08-19). `6dffa97` STAYS ON
-`main` - S144 completes it rather than reverting it.** My independent recomputation confirms what
-the round was for: `schedule_1` is **60 covered / 60 own text / 0 shared**, the `8a`-`8z` and
-`24a`-`24z` residue is gone, covered total is unchanged at **189**, and no citation was dropped. I
-opened `8j` and `24z`; both read as the narration says, with the family span retained second.
+**M20-S143 (`6dffa97`) AND M20-S144 (`3dd28d9`) ARE ACCEPTED (Architect, 2026-08-19), VERIFIED BY
+RECOMPUTATION, BY OPENING THE CELLS, AND BY READING THE TEST DIFF.** S143 cleared Schedule 1 to
+**60/60/0** and S144 fixed what S143 broke. My independent counts reproduce Codex's table exactly -
+`form_1040` 62/54/8, `schedule_1` 60/60/0, `schedule_2` 38/36/2, `schedule_3` 29/27/2, total
+**189/177/12**, unchanged by S144 - and I ran the focused sets myself: **22 passed, 1 failed**, the
+failure being the documented line 1a `entered by filer` red.
 
-**THE TOTALS ARE 189/177/12, NOT 189/181/8.** The four-line gap is in `form_1040` (54/8, not 56/6)
-and `schedule_2` (36/2, not 38/0). My rule is the stricter one and it is the one to keep: **a line
-is shared if ANY cell on it carries a primary citation that is also primary on another distinct
-line.** Codex's count reads one cell per line and misses lines whose extra cells never resolved
-through the span index. Use every cell on the line, not a representative.
+**THE ROUND'S POINT IS VISIBLE IN THE ARTIFACT, NOT THE COUNT.** Schedule 2 `17z` now leads with
+`section_0136__line_17z`, `projection=run_in_line`, *"**Line 17z.** Use line 17z to report any taxes
+not reported elsewhere on your return or other schedules"*, with the Negative Form 8978 worksheet
+retained at `[1]`. `8j` is unchanged. **The totals did not move and the defect is still gone** - the
+metric is dominated by a different defect, one line below in Queued.
 
-**THE DEFECT: A RAW `len(owner_lines)` SORT CANNOT SEE AN S142 RUN-IN SEGMENT.** Schedule 2 `17z`
-is the clean case, opened rather than counted. Primary is now `section_0138`, *"#### Negative Form
-8978 Adjustment Worksheet Schedule 2 (Line 17z)"* - a worksheet that only NAMES the line - while
-`section_0136__line_17z`, `projection=run_in_line`, reading *"**Line 17z.** Use line 17z to report
-any taxes not reported elsewhere on your return or other schedules"*, has been pushed to `[1]`.
-`section_0138` has `owner_lines=['17z']`; `section_0136` owns all 26 of `17a`-`17z` but carries a
-run-in segment for 18 of them, `17z` among them. Width alone picks the worksheet. **20
-line/document pairs are in that shape today.**
+**THE FOREIGN-OWNER GUARD WAS NECESSARY, NOT SCOPE CREEP - I CHECKED THE SPAN MYSELF.**
+`section_0144` carries `owner_document_id: schedule_3_2025`, owns `6a`-`6z`, and holds a run-in
+*"**Line 6a.** The general business credit consists of..."*. Under effective width alone it scores
+1 on Form 1040 line `6a` and outranks the 1040's own `section_0025` (`owner_lines` `['6a','6b']`, no
+run-in), which is *"### Lines 6a and 6b / #### Social Security Benefits"*. **Schedule 3's credit
+text would have become the 1040's social security instruction.** Codex found this by opening the
+artifact and quoted it in the round; that is the hard rule working.
 
-**AND THE REGRESSION WAS PINNED BY INVERTING A GREEN S142 GUARD.** `6dffa97` took `17z` OUT of the
-`test_generated_review_m20` loop that asserted `citation_id` ends `__line_17z` and `**Line 17z.` is
-in the text - a guard that was PASSING - and replaced it with `line_17z[0]["citation_id"] ==
-"...section_0138"`. **The test now requires the worksheet to be primary.** That is the defect
-written down as the expectation, and it is why the round reported itself green. S144 restores
-`17z` to the loop.
-
-**`_instruction_span_has_body` IS FRAGILE AND DOES NOT BITE - DO NOT "FIX" IT.** It treats any line
-opening with `Line`/`Lines` as non-body, so a span that were ONLY a run-in label would score as a
-stub. On the live corpus every such span carries its body on a following line, so the tie-break is
-never reached wrongly. Checked, not assumed.
+**THE TEST DIFF IS CLEAN THIS TIME.** `17z` is back in the green S142 run-in loop and the
+`section_0138`-is-primary assertion is deleted. The guard was restored, not edited.
 
 **FULL SUITE RED BASELINE IS 22, AND THE SUITE SITS AT 28.** The difference is the six broken S115
 workbench cases - a defect awaiting a round, not an accepted red. Eleven `tests/e2e/*_m15.py`, plus
@@ -99,91 +90,8 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S144: A SPAN THAT ALREADY YIELDS THIS LINE'S OWN TEXT IS AS NARROW AS A SPAN THAT OWNS ONLY
-THIS LINE.**
-
-**THE INVARIANT.** For a line `L`, a candidate span's effective width is **1** when the span's
-run-in segmentation produces a segment for `L`, and `len(owner_lines)` otherwise. Order by effective
-width, then the existing content-over-stub tie-break, then artifact order. Nothing else changes.
-
-**TARGET STATE.** Wherever a candidate span carries a run-in segment for the line, the primary
-instruction citation is that line's own text - either a span owning only that line, or the
-`projection=run_in_line` citation. **A span that merely names the line in a heading never outranks
-the line's own instruction text.** The family citation is still never dropped, and Schedule 1 stays
-at 0 shared.
-
-ITEM 1. Put the effective width into `_instruction_span_index`. `_instruction_run_in_segments`
-already computes the segmentation - call it, do not re-implement it.
-
-ITEM 2. Count over DISTINCT LINES, and mark a line shared if ANY cell on it carries a primary
-citation that is primary on another line. Report per document, before and after.
-
-ITEM 3. Restore `17z` to the `test_generated_review_m20` run-in loop and delete the
-`section_0138`-is-primary assertion. **A guard that was green before the round is not evidence to be
-edited.**
-
-ITEM 4. Open three cells and quote the projected text: `schedule_2` `17z`, `schedule_1` `8j`,
-`form_1040` `6a`. `17z` must move to the run-in text; `8j` must be unchanged.
-
-**WHAT MUST NOT HAPPEN.**
-- **No draft regeneration or hand-edit**, no promoted-artifact write, no review-contract change.
-- **Do not drop a family citation** to make the ratio look better.
-- **Do not derive ownership from line references in prose.** See `PHASE_M20.md` 4.2 - it scores well
-  and is wrong in every instance. Ownership comes from `owner_lines`, headings, and run-in labels.
-- **No model call, no network.**
-
-**THE FLOOR.**
-- **A test that pins the INVARIANT against the real corpus**, not only a fixture: for every line
-  whose candidate list contains a run-in segment for that line, the primary citation is that line's
-  own text. **Assert the rule; do not hardcode a measured count.**
-- **Per-line counts per document, before and after**, under ITEM 2's definition, and the three
-  quoted cells from ITEM 4.
-- **The 1040 gap ceiling guard stays `<=`** and does not grow.
-- **Focused workbench, API and e2e sets green** against their known reds.
-- **NO FULL SUITE FROM THE WORKER OR THE ARCHITECT THIS ROUND.** The Worker's focused sets plus the
-  Architect's recomputation are the check.
-- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
-
-**WORKER STATUS 2026-08-19: IMPLEMENTED; AWAITING ARCHITECT ACCEPTANCE.**
-
-- `_instruction_span_index` now computes effective width per `(line, span)`: `1` when
-  `_instruction_run_in_segments` yields that line, otherwise `len(owner_lines)`. The existing
-  body and artifact-order tie-breaks remain unchanged. Form 1040 keeps foreign-owner coverage
-  only where no Form 1040-owned candidate exists; once a local owner exists, a foreign run-in
-  cannot become primary. This was required by the opened artifact: `section_0144` carries
-  `owner_document_id: schedule_3_2025`, `## Lines 6a Through 6z`, and `**Line 6a.** The general
-  business credit...`, while Form 1040 `section_0025` carries `owner_document_id:
-  form_1040_2025` and `### Lines 6a and 6b / #### Social Security Benefits`.
-- The real-corpus guard covers every generated physical line with a run-in candidate, allows the
-  specified single-line-owner case, and asserts Form 1040 `6a` remains the Social Security
-  Benefits span. The green S142 guard now includes `17z`; the old `section_0138` primary assertion
-  is gone.
-- Distinct-line counts are `(covered, own, shared)` and use every cell on a line. Before -> after:
-  `form_1040` `62/54/8 -> 62/54/8`; `schedule_1` `60/60/0 -> 60/60/0`; `schedule_2`
-  `38/36/2 -> 38/36/2`; `schedule_3` `29/27/2 -> 29/27/2`. The four-document total is
-  `189/177/12 -> 189/177/12`; `schedule_a` is outside that prior total and is separately
-  `17/17/0 -> 17/17/0`.
-- Required cell openings: Schedule 2 `17z` moved from
-  `span_instructions_form_1040_2025_section_0138`, headed `#### Negative Form 8978 Adjustment
-  WorksheetSchedule 2 (Line 17z)`, to
-  `span_instructions_form_1040_2025_section_0136__line_17z`, whose projected text begins
-  `**Line 17z.** Use line 17z to report any taxes not reported elsewhere on your return or other
-  schedules. List the type and amount of tax.` Schedule 1 `8j` is unchanged:
-  `#### Line 8j / **Activity not engaged in for profit income.** See Pub. 525.` Form 1040 `6a`
-  is unchanged in primary citation and text: `span_instructions_form_1040_2025_section_0025`,
-  `### Lines 6a and 6b / #### Social Security Benefits`.
-- RAN: `.\.venv\Scripts\python.exe -m pytest tests/test_m20_s142.py tests/test_m20_s143.py tests/test_m20_s144.py tests/test_generated_review_m20.py -q`
-  -> `18 passed, 1 failed in 62.27s`; the one failure is the documented pre-existing
-  `test_generated_review_renders_resolved_external_sources_and_hides_sentinels` red for
-  `line 1a = entered by filer` versus its stale `line 1a = W-2 box 1` expectation.
-- RAN: `.\.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py tests/test_workbench_cells_api_m17.py tests/test_workbench_server_m15.py tests/test_workbench_write_api_m15.py -q`
-  -> `22 passed in 253.62s`.
-- RAN: `.\.venv\Scripts\python.exe -m pytest tests/e2e -q`
-  -> `11 failed, 6 passed, 1 xpassed in 621.08s`; the 11 failures are the known e2e baseline
-  document/check-group fixture reds, with no e2e files changed by this round.
-- RAN: `.\.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
-  RAN: `git diff --check` -> clean. No draft, promoted artifact, or protected graph file was
-  written.
+**NONE IN FLIGHT.** S144 closed 2026-08-19. The next round is
+John's call - see Queued.
 
 ## Open for Architect
 
@@ -192,6 +100,15 @@ ITEM 4. Open three cells and quote the projected text: `schedule_2` `17z`, `sche
   Codex was right to refuse the hand fix and right to escalate.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **A CELL CAN CARRY A NEIGHBOUR'S STUB CITATION, AND IT IS WHAT THE 177/12 METRIC ACTUALLY
+  MEASURES NOW (Architect, opened 2026-08-19).** Schedule 2 line `17z` has a second physical cell,
+  `form1_0_page2_0_f2_21_0`, whose only instruction citation is
+  `cite_instruction_schedule_2_2025_en_us_2025_publink100079593` and whose entire quoted text is
+  *"Line 17a."*; both of line `17a`'s cells carry the same stub. **Cause not yet known** - it
+  arrives through the inventory fallback in `build_generated_document_cells`, which keeps
+  `base_cell["instruction_citations"]` when the span index has nothing for the anchor. Open three
+  before speccing.
 
 - **[SUPERSEDED 2026-08-19 - THE FRAME WAS NEVER THE PROBLEM; SEE M20-S140.]** I queued this as
   "the pilot frame is not wired in". Wrong: the draft's own `instruction_sections.yaml` already
