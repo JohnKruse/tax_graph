@@ -566,6 +566,28 @@ is not acceptable** (John, 2026-08-10).
 
 ## Standing operational notes
 
+**ONLY ONE FULL SUITE RUNS AT A TIME, AND IT BELONGS TO WHOEVER'S ROUND FLOOR DEMANDS IT
+(Architect, 2026-08-19, after wasting ~40 minutes of CPU and nearly corrupting a Worker run).**
+I had a suite going from 11:52 while Codex started its own at 12:23. **Two full suites on one
+working tree contend for CPU and both write review state and bind workbench ports, so each can make
+the other fail spuriously** - and mine was void regardless, because Codex was editing source files
+underneath it. **I killed mine and left the Worker's running.**
+- **The Worker's run is the authoritative one when a round is in flight.** It covers the new code;
+  an Architect run started before the round does not.
+- **The Architect's quiet-window run is for the interval between rounds** - after a round lands and
+  before the next is launched. **John starts Codex, so that window is real and schedulable.**
+- **Before starting a suite, check for a python process already running one.**
+
+**A GUARD I SPECCED IN M20-S139 WENT STALE IN ONE ROUND, WHICH IS THE FASTEST YET.** I had the round
+assert `len(missing) == 39`. S140 fixed the join and the number is now **5**, so my own guard is the
+new red. **Codex was right to refuse to rewrite it and to escalate instead.**
+**THE RULING: replace it with a non-increasing assertion** - the gap is reported, and it does not
+GROW - plus the designed `xfail`, which is the part that carries information. **A measured number
+belongs in the round report, never frozen into a guard.** This is the third time a snapshot
+assertion has cost a round (S138's three, S139's one), and the previous two were inherited; **this
+one I wrote myself, one round after writing the rule against it.**
+
+
 **THE FULL SUITE CANNOT BE RUN IN A GIT WORKTREE, AND MY ATTEMPT TO PIN IT THERE PRODUCED A VOID
 RESULT (Architect, measured 2026-08-19).** I moved the run into a worktree pinned to `cb93fea` so
 Codex could not change files underneath it. **It came back `31 failed, 989 passed, 11 skipped,
