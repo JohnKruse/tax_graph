@@ -96,6 +96,23 @@ never just the Architect's own - then push. The review is the gate; John is not.
 Global project canary: **Ledger Llama**.
 
 ## Hard rules (do not violate)
+- **NO SPEC ASSERTS A CAUSE WITHOUT QUOTING THE ARTIFACT THAT SHOWS IT (John asked for this
+  2026-08-19; it WIDENS the 2026-08-15 rule below, which was too narrow).** If a spec names why
+  something is broken, **the spec itself must contain the excerpt** - the record, the line, the
+  offsets. If the excerpt cannot be pasted, the cause is NOT KNOWN: write *"cause unknown"* and make
+  finding it ITEM 1. **This is mechanical and checkable by reading the spec, and the Worker should
+  push back on any spec that breaks it.**
+  - **Why the old rule was not enough:** it is scoped to *"speccing a round against a GROUP of
+    failures"*, so it felt inapplicable when explaining ONE failure - and that is exactly where it
+    broke. **M20-S139: I asserted the OCR path never saw the Line 1i heading. The section was
+    sitting in the draft the whole time, one `cat` away.** The rule was in this file, in the hard
+    rules, put here by John four days earlier.
+  - **The natural experiment, same day, same session:** the S139 spec asserted a cause and quoted
+    nothing - **wrong.** The S140 spec quoted the actual `instruction_section_..._0013` record -
+    **right, and it found a two-line defect that moved coverage from 65 cells to 175.**
+  - **A story that explains the evidence is not evidence.** Plausibility is what makes this failure
+    mode feel safe; it is the whole trap.
+
 - **OPEN THE INDIVIDUAL FAILURES BEFORE YOU NAME A CLASS (John, 2026-08-15).** Before speccing any
   round against a group of failures, **read at least three of them END TO END** - the actual prompt,
   the evidence packet the model was handed, its full response, and the stage that rejected it.
