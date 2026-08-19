@@ -21,7 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S134 IS VERIFIED AND ACCEPTED. M20-S135 UNDER CURRENT ROUND IS THE NEXT ROUND:
+**BALL: ARCHITECT. M20-S134 IS VERIFIED AND ACCEPTED. M20-S135 IS LOCALLY RE-VERIFIED IN `062b125`
+AND AWAITS ARCHITECT ACCEPTANCE:
 114 promoted citations are checked by nothing and the report does not say so.**
 
 **THE CITATION RANGE IS NOW LOAD-BEARING, WHICH IT WAS NOT THREE ROUNDS AGO.** S133 built the
@@ -314,6 +315,10 @@ each proposed range set and quote passes the checker. No citation artifacts were
 **RAN:** `.venv\Scripts\python.exe -c "from pathlib import Path; from tax_graph.acquire.citation_check import check_graph_citations; root=Path('.').resolve(); r=check_graph_citations(year='2025', raw_store=root/'.cache/raw', root=root); print(r.checked, len(r.unverifiable_citations), len(r.range_telltales), len(r.provenance_findings), r.checked + len(r.unverifiable_citations))"` -> **515 114 511 2 629**.
 **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py tax_graph\acquire\citation_check.py tax_graph\cli.py tests\test_acquire_citation_check_m134.py tests\test_acquire_citation_check_m135.py plans\AGENT_HANDOFF.md` -> **ASCII check OK**.
 **RAN:** `git diff --check` -> **clean**.
+
+**WORKER RE-VERIFICATION (2026-08-19).** RAN the focused set with
+`PYTEST_DEBUG_TEMPROOT=.test_tmp_codex_s135` -> **64 passed, 1 warning in 43.01s**. RAN the
+real-corpus accounting -> **515 114 511 2 629**. RAN the scoped ASCII check -> **ASCII check OK**.
 
 ## Open for Architect
 
