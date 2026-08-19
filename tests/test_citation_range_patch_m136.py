@@ -29,11 +29,17 @@ def real_patch() -> dict:
     )
 
 
-def test_real_patch_accounts_for_the_99_rangeable_and_15_html_only(real_patch) -> None:
+def test_real_patch_accounts_for_the_100_rangeable_and_14_html_only(real_patch) -> None:
     assert real_patch["unverifiable_count"] == 114
-    assert real_patch["proposed_range_count"] == 99
-    assert real_patch["html_only_count"] == 15
-    assert real_patch["unverifiable_after_apply"] == 15
+    assert real_patch["proposed_range_count"] == 100
+    assert real_patch["html_only_count"] == 14
+    assert real_patch["unverifiable_after_apply"] == 14
+    assert real_patch["accounting"] == {
+        "ranged_before": 511,
+        "unverifiable": 114,
+        "computed_table": 4,
+        "total": 629,
+    }
 
     proposals = {item["citation_id"]: item for item in real_patch["proposed_ranges"]}
     html_only = {item["citation_id"]: item for item in real_patch["html_only"]}
@@ -70,8 +76,8 @@ def test_every_proposed_range_self_verifies_without_editing_graph(real_patch) ->
     )
 
     assert report.ok
-    assert report.checked == 614
-    assert len(report.unverifiable_citations) == 15
+    assert report.checked == 615
+    assert len(report.unverifiable_citations) == 14
     assert report.checked + len(report.unverifiable_citations) == 629
     html_only_ids = {entry["citation_id"] for entry in real_patch["html_only"]}
     assert all(

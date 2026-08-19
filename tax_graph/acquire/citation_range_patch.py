@@ -7,9 +7,9 @@ import json
 from pathlib import Path
 from typing import Any
 
+from tax_graph.acquire.citation_check import _contiguous_quote_ranges
 from tax_graph.acquire.citation_check import _split_table_separator_ranges
 from tax_graph.acquire.citation_check import check_citation_integrity
-from tax_graph.acquire.source_ranges import SourceTextIndex
 from tax_graph.acquire.source_ranges import load_source_text
 from tax_graph.io.loader import load_graph
 
@@ -28,7 +28,6 @@ def build_citation_range_patch(
     text_dir = Path(raw_store) / str(year)
     graph = load_graph(year, project_root)
     texts: dict[str, str] = {}
-    indexes: dict[str, SourceTextIndex] = {}
     proposals: list[dict[str, Any]] = []
     html_only: list[dict[str, str]] = []
     considered = [
@@ -53,11 +52,7 @@ def build_citation_range_patch(
                 {"start": exact_start, "end": exact_start + len(quote)},
             )
         else:
-            index = indexes.get(source_document_id)
-            if index is None:
-                index = SourceTextIndex(source_text)
-                indexes[source_document_id] = index
-            aligned = index.ranges_for_quote(quote)
+            aligned = _contiguous_quote_ranges(source_text, quote)
             if aligned is None:
                 ranges = None
             else:
@@ -102,6 +97,13 @@ def build_citation_range_patch(
 
     proposals.sort(key=lambda item: item["citation_id"])
     html_only.sort(key=lambda item: item["citation_id"])
+    computed_count = sum(
+        item.get("kind") == "computed_table" for item in graph.items("citations")
+    )
+    ranged_before_count = sum(
+        item.get("kind") != "computed_table" and bool(item.get("ranges"))
+        for item in graph.items("citations")
+    )
     return {
         "schema_version": SCHEMA_VERSION,
         "year": str(year),
@@ -111,6 +113,12 @@ def build_citation_range_patch(
         "proposed_range_count": len(proposals),
         "html_only_count": len(html_only),
         "unverifiable_after_apply": len(html_only),
+        "accounting": {
+            "ranged_before": ranged_before_count,
+            "unverifiable": len(considered),
+            "computed_table": computed_count,
+            "total": len(graph.items("citations")),
+        },
         "proposed_ranges": proposals,
         "html_only": html_only,
     }

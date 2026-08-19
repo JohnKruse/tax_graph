@@ -4,9 +4,15 @@
   "source": "acquired_txt",
   "apply": "not applied; graph and extension citation artifacts are protected",
   "unverifiable_count": 114,
-  "proposed_range_count": 99,
-  "html_only_count": 15,
-  "unverifiable_after_apply": 15,
+  "proposed_range_count": 100,
+  "html_only_count": 14,
+  "unverifiable_after_apply": 14,
+  "accounting": {
+    "ranged_before": 511,
+    "unverifiable": 114,
+    "computed_table": 4,
+    "total": 629
+  },
   "proposed_ranges": [
     {
       "citation_id": "cite_instruction_form_1040_2025_en_us_2025_publink1000106118",
@@ -457,6 +463,18 @@
         {
           "start": 165303,
           "end": 165329
+        }
+      ]
+    },
+    {
+      "citation_id": "cite_instruction_schedule_1_2025_en_us_2025_publink1000151501",
+      "document_id": "instructions_form_1040_2025",
+      "source_document_id": "instructions_form_1040_2025",
+      "method": "txt_format_normalized",
+      "ranges": [
+        {
+          "start": 535165,
+          "end": 535213
         }
       ]
     },
@@ -1246,12 +1264,6 @@
     },
     {
       "citation_id": "cite_instruction_schedule_1_2025_en_us_2025_publink1000151499",
-      "document_id": "instructions_form_1040_2025",
-      "source_document_id": "instructions_form_1040_2025",
-      "reason": "quoted text is locatable only in acquired HTML"
-    },
-    {
-      "citation_id": "cite_instruction_schedule_1_2025_en_us_2025_publink1000151501",
       "document_id": "instructions_form_1040_2025",
       "source_document_id": "instructions_form_1040_2025",
       "reason": "quoted text is locatable only in acquired HTML"
