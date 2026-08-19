@@ -21,8 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT. M20-S137 AND THE S136 FOLLOW-UP ARE BOTH ACCEPTED. M20-S138 IS IMPLEMENTED
-WITH THE THREE SNAPSHOT GUARDS REPLACED BY INVARIANTS; THE ARCHITECT OWNS THE ACCEPTANCE CHECK.**
+**BALL: CODEX. M20-S138 IS ACCEPTED IN SUBSTANCE. M20-S139 UNDER CURRENT ROUND FINISHES THE LAST
+WORKBENCH ASSERTION - and it is NOT stale-snapshot drift like the other three: the instruction for
+1040 line 1i really does exist in the acquired HTML and really does not reach the cell.**
 
 **THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
 deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
@@ -229,97 +230,65 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S138: THE THREE REMAINING WORKBENCH GUARDS ASSERT A SNAPSHOT OF REGENERABLE OUTPUT. THAT IS
-THE DEFECT, AND IT IS MINE TO RULE ON, NOT CODEX'S TO GUESS.**
+**M20-S139: FINISH THE WORKBENCH TEST. ONE ASSERTION LEFT, AND IT IS *NOT* THE SAME CLASS AS THE
+OTHER THREE - DO NOT RELAX IT THE SAME WAY.**
 
-**M20-S137 IS ACCEPTED (`7bcde70`, Architect, 2026-08-19) AND SO IS THE S136 FOLLOW-UP
-(`b3050d5`).** Codex did the two things the spec actually asked for and I want both on record:
-- **It found the real cause instead of guarding the symptom.** Queue-level verdicts legitimately
-  carry no `object_ref`, so `_scoped_verdict_ref` returned `None` and the post-verdict cell lookup
-  dereferenced it. The fix skips only the target-specific lookup when no target was supplied - five
-  lines, verdict persistence and queue-level review untouched. **`test_workbench_write_api_m15` is
-  7 passed.**
-- **It refused to hand-fix the other three and said why.** Exactly right: *"No draft or guard was
-  hand-edited."*
-- **It also corrected my premise.** I specced "six broken cases, one surface." **Three were the
-  server; three are something else.** The six-as-one-defect framing was mine and it was wrong.
+**M20-S138 IS ACCEPTED IN SUBSTANCE (`44af3e9`, Architect, 2026-08-19).** All three named cases were
+converted to invariants correctly and two of the three test files are fully green -
+`test_workbench_cells_api_m17` and `test_workbench_write_api_m15`, **16 passed** in my own run. The
+invariants have teeth: an unrecognised policy, a miscount, a non-question decision or a blank
+expression all still fail. **The line 1a assertion now passes.**
 
-**THE FOLLOW-UP ALSO CLOSED CLEANLY:** 100 proposed / 14 HTML-only / 615, artifact regenerated with
-the accounting block, focused file green.
+**BUT `test_workbench_v2_m17` IS STILL RED, ONE ASSERTION FURTHER DOWN, AND NEITHER OF US SAW IT
+BECAUSE THE 1a FAILURE MASKED IT.** Line 1i's `.cell-instruction` expects
+*"Nontaxable Combat Pay Election"* and renders *"Not yet ingested - the form instruction for this
+line will appear here."*
 
-### THE RULING CODEX ASKED FOR - THE GUARDS ARE STALE, NOT THE DRAFTS
+**I CHECKED WHETHER THIS IS MORE STALE-SNAPSHOT DRIFT AND IT IS NOT. THE GUARD IS RIGHT HERE.**
+Running the accepted S132 HTML frame over the 1040 booklet finds **two** sections for this cell -
+`Line 1i` with token `1i`, and `Nontaxable Combat Pay Election` beneath it - **both owned by
+`form_1040_2025`.** The instruction exists, our own frame locates it, and the draft still says the
+line has none. **That is a real linkage gap, not regenerable-output drift**, and relaxing this
+assertion the way we relaxed the other three would hide it.
 
-**I checked the dates rather than reasoning about which side looks right.**
-- The guards were committed **2026-08-16** (`4f7abf9`, S115).
-- Every file in `graph/2025/_drafts/form_1040_2025/` was regenerated **2026-08-17 14:31** - the next
-  day, by the 17-document corpus run this file already records as accepted.
+**WHY THE DRAFT DOES NOT HAVE IT, AND WHY THIS IS NOT A REGRESSION EITHER.** The draft is from
+2026-08-17. The frame that finds `Line 1i` is **S129-S132 pilot code and is not wired into the
+pipeline** - the generating run used the OCR path, which does not see these headings. **So the
+guard asserts a capability the pilot has proven and the pipeline does not yet have.**
 
-**So the guards pin a snapshot of a draft that the following day's run superseded. They are not
-detecting a regression; they are detecting that regenerable output was regenerated.** That is
-`graph/2025/_drafts` - the exact class this project calls disposable. **A test that asserts a
-histogram of disposable output will go red every time the pipeline improves, which makes it a brake
-on the pipeline rather than a guard on it.** This is queue item 15's "artifact-pinned test counts"
-defect, now costing a round.
+### ITEM 1 - RELAX THE ASSERTION TO THE CONTRACT, LIKE THE OTHER THREE
 
-### ITEM 1 - REPLACE THE THREE SNAPSHOTS WITH INVARIANTS
+`.cell-instruction` must render **either ingested instruction text or the typed "Not yet ingested"
+placeholder, and never blank.** Same shape as line 1a.
 
-**This is NOT "weaken the guard until it passes."** Each one keeps a real assertion; what changes is
-that it stops asserting a number that is allowed to move.
-1. **1040 policy histogram** - guard says `15/8/52/61/63`, draft says `16/5/44/64/70`. Assert
-   instead that **every anchor carries exactly one policy, the histogram sums to the anchor count,
-   and no policy is empty or unrecognised.** That is the property that must never break; the
-   distribution is not.
-2. **Schedule A decision text** - guard says `Do you elect`, draft says `Which taxes`. Assert that
-   the decision node **asks a question at all** - non-empty, ends in `?`, and is not a placeholder.
-   The IRS's wording is not ours to freeze.
-3. **1040 line 1a expression** - guard says `line 1a = W-2 box 1`, draft has no rule for 1a.
-   Assert that the card **renders either an expression or a TYPED absence**, never blank. Absence
-   typed, not `""` - the same rule as the source-range accessor.
+### ITEM 2 - AND THEN DO NOT LET THE GAP DISAPPEAR - THIS IS THE HALF THAT MATTERS
 
-### ITEM 2 - DO NOT LET THE SUBSTANTIVE QUESTION VANISH INTO A LOOSENED TEST
+**Add a separate, named test that asserts the gap as a KNOWN gap**, `xfail` with a reason string
+pointing at the queue item, so it flips to `xpass` the day the frame is wired in and tells us so.
+**A relaxed assertion plus a silent gap is how the S133 check stopped checking.** The test's name
+should say what is missing: the 1040 line 1i instruction section exists in the acquired HTML and
+does not reach the cell.
 
-**Relaxing guard 3 must not bury a real question: SHOULD 1040 line 1a derive from W-2 box 1?** The
-line reads *"Total amount from Form(s) W-2, box 1"*, `form_w2_2025` IS in the manifest, and the
-current draft has a node and a `1a -> 1z` addend edge but **no rule at all.** Under John's
-2026-08-16 taxonomy that is `derivation_failed` - a defect - not `source_form_not_modelled`.
-**Queue it as a DERIVATION question with that framing. Do not investigate it in this round and do
-not fix it in the workbench layer.** Settling it needs a re-derive and therefore John's egress.
+### ITEM 3 - MEASURE THE GAP BEFORE NAMING IT
+
+**Do not assert "it is only 1i".** Run the S132 frame against the live 1040 draft and report **how
+many cells have a frame-owned instruction section that the draft does not carry.** One number, in
+the round report. **If it is large, that is the finding and this test is a symptom of it.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **No regenerating drafts and no hand-editing them** to make a guard pass. They are disposable;
-  the guard is what is wrong.
-- **No deleting a guard.** Each keeps an assertion with content.
-- **No contract change** - still no new fields, endpoints or UX.
+- **Do not wire the pilot frame into the pipeline.** That is a much bigger round and needs its own
+  spec and a re-derive.
+- **No draft regeneration, no hand-edited drafts, no contract change.**
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **All three cases green**, each by an invariant, with the invariant stated in the test name or
-  docstring.
-- **The 1a-from-W-2 question is in Queued**, worded as a derivation defect.
-- **Full suite in the WORKING TREE while the Worker is idle** - see Standing operational notes; a
-  worktree run is void. Baseline 28 should fall to 22.
-- **Diff the failure SETS, not the counts.**
-- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
-
-**ARCHITECT'S LEG, UNCHANGED AND STILL OWED.** Once these are green I drive the workbench live and
-confirm the surface works for a reviewer. **Three green tests are not that check.**
-
-**WORKER RESULT, 2026-08-19 - M20-S138 IMPLEMENTED.** The two API guards now require complete
-recognized policy accounting and a non-placeholder question ending in `?`; the E2E guard now
-requires non-empty typed generated content for line 1a. No draft, promoted artifact, contract, or
-protected citation-range file was edited. The queued line 1a question remains a
-`derivation_failed` question and was not investigated or hand-fixed.
-
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s138_fresh).Path; .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_generated_review_m20.py -q` -> 9 passed, 2 failed in 150.94s; all 5 API tests passed, and the 2 failures are the already-recorded baseline `test_generated_review_m20` cases.
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s138_e2e).Path; .venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 4 passed, 1 failed in 155.99s; the S138 line 1a assertion passed, then the test failed at the separate line 1i instruction-ingestion assertion (`Not yet ingested`).
-- `RAN: .venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
-- `RAN: git diff --check` -> clean.
-- `NOT RUN: python -m pytest -q` -> full suite is an Architect-side run at the documented approximately 63-minute duration; the focused evidence above is from the working tree.
-
-The line 1i failure is surfaced for Architect triage; it is not relaxed as part of S138 because the
-assertion protects instruction coverage rather than regenerated wording.
+- **`test_workbench_v2_m17` green**, with the relaxed assertion stating its contract.
+- **The known-gap test present and `xfail` with a reason**, naming the queue item.
+- **The gap COUNT reported** across the 1040 draft.
+- **Full suite in the working tree** - the baseline should now reach **22**.
+- **Diff the failure SETS, not the counts.** `check_ascii` OK, `git diff --check` clean.
 
 ## Open for Architect
 
@@ -328,6 +297,12 @@ assertion protects instruction coverage rather than regenerated wording.
   Codex was right to refuse the hand fix and right to escalate.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **THE ACQUIRED HTML CARRIES INSTRUCTION SECTIONS THAT NEVER REACH THE CELL (Architect, measured
+  2026-08-19).** The accepted S132 frame finds `Line 1i` and `Nontaxable Combat Pay Election` owned
+  by `form_1040_2025`; the 2026-08-17 draft says *"Not yet ingested"* for that cell. **The frame is
+  pilot code and is not wired into the pipeline** - that is the whole gap, and M20-S139 measures its
+  size before anyone specs the wiring round.
 
 - **DOES 1040 LINE 1a DERIVE FROM W-2 BOX 1, OR IS `filer_entry` CORRECT? (Architect, 2026-08-19.)**
   The line reads *"Total amount from Form(s) W-2, box 1"*, `form_w2_2025` IS in the manifest, and
