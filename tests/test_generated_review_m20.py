@@ -160,19 +160,12 @@ def test_generated_review_s142_splits_run_labels_and_s143_prioritizes_narrow_own
     )
 
     schedule_2 = build_generated_document_cells(ROOT, 2025, "schedule_2_2025").cells
-    for anchor in ("17b", "17q"):
+    for anchor in ("17b", "17q", "17z"):
         citation = next(
             item for item in schedule_2 if item["official_ref"] == anchor
         )["instruction_citations"][0]
         assert citation["citation_id"].endswith(f"__line_{anchor}")
         assert f"**Line {anchor}." in citation["quoted_text"]
-    line_17z = next(
-        item for item in schedule_2 if item["official_ref"] == "17z"
-    )["instruction_citations"]
-    assert line_17z[0]["citation_id"] == (
-        "span_instructions_form_1040_2025_section_0138"
-    )
-    assert line_17z[1]["citation_id"].endswith("__line_17z")
 
     schedule_3 = build_generated_document_cells(ROOT, 2025, "schedule_3_2025").cells
     for anchor in ("6b", "6m"):

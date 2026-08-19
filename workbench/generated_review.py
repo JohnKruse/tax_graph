@@ -87,9 +87,11 @@ def build_generated_document_cells(
         spans,
         owner_document_id=(
             document_id
-            if document_id in {"schedule_2_2025", "schedule_3_2025"}
+            if document_id == "form_1040_2025"
+            or document_id in {"schedule_2_2025", "schedule_3_2025"}
             else None
         ),
+        retain_foreign_owner_spans=document_id == "form_1040_2025",
     )
     provenance = _provenance(draft.get("metrics"))
     cells_by_anchor = _cells_by_anchor(base.cells)
@@ -426,6 +428,7 @@ def _instruction_span_index(
     spans: dict[str, dict[str, Any]],
     *,
     owner_document_id: str | None = None,
+    retain_foreign_owner_spans: bool = False,
 ) -> dict[str, list[str]]:
     """Rebuild line ownership from draft spans without importing the pipeline.
 
@@ -434,8 +437,13 @@ def _instruction_span_index(
     sidecars may lack it, so their first non-empty heading line remains a
     compatibility fallback.  When a shared booklet carries explicit ownership,
     the requested form's owner is applied before indexing the line packet.
-    Several spans may own one line: the narrowest owner is indexed first, while
-    a content-bearing span wins a tie with an empty heading stub.
+    Form 1040 also retains a foreign-owner span when no Form 1040-owned span
+    covers that line, preserving coverage for shared booklet material.  Once a
+    local owner exists, foreign-owner spans are excluded from that line's
+    packet so a run-in segment from another form cannot become primary.
+    Several spans may own one line: a run-in projection for that line is as
+    narrow as a single-line owner, while a content-bearing span wins a tie
+    with an empty heading stub.
     """
     scoped_spans = [
         (span_id, span)
@@ -443,6 +451,7 @@ def _instruction_span_index(
         if str(span.get("relationship") or "") != "source"
         and not (
             owner_document_id
+            and not retain_foreign_owner_spans
             and str(span.get("owner_document_id") or "")
             and str(span.get("owner_document_id")) != owner_document_id
         )
@@ -452,12 +461,15 @@ def _instruction_span_index(
     current_lines: set[str] = set()
     current_level: int | None = None
     span_order = {span_id: index for index, (span_id, _) in enumerate(scoped_spans)}
-    owner_widths: dict[str, int] = {}
+    effective_widths: dict[tuple[str, str], int] = {}
     has_body: dict[str, bool] = {}
 
     def add_span(line: str, span_id: str, owned_lines: set[str], span: dict[str, Any]) -> None:
         result.setdefault(line, []).append(span_id)
-        owner_widths[span_id] = len(owned_lines)
+        run_in_segments = _instruction_run_in_segments(str(span.get("text") or ""))
+        effective_widths[(line, span_id)] = (
+            1 if line in run_in_segments else len(owned_lines)
+        )
         has_body[span_id] = _instruction_span_has_body(str(span.get("text") or ""))
 
     for span_id, span in scoped_spans:
@@ -506,10 +518,26 @@ def _instruction_span_index(
         owned_lines = {table_line.group(1).lower()} if table_line else current_lines
         for line in owned_lines:
             add_span(line, span_id, owned_lines, span)
+    if owner_document_id and retain_foreign_owner_spans:
+        span_by_id = {span_id: span for span_id, span in scoped_spans}
+        for line, span_ids in result.items():
+            has_local_owner = any(
+                str(span_by_id[span_id].get("owner_document_id") or "")
+                == owner_document_id
+                for span_id in span_ids
+            )
+            if has_local_owner:
+                result[line] = [
+                    span_id
+                    for span_id in span_ids
+                    if not str(span_by_id[span_id].get("owner_document_id") or "")
+                    or str(span_by_id[span_id].get("owner_document_id"))
+                    == owner_document_id
+                ]
     for line, span_ids in result.items():
         span_ids.sort(
             key=lambda span_id: (
-                owner_widths[span_id],
+                effective_widths[(line, span_id)],
                 0 if has_body[span_id] else 1,
                 span_order[span_id],
             )

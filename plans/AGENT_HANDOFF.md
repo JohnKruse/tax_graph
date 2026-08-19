@@ -144,6 +144,47 @@ ITEM 4. Open three cells and quote the projected text: `schedule_2` `17z`, `sche
   Architect's recomputation are the check.
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
+**WORKER STATUS 2026-08-19: IMPLEMENTED; AWAITING ARCHITECT ACCEPTANCE.**
+
+- `_instruction_span_index` now computes effective width per `(line, span)`: `1` when
+  `_instruction_run_in_segments` yields that line, otherwise `len(owner_lines)`. The existing
+  body and artifact-order tie-breaks remain unchanged. Form 1040 keeps foreign-owner coverage
+  only where no Form 1040-owned candidate exists; once a local owner exists, a foreign run-in
+  cannot become primary. This was required by the opened artifact: `section_0144` carries
+  `owner_document_id: schedule_3_2025`, `## Lines 6a Through 6z`, and `**Line 6a.** The general
+  business credit...`, while Form 1040 `section_0025` carries `owner_document_id:
+  form_1040_2025` and `### Lines 6a and 6b / #### Social Security Benefits`.
+- The real-corpus guard covers every generated physical line with a run-in candidate, allows the
+  specified single-line-owner case, and asserts Form 1040 `6a` remains the Social Security
+  Benefits span. The green S142 guard now includes `17z`; the old `section_0138` primary assertion
+  is gone.
+- Distinct-line counts are `(covered, own, shared)` and use every cell on a line. Before -> after:
+  `form_1040` `62/54/8 -> 62/54/8`; `schedule_1` `60/60/0 -> 60/60/0`; `schedule_2`
+  `38/36/2 -> 38/36/2`; `schedule_3` `29/27/2 -> 29/27/2`. The four-document total is
+  `189/177/12 -> 189/177/12`; `schedule_a` is outside that prior total and is separately
+  `17/17/0 -> 17/17/0`.
+- Required cell openings: Schedule 2 `17z` moved from
+  `span_instructions_form_1040_2025_section_0138`, headed `#### Negative Form 8978 Adjustment
+  WorksheetSchedule 2 (Line 17z)`, to
+  `span_instructions_form_1040_2025_section_0136__line_17z`, whose projected text begins
+  `**Line 17z.** Use line 17z to report any taxes not reported elsewhere on your return or other
+  schedules. List the type and amount of tax.` Schedule 1 `8j` is unchanged:
+  `#### Line 8j / **Activity not engaged in for profit income.** See Pub. 525.` Form 1040 `6a`
+  is unchanged in primary citation and text: `span_instructions_form_1040_2025_section_0025`,
+  `### Lines 6a and 6b / #### Social Security Benefits`.
+- RAN: `.\.venv\Scripts\python.exe -m pytest tests/test_m20_s142.py tests/test_m20_s143.py tests/test_m20_s144.py tests/test_generated_review_m20.py -q`
+  -> `18 passed, 1 failed in 62.27s`; the one failure is the documented pre-existing
+  `test_generated_review_renders_resolved_external_sources_and_hides_sentinels` red for
+  `line 1a = entered by filer` versus its stale `line 1a = W-2 box 1` expectation.
+- RAN: `.\.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py tests/test_workbench_cells_api_m17.py tests/test_workbench_server_m15.py tests/test_workbench_write_api_m15.py -q`
+  -> `22 passed in 253.62s`.
+- RAN: `.\.venv\Scripts\python.exe -m pytest tests/e2e -q`
+  -> `11 failed, 6 passed, 1 xpassed in 621.08s`; the 11 failures are the known e2e baseline
+  document/check-group fixture reds, with no e2e files changed by this round.
+- RAN: `.\.venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+  RAN: `git diff --check` -> clean. No draft, promoted artifact, or protected graph file was
+  written.
+
 ## Open for Architect
 
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
