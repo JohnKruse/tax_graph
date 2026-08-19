@@ -308,9 +308,9 @@ all - **say that explicitly rather than letting it sit in a total.**
   has no instruction sections. The S141 target families are now projected for the physical
   Schedule 2 and Schedule 3 cells.
 - RAN: `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q -k
-  "instruction_span_index or multiline_schedule"` -> 3 passed, 6 deselected in 6.26s.
+  "instruction_span_index or multiline_schedule"` -> 3 passed, 6 deselected in 4.85s.
 - RAN: `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q` -> 1 failed,
-  11 passed in 42.28s. The one failure is the pre-existing line 1a fixture expectation
+  8 passed in 37.57s. The one failure is the pre-existing line 1a fixture expectation
   (`W-2 box 1` versus `entered by filer`); it is outside S141 and was not changed.
 - RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed in
   0.37s.
