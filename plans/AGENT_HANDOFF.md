@@ -21,7 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. M20-S145 IS ACCEPTED AND VERIFIED. No round is in flight.**
+**BALL: CODEX. M20-S146 IS THE ROUND: reasoning tokens now eat the micro completion budget and
+four 1040 rows die on it. John is asleep; the Architect is running S146, S147 and S148 back to back
+and verifying each before the next.**
 
 **M20-S145 IS ACCEPTED (Architect, 2026-08-19), VERIFIED BY RECOMPUTATION, BY OPENING THE CELLS, AND
 BY READING THE TEST DIFF.** My independent recount reproduces the table exactly: `schedule_2`
@@ -120,86 +122,52 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S145: A CITATION WHOSE ENTIRE TEXT IS A LINE LABEL IS NOT EVIDENCE.**
+**M20-S146: A COMPLETION BUDGET SET WITHOUT REASONING TOKENS IS NOW TOO SMALL, AND ROWS DIE
+SILENTLY IN IT.**
 
-**THE ARTIFACT, OPENED (Architect, 2026-08-19).** `graph/2025/citations/instruction-form-1040-html.yaml`
-holds exactly two citations whose `quoted_text` is a bare label:
+**THE A/B, RUN 2026-08-19, SINGLE VARIABLE, SAME DOCUMENT.** `derive_cells_s25.py --document
+form_1040_2025`, `micro_max_tokens: 4000` in both arms, only `llm.reasoning_effort` changed:
 
-- `cite_instruction_schedule_2_2025_en_us_2025_publink100079593` - `quoted_text: Line 17a.`,
-  `semantic_title: Other Additional Taxes`, range `626936..626945`, **nine characters.** Cited by
-  `graph/2025/addresses/schedule_2_2025.yaml` at `17a` AND at `17z`.
-- `cite_instruction_schedule_3_2025_en_us_2025_publink10001946` - `quoted_text: Line 6a.`, **eight
-  characters.** Cited by `schedule_3_2025.yaml` at `6a` AND at `6z`.
+| arm | derived | repaired | errored | truncated rows | cost |
+| --- | --- | --- | --- | --- | --- |
+| `reasoning_effort: high` | 50 | 1 | **7** | `7a`, `12e`, `16`, `27a` | $0.0997 |
+| `reasoning_effort: null` | 50 | 3 | **5** | none | $0.0956 |
 
-**Both attach the FIRST line's label to the FIRST and the LAST line of a family block.** That
-symmetry is the tell, and it is the whole class: four addresses, two documents, 82 citations in the
-file. Five more citations are short heading fragments (`IRA Distributions`, `Pensions and
-Annuities`, `Adopted child.`, `Include on line 25c any`, `Other refundable credits.`) - **decide
-whether they are the same defect or acceptable section pointers; do not assume.**
+The four truncations all read `LlmResponseTruncated: OpenRouter structured response truncated at
+max_tokens (finish_reason=length; completion_tokens=4000)` - **exactly the cap.** With reasoning off
+they do not occur. **This is a regression the Architect introduced today** by turning
+`reasoning_effort` on to `high` against a `micro_max_tokens` sized when no reasoning field was sent.
 
-**ITEM 1 CAUSE, FOUND AND QUOTED.** The acquisition artifacts are correct: the schedule drafts
-carry full owner spans. The defect is the projection path for physical cells without a generated
-outline record. In the pre-round `workbench/generated_review.py`, the background projection read:
-`"instruction_citations": _merge_citations(base_cell.get("instruction_citations"),
-background_citations[1])`. The caller did not pass the existing line-span index into that path.
-The live projection therefore retained the promoted inventory stub instead of projecting the
-owned span. The observed records were `f2_01` and `f2_02` with `cite_instruction_schedule_2_2025_en_us_2025_publink100079593 -> "Line 17a."`,
-`f2_21` with the same stub on line `17z`, and `f1_24` with
-`cite_instruction_schedule_3_2025_en_us_2025_publink10001946 -> "Line 6a."` on line `6z`.
-The same live diagnostic showed the span index already contained
-`span_instructions_form_1040_2025_section_0136` for Schedule 2 `17a`/`17z` and
-`span_instructions_form_1040_2025_section_0144` for Schedule 3 `6a`/`6z`, with full text.
-This is a projection-side defect, not an acquisition defect.
+**DO NOT FIX IT BY TURNING REASONING OFF.** Reasoning also FIXED a row: `6b` errors in the no-
+reasoning arm and derives in the high arm. The budget is wrong, not the reasoning.
 
-**THIS IS WHERE MY OWN RANGE BACKLOG LOOKS WORSE THAN I REPORTED IT.** `218fb0a` ADDED the
-`626936..626945` range to the 17a citation - the diff shows it. So *"unverifiable 114 -> 36, checked
-515 -> 593, zero mismatches"* counted this one as a win. **It is a true range around a useless
-string.** The backlog verified that a nine-character label is really in the source. Byte-verifying a
-label is not evidence that a line is explained, and the metric should not have rewarded it.
+**TARGET STATE.** A reasoning-enabled micro call has room to finish, and **a truncation is never a
+silently lost row.** Under the PRIME DIRECTIVE this is pipeline reliability: a row that dies on a
+token cap is not a tax question, it is the pipeline failing to ask one.
 
-ITEM 1. DONE. All four addresses were opened end to end; the cause and artifact excerpt are above.
+ITEM 1. Size `micro_max_tokens` for reasoning plus completion. **Measure it - do not guess a
+number.** The four truncated rows report their `completion_tokens`; use the real distribution and
+say what headroom you chose and why.
 
-ITEM 2. DONE. The projection now prefers the physical cell's owned line span over a label-only
-inventory citation, including the generated-anchor-to-physical-ref fallback. No citation or draft
-artifact was edited.
+ITEM 2. **A truncation must retry once at a larger budget before it becomes an errored row**, and
+the retry must be visible in the report. A row lost to `finish_reason=length` is a defect, not a
+derivation outcome, and today it is counted as `errored` alongside genuine validation gaps.
 
-ITEM 3. DONE. `tests/test_m20_s145.py` asserts over every live generated review cell that no
-instruction citation has a line-label-only quote; it does not enumerate the four cases.
+ITEM 3. Re-run `derive_cells_s25.py --document form_1040_2025` and report the row-status table
+against the two arms above. **This costs about $0.10 per run; you may run it at most twice.**
 
 **WHAT MUST NOT HAPPEN.**
-- **No draft regeneration or hand-edit**, no promoted-artifact write, no review-contract change.
+- **Do not set `reasoning_effort` back to null or to xhigh.** John set `high` deliberately today.
 - **Do not weaken, delete, or invert an assertion that is green on `main`** - see Hard rules.
-- **Do not delete a citation** to make the count fall.
-- **No model call, no network.**
+- No draft regeneration into `graph/`, no promoted-artifact write, no review-contract change.
+- **Do not widen the run to the corpus.** One document; that is the blast radius.
 
 **THE FLOOR.**
-- **The cause, quoted from the artifact that shows it**, is recorded above.
-- **Distinct-line counts (`covered / own / shared`) before -> after:** `form_1040` `62 / 54 / 8`
-  -> `62 / 54 / 8`; `schedule_1` `60 / 60 / 0` -> `60 / 60 / 0`; `schedule_2`
-  `38 / 36 / 2` -> `38 / 38 / 0`; `schedule_3` `29 / 27 / 2` -> `29 / 27 / 2`;
-  total `189 / 177 / 12` -> `189 / 179 / 10`.
-- **Focused workbench/API/e2e evidence:** the S145 guard passed 2; the combined M20 and
-  mandatory workbench set passed 24 with the known unrelated Form 1040 line 1a red; the API
-  files passed 12; and the e2e file passed 6 with 1 xpass.
-- **`check_ascii` and `git diff --check` are required before commit; protected set remains
-  byte-identical.**
-
-**STATUS: COMPLETE.** No model call, network, draft regeneration, promoted-artifact write, or
-review-contract change was made.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s145.py -q` -> **1 passed in 12.22s**.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s142.py tests/test_m20_s143.py tests/test_m20_s144.py tests/test_m20_s145.py tests/test_generated_review_m20.py tests/test_workbench_m15.py -q`
--> **23 passed, 1 failed in 79.42s (0:01:19)**; the only failure is the known line 1a W-2-box-1
-guard red.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py -q`
--> **12 passed in 192.62s (0:03:12)**.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q`
--> **6 passed, 1 xpassed in 158.77s (0:02:38)**.
-
-**NOT RUN:** full suite (`python -m pytest -q`) - prohibited for this round.
+- **The measured token distribution** behind the new cap, not an asserted number.
+- **The row-status table** for the re-run, next to the two arms above.
+- **Zero `LlmResponseTruncated` rows** on `form_1040_2025`.
+- **Focused workbench, API and e2e sets green** against their known reds.
+- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
 ## Open for Architect
 
