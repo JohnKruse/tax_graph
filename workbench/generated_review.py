@@ -35,6 +35,12 @@ GENERATED_OUTCOME_KINDS = frozenset({
 })
 
 
+_LINE_RUN_IN_RE = re.compile(
+    r"^\s*(?:#{1,6}\s*)?(?:\*\*)?Line\s+([0-9]+[a-z]?)(?=[\s.*:]|$)",
+    re.IGNORECASE,
+)
+
+
 def build_generated_document_cells(
     root: str | Path,
     year: str | int,
@@ -174,15 +180,7 @@ def build_generated_document_cells(
             else record_instruction_ids
         )
         instruction_citations = [
-            {
-                "citation_id": span_id,
-                "quoted_text": span.get("text"),
-                "locator": span.get("locator"),
-                "url": None,
-                "retrieved_date": None,
-                "source_document_id": span.get("document_id"),
-                "resolved": True,
-            }
+            _instruction_citation(str(span_id), span, anchor)
             for span_id in instruction_span_ids
             if (span := spans.get(str(span_id))) is not None
         ]
@@ -368,6 +366,60 @@ def _span_index(value: Any) -> dict[str, dict[str, Any]]:
         for item in _records(value)
         if item.get("span_id")
     }
+
+
+def _instruction_citation(
+    span_id: str,
+    span: dict[str, Any],
+    line: str,
+) -> dict[str, Any]:
+    """Project one instruction span into the packet for a physical line.
+
+    A shared instruction block is still the only evidence available for an
+    owner without an individual run-in label.  When the acquired text does
+    contain a line label, the workbench shows only that label's run.  The
+    derived citation id is projection-local and keeps the source span id so a
+    reviewer can trace it back to the unmodified draft artifact.
+    """
+    line = _normalize_anchor(line)
+    segments = _instruction_run_in_segments(str(span.get("text") or ""))
+    quoted_text = segments.get(line)
+    citation = {
+        "citation_id": (
+            f"{span_id}__line_{line}" if quoted_text is not None else span_id
+        ),
+        "quoted_text": quoted_text if quoted_text is not None else span.get("text"),
+        "locator": span.get("locator"),
+        "url": None,
+        "retrieved_date": None,
+        "source_document_id": span.get("document_id"),
+        "resolved": True,
+    }
+    if quoted_text is not None:
+        citation["source_span_id"] = span_id
+        citation["projection"] = "run_in_line"
+    return citation
+
+
+def _instruction_run_in_segments(text: str) -> dict[str, str]:
+    """Return the text runs beginning at individual line labels.
+
+    The family headings use ``Lines`` and are deliberately excluded.  Only a
+    singular ``Line`` at the start of a markdown line is a run-in boundary;
+    references such as ``see line 13b`` inside prose cannot split a packet.
+    """
+    markers: list[tuple[int, str]] = []
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        match = _LINE_RUN_IN_RE.match(line.rstrip("\r\n"))
+        if match:
+            markers.append((offset, match.group(1).lower()))
+        offset += len(line)
+    segments: dict[str, str] = {}
+    for index, (start, line) in enumerate(markers):
+        end = markers[index + 1][0] if index + 1 < len(markers) else len(text)
+        segments.setdefault(line, text[start:end].strip())
+    return segments
 
 
 def _instruction_span_index(

@@ -131,6 +131,43 @@ def test_generated_review_projects_all_multiline_schedule_instruction_owners() -
 
 
 @pytest.mark.m20
+def test_generated_review_s142_splits_run_in_labels_and_keeps_unlabelled_lines_shared() -> None:
+    """Run-in labels narrow a packet; an unlabelled owner keeps the block."""
+    schedule_1 = build_generated_document_cells(ROOT, 2025, "schedule_1_2025").cells
+    line_24a = next(item for item in schedule_1 if item["official_ref"] == "24a")
+    line_24f = next(item for item in schedule_1 if item["official_ref"] == "24f")
+    line_8a = next(item for item in schedule_1 if item["official_ref"] == "8a")
+    line_8b = next(item for item in schedule_1 if item["official_ref"] == "8b")
+
+    citation_24a = line_24a["instruction_citations"][0]
+    citation_24f = line_24f["instruction_citations"][0]
+    citation_8a = line_8a["instruction_citations"][0]
+    citation_8b = line_8b["instruction_citations"][0]
+    assert citation_24a["citation_id"].endswith("__line_24a")
+    assert citation_24a["quoted_text"].startswith("##### Line 24a")
+    assert "##### Line 24b" not in citation_24a["quoted_text"]
+    assert citation_24f["citation_id"] == "span_instructions_form_1040_2025_section_0109"
+    assert citation_8a["citation_id"] == citation_8b["citation_id"]
+    assert citation_8a["quoted_text"] == citation_8b["quoted_text"]
+
+    schedule_2 = build_generated_document_cells(ROOT, 2025, "schedule_2_2025").cells
+    for anchor in ("17b", "17q", "17z"):
+        citation = next(
+            item for item in schedule_2 if item["official_ref"] == anchor
+        )["instruction_citations"][0]
+        assert citation["citation_id"].endswith(f"__line_{anchor}")
+        assert f"**Line {anchor}." in citation["quoted_text"]
+
+    schedule_3 = build_generated_document_cells(ROOT, 2025, "schedule_3_2025").cells
+    for anchor in ("6b", "6m"):
+        citation = next(
+            item for item in schedule_3 if item["official_ref"] == anchor
+        )["instruction_citations"][0]
+        assert citation["citation_id"].endswith(f"__line_{anchor}")
+        assert f"**Line {anchor}." in citation["quoted_text"]
+
+
+@pytest.mark.m20
 def test_generated_review_uses_generated_risk_policy_for_gap_cells() -> None:
     result = build_generated_document_cells(ROOT, 2025, "form_1040_2025")
     assert all(cell["population_policy"] for cell in result.cells)

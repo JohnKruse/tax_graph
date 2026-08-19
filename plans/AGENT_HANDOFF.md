@@ -304,6 +304,40 @@ not progress** - say so plainly if that is what happens.
   Architect's recomputation are the check.
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
+**CODEX STATUS: COMPLETE.** The workbench projection now splits a shared instruction span at
+singular run-in labels already present in the draft text. It keeps the original full span for an
+owner with no individual label and emits a stable projection-local citation id with the source
+span id for a labelled run. No draft, promoted artifact, review state, model call, or network
+write was made.
+
+**ARTIFACT LABELS READ BEFORE MATCHING:** `**Line 17a.**`, `**Line 1a. Excess advance premium tax
+credit repayment.**`, `##### Line 24a`, and `### Line 13b`. Family headings such as
+`## Lines 17a Through 17z` are excluded from split points.
+
+**CELL-SHARING RECOMPUTATION** (primary `instruction_citations[0]` per covered cell; a citation
+shared by one cell is line-level, shared by multiple cells is block-level):
+
+| document | before line | before block | after line | after block |
+| --- | ---: | ---: | ---: | ---: |
+| `form_1040_2025` | 55 | 22 | 55 | 22 |
+| `schedule_1_2025` | 26 | 35 | 31 | 30 |
+| `schedule_2_2025` | 15 | 27 | 39 | 3 |
+| `schedule_3_2025` | 10 | 21 | 29 | 2 |
+| **total** | **106** | **105** | **154** | **57** |
+
+The covered-cell total stays 211; line-level coverage rises by 48 and block-level coverage falls
+by 48. The 1040 gap remains under its non-increasing ceiling.
+
+**RAN:**
+- `.venv/Scripts/python.exe -m pytest tests/test_m20_s142.py -q` -> **3 passed, 1 warning in 0.13s**.
+- `.venv/Scripts/python.exe -m pytest tests/test_generated_review_m20.py::test_generated_review_s142_splits_run_in_labels_and_keeps_unlabelled_lines_shared -q` -> **1 passed in 7.34s**.
+- `.venv/Scripts/python.exe -m pytest tests/test_generated_review_m20.py -q` -> **9 passed, 1 failed in 46.55s**. The one failure is the known baseline line 1a expression expectation (`W-2 box 1` versus the live draft's `entered by filer`), not S142.
+- `.venv/Scripts/python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py -q` -> **12 passed in 254.98s (0:04:14)**.
+- `.venv/Scripts/python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> **6 passed, 1 xpassed in 164.77s (0:02:44)**.
+- `.venv/Scripts/python.exe tools/check_ascii.py` -> **ASCII check OK**.
+- `git diff --check` -> **clean**.
+- **NOT RUN:** full suite, per the round floor.
+
 ## Open for Architect
 
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
