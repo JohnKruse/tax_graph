@@ -21,40 +21,37 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S146 IS THE ROUND: reasoning tokens now eat the micro completion budget and
-four 1040 rows die on it. John is asleep; the Architect is running S146, S147 and S148 back to back
-and verifying each before the next.**
+**BALL: CODEX. M20-S147 IS THE ROUND: a required input drops the source form its own instruction
+names. M20-S146 is accepted below.**
 
-**M20-S145 IS ACCEPTED (Architect, 2026-08-19), VERIFIED BY RECOMPUTATION, BY OPENING THE CELLS, AND
-BY READING THE TEST DIFF.** My independent recount reproduces the table exactly: `schedule_2`
-**38/36/2 -> 38/38/0**, total **189/177/12 -> 189/179/10**, every other document unchanged. I opened
-the cells: `f2_21_0`, the stray second cell on line `17z`, previously carried the whole of *"Line
-17a."* and now carries *"**Line 17z.** Use line 17z to report any taxes not reported elsewhere on
-your return"*; both `17a` cells now carry *"**Line 17a.** Recapture of the following credits"*. My
-own focused run reproduces the round's: **23 passed, 1 failed**, the failure being the documented
-line 1a red.
+**M20-S146 IS ACCEPTED (`f22f6ad`, Architect, 2026-08-19), AND I RAN THE TWO FLOOR ITEMS THE WORKER
+COULD NOT.** The Worker's launcher caps at 600s; the live re-derive and the e2e set both exceed it.
+Architect-side results:
 
-**THE WORKER CORRECTED MY HYPOTHESIS AND WAS RIGHT TO.** I specced this as an acquisition defect
-because the citation record holds a nine-character `quoted_text`. The real defect is projection
-side: `_project_background_cell` merged `base_cell["instruction_citations"]` without ever being
-handed `instruction_ids_by_line`, so a physical cell with no generated outline record kept the
-promoted inventory stub while the owned span sat unused in the index. **The fix is narrow and
-additive** - `_is_line_label_quote` matches only a bare `Line 17a.`-shaped quote, the replacement
-runs only for cells that have one, and `if not projected: return existing` means nothing is dropped
-where there is no replacement.
+| arm | derived | repaired | errored | truncated | cost |
+| --- | --- | --- | --- | --- | --- |
+| `high`, cap 4000 | 50 | 1 | 7 | `7a`, `12e`, `16`, `27a` | $0.0997 |
+| null, cap 4000 | 50 | 3 | 5 | none | $0.0956 |
+| **`high`, cap 8000 + retry** | **50** | **2** | **6** | **NONE** | **$0.1188** |
 
-**WHAT S145 DID NOT DO, AND IT IS STILL OPEN.** Both stub citations remain in
-`graph/2025/citations/instruction-form-1040-html.yaml` and in the `citation_refs` of all four
-addresses. **The review surface no longer shows them; the graph still holds them**, so my
-*"unverifiable 114 -> 36, zero mismatches"* still counts a nine-character range as verified
-evidence. Queued below.
+**The truncation class is gone**, which was the round's target state. e2e: **11 failed, 6 passed, 1
+xpassed** - the documented `*_m15.py` eleven, unchanged. Protected set: no `graph/` or `_drafts`
+path appears in the commit at all.
 
-**TREE PROVENANCE, STATED AND NOT EXPLAINED.** The CLI Worker stopped before committing, reporting
-a concurrent edit - a second test enumerating the four affected cells, which the floor forbade. At
-20:22 that test was removed and this section was rewritten to STATUS: COMPLETE by something other
-than this Architect, leaving exactly the single live-corpus rule guard the floor asked for. **I did
-not determine who made those edits and I will not infer it from timestamps.** The Architect verified
-the resulting tree independently and committed it.
+**THE BUDGET IS MEASURED, NOT GUESSED**, which is what ITEM 1 asked: completion tokens over 55 rows
+ran min 98, median 224, P90 899, P95 2041, P99 3337, max 3520, with five rows pinned at exactly
+4000. 8000 is twice the boundary; the retry doubles again. **The retry is unit-tested on both
+branches** - recovery and exhaustion - with the exact budgets asserted, and a second truncation
+still raises so a row errors explicitly rather than vanishing. `test_m20_s94.py` GAINED assertions;
+no green guard was weakened.
+
+**THE SIX REMAINING ERRORS ARE NOW ALL GENUINE, AND THEY ARE SIX DIFFERENT DEFECTS** - which is
+exactly why a bucket named by its error message is a hypothesis, not a class:
+`12e` `LOOKUP_TABLE arguments must be named leaf operands with a role`; `25c` and `27a`
+`operand_document_not_found` naming `form_w2g_2025` and an earned-income-credit worksheet; `31`
+`operand_not_printed: line 15 is not a printed line on schedule_3_2025`; `35a` `quote_not_verbatim`;
+`38` `subtract_direction: instruction says subtract line 34 from line 38`. **Only `27a`, `31`, `35a`
+and `38` persist across all three arms.**
 
 **M20-S143 (`6dffa97`) AND M20-S144 (`3dd28d9`) ARE ACCEPTED (Architect, 2026-08-19), VERIFIED BY
 RECOMPUTATION, BY OPENING THE CELLS, AND BY READING THE TEST DIFF.** S143 cleared Schedule 1 to
@@ -122,100 +119,64 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S146: A COMPLETION BUDGET SET WITHOUT REASONING TOKENS IS NOW TOO SMALL, AND ROWS DIE
-SILENTLY IN IT.**
+**M20-S147: A REQUIRED INPUT MUST CARRY THE SOURCE ITS INSTRUCTION NAMES.**
 
-**THE A/B, RUN 2026-08-19, SINGLE VARIABLE, SAME DOCUMENT.** `derive_cells_s25.py --document
-form_1040_2025`, `micro_max_tokens: 4000` in both arms, only `llm.reasoning_effort` changed:
+**THE ARTIFACT, OPENED (Architect, 2026-08-19).** The outcome record for Form 1040 line `1a` in the
+live draft reads, in full for the fields that matter:
 
-| arm | derived | repaired | errored | truncated rows | cost |
-| --- | --- | --- | --- | --- | --- |
-| `reasoning_effort: high` | 50 | 1 | **7** | `7a`, `12e`, `16`, `27a` | $0.0997 |
-| `reasoning_effort: null` | 50 | 3 | **5** | none | $0.0956 |
+    kind: filer_entry
+    form: ''
+    line: ''
+    box: ''
+    quote: Enter the total amount from Form(s) W-2, box 1. If a joint return, also
+      include your spouse's income from Form(s) W-2, box 1.
+    resolved_source_id: filer_entry
 
-The four truncations all read `LlmResponseTruncated: OpenRouter structured response truncated at
-max_tokens (finish_reason=length; completion_tokens=4000)` - **exactly the cap.** With reasoning off
-they do not occur. **This is a regression the Architect introduced today** by turning
-`reasoning_effort` on to `high` against a `micro_max_tokens` sized when no reasoning field was sent.
+**THE `form`, `line` AND `box` FIELDS ALREADY EXIST AND CAME BACK EMPTY** while the model's own
+quote, on the same record, names the form and the box. The machinery is built; the derivation
+dropped the answer. The review surface therefore renders `line 1a = entered by filer` and a reviewer
+box-checking that cell sees no trace of the W-2.
 
-**DO NOT FIX IT BY TURNING REASONING OFF.** Reasoning also FIXED a row: `6b` errors in the no-
-reasoning arm and derives in the high arm. The budget is wrong, not the reasoning.
+**THIS SETTLES THE QUEUED TAXONOMY QUESTION, AND THE ANSWER IS NEITHER OPTION.** A fresh re-derive
+returns `REQUIRE_INPUT` with `model_outcome: model_stated_input`. **`filer_entry` is CORRECT** - the
+filer totals box 1 across an arbitrary number of W-2s including a spouse's, which is not an equality
+with one cell - so this is **not** `derivation_failed`. **It is an evidence gap:** the outcome kind
+is right and the source is missing.
 
-**TARGET STATE.** A reasoning-enabled micro call has room to finish, and **a truncation is never a
-silently lost row.** Under the PRIME DIRECTIVE this is pipeline reliability: a row that dies on a
-token cap is not a tax question, it is the pipeline failing to ask one.
+**DO NOT "FIX" THE GUARD BY LOWERING IT.** `test_generated_review_m20.py` asserts
+`line 1a = W-2 box 1` beside `line 1e = Form 2441, line 26`; that test exists to check that a cell
+sourced from another form SAYS which form and box. **Changing the expectation to
+`entered by filer` would delete the only guard on provenance surviving into review.** Under the
+PRIME DIRECTIVE the reviewer must see why, and that red is currently the only thing asking for it.
 
-ITEM 1. Size `micro_max_tokens` for reasoning plus completion. **Measure it - do not guess a
-number.** The four truncated rows report their `completion_tokens`; use the real distribution and
-say what headroom you chose and why.
+ITEM 1. Make a `filer_entry` outcome carry `form`, `line` and `box` when the instruction names them.
+**This is a prompt and/or schema change**, so it needs live calls: run
+`experiments/derive_cells_s25.py --year 2025 --document form_1040_2025` with `--output-dir` OUTSIDE
+the repository root. **At most TWO runs, about twelve cents each.**
 
-ITEM 2. **A truncation must retry once at a larger budget before it becomes an errored row**, and
-the retry must be visible in the report. A row lost to `finish_reason=length` is a defect, not a
-derivation outcome, and today it is counted as `errored` alongside genuine validation gaps.
+ITEM 2. Render it. A `filer_entry` cell with a named source must project text that carries it, in
+the same shape `1e` uses for a resolved external source. **Decide the exact wording and say why** -
+the guard's current string is a claim about rendering, not scripture.
 
-ITEM 3. Re-run `derive_cells_s25.py --document form_1040_2025` and report the row-status table
-against the two arms above. **This costs about $0.10 per run; you may run it at most twice.**
+ITEM 3. Reconcile the guard with ITEM 2's wording, and say plainly whether the documented line 1a
+red is now closed. **If the wording differs from `line 1a = W-2 box 1`, changing the string is
+correct; deleting the assertion is not.**
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not set `reasoning_effort` back to null or to xhigh.** John set `high` deliberately today.
+- **Do not hand-edit a draft, citation, or graph artifact** to make line 1a look right. PRIME
+  DIRECTIVE: the pipeline produces it or the round failed.
 - **Do not weaken, delete, or invert an assertion that is green on `main`** - see Hard rules.
-- No draft regeneration into `graph/`, no promoted-artifact write, no review-contract change.
-- **Do not widen the run to the corpus.** One document; that is the blast radius.
+- **Do not widen the run to the corpus.** One document.
+- Do not change `reasoning_effort` or `micro_max_tokens`.
 
 **THE FLOOR.**
-- **The measured token distribution** behind the new cap, not an asserted number.
-- **The row-status table** for the re-run, next to the two arms above.
-- **Zero `LlmResponseTruncated` rows** on `form_1040_2025`.
-- **Focused workbench, API and e2e sets green** against their known reds.
+- **The line 1a outcome record, quoted before and after**, showing `form`/`line`/`box` populated.
+- **The row-status table** for the re-run, against the three arms above. **`derived` must not fall
+  below 50 and no `LlmResponseTruncated` may return.**
+- **An explicit statement on the line 1a red**: closed, or still red and why.
+- **Focused workbench and API sets green** against their known reds. **e2e is Architect-side** -
+  it exceeds your launcher cap; write `NOT RUN` and I will run it.
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
-
-**STATUS: BLOCKED - implementation and fixture tests are green, but the final permitted live
-derivation timed out before writing its report.** No zero-truncation claim or final row-status table
-is asserted. The partial final directory contains only the instruction frame and coverage files;
-it contains no `m20_s26_form_1040_2025_derive_cells_report.yaml`.
-
-**ITEM 1 MEASUREMENT.** The first live baseline measured 55 rows with completion telemetry:
-minimum **98**, median **224**, P90 **899.2**, P95 **2040.6**, P99 **3336.94**, maximum **3520**,
-mean **468.6**. Five rows hit the hard **4000** boundary: `6b`, `12e`, `16`, `19`, and `27a`.
-The configured budget was raised to **8000**, with one retry at **16000**. This is a measured
-budget choice: 8000 is twice the observed boundary and 4480 above the largest successful visible
-completion in the baseline.
-
-**ROW-STATUS EVIDENCE.** Baseline report at
-`C:\tmp\m20_s146_measurement\m20_s26_form_1040_2025_derive_cells_report.yaml`:
-**derived 51, repaired 0, gapped 0, errored 7, skipped 1**; the five truncation rows are listed
-above. Final run has no report, so its row-status table is **NOT RUN: report was not written before
-the command timeout**.
-
-**RAN:** `.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --document
-form_1040_2025 --output-dir C:\tmp\m20_s146_measurement` -> **exit 0, 518.1 seconds**;
-**derived 51, repaired 0, gapped 0, errored 7, skipped 1**.
-
-**RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
-.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_m20_s94.py -q`
--> **first attempt: 87 passed, 4 errors** because the override directory did not exist; after
-creating `.test_tmp_s146`, the exact command was rerun -> **91 passed in 4.26s**.
-
-**RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
-.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py
-tests\test_workbench_cells_api_m17.py -q` -> **9 passed in 128.12s**.
-
-**NOT RUN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
-.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py tests\test_workbench_cells_api_m17.py
-tests\e2e -q` -> **timed out at 604.1s without a pytest summary**.
-
-**NOT RUN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
-.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **timed out at 604.0s without a pytest summary**.
-
-**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-**RAN:** `git diff --check` -> **clean**.
-**RAN:** protected-set diff check for `graph/2025/{nodes,edges,rules,field_maps}` ->
-**byte-identical**.
-
-**RAN:** `.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --document
-form_1040_2025 --output-dir C:\tmp\m20_s146_final` -> **NOT RUN: command timed out at
-604.0s before the report was written**. This was the second and final permitted live run; no
-third provider run is authorized.
 
 ## Open for Architect
 
@@ -229,6 +190,11 @@ third provider run is authorized.
   live run produces the required row-status table and proves zero `LlmResponseTruncated` rows.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **THE TRUNCATION COUNTERS ARE NOT IN THE DERIVE REPORT (Architect, 2026-08-19).** S146 added
+  `truncation_retries` / `truncation_recovered` / `truncation_exhausted` to the validation report
+  and unit-tests them, but the run report YAML carries no such key even as a zero, so **"no
+  truncations" and "not plumbed" look identical from the artifact.** Small; surface them.
 
 - **THE TWO LABEL-ONLY CITATIONS ARE STILL IN THE GRAPH AND STILL COUNTED AS VERIFIED (Architect,
   2026-08-19).** S145 stopped projecting them; it did not remove them.
