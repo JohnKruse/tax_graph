@@ -869,11 +869,13 @@ without him.** Read the header of `tools/codex.sh` before changing any of this.
   `tax-graph.config.yaml`. The pipeline value was previously UNSET, so it now sends a reasoning
   field where it sent none - **the first corpus run after 2026-08-19 is not comparable to the runs
   before it.**
-- **TWO WORKERS CAN LAND ON ONE TREE, AND IT HAPPENED ON THE FIRST ROUND (2026-08-19).** John
-  started S144 in the Codex app while the Architect started S144 through the CLI. Both edited the
-  same files; the CLI session detected the collision, refused to commit, and John's app session
-  committed the round (`3dd28d9`). **No work was lost, but the round was paid for twice.** Before
-  starting a round from the CLI, say so and check that John does not already have one running.
+- **A CLI ROUND CAN LAND ON A TREE AN APP SESSION IS ALREADY WORKING (2026-08-19, first round).**
+  An app session was live at 18:31 and `tests/test_generated_review_m20.py` was already edited at
+  18:33 - both BEFORE the Architect launched a CLI round on the same S144 at 18:48. The CLI session
+  found the tree already modified, refused to commit, and reported it; John's session committed the
+  round (`3dd28d9`). **No work was lost.** Before starting a round from the CLI, say so and check
+  that John does not already have one going. **Do not narrate who did what from timestamps alone -
+  ask him;** the Architect got this sequence wrong on the first try.
 - **The egress rule is unchanged.** Giving the Architect the CLI moved no API spend: pipeline model
   calls still bill separately and still need John's per-round grant. A round floor still may not
   authorize its own network access.
