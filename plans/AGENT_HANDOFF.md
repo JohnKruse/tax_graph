@@ -21,33 +21,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S143 is implemented and verified below. The narrowest owner is now primary;
-family spans remain as context.**
+**BALL: CODEX. M20-S143 IS VERIFIED IN ITS CORE AND IS NOT ACCEPTED. M20-S144 IS THE ROUND: the
+owner-width sort is blind to S142 and demotes the text S142 built.**
 
-**M20-S142 IS ACCEPTED (`c613c78`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION AND BY OPENING
-THE CELLS.** My independent count reproduces Codex's table to the cell: `form_1040` 55/22,
-`schedule_1` 31/30, `schedule_2` 39/3, `schedule_3` 29/2 - **line-level 106 -> 154, block-level
-105 -> 57, covered total unchanged at 211.** I then opened the projected text rather than trusting
-the count. Schedule 2 line `17f` now reads *"**Line 17f.** Enter any additional tax on Medicare
-Advantage MSA distributions from Form 8853, line 13b"*; before it read line 17a's recapture text.
-**The exact failure John named is gone from Schedule 2 and Schedule 3.** ITEM 2 held: Schedule 1's
-`8a` through `8z` have no run-in label in their span and correctly kept the block.
+**M20-S143 IS VERIFIED IN ITS CORE AND NOT ACCEPTED (Architect, 2026-08-19). `6dffa97` STAYS ON
+`main` - S144 completes it rather than reverting it.** My independent recomputation confirms what
+the round was for: `schedule_1` is **60 covered / 60 own text / 0 shared**, the `8a`-`8z` and
+`24a`-`24z` residue is gone, covered total is unchanged at **189**, and no citation was dropped. I
+opened `8j` and `24z`; both read as the narration says, with the family span retained second.
 
-**THE METRIC I GAVE CODEX OVERCOUNTS AND I AM CORRECTING IT BEFORE IT SETS.** "Block-level" counted
-CELLS sharing a citation, but several physical cells legitimately carry the SAME line (`4c` is four
-cells), and one citation across four cells of one line is not the jamming defect. **Counted over
-DISTINCT LINES, which is the honest denominator: 189 covered lines, 151 own their text, 38 share a
-block across lines.** Per document: `form_1040` 56/6, `schedule_1` 30/30, `schedule_2` 38/0,
-`schedule_3` 27/2. **S142 was better than its own table said**, and **30 of the 38 remaining are
-Schedule 1**. Use lines, not cells, from here on.
+**THE TOTALS ARE 189/177/12, NOT 189/181/8.** The four-line gap is in `form_1040` (54/8, not 56/6)
+and `schedule_2` (36/2, not 38/0). My rule is the stricter one and it is the one to keep: **a line
+is shared if ANY cell on it carries a primary citation that is also primary on another distinct
+line.** Codex's count reads one cell per line and misses lines whose extra cells never resolved
+through the span index. Use every cell on the line, not a representative.
 
-**THE 30 ARE NOT AN ACQUISITION GAP AND NOT A SPLITTING PROBLEM - THE RIGHT SPAN IS ALREADY THERE
-AND WE PICK THE WRONG ONE.** `instruction_ids_by_line["8j"]` holds TWO spans: the 433-character
-family preamble `section_0067`, whose `owner_lines` lists all 26 of `8a`-`8z`, and `section_0077`,
-whose `owner_lines` is exactly `['8j']` and whose text is *"#### Line 8j - **Activity not engaged in
-for profit income.** See Pub. 535"*. **The projection takes `[0]`, and `[0]` is whichever span comes
-first, which is always the family.** Same shape at `24a`-`24z` (`section_0109` versus `section_0110`
-onward). That is the whole of Schedule 1's residue.
+**THE DEFECT: A RAW `len(owner_lines)` SORT CANNOT SEE AN S142 RUN-IN SEGMENT.** Schedule 2 `17z`
+is the clean case, opened rather than counted. Primary is now `section_0138`, *"#### Negative Form
+8978 Adjustment Worksheet Schedule 2 (Line 17z)"* - a worksheet that only NAMES the line - while
+`section_0136__line_17z`, `projection=run_in_line`, reading *"**Line 17z.** Use line 17z to report
+any taxes not reported elsewhere on your return or other schedules"*, has been pushed to `[1]`.
+`section_0138` has `owner_lines=['17z']`; `section_0136` owns all 26 of `17a`-`17z` but carries a
+run-in segment for 18 of them, `17z` among them. Width alone picks the worksheet. **20
+line/document pairs are in that shape today.**
+
+**`_instruction_span_has_body` IS FRAGILE AND DOES NOT BITE - DO NOT "FIX" IT.** It treats any line
+opening with `Line`/`Lines` as non-body, so a span that were ONLY a run-in label would score as a
+stub. On the live corpus every such span carries its body on a following line, so the tie-break is
+never reached wrongly. Checked, not assumed.
 
 **FULL SUITE RED BASELINE IS 22, AND THE SUITE SITS AT 28.** The difference is the six broken S115
 workbench cases - a defect awaiting a round, not an accepted red. Eleven `tests/e2e/*_m15.py`, plus
@@ -91,49 +92,41 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S143 IS ACCEPTED.** `instruction_ids_by_line` now orders candidates by the number of
-explicit or inferred owner lines. Equal-width ties prefer a content-bearing span over a heading
-stub, then retain artifact order. The family citation is never dropped.
+**M20-S144: A SPAN THAT ALREADY YIELDS THIS LINE'S OWN TEXT IS AS NARROW AS A SPAN THAT OWNS ONLY
+THIS LINE.**
 
-Distinct-line recomputation (covered / own text / shared block):
+**THE INVARIANT.** For a line `L`, a candidate span's effective width is **1** when the span's
+run-in segmentation produces a segment for `L`, and `len(owner_lines)` otherwise. Order by effective
+width, then the existing content-over-stub tie-break, then artifact order. Nothing else changes.
 
-- `form_1040`: 62/56/6 -> 62/56/6
-- `schedule_1`: 60/30/30 -> 60/60/0
-- `schedule_2`: 38/38/0 -> 38/38/0
-- `schedule_3`: 29/27/2 -> 29/27/2
-- total: 189/151/38 -> 189/181/8
+**TARGET STATE.** Wherever a candidate span carries a run-in segment for the line, the primary
+instruction citation is that line's own text - either a span owning only that line, or the
+`projection=run_in_line` citation. **A span that merely names the line in a heading never outranks
+the line's own instruction text.** The family citation is still never dropped, and Schedule 1 stays
+at 0 shared.
 
-The 1040 generated gap-cell count stayed 55 before and after. The three opened Schedule 1
-projections changed as follows:
+ITEM 1. Put the effective width into `_instruction_span_index`. `_instruction_run_in_segments`
+already computes the segmentation - call it, do not re-implement it.
 
-- `8j`: the family preamble was primary; now `#### Line 8j` and `Activity not engaged in for
-  profit income. See Pub. 525.` is primary, with the family span retained second.
-- `24z`: the `Lines 24a Through 24z` block was primary; now `Line 24z` / `Leave line 24z blank.`
-  is primary, with the family span retained second.
-- `1`: the empty `#### Line 1` stub was primary; the deliberate content-over-stub tie-break now
-  makes the 30,083-character State and Local Income Tax Refund Worksheet primary. The existing
-  third cross-document candidate and the heading stub remain later in the list; no citation was
-  dropped and no artifact was edited.
+ITEM 2. Count over DISTINCT LINES, and mark a line shared if ANY cell on it carries a primary
+citation that is primary on another line. Report per document, before and after.
 
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s143.py -q` -> 3 passed in 2.63s.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s142.py tests/test_m20_s143.py tests/test_generated_review_m20.py -q` -> 15 passed, 1 failed; the only failure is the known line 1a W-2-box-1 guard red, not S143.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed in 0.38s.
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py tests/e2e/test_workbench_v2_m17.py -q` -> 18 passed, 1 xpassed in 360.78s.
-RAN: `.venv\Scripts\python.exe tools/check_ascii.py workbench/generated_review.py tests/test_generated_review_m20.py tests/test_m20_s143.py` -> ASCII check OK.
-RAN: `git diff --check` -> clean.
-NOT RUN: full suite -> prohibited for this round.
-
----
+ITEM 3. Open three cells and quote the projected text: `schedule_2` `17z`, `schedule_1` `8j`,
+`form_1040` `6a`. `17z` must move to the run-in text; `8j` must be unchanged.
 
 **WHAT MUST NOT HAPPEN.**
 - **No draft regeneration or hand-edit**, no promoted-artifact write, no review-contract change.
 - **Do not drop a family citation** to make the ratio look better.
 - **Do not derive ownership from line references in prose.** See `PHASE_M20.md` 4.2 - it scores well
-  and is wrong in every instance. Ownership comes from `owner_lines` and headings only.
+  and is wrong in every instance. Ownership comes from `owner_lines`, headings, and run-in labels.
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **Per-line counts per document, before and after**, and the three quoted cells from ITEM 4.
+- **A test that pins the INVARIANT against the real corpus**, not only a fixture: for every line
+  whose candidate list contains a run-in segment for that line, the primary citation is that line's
+  own text. **Assert the rule; do not hardcode a measured count.**
+- **Per-line counts per document, before and after**, under ITEM 2's definition, and the three
+  quoted cells from ITEM 3.
 - **The 1040 gap ceiling guard stays `<=`** and does not grow.
 - **Focused workbench, API and e2e sets green** against their known reds.
 - **NO FULL SUITE FROM THE WORKER OR THE ARCHITECT THIS ROUND.** The Worker's focused sets plus the
