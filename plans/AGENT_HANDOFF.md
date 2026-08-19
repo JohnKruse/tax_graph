@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. M20-S143 AND M20-S144 ARE BOTH ACCEPTED AND VERIFIED. No round is in flight; the
-next one is a decision, not a defect - see Queued.**
+**BALL: CODEX. M20-S145 IS THE ROUND: four addresses cite a nine-character line label as their
+whole instruction. S143 and S144 are accepted and verified below.**
 
 **M20-S143 (`6dffa97`) AND M20-S144 (`3dd28d9`) ARE ACCEPTED (Architect, 2026-08-19), VERIFIED BY
 RECOMPUTATION, BY OPENING THE CELLS, AND BY READING THE TEST DIFF.** S143 cleared Schedule 1 to
@@ -90,8 +90,55 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**NONE IN FLIGHT.** S144 closed 2026-08-19. The next round is
-John's call - see Queued.
+**M20-S145: A CITATION WHOSE ENTIRE TEXT IS A LINE LABEL IS NOT EVIDENCE.**
+
+**THE ARTIFACT, OPENED (Architect, 2026-08-19).** `graph/2025/citations/instruction-form-1040-html.yaml`
+holds exactly two citations whose `quoted_text` is a bare label:
+
+- `cite_instruction_schedule_2_2025_en_us_2025_publink100079593` - `quoted_text: Line 17a.`,
+  `semantic_title: Other Additional Taxes`, range `626936..626945`, **nine characters.** Cited by
+  `graph/2025/addresses/schedule_2_2025.yaml` at `17a` AND at `17z`.
+- `cite_instruction_schedule_3_2025_en_us_2025_publink10001946` - `quoted_text: Line 6a.`, **eight
+  characters.** Cited by `schedule_3_2025.yaml` at `6a` AND at `6z`.
+
+**Both attach the FIRST line's label to the FIRST and the LAST line of a family block.** That
+symmetry is the tell, and it is the whole class: four addresses, two documents, 82 citations in the
+file. Five more citations are short heading fragments (`IRA Distributions`, `Pensions and
+Annuities`, `Adopted child.`, `Include on line 25c any`, `Other refundable credits.`) - **decide
+whether they are the same defect or acceptable section pointers; do not assume.**
+
+**CAUSE UNKNOWN.** I have opened the citation records and the four address rows; I have NOT found
+what produced a nine-character `quoted_text` at acquisition. **Finding it is ITEM 1.** No spec
+asserts a cause without the excerpt, and I do not have one.
+
+**THIS IS WHERE MY OWN RANGE BACKLOG LOOKS WORSE THAN I REPORTED IT.** `218fb0a` ADDED the
+`626936..626945` range to the 17a citation - the diff shows it. So *"unverifiable 114 -> 36, checked
+515 -> 593, zero mismatches"* counted this one as a win. **It is a true range around a useless
+string.** The backlog verified that a nine-character label is really in the source. Byte-verifying a
+label is not evidence that a line is explained, and the metric should not have rewarded it.
+
+ITEM 1. Open all four addresses END TO END and name the cause with the excerpt. Do not assume the
+two documents share it.
+
+ITEM 2. Fix it at the stage that produced it. **Do not hand-edit the citation artifacts** - see the
+PRIME DIRECTIVE. If the fix is a projection-side preference for a span citation over an inventory
+stub, say so and show why the acquisition side is right as it stands.
+
+ITEM 3. A guard that no generated review cell carries an instruction citation whose entire quoted
+text is a line label. **Assert the rule over the live corpus; do not enumerate these four.**
+
+**WHAT MUST NOT HAPPEN.**
+- **No draft regeneration or hand-edit**, no promoted-artifact write, no review-contract change.
+- **Do not weaken, delete, or invert an assertion that is green on `main`** - see Hard rules.
+- **Do not delete a citation** to make the count fall.
+- **No model call, no network.**
+
+**THE FLOOR.**
+- **The cause, quoted from the artifact that shows it**, in the handoff.
+- **The distinct-line counts before and after** (`covered / own / shared`, every cell on the line).
+  `schedule_2` `17a` and `17z` are the two that should move.
+- **Focused workbench, API and e2e sets green** against their known reds.
+- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
 ## Open for Architect
 
