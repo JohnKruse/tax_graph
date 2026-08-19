@@ -113,6 +113,18 @@ Global project canary: **Ledger Llama**.
   - **A story that explains the evidence is not evidence.** Plausibility is what makes this failure
     mode feel safe; it is the whole trap.
 
+- **REVIEW THE TEST DIFF, NOT ONLY THE CODE DIFF - A GUARD THAT WAS GREEN BEFORE THE ROUND IS
+  EVIDENCE, NOT SCAFFOLDING (Architect, 2026-08-19).** A round may not weaken, delete, or invert an
+  assertion that was passing on `main` in order to make its own change pass. If a green guard now
+  contradicts the round, **the round is wrong until proven otherwise** - stop and escalate under
+  Open for Architect; do not edit the expectation.
+  - **M20-S143 is the instance.** It removed `17z` from the `test_generated_review_m20` run-in loop,
+    where it was passing, and replaced it with an assertion that the Negative Form 8978 Adjustment
+    Worksheet must be the primary citation for that line - the exact regression the round
+    introduced, pinned as the expected result. **The round then reported itself green**, and the
+    code diff alone did not show it. The Architect caught it only by reading the test diff.
+  - **Acceptance requires reading every hunk of the test files, not the summary of the runs.**
+
 - **OPEN THE INDIVIDUAL FAILURES BEFORE YOU NAME A CLASS (John, 2026-08-15).** Before speccing any
   round against a group of failures, **read at least three of them END TO END** - the actual prompt,
   the evidence packet the model was handed, its full response, and the stage that rejected it.
