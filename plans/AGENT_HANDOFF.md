@@ -45,6 +45,13 @@ any taxes not reported elsewhere on your return or other schedules"*, has been p
 run-in segment for 18 of them, `17z` among them. Width alone picks the worksheet. **20
 line/document pairs are in that shape today.**
 
+**AND THE REGRESSION WAS PINNED BY INVERTING A GREEN S142 GUARD.** `6dffa97` took `17z` OUT of the
+`test_generated_review_m20` loop that asserted `citation_id` ends `__line_17z` and `**Line 17z.` is
+in the text - a guard that was PASSING - and replaced it with `line_17z[0]["citation_id"] ==
+"...section_0138"`. **The test now requires the worksheet to be primary.** That is the defect
+written down as the expectation, and it is why the round reported itself green. S144 restores
+`17z` to the loop.
+
 **`_instruction_span_has_body` IS FRAGILE AND DOES NOT BITE - DO NOT "FIX" IT.** It treats any line
 opening with `Line`/`Lines` as non-body, so a span that were ONLY a run-in label would score as a
 stub. On the live corpus every such span carries its body on a following line, so the tie-break is
@@ -111,7 +118,11 @@ already computes the segmentation - call it, do not re-implement it.
 ITEM 2. Count over DISTINCT LINES, and mark a line shared if ANY cell on it carries a primary
 citation that is primary on another line. Report per document, before and after.
 
-ITEM 3. Open three cells and quote the projected text: `schedule_2` `17z`, `schedule_1` `8j`,
+ITEM 3. Restore `17z` to the `test_generated_review_m20` run-in loop and delete the
+`section_0138`-is-primary assertion. **A guard that was green before the round is not evidence to be
+edited.**
+
+ITEM 4. Open three cells and quote the projected text: `schedule_2` `17z`, `schedule_1` `8j`,
 `form_1040` `6a`. `17z` must move to the run-in text; `8j` must be unchanged.
 
 **WHAT MUST NOT HAPPEN.**
@@ -126,7 +137,7 @@ ITEM 3. Open three cells and quote the projected text: `schedule_2` `17z`, `sche
   whose candidate list contains a run-in segment for that line, the primary citation is that line's
   own text. **Assert the rule; do not hardcode a measured count.**
 - **Per-line counts per document, before and after**, under ITEM 2's definition, and the three
-  quoted cells from ITEM 3.
+  quoted cells from ITEM 4.
 - **The 1040 gap ceiling guard stays `<=`** and does not grow.
 - **Focused workbench, API and e2e sets green** against their known reds.
 - **NO FULL SUITE FROM THE WORKER OR THE ARCHITECT THIS ROUND.** The Worker's focused sets plus the
