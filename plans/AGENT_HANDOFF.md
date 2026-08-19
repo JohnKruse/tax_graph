@@ -183,21 +183,92 @@ one line and leave it red. Do NOT change the assertion.
 
 ## Open for Architect
 
-- **S148 WORKER CHECKPOINT (2026-08-20):** The quote-regex fallback is removed from the working
-  tree; the structured `form`/`line`/`box` path remains unchanged. The focused provenance and
-  workbench guards passed 20, and the API set passed 12. The generated-review file is expected to
-  be red until the live draft is regenerated: it reports `line 1a = entered by filer` while the
-  stale guard still expects `line 1a = W-2 box 1`.
+- **S148 WORKER STATUS (Codex, 2026-08-20):** The quote-regex fallback is removed from
+  `workbench/generated_review.py`; the structured `form`/`line`/`box` fields remain the only
+  named-source path. The S147 micro validation and prompt were not changed. No live draft under
+  `graph/2025/_drafts` was regenerated.
 
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py tests/test_m20_s113.py tests/test_m20_s115.py -q` -> **20 passed in 1.24s**.
+  ITEM 2 used the two permitted live runs, both with output outside the repository:
 
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py -q` -> **12 passed in 190.57s (0:03:10)**.
+  **RAN:** `.venv\Scripts\python.exe -m experiments.derive_cells_s25 --year 2025 --output-dir
+  C:\tmp\m20_s148_item2 --document form_1040_2025` -> **exit 124; command timed out after
+  604048 milliseconds**. The scratch report was finalized after the launcher returned and
+  contains the line 1a record below. The report totals are 58 rows attempted: 49 derived, 5
+  repaired, 0 gapped, 4 errored, 1 skipped.
 
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q` -> **9 passed, 1 failed in 40.87s**; the expected line 1a red is the stale W-2-box-1 assertion.
+  **RAN:** `.venv\Scripts\python.exe -m experiments.derive_cells_s25 --year 2025 --output-dir
+  C:\tmp\m20_s148_item2_retry --document form_1040_2025` -> **exit 124; command timed out after
+  604046 milliseconds**. It produced only the deterministic instruction frame and coverage file;
+  no second derived report.
 
-  **NOT RUN:** the permitted live `derive_cells_s25.py --document form_1040_2025` call; the
-  environment rejected sending tax-document data to an external model without explicit user
-  authorization, so there is no model outcome record to quote yet.
+  The first run's line 1a outcome record is quoted verbatim from
+  `C:\tmp\m20_s148_item2\m20_s26_form_1040_2025_derive_cells_report.yaml`:
+
+  ```yaml
+  - line: 1a
+    source_fingerprint: 80ec303d0eb17ec11b91884259decaad77f5b7c1859adcc0e5e9ee63d713a340
+    label_before: Income 1 a Total amount from Form(s) W-2, box 1 (see instructions)
+      1a
+    label_after: ''
+    form_face_before: Income 1 a Total amount from Form(s) W-2, box 1 (see instructions)
+      1a
+    form_face_after: Income 1 a Total amount from Form(s) W-2, box 1 (see instructions)
+    status: derived
+    error: null
+    expression:
+      op: REQUIRE_INPUT
+      args:
+      - line: 1a
+        column: null
+        role: null
+      comparison: null
+    rendered: require_input(line 1a)
+    validation_failures: []
+    validation_warnings: []
+    repaired_after: []
+    dropped_instruction_sections: []
+    source_findings: []
+    structural_skip_reason: null
+    model_outcome: model_stated_input
+    truncation_retries: []
+    attempted_payloads:
+    - attempt: first
+      payload:
+        expression:
+          op: REQUIRE_INPUT
+          args:
+          - line: 1a
+            column: null
+            role: null
+          comparison: null
+        quote: Enter the total amount from Form(s) W-2, box 1.
+    unresolved_external_nodes: []
+  ```
+
+  The model populated neither structured `form` nor `box` in that record. That is the pipeline
+  finding; no prose inference was added.
+
+  ITEM 3 is intentionally RED: **RAN:** `.venv\Scripts\python.exe -m pytest
+  tests\test_generated_review_m20.py -q` -> **1 failed, 9 passed in 41.28s**. The unchanged line
+  1a guard is red because the live draft still has an empty structured filer-entry source and the
+  quote-regex is gone; this is the correct state, not a regression.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s113.py tests\test_m20_s115.py -q`
+  -> **16 passed in 1.01s**.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py -q` -> **4 passed in
+  0.36s**.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_cells_api_m17.py -q` ->
+  **5 passed in 122.17s (0:02:02)**.
+
+  **NOT RUN:** `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> the e2e set exceeds the
+  Worker launcher cap; Architect runs it.
+
+  **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+  **RAN:** `git diff --check` -> **clean**.
+  **RAN:** protected-set diff check for `graph/2025/nodes`, `graph/2025/edges`, `graph/2025/rules`,
+  `graph/2025/field_maps` -> **no diff; byte-identical**.
 
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
   committed 2026-08-16 and the drafts were regenerated 2026-08-17 14:31 by the accepted corpus run.
