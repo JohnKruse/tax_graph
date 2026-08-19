@@ -229,6 +229,46 @@ exception in Section 6 does not need extending and the question closes.
 was appended here and has been removed; that behaviour is described where it belongs, in the
 handoff and in the S60/S61 commits.
 
+### 4.2 Findings that constrain any further instruction work (pinned 2026-08-19)
+
+These were measured during S128-S142 and are pinned here because they outlive the rounds that
+found them. Round narration stays in git.
+
+**The artifact we segment is the damaged copy.** We pay Mistral OCR to turn a PDF into markdown
+while the IRS publishes the same content as structured HTML we already download
+(`.cache/raw/2025/*.html`, since 2026-08-14). Every structural defect of six rounds is an artifact
+of the OCR path: `# Page N` markers injected at heading level 1, lost em dashes
+(`Example 1Basis Reported to the IRS`), and run-in labels arriving as undifferentiated bold -
+Schedule B's HTML tags exactly 7 `inlinehd` labels where the OCR emits 23 undifferentiated bold
+runs. John's OCR eval measured WORDS (99.0% of Schedule B's OCR words appear in the HTML);
+segmentation depends on KINDS of markup, which words cannot carry. **Do not delete the OCR path
+yet** - the lookup tables live in the PDF only (`2025 Tax Table` appears 0 times in the HTML
+against 13 in the OCR text).
+
+**Mentioning a line and governing a line are anti-correlated in IRS prose.** Measured over all 69
+sections the S132 frame owns for `schedule_1a_2025`: every prose section that GOVERNS a line states
+its parameter and never names it, and every cell that IS named in prose is named by something that
+does not govern it. `Line 10.`'s body reads *"Skip lines 11 and 12 and enter the amount from
+Schedule 1-A, line 7 ... on line 13"* - it governs 10 and mentions 7, 11, 12, 13. **A line-reference
+miner over body prose would score well and be wrong in every instance.** This is John's
+line-24/line-22 objection, measured. Line ownership comes from HEADINGS and from the typed
+`owner_lines` frame, never from references in prose.
+
+**Schedule 1-A's ceiling is about 30 of 48, not 48.** Of its 37 unreached cells, 19 have governing
+prose that names no line and 18 are arithmetic the IRS writes nothing for (*"Add lines 4c and 5"*) -
+the form face IS the instruction. Same ceiling that made Schedule D's 12 of 24 a full score.
+
+**The citation range is load-bearing and `quoted_text` must not be dropped yet.** Perturbing any of
+the 511 stored ranges by +/-200 characters rejects 511 of 511; the whole-file search it replaced
+passed all of them. But containment does not constrain EXTENT: a range widened 500 characters still
+passes for 491 of 511. `docs/source-extents.md` wants to derive the text FROM the range - **do not,
+until extent is checked, not just containment**, or an over-wide range silently serves a
+neighbouring row.
+
+**The narrowest owner wins.** A line's instruction packet is the span whose `owner_lines` covers
+that line and no other; a family span (`Lines 8a Through 8z`) is context, never the primary
+citation, and is never dropped.
+
 ## 5. Sequencing and risk
 
 M18 widening stays DEFERRED behind this phase (John, 2026-07-28). Widening on top of a

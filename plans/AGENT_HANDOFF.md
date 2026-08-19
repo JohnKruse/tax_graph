@@ -21,197 +21,37 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S141 IS ACCEPTED - 211 of 426 cells now carry an instruction. BUT ONLY 106 OF
-THOSE ARE LINE-LEVEL; 105 are one block handed to many cells, and one Schedule 1 block is handed
-to 23. M20-S142 under Current round splits them at their run-in labels.**
+**BALL: CODEX. M20-S142 IS ACCEPTED - the run-in split is real and 17f now shows 17f's own text.
+M20-S143 under Current round takes the last big block: 30 Schedule 1 lines are handed a family
+preamble while the span that owns their line alone already sits in the same artifact.**
 
-**THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
-deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
-the 114 that were checked by nothing (S135), and 99 verified ranges that would take unverified
-citations from 114 to 15 (S136). **511 of 511 verify, a range shifted 200 characters is rejected,
-and the corpus accounting closes at 629.**
-**ONE THING FOR JOHN: applying those 99 ranges is a protected-set write and needs his yes.** They
-are machine-derived, each independently verified, and nothing else in the graph moves.
+**M20-S142 IS ACCEPTED (`c613c78`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION AND BY OPENING
+THE CELLS.** My independent count reproduces Codex's table to the cell: `form_1040` 55/22,
+`schedule_1` 31/30, `schedule_2` 39/3, `schedule_3` 29/2 - **line-level 106 -> 154, block-level
+105 -> 57, covered total unchanged at 211.** I then opened the projected text rather than trusting
+the count. Schedule 2 line `17f` now reads *"**Line 17f.** Enter any additional tax on Medicare
+Advantage MSA distributions from Form 8853, line 13b"*; before it read line 17a's recapture text.
+**The exact failure John named is gone from Schedule 2 and Schedule 3.** ITEM 2 held: Schedule 1's
+`8a` through `8z` have no run-in label in their span and correctly kept the block.
 
-**THE CITATION WORK IS FOUR ROUNDS OLD AND HAS PAID FOR ITSELF.** S133 built the accessor and
-deleted the substrate fallbacks; S134 made the check exact over the range LIST and caught two
-fabricated records; S135 exposed the 114 that were checked by nothing and made every proposed repair
-self-verifying. **511 of 511 verify, a range shifted 200 characters is rejected, and the corpus
-accounting closes at 629.** What remains is a mechanical backlog, not a design question.
+**THE METRIC I GAVE CODEX OVERCOUNTS AND I AM CORRECTING IT BEFORE IT SETS.** "Block-level" counted
+CELLS sharing a citation, but several physical cells legitimately carry the SAME line (`4c` is four
+cells), and one citation across four cells of one line is not the jamming defect. **Counted over
+DISTINCT LINES, which is the honest denominator: 189 covered lines, 151 own their text, 38 share a
+block across lines.** Per document: `form_1040` 56/6, `schedule_1` 30/30, `schedule_2` 38/0,
+`schedule_3` 27/2. **S142 was better than its own table said**, and **30 of the 38 remaining are
+Schedule 1**. Use lines, not cells, from here on.
 
-**THE CITATION RANGE IS NOW LOAD-BEARING, WHICH IT WAS NOT THREE ROUNDS AGO.** S133 built the
-accessor and deleted the substrate fallbacks; S134 made the check exact over the range LIST. Between
-them: **511 of 511 verify by exact containment, a stored range shifted 200 characters is rejected,
-and two fabricated citations were found that no text-level check could ever have caught.** The
-`quoted_text` copy that `docs/source-extents.md` wants to drop is what made all of this detectable -
-**do not drop it until extent is checked too, not just containment.**
+**THE 30 ARE NOT AN ACQUISITION GAP AND NOT A SPLITTING PROBLEM - THE RIGHT SPAN IS ALREADY THERE
+AND WE PICK THE WRONG ONE.** `instruction_ids_by_line["8j"]` holds TWO spans: the 433-character
+family preamble `section_0067`, whose `owner_lines` lists all 26 of `8a`-`8z`, and `section_0077`,
+whose `owner_lines` is exactly `['8j']` and whose text is *"#### Line 8j - **Activity not engaged in
+for profit income.** See Pub. 535"*. **The projection takes `[0]`, and `[0]` is whichever span comes
+first, which is always the family.** Same shape at `24a`-`24z` (`section_0109` versus `section_0110`
+onward). That is the whole of Schedule 1's residue.
 
-**FULL SUITE OVER `b1cd5a4`: 29 failed, 1019 passed, 8 skipped, 1 xfailed, 1:13:12 (Architect,
-2026-08-18).** I attributed every one of the 29 rather than reading the count.
-
-**EXACTLY ONE IS AN S133 REGRESSION, AND IT IS THE SAME DEFECT AS THE MAIN FINDING - A CHECK THAT
-STOPPED CHECKING.** `test_extract_m4::test_deterministic_checks_flag_missing_line_and_bad_quote`
-**passes at `6522da4` and fails at `b1cd5a4`**, which I ran in a clean worktree. The new checker
-does `if not ranges: continue`, commented *"only defensive for malformed input."* **It is not.
-Model-generated citations arrive with no ranges yet, and they are exactly the ones whose quotes must
-be checked** - the test plants an absent quote in generated output and the deterministic check no
-longer flags it. **The pipeline's own anti-fabrication guard is a no-op for any citation without a
-range.** Fixed as ITEM 5 below.
-
-**THE BASELINE IS AT LEAST 22, NOT 18, AND I HAVE BEEN QUOTING A STALE LIST FOR WEEKS.** Verified
-failing at `6522da4` in the parent worktree, none of them S133's doing:
-`test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading`,
-`test_citation_cleanup_m18::test_real_citation_corpus_has_source_verified_cleanups`
-(`cite_1040_standard_deduction` cleanup returns `changed=False`), and both
-`test_generated_review_m20` cases.
-**My "output-neutral over 515 quotes" check stands** - I re-ran the cleanup failure at the parent and
-it is identical there, so the `_token_start_with_punctuation` change did not cause it.
-
-**SIX MORE ARE THE S115 REVIEW CONTRACT AND THEY ARE THE DEBT I KEEP RECORDING AND NOT PAYING.**
-`test_workbench_cells_api_m17` (2), `test_workbench_write_api_m15` (3) and
-`e2e/test_workbench_v2_m17` (1) all die at `workbench/server.py:640`,
-`AttributeError: 'NoneType' object has no attribute 'get'` on `object_ref`. **Nothing in
-`workbench/` imports `citation_check`, `source_ranges` or `resolve_source_range`** - I grepped - so
-this is not S133. I could not bisect them: they skip in a fresh worktree for want of `_drafts` and
-error at setup once it is supplied. **That is itself the finding - the review surface John reviews
-is only exercisable against live local state, and it has been broken and unverified since
-2026-08-16.** It moves from "Architect's leg, owed" to the round after S134.
-
-**TWO THINGS S133 PROVED THAT ARE WORTH KEEPING SEPARATE FROM THE VERDICT.**
-- **The check has real teeth where it matters.** Perturbing every one of the 511 stored ranges by
-  +/-200 or +/-1000 characters, or truncating its end, rejects **511 of 511**. The whole-file search
-  it replaced passed all of them. **The range is now load-bearing for the first time.**
-- **What it still does not constrain is EXTENT in the widening direction.** A range extended 500
-  characters past its end still passes for 491 of 511, because containment does not care what else
-  the span holds. **That matters for `docs/source-extents.md`'s end state**: the moment `quoted_text`
-  is dropped and the text is derived FROM the range, an over-wide range silently serves a
-  neighbouring row. **Do not drop the stored copy until extent is checked, not just containment.**
-
-
-**M20-S132 IS ACCEPTED (`85a8daa`, Architect, 2026-08-18), VERIFIED BY RECOMPUTATION.** I re-ran
-every booklet and diffed S130 ownership against S132 section by section: **exactly 6 sections
-changed, all six the Schedule D worked examples, all `rejected -> default_form`, and nothing else in
-the corpus moved at all.** Rejections **29 -> 23**, Schedule D **6 -> 0**, Form 1116 **21 -> 21**,
-Schedule A 2 -> 2. Per-document `line_anchored` unchanged on all 12, still summing to **288**.
-**20 passed** across S128/S129/S130/S132; `check_ascii` OK; `git diff --check` clean.
-- **The three-way rule is right and the fix is minimal.** Case 2 did not regress, which was the
-  risk I named in the spec.
-- **The mechanism Codex added that I did not spec is the load-bearing one and it is correct:** a
-  document mention inside a LINE heading is not an ownership boundary. *"Lines 1a and 8a-
-  Transactions Not Reported on Form 8949"* mentions Form 8949 while remaining Schedule D's own line
-  instruction. Without that, case 3 could never fire under a line heading.
-- **`foreign_owner_rejected` is the only rejection reason in the frame**, so reassigning every
-  section's rejection cannot silently drop a different rejection class. I checked before accepting.
-
-**HEADING EXTRACTION IS FINISHED. 288 OF 449, AND THE REMAINING GAP IS NOT REACHABLE BY FINDING MORE
-HEADINGS.** Per document: `form_1040` 41, `form_1116` 17, `form_2441` 20, `form_6251` 37,
-`form_8949` 4, `schedule_1` 52, `schedule_1a` 11, `schedule_2` 38, `schedule_3` 29, `schedule_a` 22,
-`schedule_b` 5, `schedule_d` 12. **Against PDF-deterministic 255, with no model call.** S130 added
-208 sections for +1 anchor - charts, worksheets and back matter, which is document coverage for the
-stage-2 read and was never going to be line anchors. **Do not spec another heading round.**
-
-**THE ARTIFACT WE SEGMENT IS THE DAMAGED COPY, AND THIS IS THE DURABLE ACQUISITION FINDING.** We pay
-Mistral OCR to turn a PDF into markdown while the IRS publishes the same content as structured HTML
-we already download (`.cache/raw/2025/*.html`, since 2026-08-14). **Every structural defect of six
-rounds is an artifact of the OCR path**: injected `# Page N` markers at heading level 1, lost em
-dashes (`Example 1Basis Reported to the IRS`), and run-in labels arriving as undifferentiated bold -
-Schedule B's HTML tags exactly 7 `inlinehd` labels where the OCR emits 23 undifferentiated bold runs.
-**John's OCR eval was right and is simply OBE: it measured WORDS (99.0% of Schedule B's OCR words
-appear in the HTML) and segmentation depends on the distinction between KINDS of markup, which words
-cannot carry.**
-**DO NOT DELETE THE OCR PATH YET.** The lookup tables live in the PDF only - `2025 Tax Table`
-appears 0 times in the HTML against 13 in the OCR text, and the EIC tables are referenced but not
-reproduced. Check whether the IRS publishes those as their own pages first.
-
-**JOHN APPROVED THE ATTRIBUTION STAGE, 2026-08-18. IT IS THE NEXT ROUND AFTER M20-S133 AND ITS
-SPEC IS IN Queued.** Before speccing it I opened Schedule 1-A's 37 unreached cells, which I had
-never done. **The finding inverts the obvious design and it must be read before anyone writes that
-prompt.**
-
-**SCHEDULE 1-A'S CEILING IS ABOUT 30 OF 48, NOT 48, AND I HAVE BEEN QUOTING THE WRONG PRIZE.** I
-told John the attribution stage "reaches Schedule 1-A's remaining 37 cells." **The honest number is
-19.** Opening all 37 against the 69 sections the S132 frame owns for `schedule_1a_2025`:
-- **19 have governing prose that names no line** - `1`, `2b`, `2c`, `2d`, `4`, `7`, `9`, `15`, `17`,
-  `26`, `32`, `33`, `34`, `35`, `36a`, `36b` and the Part I MAGI entries. Their instruction is a
-  topic section stating the parameter: *"You can't deduct more than $25,000"*, *"$6,000 per
-  person"*, *"born before January 2, 1961"*, *"Married filing jointly-$150,000."*
-- **18 are arithmetic the IRS writes nothing for and never will** - `6`, `8`, `11`, `12`, `13`,
-  `14c`, `16`, `19`, `20`, `21`, `23`, `25`, `28`, `29`, `30`, `31`, `37`, `38` are *"Add lines 4c
-  and 5"*, *"Enter the amount from line 3"*, *"Multiply line 11 by $100"*. **The form face IS the
-  instruction.** This is the same ceiling that made Schedule D's 12 of 24 a full score.
-
-**MENTIONING A LINE AND GOVERNING A LINE ARE ANTI-CORRELATED IN THIS CHAPTER. THIS IS THE RESULT
-THAT DECIDES THE DESIGN.** I searched all 69 section bodies for each unreached cell:
-- **Every prose section that GOVERNS a line states its parameter and never names it.** All four
-  *"Maximum amount of deduction."* sections name exactly ONE line - **line 3** - and line 3 is the
-  one line none of them governs. It is the MAGI they all read FROM.
-- **Every cell that IS named in prose is named by something that does not govern it.** `Line 10.`'s
-  body reads *"Skip lines 11 and 12 and enter the amount from Schedule 1-A, line 7, on Schedule 1-A,
-  line 13"* - it governs line 10, stated in its HEADING, and mentions 7, 11, 12, 13, which it does
-  not. `Line 18.` and `Line 27.` are the identical shape. Worse, `1`, `31` and `34` "match" only
-  through **Schedule C line 31, Schedule F line 34 and Form 4137 line 1** - cross-form collisions,
-  the S116 defect again.
-- **So a line-reference miner over body prose would attribute all four max-deduction sections to
-  line 3, hand line 10's text to lines 7, 11, 12 and 13, and import three cross-form collisions -
-  while reaching NONE of the 19 cells that actually have prose.** It would score well and be wrong
-  in every instance.
-
-**THIS IS JOHN'S LINE-24/LINE-22 OBJECTION, MEASURED, IN THE ONE CHAPTER THAT IS THE WHOLE REMAINING
-GAP.** *"We have the example of line 24 referencing line 22 and the instructions for line 22 get
-jammed in."* `Line 10.` mentioning line 13 IS that example, in the live artifact. **His veto was not
-a worry about model quality; it is a property of how the IRS writes.**
-
-**KEEP THE MODEL, AND THE REMAINING GAP IS SCHEDULE 1-A.** On the four line-organised chapters the
-model is at CEILING - every cell whose chapter contains a `Line N` heading is found, and all 38
-unreached cells there are rollups and arithmetic the IRS writes nothing for. **Schedule 1-A carries
-the rest of the gap at 11 of 48**, and the S132 frame owns 69 sections for it of which only 11 carry
-a line token; the rest is topic prose (`Qualified Tips`, `Maximum amount of deduction.`).
-**Of its 37 unreached cells, 19 have governing prose and 18 are the same instruction ceiling - the
-breakdown and the design constraint it imposes are directly below.**
-**THE UNION OF BOTH MATCHERS IS OFF THE TABLE (John pushed back, and opening all four disagreements
-proved him right): it buys 2 real cells and imports 3 wrong attributions**, all three the S116
-cross-form collision still live in the baseline (`form_1040` 26, 31, 38 are Form 2441/8839/Schedule
-1-A references the model resolves correctly to `1e`, `1f`, `13b`).
-
-**`governs` IS ASKING TWO QUESTIONS AND ONLY ONE IS ANSWERABLE.** For `Line 4a.` it is a mechanical
-copy out of the heading and the model never gets it wrong; for `Qualified Tips` it is a SEMANTIC
-mapping to form lines, which needs the line inventory we deliberately withhold to keep the model
-cell-naive. Given no way to say *"this governs lines I may not name"*, the model filled the field
-with **93 distinct non-line values in three spellings**. **That is an under-specified field telling
-us so, not misbehaviour.** The fix is two stages and it keeps John's ruling intact - segmentation
-stays mechanical with `governs` constrained to a line token or EMPTY in the structured-output
-schema, and attribution becomes its own stage over already-bounded spans. Both are queued.
-
-**A CORRECTION I OWE, AND IT SHRINKS A ROUND I WAS ABOUT TO SPEC WRONG.** I wrote here that citation
-`ranges` are in TWO coordinate systems and that roughly half the shipped citations point at the wrong
-text. **Measured properly today: they are in ONE. 474 of 511 resolve as the schema already declares
-them** - half-open CHARACTER offsets into the acquired `.txt` read with universal newlines - and
-**none resolve as any system the schema does not declare.** My earlier split counted the same
-citations twice under two readings of the same numbers. **The data is consistent; the CONSUMERS are
-the hazard**, and that is what M20-S133 addresses.
-
-**CORRECTION I OWE JOHN, STILL STANDING: I TOLD HIM TWICE THAT SCHEDULE B GOES 0 -> 8 OF 8 AND THAT
-THIS WAS "THE WHOLE CASE FOR THIS DIRECTION." THE HONEST NUMBER IS 0 -> 5 LINE-LEVEL
-INSTRUCTIONS**, plus three attributed to a Part heading. The direction holds; the headline was
-overstated.
-
-**M20-S115 IS DELIVERED AND WAS NEVER ACCEPTED (`4f7abf9`, Codex, 2026-08-16). ARCHITECT MISS.** The
-review contract - `workbench/server.py`, `generated_review.py`, `review_defects.py`,
-`test_m20_s115.py` and the workbench front end - is on `main` and on the remote, unverified. It
-touches the surface John reviews, so it needs a LIVE check, not a test read. **That is the
-Architect's leg and it is owed before the review contract is trusted**, because John does not review
-while the contract keeps moving.
-
-**THREE JOHN RULINGS, 2026-08-16, STILL QUEUED AS WORK:** `filer_entry` needs a reason taxonomy
-(`derivation_failed` the defect vs `source_form_not_modelled` the scope fact); **`form_1040` 6b's
-decline is a PACKET DEFECT** - it declined for want of the Social Security Benefits Worksheet, which
-the graph contains, and *"we model the worksheets so that they can support the forms"*; and
-**ROUTING IS ITS OWN CONSTRUCT** - `schedule_d` 17 is flow control, so `election` must be validated
-until routing exists, or it keeps absorbing branches.
-
-**THE RED BASELINE IS 22, AND THE FULL SUITE SITS AT 28 - the difference is the six broken S115
-workbench cases, which are a defect awaiting a round, not an accepted red.** Confirmed by two
-independent full-suite runs on 2026-08-18. Eleven `tests/e2e/*_m15.py`, plus:
+**FULL SUITE RED BASELINE IS 22, AND THE SUITE SITS AT 28.** The difference is the six broken S115
+workbench cases - a defect awaiting a round, not an accepted red. Eleven `tests/e2e/*_m15.py`, plus
 `test_address_campaign_m15r::test_form_8949_cross_form_claims_resolve_exactly`,
 `test_field_identity_m16::test_schedule_2_raw_cache_reproduces_target_fields`,
 `test_m20_s71::test_real_candidate_node_labels_use_clean_text`,
@@ -220,123 +60,74 @@ independent full-suite runs on 2026-08-18. Eleven `tests/e2e/*_m15.py`, plus:
 `test_schedule_2_m16::test_schedule_2_part_i_raw_acroform_identity`,
 `test_schedule_d_extraction_m9::test_schedule_d_fixture_drafts_include_schema_valid_band_tables`,
 `test_extract_outline_m4::test_instruction_section_body_survives_deeper_heading`,
-`test_citation_cleanup_m18::test_real_citation_corpus_has_source_verified_cleanups`,
-`test_generated_review_m20::test_generated_review_keeps_form_and_instruction_slots_separate`,
-`test_generated_review_m20::test_generated_review_renders_resolved_external_sources_and_hides_sentinels`
-(the last four added 2026-08-18, each verified failing at `6522da4` in a clean worktree - all were
-always red and never recorded).
-**PLUS the six S115 workbench failures in BALL**, which are real and not baseline-by-right: they are
-a broken surface awaiting the live check, not an accepted red.
+`test_citation_cleanup_m18::test_real_citation_corpus_has_source_verified_cleanups`, and both
+`test_generated_review_m20` cases. **`test_generated_review_m20` line 1a is red for the reason in
+Queued below (W-2 box 1 versus `entered by filer`); do not silence it.**
+
+**STILL OWED, UNCHANGED:** the S115 review contract needs a LIVE check, not a test read - six cases
+die at `workbench/server.py:640` on `object_ref` and cannot be bisected because they skip without
+`_drafts` and error at setup with it. **That is the surface John reviews and it has been unverified
+since 2026-08-16.**
+
+**ONE THING FOR JOHN, STILL WAITING: applying the 99 verified citation ranges is a protected-set
+write and needs his yes.** Machine-derived, each independently verified, nothing else in the graph
+moves.
+
+**Durable findings from S128-S142 are now pinned in `PHASE_M20.md` section 4.2** - the OCR-damage
+acquisition finding, the mentioning-versus-governing result, Schedule 1-A's real ceiling, and the
+do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S142: SPLIT THE MULTI-LINE BLOCKS AT THEIR RUN-IN LABELS. HALF OF OUR "COVERAGE" IS ONE BLOCK
-HANDED TO SEVENTEEN CELLS.**
+**M20-S143: THE NARROWEST OWNER WINS. WHEN A LINE HAS BOTH A FAMILY SPAN AND A SPAN THAT OWNS IT
+ALONE, THE SINGULAR OWNER IS THE PRIMARY CITATION.**
 
-**M20-S141 IS ACCEPTED (`7130c05` + `428c901`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION.**
-Codex confirmed the spans from the artifact before touching code - exactly what ITEM 1 asked -
-naming `span_instructions_form_1040_2025_section_0136` as owning `17a` through `17z` and
-`..._0144` as owning `6a` through `6z`. **It is a projection defect, not an ownership gap, and the
-fix is honest: the span really does govern those lines.** My own count reproduces its numbers
-exactly: `form_1040` 77/199, `schedule_1` 61/73, `schedule_1a` 0/54, `schedule_2` 42/63,
-`schedule_3` 31/37. **211 of 426.** It also self-corrected a wrong test count in `428c901`.
+### ITEM 1 - THE RULE
 
-### THE 211 IS TWO DIFFERENT THINGS AND ONLY HALF OF IT IS WHAT WE WANTED
+`instruction_ids_by_line[line]` may hold several spans. **Order them so the primary citation
+(`instruction_citations[0]`) is the span whose `owner_lines` covers the FEWEST lines while still
+covering this line.** A family span (`owner_lines` of 26) is context; a span with
+`owner_lines == [this line]` is the instruction. **Do not drop the family span** - it keeps its
+place further down the list, exactly as ITEM 2 of S142 kept a block rather than fabricating a run.
 
-**Measured off `build_generated_document_cells`, counting how many cells share each citation:**
+**Break a tie between two equally narrow owners deliberately and say what you chose.** Schedule 1
+line `1` has two spans both owning `['1']`: `section_0060` is 13 characters (`#### Line 1` and
+nothing) and `section_0068` is 30,083 (the State and Local Income Tax Refund Worksheet). **Report
+what line 1 ends up showing.** A 13-character heading is not an instruction and a 30,000-character
+worksheet may not be one either; I want to see it before we rule.
 
-| document | covered | line-level | block-level (shared) |
-| --- | --- | --- | --- |
-| `form_1040_2025` | 77 | 55 | 22 |
-| `schedule_1_2025` | 61 | 26 | **35** |
-| `schedule_2_2025` | 42 | 15 | **27** |
-| `schedule_3_2025` | 31 | 10 | **21** |
-| **total** | **211** | **106** | **105** |
+### ITEM 2 - THE RUN-IN SPLIT STILL APPLIES ON TOP
 
-**One Schedule 1 block is handed to 23 cells. One Schedule 2 block to 17. One Schedule 3 block to
-14.** A reviewer opening Schedule 2 line `17f` is shown a block that opens:
+S142's split is unchanged and runs against whichever span wins. A family span that survives as
+primary because no narrower owner exists must still be split at its run-in labels.
 
-    ## Lines 17a Through 17z / ### Other Additional Taxes
-    **Line 17a.** Recapture of the following credits. 1. Amounts from Form 4255, column (j), ...
+### ITEM 3 - REPORT PER LINE, NOT PER CELL
 
-**That is line 17a's text under line 17f. It is the exact failure John named at the start of this
-direction** - *"line 24 references line 22 and the instructions for line 22 get jammed in."* We did
-not import it from a model; we built it ourselves by projecting a block onto every line it names.
+**The metric is DISTINCT LINES.** Per document, before and after: covered lines, lines owning their
+own text, lines sharing a block with another line. **151 of 189 is the figure to beat.** Report the
+per-cell count too if you like, but the headline is lines.
 
-### ITEM 1 - THE SPLIT POINT IS ALREADY IN THE TEXT
+### ITEM 4 - OPEN THREE BEFORE AND AFTER
 
-**Do not invent a segmentation.** The blocks carry the run-in labels verbatim, and they are the same
-`inlinehd` construct S128-S132 already proved:
-
-    **Line 17a.** Recapture of the following credits.
-    **Line 1a. Excess advance premium tax credit repayment.**
-    ##### Line 24a          ### Line 13b
-
-**Cut a multi-line block at these boundaries and give each cell the run for ITS line.** Report the
-label forms you found from the artifact - **quote them** - before matching on them.
-
-### ITEM 2 - A LINE WITH NO RUN IN THE BLOCK KEEPS THE BLOCK
-
-If a block names `17a` through `17z` but only labels a few, **the unlabelled lines keep the whole
-block and are still counted as block-level.** **Do not fabricate a run that is not there**, and do
-not drop the citation - a block is worse than a line and much better than nothing.
-
-### ITEM 3 - REPORT THE SPLIT, NOT THE TOTAL
-
-**Line-level and block-level, per document, before and after.** The headline number is
-**line-level**, and 106 is the figure to beat. **A rise in the total with no rise in line-level is
-not progress** - say so plainly if that is what happens.
+Quote the projected text for `8j`, `24z` and one Schedule 1 line of your choosing, before and after.
+**A count that rises while the text gets worse is not progress**, and only the artifact shows that.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
 - **No draft regeneration or hand-edit**, no promoted-artifact write, no review-contract change.
-- **Do not drop a block citation** to make the line-level ratio look better.
+- **Do not drop a family citation** to make the ratio look better.
+- **Do not derive ownership from line references in prose.** See `PHASE_M20.md` 4.2 - it scores well
+  and is wrong in every instance. Ownership comes from `owner_lines` and headings only.
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **The run-in label forms quoted from the artifact** before any matching code.
-- **Line-level and block-level counts per document, before and after.**
+- **Per-line counts per document, before and after**, and the three quoted cells from ITEM 4.
 - **The 1040 gap ceiling guard stays `<=`** and does not grow.
 - **Focused workbench, API and e2e sets green** against their known reds.
-- **NO FULL SUITE FROM THE WORKER OR THE ARCHITECT THIS ROUND** - see Standing operational notes;
-  the duplicate runs have cost more than they caught. The Worker's focused sets plus the
+- **NO FULL SUITE FROM THE WORKER OR THE ARCHITECT THIS ROUND.** The Worker's focused sets plus the
   Architect's recomputation are the check.
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
-
-**CODEX STATUS: COMPLETE.** The workbench projection now splits a shared instruction span at
-singular run-in labels already present in the draft text. It keeps the original full span for an
-owner with no individual label and emits a stable projection-local citation id with the source
-span id for a labelled run. No draft, promoted artifact, review state, model call, or network
-write was made.
-
-**ARTIFACT LABELS READ BEFORE MATCHING:** `**Line 17a.**`, `**Line 1a. Excess advance premium tax
-credit repayment.**`, `##### Line 24a`, and `### Line 13b`. Family headings such as
-`## Lines 17a Through 17z` are excluded from split points.
-
-**CELL-SHARING RECOMPUTATION** (primary `instruction_citations[0]` per covered cell; a citation
-shared by one cell is line-level, shared by multiple cells is block-level):
-
-| document | before line | before block | after line | after block |
-| --- | ---: | ---: | ---: | ---: |
-| `form_1040_2025` | 55 | 22 | 55 | 22 |
-| `schedule_1_2025` | 26 | 35 | 31 | 30 |
-| `schedule_2_2025` | 15 | 27 | 39 | 3 |
-| `schedule_3_2025` | 10 | 21 | 29 | 2 |
-| **total** | **106** | **105** | **154** | **57** |
-
-The covered-cell total stays 211; line-level coverage rises by 48 and block-level coverage falls
-by 48. The 1040 gap remains under its non-increasing ceiling.
-
-**RAN:**
-- `.venv/Scripts/python.exe -m pytest tests/test_m20_s142.py -q` -> **3 passed, 1 warning in 0.13s**.
-- `.venv/Scripts/python.exe -m pytest tests/test_generated_review_m20.py::test_generated_review_s142_splits_run_in_labels_and_keeps_unlabelled_lines_shared -q` -> **1 passed in 7.34s**.
-- `.venv/Scripts/python.exe -m pytest tests/test_generated_review_m20.py -q` -> **9 passed, 1 failed in 46.55s**. The one failure is the known baseline line 1a expression expectation (`W-2 box 1` versus the live draft's `entered by filer`), not S142.
-- `.venv/Scripts/python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py -q` -> **12 passed in 254.98s (0:04:14)**.
-- `.venv/Scripts/python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> **6 passed, 1 xpassed in 164.77s (0:02:44)**.
-- `.venv/Scripts/python.exe tools/check_ascii.py` -> **ASCII check OK**.
-- `git diff --check` -> **clean**.
-- **NOT RUN:** full suite, per the round floor.
 
 ## Open for Architect
 
