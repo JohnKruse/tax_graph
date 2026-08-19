@@ -705,7 +705,7 @@ def _record_union_non_computation(
         "status": "outcome",
         "kind": kind,
         "form": str(plan.get("form") or ""),
-        "line": "",
+        "line": str(plan.get("line") or ""),
         "box": str(plan.get("box") or ""),
         "question": str(plan.get("question") or ""),
         "reason": str(plan.get("reason") or ""),
@@ -739,6 +739,12 @@ def _record_union_non_computation(
     # and legacy form-line declarations, but do not turn a declined outcome
     # into review_gaps. A resolver failure is an observation for this round.
     if kind == "filer_entry":
+        # A named information-return source is still filer_entry: the filer
+        # supplies the record, but the review surface must retain its printed
+        # provenance.  The target line is the only line identity available
+        # when the source is a box rather than a source-form line.
+        if outcome["form"] and outcome["box"] and not outcome["line"]:
+            outcome["line"] = str(cell.get("line_anchor") or "")
         outcome["resolved_source_id"] = "filer_entry"
         return
     if kind == "not_derivable":

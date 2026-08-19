@@ -178,6 +178,52 @@ correct; deleting the assertion is not.**
   it exceeds your launcher cap; write `NOT RUN` and I will run it.
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
+**M20-S147 WORKER STATUS (2026-08-20).** The model-owned outcome union now accepts optional
+printed `form`/`line`/`box` identity on `filer_entry`, preserves it in the outcome record, and
+projects a named input as `line 1a = W-2 box 1`. A quote-only fallback keeps the current legacy
+draft reviewable until that draft is regenerated; it parses only the model-supplied verbatim quote
+and never edits an artifact. No draft or graph artifact was edited.
+
+**BEFORE ARTIFACT (opened, unchanged):** line 1a outcome had `kind: filer_entry`, empty `form`,
+empty `line`, empty `box`, quote `Enter the total amount from Form(s) W-2, box 1. If a joint
+return, also include your spouse's income from Form(s) W-2, box 1.`, and
+`resolved_source_id: filer_entry`.
+
+**LIVE DERIVATION EVIDENCE:** The permitted `derive_cells_s25.py` path uses the separate bounded
+expression schema. Its existing green guard requires that schema to expose no source identity, so
+the live row cannot be claimed as carrying the old outcome fields. Run 1 wrote its report before
+the launcher killed the process at 604015 ms; the command exited 124. Run 2 used the supported
+broken-only mode to finish within the cap. Both runs stayed on `form_1040_2025` and wrote outside
+the repository.
+
+| arm | derived | repaired | errored | skipped | truncation retries/recovered/exhausted |
+| --- | ---: | ---: | ---: | ---: | --- |
+| S146 high, cap 4000 | 50 | 1 | 7 | - | not in report |
+| S146 null, cap 4000 | 50 | 3 | 5 | - | not in report |
+| S146 high, cap 8000 + retry | 50 | 2 | 6 | - | not in report |
+| S147 run 1, all | 51 | 3 | 4 | 1 | 1 / 1 / 0 |
+| S147 run 2, broken merge | 55 | 0 | 3 | 1 | 1 / 1 / 0 |
+
+Run 1 line 1a remained `model_stated_input`, expression `REQUIRE_INPUT` with `line: 1a`,
+rendered `require_input(line 1a)`, and the W-2 box 1 quote. Run 2 preserved that same row from
+the prior report. The `derived >= 50` floor holds and no truncation was exhausted, but the live
+path did not populate `form`/`line`/`box`; the documented line 1a red is therefore **still open for
+Architect** pending a decision about the separate-schema boundary. The union/projection code is
+covered by the focused tests below and is ready to produce the named fields when that pipeline
+regenerates the draft.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s113.py -q` -> **11 passed**.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s115.py -q` -> **5 passed**.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_derive_cells_m20.py -q` -> **80 passed**.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> **4 passed**.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_m17.py -q` -> **11 passed**.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q` -> **25 passed, 1 failed**; line 1a passed, the pre-existing line 1e assertion remains red.
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py -q` -> **20 passed, 1 failed**; the deeper-heading assertion remains red.
+**NOT RUN:** `.venv\Scripts\python.exe -m pytest tests/e2e -q` -> e2e exceeds the Worker launcher cap; Architect runs it.
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+**RAN:** `git diff --check` -> **clean**.
+**RAN:** protected graph set diff check -> **byte-identical**.
+
 ## Open for Architect
 
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were

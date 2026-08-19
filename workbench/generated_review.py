@@ -812,6 +812,19 @@ def _outcome_expression(
         formula.get("line_anchor")
     )
     if outcome_kind == "filer_entry":
+        form, line, box = _filer_entry_source(outcome, formula, target_ref)
+        if form and (line or box):
+            source_label = _source_label(
+                "information_return" if box else "form_line",
+                form,
+                line,
+                box,
+            )
+            return {
+                "kind": "input",
+                "text": f"line {target_ref} = {source_label}",
+                "source": {"kind": "input", "text": source_label},
+            }
         return {
             "kind": "input",
             "text": f"line {target_ref} = entered by filer",
@@ -907,6 +920,19 @@ def _source_expression(formula: dict[str, Any], target: str, target_cell: dict[s
     box = str(formula.get("box") or "").strip()
     target_ref = _normalize_anchor(target_cell.get("official_ref")) or _normalize_anchor(formula.get("line_anchor"))
     if source_kind == "filer_entry":
+        form, line, box = _filer_entry_source(formula, formula, target_ref)
+        if form and (line or box):
+            source_label = _source_label(
+                "information_return" if box else "form_line",
+                form,
+                line,
+                box,
+            )
+            return {
+                "kind": "input" if formula.get("status") == "complete" else "review_gap",
+                "text": f"line {target_ref} = {source_label}",
+                "source": {"kind": "input", "text": source_label},
+            }
         return {
             "kind": "input" if formula.get("status") == "complete" else "review_gap",
             "text": f"line {target_ref} = entered by filer",
@@ -1033,6 +1059,28 @@ def _source_label(source_kind: str, form: str, line: str, box: str) -> str:
     if source_kind == "information_return" and box:
         return f"{form_label} box {box}"
     return f"{form_label}, line {line}" if line else form_label
+
+
+def _filer_entry_source(
+    outcome: dict[str, Any],
+    formula: dict[str, Any],
+    target_ref: str,
+) -> tuple[str, str, str]:
+    """Return named filer-input identity, recovering legacy quote-only records."""
+    form = str(outcome.get("form") or formula.get("form") or "").strip()
+    line = str(outcome.get("line") or formula.get("line") or "").strip()
+    box = str(outcome.get("box") or formula.get("box") or "").strip()
+    if form and (line or box):
+        return form, line, box
+    quote = str(outcome.get("quote") or formula.get("quote") or "")
+    match = re.search(
+        r"\bForm(?:\(s\))?\s+(?P<form>[A-Za-z0-9-]+),\s*box\s+(?P<box>[0-9]+[A-Za-z]?)\b",
+        quote,
+        re.IGNORECASE,
+    )
+    if match:
+        return match.group("form"), target_ref, match.group("box")
+    return form, line, box
 
 
 def _meaningful_reference(value: str) -> bool:

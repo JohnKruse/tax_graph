@@ -51,6 +51,7 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
             "question",
             "options",
             "form",
+            "line",
             "box",
             "reason",
             "quote",
@@ -130,7 +131,11 @@ def formula_micro_schema(*, root: str | Path | None = None) -> dict[str, Any]:
             },
             "form": {
                 "type": ["string", "null"],
-                "description": "Printed source form for kind information_return.",
+                "description": "Printed source form named by a filer-supplied input.",
+            },
+            "line": {
+                "type": ["string", "null"],
+                "description": "Printed source line, when the named input has one.",
             },
             "box": {
                 "type": ["string", "null"],
@@ -260,26 +265,27 @@ def validate_formula_plan(
             for source_line in source_lines:
                 _validate_source_line(source_line)
             _validate_source_line_arity(str(plan["operation"]), len(source_lines))
-            if any(plan.get(name) is not None for name in ("question", "options", "form", "box", "reason")):
+            if any(plan.get(name) is not None for name in ("question", "options", "form", "line", "box", "reason")):
                 raise MicroExtractionError("computation response contains non-computation fields")
             return
         if kind == "filer_entry":
-            _require_null_fields(plan, ("operation", "source_lines", "question", "options", "form", "box", "reason"))
+            _require_null_fields(plan, ("operation", "source_lines", "question", "options", "reason"))
+            _validate_filer_entry_source(plan)
             return
         if kind == "information_return":
             _require_non_empty_string(plan, "form")
             _require_non_empty_string(plan, "box")
-            _require_null_fields(plan, ("operation", "source_lines", "question", "options", "reason"))
+            _require_null_fields(plan, ("operation", "source_lines", "question", "options", "line", "reason"))
             if not _is_information_return_box(str(plan["box"])):
                 raise MicroExtractionError("information_return box must be a printed box number")
             return
         if kind == "election":
             _require_non_empty_string(plan, "question")
             _validate_election_options(plan.get("options"), allowed_spans)
-            _require_null_fields(plan, ("operation", "source_lines", "form", "box", "reason"))
+            _require_null_fields(plan, ("operation", "source_lines", "form", "line", "box", "reason"))
             return
         _require_non_empty_string(plan, "reason")
-        _require_null_fields(plan, ("operation", "source_lines", "question", "options", "form", "box"))
+        _require_null_fields(plan, ("operation", "source_lines", "question", "options", "form", "line", "box"))
         return
 
     # The source classifier was a separate pre-S111 call. Accept its shape in
@@ -364,6 +370,18 @@ def _require_non_empty_string(plan: dict[str, Any], name: str) -> None:
     value = plan.get(name)
     if not isinstance(value, str) or not value.strip():
         raise MicroExtractionError(f"{name} must be a non-empty string for kind {plan.get('kind')}")
+
+
+def _validate_filer_entry_source(plan: dict[str, Any]) -> None:
+    """Validate optional printed source identity on a filer-supplied outcome."""
+    values = {name: plan.get(name) for name in ("form", "line", "box")}
+    for name, value in values.items():
+        if value is not None and (not isinstance(value, str) or not value.strip()):
+            raise MicroExtractionError(f"{name} must be null or a non-empty string for kind filer_entry")
+    if any(value is not None for value in values.values()) and values["form"] is None:
+        raise MicroExtractionError("filer_entry source identity requires form")
+    if values["box"] is not None and not _is_information_return_box(str(values["box"])):
+        raise MicroExtractionError("filer_entry box must be a printed box number")
 
 
 def _is_information_return_box(value: str) -> bool:
@@ -455,14 +473,16 @@ def _formula_prompt(
             "Answer only from the supplied evidence. Do not use outside knowledge or infer a rule the packet does not state.",
             "If the evidence does not say enough to classify or derive the line, return kind not_derivable and explain why.",
             "Return exactly one kind: computation, filer_entry, election, information_return, or not_derivable.",
-            "Set every field that does not belong to the selected kind to null.",
+            "Set every field that does not belong to the selected kind to null. For filer_entry, "
+            "form, line, and box are source identity fields: populate the ones explicitly named "
+            "by the evidence instead of dropping them.",
             "For computation, return the closed operation, printed source_lines, and the verbatim quote.",
             "Use the form's printed line numbers in source_lines, never internal ids.",
             "For a printed numeric constant, include {\"constant\": number} in source_lines, not a fake line number.",
             "Set value_type to currency for dollar amounts and percentage for rates or decimal factors.",
             "For lookup branches, include the branch role on the constant object; use default for an unqualified branch and full filing-status names otherwise.",
             "For SUBTRACT and DIVIDE, source_lines are in computation order: the value being reduced comes first.",
-            "For filer_entry, use the kind only when the evidence says the filer enters or supplies the value; do not invent a calculation.",
+            "For filer_entry, use the kind only when the evidence says the filer enters or supplies the value; do not invent a calculation. If the evidence names a source form, line, or box, copy those printed values into form, line, and box. A W-2 box is a filer-supplied input and remains filer_entry.",
             "For information_return, return the printed form and box that the evidence names.",
             "For election, return the question and substantive options grounded in the evidence. Every option must include citation_refs using the supplied span ids, and one option_type must be escalate.",
             "For not_derivable, give a concise evidence-grounded reason.",

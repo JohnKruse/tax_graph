@@ -44,6 +44,7 @@ def _union_base(kind: str) -> dict[str, object]:
         "question": None,
         "options": None,
         "form": None,
+        "line": None,
         "box": None,
         "reason": None,
         "quote": _span().text,
@@ -75,6 +76,44 @@ def test_non_computation_branches_are_grounded_terminal_outcomes(kind: str) -> N
         plan["reason"] = "The supplied evidence does not establish the applicable amount."
 
     validate_formula_plan(plan, spans=[_span()], root=ROOT)
+
+
+def test_filer_entry_preserves_a_named_information_return_source() -> None:
+    plan = _union_base("filer_entry")
+    plan.update({"form": "W-2", "line": "1a", "box": "1"})
+
+    validate_formula_plan(plan, spans=[_span()], root=ROOT)
+
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form-1040.pdf",
+        text=_span().text,
+        text_path=ROOT / "tests" / "fixtures" / "form_1040.txt",
+    )
+    stats = {
+        "review_gaps": [],
+        "outcomes": [],
+        "outcome_counts": {"filer_entry": 0, "election": 0, "information_return": 0, "not_derivable": 0},
+        "non_formula_cells": [],
+        "resolved_source_addresses": [],
+    }
+    cell = {"target_cell_id": "cell_1a", "line_anchor": "1a", "label": "W-2 box 1"}
+    _record_union_non_computation(
+        document,
+        OutlineNode("root_line_1a", "line", _span().text, line_anchor="1a"),
+        plan,
+        [_span()],
+        line_index={},
+        stats=stats,
+        cell=cell,
+    )
+
+    assert stats["outcomes"][0]["form"] == "W-2"
+    assert stats["outcomes"][0]["line"] == "1a"
+    assert stats["outcomes"][0]["box"] == "1"
+    assert stats["outcomes"][0]["resolved_source_id"] == "filer_entry"
 
 
 def test_election_requires_escalation_and_supplied_citations() -> None:

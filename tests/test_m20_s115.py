@@ -30,6 +30,14 @@ def test_s113_outcomes_project_as_their_own_review_kinds() -> None:
     formula = {"line_anchor": "1a", "label": "Total amount from Form(s) W-2, box 1"}
 
     filer = _outcome_expression("filer_entry", formula, {}, "target", target, None)
+    named_filer = _outcome_expression(
+        "filer_entry",
+        formula,
+        {"form": "W-2", "line": "1a", "box": "1"},
+        "target",
+        target,
+        None,
+    )
     information = _outcome_expression(
         "information_return",
         formula,
@@ -56,6 +64,8 @@ def test_s113_outcomes_project_as_their_own_review_kinds() -> None:
     )
 
     assert filer["kind"] == "input"
+    assert named_filer["text"] == "line 1a = W-2 box 1"
+    assert named_filer["source"]["text"] == "W-2 box 1"
     assert information["kind"] == "imported"
     assert election == {"kind": "reference", "text": "Where should the overpayment go?"}
     assert not_derivable["kind"] == "review_gap"
