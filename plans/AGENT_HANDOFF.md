@@ -21,9 +21,14 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: ARCHITECT. M20-S134 IS VERIFIED AND ACCEPTED. M20-S135 IS LOCALLY RE-VERIFIED IN `062b125`
-AND AWAITS ARCHITECT ACCEPTANCE:
-114 promoted citations are checked by nothing and the report does not say so.**
+**BALL: CODEX. M20-S135 IS ACCEPTED. M20-S136 UNDER CURRENT ROUND GIVES THE 99 RANGEABLE CITATIONS
+THEIR RANGES.**
+
+**THE CITATION WORK IS FOUR ROUNDS OLD AND HAS PAID FOR ITSELF.** S133 built the accessor and
+deleted the substrate fallbacks; S134 made the check exact over the range LIST and caught two
+fabricated records; S135 exposed the 114 that were checked by nothing and made every proposed repair
+self-verifying. **511 of 511 verify, a range shifted 200 characters is rejected, and the corpus
+accounting closes at 629.** What remains is a mechanical backlog, not a design question.
 
 **THE CITATION RANGE IS NOW LOAD-BEARING, WHICH IT WAS NOT THREE ROUNDS AGO.** S133 built the
 accessor and deleted the substrate fallbacks; S134 made the check exact over the range LIST. Between
@@ -216,109 +221,74 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S135: 114 PROMOTED CITATIONS ARE VERIFIED BY NOTHING AND THE REPORT DOES NOT SAY SO; AND A
-PROPOSED REPAIR THAT FAILS THE CHECKER IS A TRAP.**
+**M20-S136: GIVE THE 99 CITATIONS THEIR RANGES. THE BACKLOG IS MECHANICAL AND NEEDS NO MODEL.**
 
-**M20-S134 IS VERIFIED AND ACCEPTED (`4f858e1`, Architect, 2026-08-18), AND THE FULL SUITE IS IN.**
-**28 failed, 1023 passed, 8 skipped, 1 xfailed, 1:09:40** - and **Codex's independent run agrees to
-the test: 1,023 / 28 / 1:08:41 (`ffc6d3f`).** I diffed my S133 and S134 failure sets rather than
-comparing counts: **the set difference is exactly one test, `test_extract_m4::
-test_deterministic_checks_flag_missing_line_and_bad_quote`, cleared, and NOTHING new went red.**
-**The 28 close arithmetically: 22 accepted baseline + the 6 broken S115 workbench cases.**
-I reproduced every claim independently: **511 of 511 pass by per-range join containment**,
-`_ordered_tokens_in_span` is gone, `checked=515`, `mismatches=0`, **40 short fragments and 4 large
-gaps - the same numbers I measured before speccing the round**, and the real-citation perturbation
-guard rejects a stored range shifted 200 characters. **The round did what it was asked.**
+**M20-S135 IS ACCEPTED (`062b125`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION.** The report
+now carries all 114 as `unverifiable_citations`, the CLI prints
+`checked: 515 (unverifiable: 114)`, and **the accounting closes exactly: 511 ranged + 114
+unverifiable + 4 computed-table = 629.** I re-derived it rather than reading the count.
+**The repair evidence is the part that matters and it holds:** I applied each emitted
+`correct_ranges` + `repair_quote` and re-ran the checker - **both pass**, and both are byte-identical
+to the repairs I had computed independently before speccing the round, pipe-split and all. Codex's
+own full suite: **28 failed, 1026 passed** - baseline, with 3 new tests.
 
-**AND IT FOUND A SECOND FABRICATED CITATION THAT IS WORSE THAN THE FIRST.**
-`cite_1040_qdcgt_line_4` spells its 21-character quote *"4. Add lines 2 and 3."* out of **five
-fragments scraped from five locations spanning 550434 to 556643 - over six kilobytes** - including
-the bare word `and` and the bare digit `2` lifted separately. The real text sits at 157403. **That
-is not a citation, and no text-level check would ever have found it; the gap telltale did.**
+**ITEM 1'S SECOND HALF WAS NOT DONE - the round exposed the 114 but never classified them, and the
+spec asked it to report which they were. I did it myself; it is a measurement, and it is Architect
+work by the AGENTS.md rule anyway.** The answer is better than expected and **it removes a question
+I had queued for John:**
 
-### ITEM 1 - THE 114 THAT ARE CHECKED BY NOTHING
+- **98 of the 114 are locatable VERBATIM in the acquired `.txt` right now.** 69 of the 1040 publink
+  records, **all 22** `form_2441_2025` and **all 7** `form_13614_c_2025`. A range is derivable
+  mechanically. **No model, no network, no judgment.**
+- **15 are locatable only in the acquired HTML** - they cite text the OCR path lost. **That is the
+  acquisition finding arriving from a completely different direction: citations, not headings.**
+- **1 is locatable in the `.txt` once the OCR's markdown emphasis is stripped** -
+  `cite_instruction_form_1040_2025_en_us_2025_publink1000106118` matches for 274 of 288 characters
+  and then hits `*Tax Topic 756*` where the quote says `Tax Topic 756`. **OCR damage again.**
+- **NONE is a permanent exempt class and NONE is fabricated.** The whole 114 is a backlog.
 
-**Measured by the Architect, 2026-08-18: the promoted graph holds 629 citations. 625 carry a
-`quoted_text`. Only 511 of those carry ranges.** `check_graph_citations` passes `require_ranges`
-false and `continue`s past the other **114** - they are not checked, not counted, and **not
-reported**. `report.checked` says 515 and reads like full coverage of a 629-citation corpus.
-**Before S133 they were at least searched for; now they are verified by nothing at all, and nothing
-says so.** Most are the `cite_instruction_form_1040_2025_en_us_2025_publink...` records.
+### ITEM 1 - THE DETERMINISTIC RANGER
 
-**THE MODE ITSELF IS FINE AND SHOULD STAY** - turning the graph check red on 114 legacy records
-would be a false alarm, and Codex was right not to. **What must change is that they stop being
-invisible:** the report carries an explicit unverifiable count and list, and the CLI prints it.
-**A failure that reports itself is acceptable; a failure that hides is not** - AGENTS.md, John,
-2026-08-11.
+For each unverifiable citation, locate its quote in the acquired `.txt` and emit the ranges that
+make it verify. **Reuse what already exists** - `_contiguous_quote_ranges` finds the span and
+`_split_table_separator_ranges` already omits table pipes. **Generalize that splitter to markdown
+emphasis** (`*`, `**`, `_`) rather than writing a second one; the 16th citation is the case that
+needs it, and the pipe case proves the shape works.
 
-**AND THE 114 NEED JOHN'S RULING, WHICH IS ONE HE HAS ALREADY GIVEN IN ANOTHER PLACE.** This is
-exactly the `filer_entry` distinction from 2026-08-16: **`derivation_failed` (a defect) versus
-`source_form_not_modelled` (a scope fact).** Either these publink citations are supposed to acquire
-ranges - pipeline work, and they are a backlog - or they never will, and they are a permanent
-exempt class that must be named as such. **Report which, do not decide it.**
+### ITEM 2 - EMIT A PATCH, APPLY NOTHING
 
-### ITEM 2 - A PROPOSED REPAIR MUST ITSELF VERIFY
+**`graph/2025/citations/` is the protected set and this round does not write to it.** Emit one
+artifact listing, per citation, its id and its proposed ranges. **Every entry must be proven to pass
+`check_citation_integrity` when applied** - the S135 self-verifying test is the pattern, and it is
+the floor. **A proposed range that does not verify is the defect S135 just fixed; do not
+reintroduce it.**
 
-**Neither `correct_ranges` the round emits would pass the checker, and I tested both.** They are
-right about WHERE the text is and wrong as a remedy, because in both cases the stored quote is not
-verbatim source text:
-- `cite_schedule_d_carryover_line_13`'s quote ends in a period **the source does not have.** That is
-  why the original author stitched `75265..75268` = `"14."` - to manufacture it.
-- `cite_1040_qdcgt_line_4`'s quote also drops a table pipe: the source reads `4. | Add lines 2 and 3`.
+### ITEM 3 - THE 15 HTML-ONLY ONES ARE NOT YOURS TO SOLVE
 
-**Verified repairs, which I ran:**
-
-    cite_schedule_d_carryover_line_13   ranges -> [62388..62452]                  + drop the trailing period
-    cite_1040_qdcgt_line_4              ranges -> [157403..157405, 157407..157425] + drop the trailing period
-
-**So a provenance finding must either emit ranges that VERIFY, or say plainly that the quote itself
-blocks the repair and why.** A finding that hands the next agent a fix which fails the check it
-came from is worse than no finding.
-
-### ITEM 3 - DO NOT APPLY THE REPAIRS
-
-**Both need a `quoted_text` edit inside the protected set and that is John's call, not this round's.**
-Note for whoever writes it up: dropping an authored period that the source never contained is the
-**S107 direction** (make hand-authored text say what the document says), not the S106 direction that
-got a rework rejected (truncating a real quote to fit a wrong range). **Say which one it is when you
-ask.**
+**Report them as a named list and stop.** They cannot get a `.txt` range because the text is not in
+the `.txt`. They are evidence for the source-of-record question, not a defect to patch. **Do not
+invent an HTML coordinate system for them in this round** - that decision is not made yet, and one
+coordinate system is the whole point of S133.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **No re-authoring of `graph/2025/citations/`** and no `quoted_text` edit.
-- **Do not make the graph check fail on the 114.** Count them, name them, print them.
-- **Do not reintroduce a substrate or whole-file fallback for them.**
+- **No write to `graph/2025/citations/`**, no `quoted_text` edit, protected set byte-identical.
+- **No second locator implementation.** Extend the existing splitter.
+- **No HTML fallback and no second coordinate system.**
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **The report carries the unverifiable citations explicitly** - count and ids - and the CLI prints
-  the number next to `checked`.
-- **All 629 accounted for in one place and the arithmetic closes:** 511 quoted-and-ranged,
-  114 quoted-with-no-ranges, 4 computed-table (ranged, no quote by schema rule). **511 + 114 + 4 =
-  629, so there is no fourth bucket to discover** - the report must simply show all three.
-- **Every `correct_ranges` a finding emits passes the checker when applied**, or the finding states
-  why the quote blocks it. **Prove it with a test that applies its own proposed repair.**
-- **Full suite against the baseline** - at least 22 red; see BALL.
-- **Protected set byte-identical**, `check_ascii` OK, `git diff --check` clean.
+- **99 citations get proposed ranges** - 98 verbatim plus the emphasis one - **and every one is
+  proven to verify when applied**, by a test that applies its own output.
+- **The 15 HTML-only records are named**, and the arithmetic still closes to 629.
+- **`unverifiable` would fall 114 -> 15 if the patch were applied** - report that number, do not
+  apply it.
+- **Full suite against the baseline of 28.**
+- **`check_ascii` OK**, `git diff --check` clean.
 
-**WORKER COMPLETION (2026-08-19; M20-S135, awaiting Architect acceptance).** The graph citation
-report preserves non-failing legacy mode while exposing all 114 no-range citations as
-`unverifiable_citations`; the CLI prints `checked: 515 (unverifiable: 114)` and every id. The
-accounting closes: 511 ranged + 114 unverifiable + 4 computed-table = 629. The two S134
-provenance findings now carry a source-verifiable `repair_quote` and a `repair_blocker`; applying
-each proposed range set and quote passes the checker. No citation artifacts were edited.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check.py tests\test_acquire_citation_check_m134.py tests\test_acquire_citation_check_m135.py tests\test_source_ranges_m133.py tests\test_worksheet_harvest_m20.py tests\test_cli.py tests\test_extract_m4.py -q` -> **64 passed in 39.40s**.
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_acquire_citation_check_m135.py tests\test_acquire_citation_check_m134.py -q` -> **6 passed in 6.78s**.
-**RAN:** `.venv\Scripts\python.exe -m pytest -q` -> **28 failed, 1026 passed, 8 skipped, 1 xfailed**; the known baseline reds remain and no M135 test failed.
-**RAN:** `.venv\Scripts\python.exe -c "from pathlib import Path; from tax_graph.acquire.citation_check import check_graph_citations; root=Path('.').resolve(); r=check_graph_citations(year='2025', raw_store=root/'.cache/raw', root=root); print(r.checked, len(r.unverifiable_citations), len(r.range_telltales), len(r.provenance_findings), r.checked + len(r.unverifiable_citations))"` -> **515 114 511 2 629**.
-**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py tax_graph\acquire\citation_check.py tax_graph\cli.py tests\test_acquire_citation_check_m134.py tests\test_acquire_citation_check_m135.py plans\AGENT_HANDOFF.md` -> **ASCII check OK**.
-**RAN:** `git diff --check` -> **clean**.
-
-**WORKER RE-VERIFICATION (2026-08-19).** RAN the focused set with
-`PYTEST_DEBUG_TEMPROOT=.test_tmp_codex_s135` -> **64 passed, 1 warning in 43.01s**. RAN the
-real-corpus accounting -> **515 114 511 2 629**. RAN the scoped ASCII check -> **ASCII check OK**.
+**ARCHITECT'S LEG.** My own full suite over `062b125` started 06:57 and is not in yet. Also still
+owed and now overdue: **the six broken S115 workbench cases**, which have been red since 2026-08-16.
 
 ## Open for Architect
 
