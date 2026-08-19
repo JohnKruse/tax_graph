@@ -21,9 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S138 IS ACCEPTED IN SUBSTANCE. M20-S139 UNDER CURRENT ROUND FINISHES THE LAST
-WORKBENCH ASSERTION - and it is NOT stale-snapshot drift like the other three: the instruction for
-1040 line 1i really does exist in the acquired HTML and really does not reach the cell.**
+**BALL: CODEX. M20-S139 IS ACCEPTED. M20-S140 UNDER CURRENT ROUND CHASES ONE JOIN: the draft
+ALREADY holds an instruction section for 39 lines whose cells say "Not yet ingested". My S139
+diagnosis was wrong and the correction is in Current round.**
 
 **THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
 deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
@@ -230,87 +230,80 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S139: FINISH THE WORKBENCH TEST. ONE ASSERTION LEFT, AND IT IS *NOT* THE SAME CLASS AS THE
-OTHER THREE - DO NOT RELAX IT THE SAME WAY.**
+**M20-S140: THE INSTRUCTION SECTIONS ARE ALREADY IN THE DRAFT AND NEVER BECOME THE CITATIONS THE
+CELL READS. ONE JOIN, 39 OF 54 LINES.**
 
-**M20-S138 IS ACCEPTED IN SUBSTANCE (`44af3e9`, Architect, 2026-08-19).** All three named cases were
-converted to invariants correctly and two of the three test files are fully green -
-`test_workbench_cells_api_m17` and `test_workbench_write_api_m15`, **16 passed** in my own run. The
-invariants have teeth: an unrecognised policy, a miscount, a non-question decision or a blank
-expression all still fail. **The line 1a assertion now passes.**
+**M20-S139 IS ACCEPTED (`2efcd46` + `6a67ab7`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION.**
+I re-derived the frame myself: **54 frame-owned line tokens for `form_1040_2025`**, matching. The
+relaxed assertion states its contract, and **the `xfail` is the right shape** - it asserts the join
+itself (`line_1i.get("instruction_citations")`), not a wording snapshot, so it flips to `xpass` the
+day the join works. Codex's full suite: **22 failed, 1036 passed, 2 xfailed** - the baseline reached
+22 exactly as predicted, with the failure SET unchanged. My own quiet-window run is still going and
+I will amend if it disagrees.
 
-**BUT `test_workbench_v2_m17` IS STILL RED, ONE ASSERTION FURTHER DOWN, AND NEITHER OF US SAW IT
-BECAUSE THE 1a FAILURE MASKED IT.** Line 1i's `.cell-instruction` expects
-*"Nontaxable Combat Pay Election"* and renders *"Not yet ingested - the form instruction for this
-line will appear here."*
+### MY S139 DIAGNOSIS WAS WRONG AND THE TRUTH MAKES THE NEXT ROUND MUCH SMALLER
 
-**I CHECKED WHETHER THIS IS MORE STALE-SNAPSHOT DRIFT AND IT IS NOT. THE GUARD IS RIGHT HERE.**
-Running the accepted S132 HTML frame over the 1040 booklet finds **two** sections for this cell -
-`Line 1i` with token `1i`, and `Nontaxable Combat Pay Election` beneath it - **both owned by
-`form_1040_2025`.** The instruction exists, our own frame locates it, and the draft still says the
-line has none. **That is a real linkage gap, not regenerable-output drift**, and relaxing this
-assertion the way we relaxed the other three would hide it.
+**I wrote that the frame is pilot code, not wired into the pipeline, so the generating run "used the
+OCR path, which does not see these headings." That is false, and I should have opened the draft
+before asserting it.** The 2026-08-17 draft contains, in its own
+`graph/2025/_drafts/form_1040_2025/instruction_sections.yaml`:
 
-**WHY THE DRAFT DOES NOT HAVE IT, AND WHY THIS IS NOT A REGRESSION EITHER.** The draft is from
-2026-08-17. The frame that finds `Line 1i` is **S129-S132 pilot code and is not wired into the
-pipeline** - the generating run used the OCR path, which does not see these headings. **So the
-guard asserts a capability the pilot has proven and the pipeline does not yet have.**
+    section_id: instruction_section_instructions_form_1040_2025_0013
+    document_id: form_1040_2025      line: 1i      heading: "Line 1i"
+    text: "## Line 1i / ### Nontaxable Combat Pay Election / If you elect to include your ..."
 
-### ITEM 1 - RELAX THE ASSERTION TO THE CONTRACT, LIKE THE OTHER THREE
+**The OCR path DID find it, with exactly the text the guard wanted.** That file holds 317 sections
+and **every one of the 54 frame-owned lines has one.**
 
-`.cell-instruction` must render **either ingested instruction text or the typed "Not yet ingested"
-placeholder, and never blank.** Same shape as line 1a.
+**SO THE GAP IS NOT ACQUISITION, NOT THE FRAME, AND NOT COVERAGE. IT IS ONE JOIN.** The workbench
+renders from `cell.instruction_citations` (`workbench/static/river.js:114`) and falls back to "Not
+yet ingested" when that list is empty. **The draft has instruction SECTIONS; the cell reads
+instruction CITATIONS; nothing turns the first into the second for these lines.** Codex's 39 was
+measuring exactly the right thing - **39 of 54 lines have a section and no citation** - and my
+explanation of why was the part that was wrong.
 
-### ITEM 2 - AND THEN DO NOT LET THE GAP DISAPPEAR - THIS IS THE HALF THAT MATTERS
+**THIS ALSO PUTS A QUESTION MARK OVER QUEUE ITEM 2.** That item explains 42% empty instruction
+packets as "not a parser bug: `instruction_sections` creates a slice only under a heading that NAMES
+a form line." **Line 1i has a heading that names the line, has a slice, and still arrives empty.**
+Do not treat item 2's diagnosis as settled.
 
-**Add a separate, named test that asserts the gap as a KNOWN gap**, `xfail` with a reason string
-pointing at the queue item, so it flips to `xpass` the day the frame is wired in and tells us so.
-**A relaxed assertion plus a silent gap is how the S133 check stopped checking.** The test's name
-should say what is missing: the 1040 line 1i instruction section exists in the acquired HTML and
-does not reach the cell.
+### ITEM 1 - FIND WHERE THE SECTION IS DROPPED. DO NOT FIX ANYTHING YET.
 
-### ITEM 3 - MEASURE THE GAP BEFORE NAMING IT
+**Trace one cell end to end - 1040 line 1i - from `instruction_sections.yaml` to
+`build_generated_document_cells`, and report the exact step where the section stops.** Name the
+function and the condition. **A guess about "the join" does not satisfy this item; neither does a
+count.** The 15 lines that DO arrive are the control group - **say what is different about them.**
 
-**Do not assert "it is only 1i".** Run the S132 frame against the live 1040 draft and report **how
-many cells have a frame-owned instruction section that the draft does not carry.** One number, in
-the round report. **If it is large, that is the finding and this test is a symptom of it.**
+### ITEM 2 - THEN THE SMALLEST CHANGE THAT CLOSES IT
+
+Only after ITEM 1 is reported. **If the 15 that work do so through a path the other 39 could take,
+that path is the fix.** If the two populations differ for a real reason, **say so and stop** - that
+is a finding, not a failure.
+
+### ITEM 3 - REPORT THE MOVEMENT ACROSS ALL FIVE DOCUMENTS
+
+`form_1040`, `schedule_1`, `schedule_1a`, `schedule_2`, `schedule_3`: **sections present, citations
+present, cells with an instruction, before and after.** Schedule 1-A has `has_sections: false` and
+**0** sections in that same coverage block - **expect it to move not at all, and say so** rather
+than letting it hide in a total.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not wire the pilot frame into the pipeline.** That is a much bigger round and needs its own
-  spec and a re-derive.
-- **No draft regeneration, no hand-edited drafts, no contract change.**
+- **Do not regenerate drafts** and do not hand-edit one. The draft already has what is needed.
+- **Do not wire the S132 pilot frame in.** That is a separate, larger round and this defect does not
+  need it - **the OCR path already produced the section.**
+- **No contract change to the review surface**, no promoted-artifact write.
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **`test_workbench_v2_m17` green**, with the relaxed assertion stating its contract.
-- **The known-gap test present and `xfail` with a reason**, naming the queue item.
-- **The gap COUNT reported** across the 1040 draft.
-- **Full suite in the working tree** - the baseline should now reach **22**.
-- **Diff the failure SETS, not the counts.** `check_ascii` OK, `git diff --check` clean.
-
-**WORKER RESULT, 2026-08-19 - M20-S139 COMPLETE.** The E2E instruction display now asserts the
-typed contract: visible non-empty text, with either ingested content or the explicit absence
-placeholder. A separate non-strict `xfail` records that the accepted S132 frame owns the Line 1i
-section but the generated cell has no instruction citation. The live measurement found **39**
-frame-owned line tokens whose instruction section does not reach the draft: 38 have a physical
-draft cell with no instruction citations, and line 25 has no projected draft cell. No pipeline
-code, draft, promoted artifact, or review contract was changed.
-
-- `MEASURED: read-only S132 frame and generated-review comparison` -> **54 frame-owned lines;
-  15 covered; 39 missing**. The missing set includes `1i`; both `Line 1i` and `Nontaxable Combat
-  Pay Election` are owned by `form_1040_2025`.
-- `RAN: .venv\\Scripts\\python.exe -m pytest tests\\e2e\\test_workbench_v2_m17.py -q` -> **6 passed,
-  1 xfailed in 158.88s (0:02:38)**.
-- `RAN: .venv\\Scripts\\python.exe -m pytest pilot\\test_html_document_frame_m20_s132.py -q` ->
-  **3 passed in 15.54s**.
-- `RAN: .venv\\Scripts\\python.exe -m pytest -q` -> **22 failed, 1036 passed, 8 skipped, 2 xfailed
-  in 4293.12s (1:11:33)**. The failure SET is exactly the prior 22-test baseline; no M20-S139
-  failure entered it.
-- `RAN: .venv\\Scripts\\python.exe tools\\check_ascii.py tests\\e2e\\test_workbench_v2_m17.py` ->
-  **ASCII check OK**.
-- `RAN: git diff --check` -> **clean**.
+- **The dropping step named**, with the function and the condition, and the 15-vs-39 difference
+  explained.
+- **If a fix lands: the `xfail` in `test_workbench_v2_m17` flips to `xpass`** - that is the
+  designed-in signal, so report it explicitly.
+- **Before/after instruction coverage for all five documents.**
+- **Full suite in the working tree**; baseline 22 must not grow. **Diff the failure SETS.**
+- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
 ## Open for Architect
 
@@ -320,11 +313,10 @@ code, draft, promoted artifact, or review contract was changed.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-- **THE ACQUIRED HTML CARRIES INSTRUCTION SECTIONS THAT NEVER REACH THE CELL (Architect, measured
-  2026-08-19).** The accepted S132 frame finds `Line 1i` and `Nontaxable Combat Pay Election` owned
-  by `form_1040_2025`; the 2026-08-17 draft says *"Not yet ingested"* for that cell. **The frame is
-  pilot code and is not wired into the pipeline** - that is the whole gap, and M20-S139 measures its
-  size before anyone specs the wiring round.
+- **[SUPERSEDED 2026-08-19 - THE FRAME WAS NEVER THE PROBLEM; SEE M20-S140.]** I queued this as
+  "the pilot frame is not wired in". Wrong: the draft's own `instruction_sections.yaml` already
+  holds the `Line 1i` section, text and all. **The gap is the section-to-citation join, 39 of 54
+  lines**, and it is the current round.
 
 - **DOES 1040 LINE 1a DERIVE FROM W-2 BOX 1, OR IS `filer_entry` CORRECT? (Architect, 2026-08-19.)**
   The line reads *"Total amount from Form(s) W-2, box 1"*, `form_w2_2025` IS in the manifest, and
