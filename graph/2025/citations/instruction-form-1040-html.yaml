@@ -9,6 +9,13 @@
   semantic_title: Household Employee Wages Not Reported on Form(s) W-2
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 89778
+    end: 90051
+  - start: 90053
+    end: 90066
+  - start: 90067
+    end: 90068
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106120
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -24,6 +31,9 @@
   semantic_title: Tip Income Not Reported on Line 1a
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 90122
+    end: 90697
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106125
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -34,6 +44,9 @@
   semantic_title: Taxable Dependent Care Benefits From Form 2441, Line 26
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 92362
+    end: 92597
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106129
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -42,6 +55,9 @@
   semantic_title: Wages From Form 8919, Line 6
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 93123
+    end: 93176
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106131
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -52,6 +68,9 @@
   semantic_title: Other Earned Income
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 93216
+    end: 93398
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106134
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -62,6 +81,9 @@
   semantic_title: Nontaxable Combat Pay Election
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 96040
+    end: 96199
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000112648
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -74,6 +96,9 @@
   semantic_title: Refundable Adoption Credit
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 320606
+    end: 321010
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000112725
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -84,6 +109,9 @@
   semantic_title: 2025 Estimated Tax Payments
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 163794
+    end: 163972
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158310
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -99,6 +127,9 @@
   semantic_title: Medicaid Waiver Payments Not Reported on Form(s) W-2, Box 1
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 90919
+    end: 91503
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158313
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -112,6 +143,9 @@
   semantic_title: Employer-Provided Adoption Benefits From Form 8839, Line 31
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 92676
+    end: 93075
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158317
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -146,6 +180,9 @@
   semantic_title: IRA Distributions
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 105003
+    end: 105020
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158330
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -161,6 +198,9 @@
   semantic_title: IRA Distributions
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 105022
+    end: 105611
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158343
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -179,6 +219,9 @@
   semantic_title: Pensions and Annuities
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 112406
+    end: 112428
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158345
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -202,6 +245,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 137846
+    end: 138013
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158383
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -211,6 +257,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 138218
+    end: 138348
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158384
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -224,6 +273,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 138364
+    end: 138829
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158385
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -233,6 +285,9 @@
   semantic_title: Blindness
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 140144
+    end: 140290
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158390
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -243,6 +298,9 @@
   semantic_title: Standard Deduction or Itemized Deductions
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 141318
+    end: 141478
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158425
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -255,6 +313,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 177836
+    end: 178231
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158426
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -263,6 +324,9 @@
   semantic_title: Definitions and Special Rules
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 51594
+    end: 51608
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158455
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -276,6 +340,9 @@
   semantic_title: Additional Child Tax Credit
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 316743
+    end: 317167
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158460
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -289,6 +356,9 @@
   semantic_title: American Opportunity Credit
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 319111
+    end: 319566
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink100020297
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -297,6 +367,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 137741
+    end: 137810
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink100051061
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -307,6 +380,9 @@
   semantic_title: Form(s) 1099
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 162545
+    end: 162757
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink100051062
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -315,6 +391,9 @@
   semantic_title: Other Forms
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 163172
+    end: 163195
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e13028
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -325,6 +404,9 @@
   semantic_title: Form(s) W-2
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 162316
+    end: 162516
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4597
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -334,6 +416,9 @@
   semantic_title: Total Amount From Form(s) W-2, Box 1
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 89055
+    end: 89180
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4819
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -345,6 +430,9 @@
   semantic_title: Taxable Interest
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 98445
+    end: 98731
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4876
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -365,6 +453,9 @@
   semantic_title: Tax-Exempt Interest
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 97032
+    end: 98017
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49292
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -373,6 +464,9 @@
   semantic_title: Amount Overpaid
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 321058
+    end: 321128
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49351
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -387,6 +481,9 @@
   semantic_title: Amount Refunded to You
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 322761
+    end: 323295
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49513
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -399,6 +496,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 328659
+    end: 328984
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49539
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -411,6 +511,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 329399
+    end: 329753
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49557
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -430,6 +533,9 @@
   semantic_title: Applied to Your 2026 Estimated Tax
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 331444
+    end: 331743
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49704
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -439,6 +545,9 @@
   semantic_title: Amount You Owe
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 332660
+    end: 332749
 - citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e49846
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -447,6 +556,9 @@
   semantic_title: Estimated Tax Penalty
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 337668
+    end: 337696
 - citation_id: cite_instruction_form_1040_2025_id243
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -455,6 +567,9 @@
   semantic_title: Earned Income Credit (EIC)
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 165303
+    end: 165329
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink1000151499
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -478,6 +593,9 @@
     Fee-Basis Government Officials
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 535165
+    end: 535213
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink1000151503
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -488,6 +606,9 @@
   semantic_title: Health Savings Account (HSA) Deduction
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 535612
+    end: 535814
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink1000151505
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -498,6 +619,9 @@
   semantic_title: Moving Expenses
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 535851
+    end: 536051
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink1000151507
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -508,6 +632,9 @@
   semantic_title: Deductible Part of Self-Employment Tax
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 536278
+    end: 536470
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink1000151509
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -531,6 +658,13 @@
   semantic_title: Self-Employed Health Insurance Deduction
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 538651
+    end: 539072
+  - start: 539074
+    end: 539105
+  - start: 539106
+    end: 539142
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink10001772
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -541,6 +675,9 @@
   semantic_title: Taxable Refunds, Credits, or Offsets of State and Local Income Taxes
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 512220
+    end: 512428
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink10001776
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -565,6 +702,9 @@
   semantic_title: Business Income or (Loss)
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 516003
+    end: 516127
 - citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink100020386
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -589,6 +729,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 515540
+    end: 515691
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink1000131914
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -597,6 +740,9 @@
   semantic_title: Additions to Tax
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 613821
+    end: 613874
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink1000132178
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -606,6 +752,9 @@
   semantic_title: Recapture of Net EPE From Form 4255
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 631742
+    end: 631873
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink10001912
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -617,6 +766,9 @@
   semantic_title: Alternative Minimum Tax (AMT)
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 618586
+    end: 618903
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100020394
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -625,6 +777,9 @@
   semantic_title: Unreported Social Security and Medicare Tax From Form 4137
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 620734
+    end: 620778
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100020405
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -633,6 +788,9 @@
   semantic_title: Reserved for Future Use
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 624646
+    end: 624687
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100020407
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -643,6 +801,9 @@
   semantic_title: Additional Tax on IRAs, Other Qualified Retirement Plans, etc.
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 621983
+    end: 622192
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100020410
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -653,6 +814,9 @@
   semantic_title: Household Employment Taxes
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 623689
+    end: 623869
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079562
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -661,6 +825,9 @@
   semantic_title: Uncollected Social Security and Medicare Tax From Form 8919
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 621535
+    end: 621579
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079564
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -670,6 +837,9 @@
   semantic_title: Additional Medicare Tax
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 624730
+    end: 624842
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079566
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -679,6 +849,9 @@
   semantic_title: Net Investment Income Tax
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 625545
+    end: 625652
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079587
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -689,6 +862,9 @@
     Residential Lots and Timeshares
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 626401
+    end: 626530
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079589
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -699,6 +875,9 @@
     With a Sales Price Over $150,000
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 626650
+    end: 626779
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079591
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -707,6 +886,9 @@
   semantic_title: Recapture of Low-Income Housing Credit
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 626837
+    end: 626878
 - citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079593
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -715,6 +897,9 @@
   semantic_title: Other Additional Taxes
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 626936
+    end: 626945
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink1000124738
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -724,6 +909,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 644966
+    end: 645058
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink10001929
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -734,6 +922,9 @@
   semantic_title: Foreign Tax Credit
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 633638
+    end: 633842
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink10001934
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -743,6 +934,9 @@
   semantic_title: Credit for Child and Dependent Care Expenses
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 635374
+    end: 635478
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink10001936
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -754,6 +948,9 @@
   semantic_title: Education Credits
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 635900
+    end: 636216
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink10001938
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -777,6 +974,9 @@
   semantic_title: Other Nonrefundable Credits
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 639569
+    end: 639577
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100020422
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -807,6 +1007,9 @@
   semantic_title: Amount Paid With Request for Extension To File
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 643315
+    end: 643652
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100020426
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -822,6 +1025,9 @@
   semantic_title: Excess Social Security and Tier 1 RRTA Tax Withheld
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 643723
+    end: 644317
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100020428
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -832,6 +1038,9 @@
   semantic_title: Credit for Federal Tax on Fuels
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 644479
+    end: 644646
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100020430
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -842,6 +1051,9 @@
   semantic_title: Other Payments or Refundable Credits
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 644725
+    end: 644950
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100051069
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -852,6 +1064,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 644725
+    end: 644950
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100079633
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -862,6 +1077,9 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 645074
+    end: 645259
 - citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100079636
   document_id: instructions_form_1040_2025
   source_document_id: instructions_form_1040_2025
@@ -870,3 +1088,6 @@
   semantic_title: ''
   url: https://www.irs.gov/instructions/i1040gi
   retrieved_date: '2026-07-27'
+  ranges:
+  - start: 645277
+    end: 645302

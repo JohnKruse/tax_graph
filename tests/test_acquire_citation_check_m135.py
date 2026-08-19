@@ -30,14 +30,19 @@ def test_real_graph_accounts_for_unverifiable_citations_without_failing() -> Non
     graph = load_graph("2025", ROOT)
     report = check_graph_citations(year="2025", raw_store=RAW_ROOT, root=ROOT)
 
-    assert report.checked == 515
-    assert len(report.unverifiable_citations) == 114
+    assert report.checked == 593
+    assert len(report.unverifiable_citations) == 36
     assert report.checked + len(report.unverifiable_citations) == len(graph.items("citations")) == 629
     assert report.ok
     assert all(item.reason == "missing source ranges" for item in report.unverifiable_citations)
     ids = {item.citation_id for item in report.unverifiable_citations}
-    assert "cite_instruction_form_1040_2025_en_us_2025_publink1000106118" in ids
-    assert "cite_intake_13614c_quality" in ids
+    # Both were in the 114 and were ranged by the S136 apply on 2026-08-19.
+    assert "cite_instruction_form_1040_2025_en_us_2025_publink1000106118" not in ids
+    assert "cite_intake_13614c_quality" not in ids
+    # The 36 that remain are the 22 held by the content-hash gated graph_ext
+    # overlay and the 14 whose quote exists only in acquired HTML.
+    assert "cite_span_form_2441_2025_0012" in ids
+    assert "cite_instruction_schedule_1_2025_en_us_2025_publink1000151499" in ids
 
 
 def test_provenance_findings_self_verify_after_their_proposed_repairs() -> None:

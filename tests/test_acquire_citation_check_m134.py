@@ -26,11 +26,15 @@ def test_real_citation_check_concatenates_ranges_and_emits_two_bad_provenance_fi
     """The real corpus passes exact range containment and names the stitched records."""
     report = check_graph_citations(year="2025", raw_store=RAW_ROOT, root=ROOT)
 
-    assert report.checked == 515
+    # 589 ranged records plus the 4 computed tables, after the S136 backlog was
+    # applied on 2026-08-19 (511 + 78).  Exactness is what these numbers guard:
+    # every one of the 78 added ranges passes containment and none of them
+    # produced a new bad-provenance finding.
+    assert report.checked == 593
     assert report.ok
     assert report.mismatches == []
-    assert len(report.range_telltales) == 511
-    assert sum(item.short_fragment_count for item in report.range_telltales) == 40
+    assert len(report.range_telltales) == 589
+    assert sum(item.short_fragment_count for item in report.range_telltales) == 43
     assert sum(item.large_gap_count for item in report.range_telltales) == 4
 
     findings = {item.citation_id: item for item in report.provenance_findings}

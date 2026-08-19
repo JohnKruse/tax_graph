@@ -208,39 +208,60 @@
   locator: Form 13614-C October 2025, page 1
   quoted_text: Complete pages 1-5 of this form.
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  ranges:
+  - start: 162
+    end: 194
 - citation_id: cite_intake_13614c_digital_asset
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 1
   quoted_text: Owners or holders of any digital assets
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  ranges:
+  - start: 1386
+    end: 1425
 - citation_id: cite_intake_13614c_filing_status
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 1
   quoted_text: As of December 31, 2025, what was your marital status
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  ranges:
+  - start: 1948
+    end: 2001
 - citation_id: cite_intake_13614c_dependents
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 1 household questions
   quoted_text: List the names below of everyone who lived with you last year
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  ranges:
+  - start: 2299
+    end: 2360
 - citation_id: cite_intake_13614c_income
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 2 income questions
   quoted_text: 'Received money from any of the following in 2025:'
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  ranges:
+  - start: 3300
+    end: 3349
 - citation_id: cite_intake_13614c_expenses
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 3 expense questions
   quoted_text: Paid any of the following expenses to itemize in 2025?
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  ranges:
+  - start: 5461
+    end: 5515
 - citation_id: cite_intake_13614c_events
   document_id: form_13614_c_2025
   source_document_id: form_13614_c_2025
   locator: Form 13614-C October 2025, page 3 event questions
   quoted_text: Did any of the following happen during 2025?
   url: https://www.irs.gov/pub/irs-pdf/f13614c.pdf
+  ranges:
+  - start: 6324
+    end: 6368

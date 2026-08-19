@@ -740,6 +740,17 @@ real form defeats the borrowed shape.
   opens the live graph to pipeline output. **Until that round lands and is accepted, this gate is
   unchanged** - a safety gate is never lifted before its replacement is in place, and every round
   before then still reports an empty protected-set diff.
+  **WHAT THE BYTE-IDENTICAL CLAUSE DOES AND DOES NOT COVER (clarified 2026-08-19, after John asked
+  what the protected set was).** It names those four directories and nothing else.
+  `graph/2025/citations/` is NOT in it; what catches a citation write is the broader *"no live graph
+  edit"* clause above, which is a per-instance escalation to John, not a byte-identical check.
+  **He approved one on 2026-08-19**: 78 machine-derived, independently verified source ranges into
+  `graph/2025/citations/`, applied by `citation_range_patch --write`. Approval was for that write,
+  and does not generalise to the next one.
+  **`graph_ext/` IS EFFECTIVELY UNWRITABLE AND THAT IS WORKING AS DESIGNED.** Its `extension.json`
+  carries a stamped `content_hash` the loader enforces, and the directory is gitignored, so an edit
+  there both fails `load_graph` closed and is invisible in review. Do not hand-stamp the hash; the
+  accept path owns it.
 - **A HUMAN COMMENT IS A BUG REPORT, NOT A PATCH (John, 2026-08-10).** Reviewer correctives are a
   **last-ditch band-aid and must NOT be relied on for the identified core document set.** No hand
   crafting in that set either. **A stored comment that makes a cell correct IS hand-authoring under

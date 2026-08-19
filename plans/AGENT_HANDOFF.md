@@ -69,9 +69,22 @@ die at `workbench/server.py:640` on `object_ref` and cannot be bisected because 
 `_drafts` and error at setup with it. **That is the surface John reviews and it has been unverified
 since 2026-08-16.**
 
-**ONE THING FOR JOHN, STILL WAITING: applying the 99 verified citation ranges is a protected-set
-write and needs his yes.** Machine-derived, each independently verified, nothing else in the graph
-moves.
+**THE CITATION RANGE BACKLOG IS APPLIED (John approved 2026-08-19).** `citation_range_patch --write`
+put **78** ranges into `graph/2025/citations/instruction-form-1040-html.yaml` (71) and
+`intake.yaml` (7). **Unverifiable citations 114 -> 36; checked 515 -> 593, zero mismatches, and the
+bad-provenance findings stay at exactly 2** - none of the added ranges introduced one. The
+protected set (`nodes`, `edges`, `rules`, `field_maps`) has an empty diff and the edit is additive:
+242 insertions, 0 deletions.
+
+**I TOLD JOHN 114 -> 14 AND THE HONEST NUMBER IS 114 -> 36. TWO CORRECTIONS I OWE.** The proposal
+was **100, not 99** - the S136 follow-up (`b3050d5`) added one. And **22 of the 100 could not be
+written**: they live in `graph_ext/2025/form_2441_2025/citations.yaml`, which carries a stamped
+`content_hash` the loader enforces and which is **gitignored**. Writing there broke `load_graph`
+closed on the first attempt; I reverted it and **proved the revert byte-identical by recomputing
+the extension hash against the stamp**. The applier now defers overlay-held citations by design
+rather than raising. **14 of the remaining 36 are HTML-only and no range can fix them; the other 22
+are the 2441 overlay and they land in the round that retires it** - `AGENTS.md` already condemns
+that overlay as a surviving special case.
 
 **Durable findings from S128-S142 are now pinned in `PHASE_M20.md` section 4.2** - the OCR-damage
 acquisition finding, the mentioning-versus-governing result, Schedule 1-A's real ceiling, and the

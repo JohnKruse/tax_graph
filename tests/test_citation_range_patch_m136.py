@@ -1,4 +1,10 @@
-"""M20-S136 guards for the non-destructive citation range proposal."""
+"""M20-S136 guards for the citation range proposal and its applied result.
+
+The proposal was applied to `graph/2025/citations/` on 2026-08-19 with John's
+approval, taking unverifiable citations from 114 to 36.  The 22 that remain
+rangeable are held by the content-hash gated `graph_ext/` overlay and are
+deferred, not written; the other 14 are locatable only in acquired HTML.
+"""
 
 from __future__ import annotations
 
@@ -9,6 +15,7 @@ import pytest
 
 from tax_graph.acquire.citation_check import check_citation_integrity
 from tax_graph.acquire.citation_range_patch import apply_citation_range_patch
+from tax_graph.acquire.citation_range_patch import apply_citation_range_patch_to_files
 from tax_graph.acquire.citation_range_patch import build_citation_range_patch
 from tax_graph.acquire.citation_range_patch import write_citation_range_patch
 from tax_graph.io.loader import load_graph
@@ -29,34 +36,28 @@ def real_patch() -> dict:
     )
 
 
-def test_real_patch_accounts_for_the_100_rangeable_and_14_html_only(real_patch) -> None:
-    assert real_patch["unverifiable_count"] == 114
-    assert real_patch["proposed_range_count"] == 100
+def test_only_the_overlay_22_and_the_html_only_14_remain(real_patch) -> None:
+    assert real_patch["unverifiable_count"] == 36
+    assert real_patch["proposed_range_count"] == 22
     assert real_patch["html_only_count"] == 14
     assert real_patch["unverifiable_after_apply"] == 14
     assert real_patch["accounting"] == {
-        "ranged_before": 511,
-        "unverifiable": 114,
+        "ranged_before": 589,
+        "unverifiable": 36,
         "computed_table": 4,
         "total": 629,
     }
 
     proposals = {item["citation_id"]: item for item in real_patch["proposed_ranges"]}
     html_only = {item["citation_id"]: item for item in real_patch["html_only"]}
-    assert "cite_intake_13614c_quality" in proposals
+    assert all(
+        item["source_document_id"] == "form_2441_2025"
+        for item in proposals.values()
+    ), "the only rangeable backlog left is the 2441 overlay"
     assert "cite_span_form_2441_2025_0012" in proposals
-    emphasis = proposals[
-        "cite_instruction_form_1040_2025_en_us_2025_publink1000106118"
-    ]
-    assert emphasis["method"] == "txt_format_normalized"
-    assert len(emphasis["ranges"]) == 3
     assert (
         "cite_instruction_schedule_1_2025_en_us_2025_publink1000151499"
         in html_only
-    )
-    assert (
-        "cite_instruction_form_1040_2025_en_us_2025_publink1000106118"
-        not in html_only
     )
     assert all(
         item["reason"] == "quoted text is locatable only in acquired HTML"
@@ -64,9 +65,41 @@ def test_real_patch_accounts_for_the_100_rangeable_and_14_html_only(real_patch) 
     )
 
 
-def test_every_proposed_range_self_verifies_without_editing_graph(real_patch) -> None:
+def test_applied_ranges_are_in_the_graph_and_verify_exactly() -> None:
     graph = load_graph("2025", ROOT)
-    original = graph.items("citations")
+    citations = {
+        str(item["citation_id"]): item for item in graph.items("citations")
+    }
+
+    # Written by the apply run: a multi-range record whose gaps are emphasis
+    # markup only, and a single-range intake record.
+    emphasis = citations["cite_instruction_form_1040_2025_en_us_2025_publink1000106118"]
+    assert emphasis["ranges"] == [
+        {"start": 89778, "end": 90051},
+        {"start": 90053, "end": 90066},
+        {"start": 90067, "end": 90068},
+    ]
+    assert citations["cite_intake_13614c_quality"].get("ranges")
+
+    # Deferred, never written: the overlay is content-hash gated and gitignored.
+    assert not citations["cite_span_form_2441_2025_0012"].get("ranges")
+
+    report = check_citation_integrity(
+        list(citations.values()),
+        text_dir=RAW_ROOT / "2025",
+        require_ranges=False,
+    )
+    assert report.ok
+    assert not report.mismatches
+    assert report.checked == 593
+    assert len(report.unverifiable_citations) == 36
+    assert report.checked + len(report.unverifiable_citations) == 629
+
+
+def test_remaining_proposal_still_self_verifies_without_editing_graph(
+    real_patch,
+) -> None:
+    original = load_graph("2025", ROOT).items("citations")
     patched = apply_citation_range_patch(original, real_patch)
 
     report = check_citation_integrity(
@@ -78,13 +111,90 @@ def test_every_proposed_range_self_verifies_without_editing_graph(real_patch) ->
     assert report.ok
     assert report.checked == 615
     assert len(report.unverifiable_citations) == 14
-    assert report.checked + len(report.unverifiable_citations) == 629
     html_only_ids = {entry["citation_id"] for entry in real_patch["html_only"]}
     assert all(
         "ranges" not in item
         for item in original
         if item.get("citation_id") in html_only_ids
     )
+
+
+def test_applier_appends_to_the_owning_record_and_leaves_the_rest_alone(
+    tmp_path: Path,
+) -> None:
+    artifact = tmp_path / "graph" / "2025" / "citations" / "sample.yaml"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text(
+        "- citation_id: cite_one\n"
+        "  document_id: form_1040_2025\n"
+        "  quoted_text: first\n"
+        "- citation_id: cite_two\n"
+        "  document_id: form_1040_2025\n"
+        "  quoted_text: second\n",
+        encoding="utf-8",
+    )
+    patch = {
+        "year": "2025",
+        "proposed_ranges": [
+            {"citation_id": "cite_two", "ranges": [{"start": 7, "end": 13}]},
+        ],
+    }
+
+    result = apply_citation_range_patch_to_files(patch, root=tmp_path)
+
+    assert result["citations_written"] == 1
+    assert result["deferred"] == []
+    assert artifact.read_text(encoding="utf-8") == (
+        "- citation_id: cite_one\n"
+        "  document_id: form_1040_2025\n"
+        "  quoted_text: first\n"
+        "- citation_id: cite_two\n"
+        "  document_id: form_1040_2025\n"
+        "  quoted_text: second\n"
+        "  ranges:\n"
+        "  - start: 7\n"
+        "    end: 13\n"
+    )
+
+
+def test_applier_refuses_to_overwrite_an_existing_range(tmp_path: Path) -> None:
+    artifact = tmp_path / "graph" / "2025" / "citations" / "sample.yaml"
+    artifact.parent.mkdir(parents=True)
+    before = (
+        "- citation_id: cite_one\n"
+        "  quoted_text: first\n"
+        "  ranges:\n"
+        "  - start: 1\n"
+        "    end: 2\n"
+    )
+    artifact.write_text(before, encoding="utf-8")
+    patch = {
+        "year": "2025",
+        "proposed_ranges": [
+            {"citation_id": "cite_one", "ranges": [{"start": 9, "end": 9}]},
+        ],
+    }
+
+    with pytest.raises(ValueError, match="already carries ranges"):
+        apply_citation_range_patch_to_files(patch, root=tmp_path)
+    assert artifact.read_text(encoding="utf-8") == before
+
+
+def test_applier_raises_when_no_artifact_holds_the_citation(tmp_path: Path) -> None:
+    artifact = tmp_path / "graph" / "2025" / "citations" / "sample.yaml"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text("- citation_id: cite_one\n  quoted_text: first\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="no citation artifact holds"):
+        apply_citation_range_patch_to_files(
+            {
+                "year": "2025",
+                "proposed_ranges": [
+                    {"citation_id": "cite_absent", "ranges": [{"start": 1, "end": 2}]},
+                ],
+            },
+            root=tmp_path,
+        )
 
 
 def test_patch_writer_is_ascii_and_reproducible(real_patch, tmp_path: Path) -> None:
