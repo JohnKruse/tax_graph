@@ -41,7 +41,11 @@ llm:
     ignore: null                   # provider slugs excluded from this request
     allow_fallbacks: false         # endpoint fallback can ignore sampling pins; fail instead
     quantizations: null            # for example [fp4]
-  reasoning_effort: null         # optional OpenRouter reasoning control for capable models, e.g. minimal
+  # John, 2026-08-19: HIGH, not xhigh, matching the Codex Worker in tools/codex.sh.
+  # This was null - no reasoning field sent at all - so the first corpus run after
+  # 2026-08-19 is NOT comparable to the runs before it. Plumbed as reasoning.effort
+  # by tax_graph/extract/llm_client.py.
+  reasoning_effort: high         # OpenRouter reasoning control for capable models
   reasoning_exclude: null        # optional: true keeps reasoning tokens out of responses when supported
   # John, 2026-08-07: PINNED TO 0, superseding the 2026-08-03 note that omitted it.
   # Reason: a prompt or approach change must be judgeable as our doing rather than

@@ -848,6 +848,31 @@ hardcodes an absolute repo path that does not resolve inside the Codex sandbox
 (`ModuleNotFoundError: No module named 'tax_graph.cli'`). Architects: write the module form into
 Worker prompts.
 
+### Architect-driven Codex Worker (John authorized 2026-08-19)
+The Architect may start Worker rounds directly with `bash tools/codex.sh "<prompt>"`, which runs
+`codex exec --sandbox danger-full-access`. **John keeps the acceptance gate; nothing lands on `main`
+without him.** Read the header of `tools/codex.sh` before changing any of this.
+- **ONE ROUND, ONE FRESH SESSION (John, 2026-08-19).** The coding cycles are discrete and stale
+  context gums them up. **Never `codex exec resume`.** Round state lives in
+  `plans/AGENT_HANDOFF.md`; that is what the next session reads.
+- **Auth is John's ChatGPT Plus subscription, not an API key.** Verified 2026-08-19:
+  `codex login status` reports "Logged in using ChatGPT" and `auth.json` carries
+  `auth_mode: "chatgpt"` with a null `OPENAI_API_KEY` field. The wrapper strips `OPENAI_API_KEY`
+  from the environment so a round cannot reach it. **The cost of a round is Plus quota, not
+  dollars** - it competes with John's own use of the Codex app.
+- **TO TURN THE API KEY BACK ON** if the subscription proves unworkable: delete `env -u
+  OPENAI_API_KEY` from the `exec` line at the bottom of `tools/codex.sh`. That one line is the
+  whole switch. Permanently instead: `printenv OPENAI_API_KEY | codex login --with-api-key`, and
+  back with `codex login`.
+- **Reasoning effort is HIGH, not xhigh (John, 2026-08-19)**, in three places that must stay in
+  step: `tools/codex.sh`, `~/.codex/config.toml`, and `llm.reasoning_effort` in
+  `tax-graph.config.yaml`. The pipeline value was previously UNSET, so it now sends a reasoning
+  field where it sent none - **the first corpus run after 2026-08-19 is not comparable to the runs
+  before it.**
+- **The egress rule is unchanged.** Giving the Architect the CLI moved no API spend: pipeline model
+  calls still bill separately and still need John's per-round grant. A round floor still may not
+  authorize its own network access.
+
 **Recurring op note:** orphaned `serve` processes have first-class tooling -
 `tax-graph serve --sweep-orphans`. The parent watchdog works on Windows as of M14 (OpenProcess
 probe). Serve writes stderr breadcrumbs that Claude Desktop logs verbatim - first stop when a
