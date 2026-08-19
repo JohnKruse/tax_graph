@@ -538,6 +538,27 @@ is not acceptable** (John, 2026-08-10).
 
 ## Standing operational notes
 
+**THE FULL SUITE CANNOT BE RUN IN A GIT WORKTREE, AND MY ATTEMPT TO PIN IT THERE PRODUCED A VOID
+RESULT (Architect, measured 2026-08-19).** I moved the run into a worktree pinned to `cb93fea` so
+Codex could not change files underneath it. **It came back `31 failed, 989 passed, 11 skipped,
+34 errors` in 46:47 - and every one of those numbers is meaningless as a baseline.** The 34 errors
+are collection failures in exactly the files that need untracked live state - all of `tests/e2e/*`,
+`test_workbench_cells_api_m17`, `test_workbench_page_evidence_m15`, `test_review_preflight_m15`,
+`test_verify_record_m9`, `test_self_serve_extension_m14`. **A naive set-diff makes it look like 28
+tests "cleared" and 10 went "new"; nothing cleared - those tests never ran.** The 46-minute runtime
+against the ~70-minute anchor is the tell.
+- **Junctioning `.cache` and copying `graph/2025/_drafts` is NOT enough.** The suite also reads live
+  `output/`, `review_queue/`, `workbench_output/` and `review_context/` CONTENT, none of it tracked
+  and none of it enumerated anywhere.
+- **So the full suite is only meaningful in the working tree, which means it is only meaningful
+  while the Worker is IDLE.** John starts Codex, so the quiet window is real and schedulable: run
+  it after a round lands and before the next is launched.
+- **THIS IS THE SAME FINDING AS THE S115 WORKBENCH DEBT, ARRIVING AGAIN.** A test suite that cannot
+  be reproduced from a clean checkout is not a gate, it is a local ritual. **Enumerating what
+  untracked state the suite requires is worth a round of its own** - and it is the precondition for
+  ever running this in CI.
+
+
 **WORKER COMPLETION (2026-08-08; M20-S84 implementation, awaiting Architect acceptance).** The
 pilot review page now has one full-width Tree and Math column. The retired positional renderer,
 flow-only summary fields, SVG output, moderator-role constant, arrow glyph, and flow-only CSS/data
