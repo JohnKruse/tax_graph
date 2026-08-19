@@ -21,8 +21,36 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S148 IS THE ROUND: delete the quote-regex that fakes provenance at the review
-surface. M20-S147 IS HALF ACCEPTED - the pipeline half is right, the demonstration is not.**
+**BALL: JOHN. THREE ROUNDS RAN OVERNIGHT 2026-08-19/20 WHILE YOU SLEPT. S146 IS ACCEPTED, S147 IS
+HALF ACCEPTED, S148 IS ACCEPTED EXCEPT ITS ITEM 2 EVIDENCE. Nothing is in flight and nothing needs
+you before morning.**
+
+**M20-S148 (`48c8108`, `f45a842`) IS ACCEPTED ON ITEMS 1 AND 3 (Architect, 2026-08-20).** The
+quote-regex is gone from `_filer_entry_source`, which now reads structured fields only; **no test
+file was touched by the implementation commit at all.** Line 1a renders `line 1a = entered by
+filer` again and its guard is red, which is the honest colour with the draft unregenerated. Focused
+sets **35 passed, 1 failed** (that guard). e2e Architect-side: **11 failed, 6 passed, 1 xpassed** -
+the documented `*_m15.py` eleven, unchanged.
+
+**ITEM 2'S EVIDENCE DOES NOT TEST WHAT IT CLAIMS, AND THE FIX IS UNTESTED RATHER THAN DISPROVEN.**
+The round ran `experiments/derive_cells_s25.py` and reported that line 1a came back `REQUIRE_INPUT`
+with empty `form`/`box`. **But that harness imports from `tax_graph.extract.cells` and takes only
+`_micro_max_tokens` and `build_derivation_denominator` from the micro side** - it never runs the
+union-plan path. **S147's prompt and schema change lives in `micro.py` and `outline_pipeline.py`,
+which produce `micro_extraction.outcomes`, and that is the record the workbench actually reads.**
+The run exercised a different prompt. Queued.
+
+**THE LINE 1a GUARD IS STALE IN THREE PLACES, NOT ONE.** I loaded the pre-S147 module against the
+same draft: `line 1e` rendered `unresolved source` and `28` rendered its question string **before
+S147 and after, identically.** So `test_generated_review_renders_resolved_external_sources_and_hides
+_sentinels` also expects `line 1e = Form 2441, line 26` and `line 28 = unresolved source`, and
+neither has been true for some time. **Only the `1a` assertion was ever reached, which hid the other
+two.** Fixing line 1a will not turn this test green. Queued.
+
+**THE WORKER'S 600-SECOND LAUNCHER CAP BLOCKED THE LIVE EVIDENCE IN ALL THREE ROUNDS.** S146, S147
+and S148 each hit `exit 124` on a 1040 re-derive. **Live `derive_cells` on `form_1040_2025` is
+Architect-side from now on** - it runs 8 to 10 minutes and cannot fit. I ran them; the numbers above
+are mine.
 
 **M20-S147 (`bff7652`) IS NOT ACCEPTED AS IT STANDS (Architect, 2026-08-20). THE GUARD WENT GREEN
 FOR THE WRONG REASON.** The live outcome record for line `1a` is still, unchanged:
@@ -151,135 +179,38 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S148: PROVENANCE COMES FROM A STRUCTURED FIELD OR IT DOES NOT EXIST.**
-
-ITEM 1. **Delete the quote-regex fallback from `_filer_entry_source`.** A named source is read from
-`form`/`line`/`box` or the cell renders as a plain filer entry. Keep the structured path, the
-`micro.py` validation, and the prompt change from S147 exactly as they are.
-
-ITEM 2. **Show the pipeline half actually works.** Run the micro extraction over `form_1040_2025`
-with output OUTSIDE the repository root and quote line `1a`'s new outcome record. **The floor is
-`form` and `box` populated by the model, not by us.** At most TWO live runs. If the model still
-returns them empty with the new prompt, **that is the finding** - report it and do not paper over
-it.
-
-ITEM 3. **State the line 1a red honestly.** With the regex gone and the live draft not regenerated,
-the guard is expected to go RED again. **That is the correct state, not a regression** - say so in
-one line and leave it red. Do NOT change the assertion.
-
-**WHAT MUST NOT HAPPEN.**
-- **Do not regenerate the live draft under `graph/2025/_drafts`.** It is the surface John reviews
-  and rewriting it overnight is his call, not ours. Scratch output only.
-- **Do not re-add any prose-derived identity anywhere**, under any name.
-- **Do not weaken, delete, or invert an assertion that is green on `main`.**
-- Do not change `reasoning_effort` or `micro_max_tokens`.
-
-**THE FLOOR.**
-- **Line 1a's outcome record from ITEM 2's run, quoted verbatim**, whatever it says.
-- **`_filer_entry_source` contains no regex over `quote`.**
-- **A one-line statement of the line 1a guard's colour** and why that colour is correct.
-- **Focused workbench and API sets green** against their known reds. **e2e is Architect-side.**
-- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
+**NONE IN FLIGHT.** Three rounds closed overnight; the next is
+John's call - see Queued.
 
 ## Open for Architect
 
-- **S148 WORKER STATUS (Codex, 2026-08-20):** The quote-regex fallback is removed from
-  `workbench/generated_review.py`; the structured `form`/`line`/`box` fields remain the only
-  named-source path. The S147 micro validation and prompt were not changed. No live draft under
-  `graph/2025/_drafts` was regenerated.
-
-  ITEM 2 used the two permitted live runs, both with output outside the repository:
-
-  **RAN:** `.venv\Scripts\python.exe -m experiments.derive_cells_s25 --year 2025 --output-dir
-  C:\tmp\m20_s148_item2 --document form_1040_2025` -> **exit 124; command timed out after
-  604048 milliseconds**. The scratch report was finalized after the launcher returned and
-  contains the line 1a record below. The report totals are 58 rows attempted: 49 derived, 5
-  repaired, 0 gapped, 4 errored, 1 skipped.
-
-  **RAN:** `.venv\Scripts\python.exe -m experiments.derive_cells_s25 --year 2025 --output-dir
-  C:\tmp\m20_s148_item2_retry --document form_1040_2025` -> **exit 124; command timed out after
-  604046 milliseconds**. It produced only the deterministic instruction frame and coverage file;
-  no second derived report.
-
-  The first run's line 1a outcome record is quoted verbatim from
-  `C:\tmp\m20_s148_item2\m20_s26_form_1040_2025_derive_cells_report.yaml`:
-
-  ```yaml
-  - line: 1a
-    source_fingerprint: 80ec303d0eb17ec11b91884259decaad77f5b7c1859adcc0e5e9ee63d713a340
-    label_before: Income 1 a Total amount from Form(s) W-2, box 1 (see instructions)
-      1a
-    label_after: ''
-    form_face_before: Income 1 a Total amount from Form(s) W-2, box 1 (see instructions)
-      1a
-    form_face_after: Income 1 a Total amount from Form(s) W-2, box 1 (see instructions)
-    status: derived
-    error: null
-    expression:
-      op: REQUIRE_INPUT
-      args:
-      - line: 1a
-        column: null
-        role: null
-      comparison: null
-    rendered: require_input(line 1a)
-    validation_failures: []
-    validation_warnings: []
-    repaired_after: []
-    dropped_instruction_sections: []
-    source_findings: []
-    structural_skip_reason: null
-    model_outcome: model_stated_input
-    truncation_retries: []
-    attempted_payloads:
-    - attempt: first
-      payload:
-        expression:
-          op: REQUIRE_INPUT
-          args:
-          - line: 1a
-            column: null
-            role: null
-          comparison: null
-        quote: Enter the total amount from Form(s) W-2, box 1.
-    unresolved_external_nodes: []
-  ```
-
-  The model populated neither structured `form` nor `box` in that record. That is the pipeline
-  finding; no prose inference was added.
-
-  ITEM 3 is intentionally RED: **RAN:** `.venv\Scripts\python.exe -m pytest
-  tests\test_generated_review_m20.py -q` -> **1 failed, 9 passed in 41.28s**. The unchanged line
-  1a guard is red because the live draft still has an empty structured filer-entry source and the
-  quote-regex is gone; this is the correct state, not a regression.
-
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s113.py tests\test_m20_s115.py -q`
-  -> **16 passed in 1.01s**.
-
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py -q` -> **4 passed in
-  0.36s**.
-
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_cells_api_m17.py -q` ->
-  **5 passed in 122.17s (0:02:02)**.
-
-  **NOT RUN:** `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> the e2e set exceeds the
-  Worker launcher cap; Architect runs it.
-
-  **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-  **RAN:** `git diff --check` -> **clean**.
-  **RAN:** protected-set diff check for `graph/2025/nodes`, `graph/2025/edges`, `graph/2025/rules`,
-  `graph/2025/field_maps` -> **no diff; byte-identical**.
-
-- **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
-  committed 2026-08-16 and the drafts were regenerated 2026-08-17 14:31 by the accepted corpus run.
-  Codex was right to refuse the hand fix and right to escalate.
-- **M20-S146 is blocked on live verification.** The final permitted
-  `derive_cells_s25.py --document form_1040_2025` run with the measured 8000-token budget timed
-  out at 604.0s before its report was written. Cause unknown; the partial output proves only that
-  deterministic frame persistence completed. The implementation must not be accepted until a
-  live run produces the required row-status table and proves zero `LlmResponseTruncated` rows.
+- **NOTHING OPEN.** S148's evidence block was pruned on acceptance 2026-08-20; `git show f45a842`
+  recovers it. The one substantive item in it - that ITEM 2 ran the wrong pipeline path - is in
+  BALL and in Queued.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **S147'S PROMPT FIX IS UNTESTED: EXERCISE THE MICRO PATH, NOT `derive_cells_s25` (Architect,
+  2026-08-20).** The change is in `micro.py` / `outline_pipeline.py`, which write
+  `micro_extraction.outcomes`; the only live run so far went through `tax_graph.extract.cells`.
+  Run the outline-first micro extraction over `form_1040_2025` to scratch and see whether the model
+  now fills `form`/`line`/`box` for line 1a. **Architect-side: it exceeds the Worker's cap.**
+
+- **`prompts/derive_cells.md` NEVER ASKS WHICH BOX EITHER (Architect, 2026-08-20).** It says
+  *"Information returns are the exception: W-2, any 1099 variant, and K-1 ... use REQUIRE_INPUT for
+  a value copied from one of those records"* and stops. The cells path has the same gap S147 fixed
+  on the micro path. **Same defect, second prompt.**
+
+- **THE LINE 1a GUARD NEEDS ALL THREE EXPECTATIONS RE-DERIVED, NOT JUST THE FIRST (Architect,
+  2026-08-20).** `1e` and `28` are stale too and were never reached. **Do not correct the strings
+  by observation - find out what each SHOULD render and why, then fix the pipeline or the string
+  with the reason recorded.**
+
+- **THE FOUR PERSISTENT 1040 DERIVATION ERRORS (Architect, measured 2026-08-20).** `27a` and `25c`
+  `operand_document_not_found` (`form_w2g_2025`, an earned-income-credit worksheet); `31`
+  `operand_not_printed` (line 15 not printed on `schedule_3_2025`); `35a` `quote_not_verbatim`;
+  `38` `subtract_direction`. **`27a`, `31`, `35a`, `38` survive every arm** - open three end to end
+  before naming a class; they are almost certainly not one.
 
 - **THE TRUNCATION COUNTERS ARE NOT IN THE DERIVE REPORT (Architect, 2026-08-19).** S146 added
   `truncation_retries` / `truncation_recovered` / `truncation_exhausted` to the validation report
