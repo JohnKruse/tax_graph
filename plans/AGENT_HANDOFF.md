@@ -21,9 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S137 AND THE S136 FOLLOW-UP ARE BOTH ACCEPTED. M20-S138 UNDER CURRENT ROUND
-FIXES THE LAST THREE WORKBENCH CASES - and the defect is the GUARDS, not the drafts: they pin a
-snapshot of regenerable output from the day before the corpus was re-derived.**
+**BALL: ARCHITECT. M20-S137 AND THE S136 FOLLOW-UP ARE BOTH ACCEPTED. M20-S138 IS IMPLEMENTED
+WITH THE THREE SNAPSHOT GUARDS REPLACED BY INVARIANTS; THE ARCHITECT OWNS THE ACCEPTANCE CHECK.**
 
 **THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
 deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
@@ -306,6 +305,21 @@ not fix it in the workbench layer.** Settling it needs a re-derive and therefore
 
 **ARCHITECT'S LEG, UNCHANGED AND STILL OWED.** Once these are green I drive the workbench live and
 confirm the surface works for a reviewer. **Three green tests are not that check.**
+
+**WORKER RESULT, 2026-08-19 - M20-S138 IMPLEMENTED.** The two API guards now require complete
+recognized policy accounting and a non-placeholder question ending in `?`; the E2E guard now
+requires non-empty typed generated content for line 1a. No draft, promoted artifact, contract, or
+protected citation-range file was edited. The queued line 1a question remains a
+`derivation_failed` question and was not investigated or hand-fixed.
+
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s138_fresh).Path; .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_generated_review_m20.py -q` -> 9 passed, 2 failed in 150.94s; all 5 API tests passed, and the 2 failures are the already-recorded baseline `test_generated_review_m20` cases.
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s138_e2e).Path; .venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 4 passed, 1 failed in 155.99s; the S138 line 1a assertion passed, then the test failed at the separate line 1i instruction-ingestion assertion (`Not yet ingested`).
+- `RAN: .venv\Scripts\python.exe tools/check_ascii.py` -> `ASCII check OK`.
+- `RAN: git diff --check` -> clean.
+- `NOT RUN: python -m pytest -q` -> full suite is an Architect-side run at the documented approximately 63-minute duration; the focused evidence above is from the working tree.
+
+The line 1i failure is surfaced for Architect triage; it is not relaxed as part of S138 because the
+assertion protects instruction coverage rather than regenerated wording.
 
 ## Open for Architect
 
