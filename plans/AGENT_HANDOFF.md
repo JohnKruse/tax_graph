@@ -21,8 +21,16 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S135 IS ACCEPTED. M20-S136 UNDER CURRENT ROUND GIVES THE 99 RANGEABLE CITATIONS
-THEIR RANGES.**
+**BALL: CODEX. M20-S136 IS ACCEPTED. M20-S137 UNDER CURRENT ROUND FIXES THE SIX BROKEN WORKBENCH
+CASES - the surface John reviews, red since 2026-08-16.**
+
+**THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
+deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
+the 114 that were checked by nothing (S135), and 99 verified ranges that would take unverified
+citations from 114 to 15 (S136). **511 of 511 verify, a range shifted 200 characters is rejected,
+and the corpus accounting closes at 629.**
+**ONE THING FOR JOHN: applying those 99 ranges is a protected-set write and needs his yes.** They
+are machine-derived, each independently verified, and nothing else in the graph moves.
 
 **THE CITATION WORK IS FOUR ROUNDS OLD AND HAS PAID FOR ITSELF.** S133 built the accessor and
 deleted the substrate fallbacks; S134 made the check exact over the range LIST and caught two
@@ -221,94 +229,66 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S136: GIVE THE 99 CITATIONS THEIR RANGES. THE BACKLOG IS MECHANICAL AND NEEDS NO MODEL.**
+**M20-S137: FIX THE SIX BROKEN WORKBENCH CASES. THIS IS THE SURFACE JOHN REVIEWS AND IT HAS BEEN RED
+SINCE 2026-08-16.**
 
-**M20-S135 IS ACCEPTED (`062b125`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION.** The report
-now carries all 114 as `unverifiable_citations`, the CLI prints
-`checked: 515 (unverifiable: 114)`, and **the accounting closes exactly: 511 ranged + 114
-unverifiable + 4 computed-table = 629.** I re-derived it rather than reading the count.
-**The repair evidence is the part that matters and it holds:** I applied each emitted
-`correct_ranges` + `repair_quote` and re-ran the checker - **both pass**, and both are byte-identical
-to the repairs I had computed independently before speccing the round, pipe-split and all. Codex's
-own full suite: **28 failed, 1026 passed** - baseline, with 3 new tests.
+**M20-S136 IS ACCEPTED (`cb93fea`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION** - the pinned
+full suite is still running and I will amend here rather than silently if it disagrees.
+- **I applied all 99 proposed ranges INDEPENDENTLY, one citation at a time, and re-ran the checker:
+  99 pass, 0 fail.** Not the round's own test - my own harness against the emitted artifact.
+- **The apply view closes exactly:** 614 ranged + 15 unresolved = 629, zero mismatches, and the two
+  provenance findings still surface.
+- **The splitter generalization is principled, not special-cased:** one regex covering pipes and
+  markdown emphasis with word-boundary guards on underscores, plus a closing-marker extension for
+  the `*Tax Topic 756*.` case. The 15 HTML-only records are named and untouched, correctly.
+- **`graph/2025/citations/` is byte-identical** - last commit touching it is still S107's `5c3f91b`.
 
-**ITEM 1'S SECOND HALF WAS NOT DONE - the round exposed the 114 but never classified them, and the
-spec asked it to report which they were. I did it myself; it is a measurement, and it is Architect
-work by the AGENTS.md rule anyway.** The answer is better than expected and **it removes a question
-I had queued for John:**
+**THE ROUND CHANGED THE CHECKER'S OWN JOIN, NOT ONLY THE PATCH GENERATOR, AND THAT WAS THE REAL
+RISK.** `_join_source_fragments` drops the inserted space when the gap between two ranges holds
+nothing but emphasis markers and the next fragment opens with punctuation. **A looser join is
+exactly how S133 hid a wrong range, so I re-ran the full perturbation sweep rather than reasoning
+about it: shifting every stored range by +/-200, +/-1000, or truncating its end still passes ZERO of
+511, and zero of the 99 proposed. The teeth are intact.**
 
-- **98 of the 114 are locatable VERBATIM in the acquired `.txt` right now.** 69 of the 1040 publink
-  records, **all 22** `form_2441_2025` and **all 7** `form_13614_c_2025`. A range is derivable
-  mechanically. **No model, no network, no judgment.**
-- **15 are locatable only in the acquired HTML** - they cite text the OCR path lost. **That is the
-  acquisition finding arriving from a completely different direction: citations, not headings.**
-- **1 is locatable in the `.txt` once the OCR's markdown emphasis is stripped** -
-  `cite_instruction_form_1040_2025_en_us_2025_publink1000106118` matches for 274 of 288 characters
-  and then hits `*Tax Topic 756*` where the quote says `Tax Topic 756`. **OCR damage again.**
-- **NONE is a permanent exempt class and NONE is fabricated.** The whole 114 is a backlog.
+**THE 99 RANGES ARE COMPUTED, VERIFIED AND UNAPPLIED.** Applying them is a protected-set write and
+therefore John's, not a round's. **It is queued as a question for him, not as work.**
 
-### ITEM 1 - THE DETERMINISTIC RANGER
+### ITEM 1 - OPEN THEM BEFORE FIXING THEM
 
-For each unverifiable citation, locate its quote in the acquired `.txt` and emit the ranges that
-make it verify. **Reuse what already exists** - `_contiguous_quote_ranges` finds the span and
-`_split_table_separator_ranges` already omits table pipes. **Generalize that splitter to markdown
-emphasis** (`*`, `**`, `_`) rather than writing a second one; the 16th citation is the case that
-needs it, and the pipe case proves the shape works.
+Six cases die at `workbench/server.py:640`,
+`AttributeError: 'NoneType' object has no attribute 'get'` on `object_ref`:
+`test_workbench_cells_api_m17` (2), `test_workbench_write_api_m15` (3), `e2e/test_workbench_v2_m17`
+(1). **A null where a dict is expected is a symptom and the cause is upstream - find out which
+caller passes it and why, and report that before changing a line.** AGENTS.md hard rule; a
+`if object_ref is None: return` would make the tests green and teach us nothing.
 
-### ITEM 2 - EMIT A PATCH, APPLY NOTHING
+### ITEM 2 - THIS IS THE S115 CONTRACT, UNVERIFIED SINCE IT LANDED
 
-**`graph/2025/citations/` is the protected set and this round does not write to it.** Emit one
-artifact listing, per citation, its id and its proposed ranges. **Every entry must be proven to pass
-`check_citation_integrity` when applied** - the S135 self-verifying test is the pattern, and it is
-the floor. **A proposed range that does not verify is the defect S135 just fixed; do not
-reintroduce it.**
+`4f7abf9` put `workbench/server.py`, `generated_review.py`, `review_defects.py` and the front end on
+`main` and no one checked it. **Say plainly whether these six are one defect or several**, and
+whether the contract is broken for real users or only under test fixtures.
 
-### ITEM 3 - THE 15 HTML-ONLY ONES ARE NOT YOURS TO SOLVE
+### ITEM 3 - DO NOT REDESIGN THE REVIEW CONTRACT
 
-**Report them as a named list and stop.** They cannot get a `.txt` range because the text is not in
-the `.txt`. They are evidence for the source-of-record question, not a defect to patch. **Do not
-invent an HTML coordinate system for them in this round** - that decision is not made yet, and one
-coordinate system is the whole point of S133.
+**John does not review while the contract keeps moving** - that is why zero cells are approved. This
+round makes the existing contract work. **No new fields, no new endpoints, no UX change.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **No write to `graph/2025/citations/`**, no `quoted_text` edit, protected set byte-identical.
-- **No second locator implementation.** Extend the existing splitter.
-- **No HTML fallback and no second coordinate system.**
+- **No null-guard that hides the cause.** Fix the caller.
+- **No contract change**, no schema change, no new review affordance.
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **99 citations get proposed ranges** - 98 verbatim plus the emphasis one - **and every one is
-  proven to verify when applied**, by a test that applies its own output.
-- **The 15 HTML-only records are named**, and the arithmetic still closes to 629.
-- **`unverifiable` would fall 114 -> 15 if the patch were applied** - report that number, do not
-  apply it.
-- **Full suite against the baseline of 28.**
-- **`check_ascii` OK**, `git diff --check` clean.
+- **The cause named before the fix**, with the caller identified.
+- **All six green**, and the full-suite baseline drops from 28 to 22.
+- **No other test moves** - diff the failure SETS, not the counts.
+- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
-**ARCHITECT'S LEG.** My own full suite over `062b125` started 06:57 and is not in yet. Also still
-owed and now overdue: **the six broken S115 workbench cases**, which have been red since 2026-08-16.
-
-**WORKER COMPLETION (2026-08-19; M20-S136):** The deterministic non-destructive ranger is
-implemented in `tax_graph/acquire/citation_range_patch.py`. It emits
-`plans/m20_s136_citation_ranges.json` with **99 proposed ranges and 15 named HTML-only records**;
-the in-memory apply view verifies 614 ranged citations and leaves 15 unresolved, closing the
-corpus at 629. The existing source-range splitter now handles table pipes and source-only
-markdown furniture, including punctuation adjacent to a closing marker. No graph citation file
-or `quoted_text` was changed. The patch CLI regenerates the artifact without model or network
-access.
-
-**TEST EVIDENCE.** RAN:
-- `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex_s136_full).Path; .venv\\Scripts\\python.exe -m pytest tests/test_citation_range_patch_m136.py -q` -> **3 passed**.
-- `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex_s136_regressions).Path; .venv\\Scripts\\python.exe -m pytest tests/test_source_ranges_m133.py tests/test_acquire_citation_check_m134.py tests/test_acquire_citation_check_m135.py tests/test_citation_range_patch_m136.py -q` -> **12 passed**.
-- `.venv\\Scripts\\python.exe -m tax_graph.acquire.citation_range_patch --year 2025 --root . --raw-store .cache\\raw --output plans\\m20_s136_citation_ranges.json` -> **99 proposed, 15 HTML-only**.
-- `.venv\\Scripts\\python.exe tools/check_ascii.py` -> **ASCII check OK**.
-- `git diff --check` -> **clean**.
-- `git diff --exit-code -- graph/2025/citations` -> **exit 0; protected set unchanged**.
-
-**NOT RUN:** `python -m pytest -q` - the full suite is the Architect's leg called out above and
-the repository measurement is about 63 minutes.
+**ARCHITECT'S LEG, AND IT IS THE HALF ONLY I CAN DO.** Once the six are green I drive the workbench
+live and confirm the surface actually works for a reviewer - **a test read is not that check**, and
+it is what I have owed since 2026-08-16.
 
 ## Open for Architect
 
