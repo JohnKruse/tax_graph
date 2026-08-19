@@ -21,9 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S139 IS ACCEPTED. M20-S140 UNDER CURRENT ROUND CHASES ONE JOIN: the draft
-ALREADY holds an instruction section for 39 lines whose cells say "Not yet ingested". My S139
-diagnosis was wrong and the correction is in Current round.**
+**BALL: CODEX. M20-S140 IS ACCEPTED AND IT MOVED REVIEWER-VISIBLE INSTRUCTION COVERAGE FROM 65
+CELLS TO 175. M20-S141 UNDER CURRENT ROUND CHASES THE REMAINING 34: the "Lines 17a Through 17z"
+family projects only its first line.**
 
 **THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
 deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
@@ -230,104 +230,82 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S140: THE INSTRUCTION SECTIONS ARE ALREADY IN THE DRAFT AND NEVER BECOME THE CITATIONS THE
-CELL READS. ONE JOIN, 39 OF 54 LINES.**
+**M20-S141: THE "LINES 17a THROUGH 17z" FAMILY PROJECTS ONLY ITS FIRST LINE. 34 MORE CELLS.**
 
-**M20-S139 IS ACCEPTED (`2efcd46` + `6a67ab7`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION.**
-I re-derived the frame myself: **54 frame-owned line tokens for `form_1040_2025`**, matching. The
-relaxed assertion states its contract, and **the `xfail` is the right shape** - it asserts the join
-itself (`line_1i.get("instruction_citations")`), not a wording snapshot, so it flips to `xpass` the
-day the join works. Codex's full suite: **22 failed, 1036 passed, 2 xfailed** - the baseline reached
-22 exactly as predicted, with the failure SET unchanged. My own quiet-window run is still going and
-I will amend if it disagrees.
+**M20-S140 IS ACCEPTED (`a8fa0dd`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION, AND IT IS A
+BIGGER WIN THAN THE ROUND REPORTED.** The fix is right and minimal: the gate read
+`if instruction_ids_by_line` - whether the GLOBAL index had anything at all - instead of
+`if exact_instruction_ids`, so a populated index for one line suppressed every record's own
+`instruction_span_ids`; and `_instruction_span_index` matched its heading regex against the whole
+multiline span, so `## Line 1i\n...` never entered the branch. **Preferring the persisted typed
+`owner_lines` over re-parsing text is the right instinct and is the one-accessor direction.**
 
-### MY S139 DIAGNOSIS WAS WRONG AND THE TRUTH MAKES THE NEXT ROUND MUCH SMALLER
+**THE ROUND MEASURED THE WRONG ARTIFACT AND UNDERSOLD ITSELF. I RE-RAN IT AGAINST WHAT A REVIEWER
+ACTUALLY SEES** - `build_generated_document_cells`, old module against new, same drafts:
 
-**I wrote that the frame is pilot code, not wired into the pipeline, so the generating run "used the
-OCR path, which does not see these headings." That is false, and I should have opened the draft
-before asserting it.** The 2026-08-17 draft contains, in its own
-`graph/2025/_drafts/form_1040_2025/instruction_sections.yaml`:
+| document | cells | cells with an instruction BEFORE | AFTER |
+| --- | --- | --- | --- |
+| `form_1040_2025` | 199 | 25 | **77** |
+| `schedule_1_2025` | 73 | 3 | **61** |
+| `schedule_1a_2025` | 54 | 0 | 0 |
+| `schedule_2_2025` | 63 | 20 | 20 |
+| `schedule_3_2025` | 37 | 17 | 17 |
 
-    section_id: instruction_section_instructions_form_1040_2025_0013
-    document_id: form_1040_2025      line: 1i      heading: "Line 1i"
-    text: "## Line 1i / ### Nontaxable Combat Pay Election / If you elect to include your ..."
+**65 cells to 175. Schedule 1 goes 3 of 73 to 61 of 73 and nobody measured it** - the round reported
+`schedule_1 53 -> 53` from the upstream coverage block and `15/54 -> 49/54` in frame-token space.
+**Neither is the reviewer-visible number.** Report what the reviewer sees; the upstream artifact's
+own coverage block is not that.
 
-**The OCR path DID find it, with exactly the text the guard wanted.** That file holds 317 sections
-and **every one of the 54 frame-owned lines has one.**
+**THE GUARD SWAP IS NOT CODEX'S FAULT AND STILL HAS TO BE UNDONE.** It changed
+`assert len(missing) == 39` to `== 5`, which is one frozen number for another - **my ruling against
+exactly that landed in `0cbda0b`, after its commit, so it could not have seen it.** ITEM 3 below.
 
-**SO THE GAP IS NOT ACQUISITION, NOT THE FRAME, AND NOT COVERAGE. IT IS ONE JOIN.** The workbench
-renders from `cell.instruction_citations` (`workbench/static/river.js:114`) and falls back to "Not
-yet ingested" when that list is empty. **The draft has instruction SECTIONS; the cell reads
-instruction CITATIONS; nothing turns the first into the second for these lines.** Codex's 39 was
-measuring exactly the right thing - **39 of 54 lines have a section and no citation** - and my
-explanation of why was the part that was wrong.
+### ITEM 1 - THE MULTI-LINE SPAN FAMILY, MEASURED NOT GUESSED
 
-**THIS ALSO PUTS A QUESTION MARK OVER QUEUE ITEM 2.** That item explains 42% empty instruction
-packets as "not a parser bug: `instruction_sections` creates a slice only under a heading that NAMES
-a form line." **Line 1i has a heading that names the line, has a slice, and still arrives empty.**
-Do not treat item 2's diagnosis as settled.
+**Schedule 2 and Schedule 3 did not move at all, and it is the same defect in another shape.**
+Cells whose line HAS a draft instruction section and still has no citation:
+- **`schedule_2_2025`: 22** - `17b` through `17z`.
+- **`schedule_3_2025`: 12** - `6b` through `6m`.
 
-### ITEM 1 - FIND WHERE THE SECTION IS DROPPED. DO NOT FIX ANYTHING YET.
+These sit under *"Lines 17a Through 17z"* and *"Lines 6a Through 6z"* headings. **The draft's
+`instruction_sections.yaml` carries one row per line with the full `line_tokens` list, but the
+projection appears to take only the first.** **Confirm that against `candidate_spans.yaml` before
+changing anything** - report whether `owner_lines` holds one line or all of them for those spans.
+**That is ITEM 1 and a count does not satisfy it.**
 
-**Trace one cell end to end - 1040 line 1i - from `instruction_sections.yaml` to
-`build_generated_document_cells`, and report the exact step where the section stops.** Name the
-function and the condition. **A guess about "the join" does not satisfy this item; neither does a
-count.** The 15 lines that DO arrive are the control group - **say what is different about them.**
+### ITEM 2 - CLOSE IT IF THE EVIDENCE SAYS SO
 
-### ITEM 2 - THEN THE SMALLEST CHANGE THAT CLOSES IT
+If the span carries every owner line and the projection drops all but the first, **use them all.**
+If the span genuinely carries only the first, **the defect is upstream in span construction - say
+so and stop.** Do not synthesise the missing lines in the workbench layer.
 
-Only after ITEM 1 is reported. **If the 15 that work do so through a path the other 39 could take,
-that path is the fix.** If the two populations differ for a real reason, **say so and stop** - that
-is a finding, not a failure.
+### ITEM 3 - MAKE THE GAP GUARD NON-INCREASING
 
-### ITEM 3 - REPORT THE MOVEMENT ACROSS ALL FIVE DOCUMENTS
+`test_s132_1040_frame_owned_instruction_gap_count_is_measured` must assert **that the gap does not
+GROW**, not that it equals a number. Record today's value as a named ceiling constant with a comment
+saying it is a ceiling, and assert `<=`. **The `xfail`-turned-`xpass` is the signal that carries
+information; the count is a report, not a contract.**
 
-`form_1040`, `schedule_1`, `schedule_1a`, `schedule_2`, `schedule_3`: **sections present, citations
-present, cells with an instruction, before and after.** Schedule 1-A has `has_sections: false` and
-**0** sections in that same coverage block - **expect it to move not at all, and say so** rather
-than letting it hide in a total.
+### ITEM 4 - REPORT REVIEWER-VISIBLE COVERAGE
+
+Same table as above, before and after, all five documents, **counted off
+`build_generated_document_cells`.** Schedule 1-A stays 0 of 54 - it has no instruction sections at
+all - **say that explicitly rather than letting it sit in a total.**
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not regenerate drafts** and do not hand-edit one. The draft already has what is needed.
-- **Do not wire the S132 pilot frame in.** That is a separate, larger round and this defect does not
-  need it - **the OCR path already produced the section.**
-- **No contract change to the review surface**, no promoted-artifact write.
+- **No draft regeneration or hand-edit.** No promoted-artifact write. No review-contract change.
+- **Do not synthesise line ownership** the source spans do not carry.
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **The dropping step named**, with the function and the condition, and the 15-vs-39 difference
-  explained.
-- **If a fix lands: the `xfail` in `test_workbench_v2_m17` flips to `xpass`** - that is the
-  designed-in signal, so report it explicitly.
-- **Before/after instruction coverage for all five documents.**
-- **Full suite in the working tree**; baseline 22 must not grow. **Diff the failure SETS.**
+- **`owner_lines` content for the 17a/6a spans reported from the artifact**, before any change.
+- **If a fix lands: schedule_2 and schedule_3 move, with the before/after table.**
+- **The gap guard is `<=` against a named ceiling.**
+- **Full suite in the working tree, and ONLY IF no other suite is running** - see Standing
+  operational notes. Baseline 22 must not grow; **diff the failure SETS.**
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
-
-**WORKER RESULT, 2026-08-19 - M20-S140 IMPLEMENTED.** The drop is in
-`workbench.generated_review._instruction_span_index`: the old regex was matched against the whole
-multiline span, so a span beginning `## Line 1i` followed by a newline never entered the heading
-branch. The 15 control spans had a matchable legacy shape. The smallest fix uses persisted
-`owner_lines` when present and otherwise matches the first non-empty heading line. Line 1i now
-receives `span_instructions_form_1040_2025_section_0013`; no draft, promoted artifact, or review
-surface contract was edited.
-
-- The 1040 frame-owned population moved from **15 / 54** cited lines to **49 / 54**, leaving **5**
-  measured gaps. The M20-S139 known-gap test therefore reports **1 xpassed**.
-- The canonical five-document coverage block (sections / review cells / instruction citations
-  before -> after) remains: `form_1040` **59 / 57 / 41 -> 41**; `schedule_1` **62 / 59 / 53 ->
-  53**; `schedule_1a` **0 / 48 / 0 -> 0**; `schedule_2` **17 / 43 / 38 -> 38**; `schedule_3`
-  **16 / 33 / 29 -> 29**. This round changes the workbench projection join, not that upstream
-  completeness artifact.
-- `RAN: .venv\\Scripts\\python.exe -m pytest tests\\test_generated_review_m20.py -q` -> **6
-  passed, 1 failed in 25.90s**; the one failure is the already-recorded stale line-1a baseline
-  assertion. The new owner-line guard and the line-1i projection guard passed.
-- `RAN: .venv\\Scripts\\python.exe -m pytest tests\\test_generated_review_m20.py::test_instruction_span_index_uses_persisted_owner_lines tests\\test_generated_review_m20.py::test_generated_review_keeps_form_and_instruction_slots_separate -q` -> **2 passed in 3.55s**.
-- `RAN: $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s140_codex).Path; .venv\\Scripts\\python.exe -m pytest tests\\e2e\\test_workbench_v2_m17.py -q` -> **6 passed, 1 xpassed in 205.42s (0:03:25)**.
-- `RAN: .venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**; `RAN: git diff --check` -> **clean**.
-- `NOT RUN: .venv\\Scripts\\python.exe -m pytest -q` -> the Architect's quiet-window run is the
-  meaningful full-suite check for this working-tree-only state.
 
 ## Open for Architect
 
