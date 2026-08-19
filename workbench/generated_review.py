@@ -1066,20 +1066,10 @@ def _filer_entry_source(
     formula: dict[str, Any],
     target_ref: str,
 ) -> tuple[str, str, str]:
-    """Return named filer-input identity, recovering legacy quote-only records."""
+    """Return named filer-input identity from structured model fields."""
     form = str(outcome.get("form") or formula.get("form") or "").strip()
     line = str(outcome.get("line") or formula.get("line") or "").strip()
     box = str(outcome.get("box") or formula.get("box") or "").strip()
-    if form and (line or box):
-        return form, line, box
-    quote = str(outcome.get("quote") or formula.get("quote") or "")
-    match = re.search(
-        r"\bForm(?:\(s\))?\s+(?P<form>[A-Za-z0-9-]+),\s*box\s+(?P<box>[0-9]+[A-Za-z]?)\b",
-        quote,
-        re.IGNORECASE,
-    )
-    if match:
-        return match.group("form"), target_ref, match.group("box")
     return form, line, box
 
 

@@ -183,6 +183,22 @@ one line and leave it red. Do NOT change the assertion.
 
 ## Open for Architect
 
+- **S148 WORKER CHECKPOINT (2026-08-20):** The quote-regex fallback is removed from the working
+  tree; the structured `form`/`line`/`box` path remains unchanged. The focused provenance and
+  workbench guards passed 20, and the API set passed 12. The generated-review file is expected to
+  be red until the live draft is regenerated: it reports `line 1a = entered by filer` while the
+  stale guard still expects `line 1a = W-2 box 1`.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py tests/test_m20_s113.py tests/test_m20_s115.py -q` -> **20 passed in 1.24s**.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py -q` -> **12 passed in 190.57s (0:03:10)**.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q` -> **9 passed, 1 failed in 40.87s**; the expected line 1a red is the stale W-2-box-1 assertion.
+
+  **NOT RUN:** the permitted live `derive_cells_s25.py --document form_1040_2025` call; the
+  environment rejected sending tax-document data to an external model without explicit user
+  authorization, so there is no model outcome record to quote yet.
+
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
   committed 2026-08-16 and the drafts were regenerated 2026-08-17 14:31 by the accepted corpus run.
   Codex was right to refuse the hand fix and right to escalate.
