@@ -18,6 +18,9 @@ RAW_ROOT = ROOT / ".cache" / "raw" / "2025"
 LINE_1I_GAP_REASON = (
     "M20-S139 queue: the acquired HTML line 1i instruction section is not projected into the generated cell"
 )
+# This is a non-increasing ceiling for the frame-to-draft gap, not a frozen
+# corpus count.  The report below remains useful when another line is closed.
+S132_1040_FRAME_GAP_CEILING = 5
 
 
 def test_three_pane_shell_exposes_cell_river_and_local_review_state(page, workbench_url: str) -> None:
@@ -195,7 +198,7 @@ def test_s132_1040_line_1i_instruction_section_reaches_generated_cell() -> None:
 
 
 def test_s132_1040_frame_owned_instruction_gap_count_is_measured() -> None:
-    """Keep the five remaining 1040 frame-to-draft gaps visible while queued."""
+    """Keep the frame-to-draft gap visible without freezing today's count."""
     frame = parse_html_document_frame(
         (RAW_ROOT / "instructions_form_1040_2025.html").read_text(encoding="utf-8"),
         source_document_id="instructions_form_1040_2025",
@@ -217,7 +220,7 @@ def test_s132_1040_frame_owned_instruction_gap_count_is_measured() -> None:
             for cell in cells
         )
     }
-    assert len(missing) == 5
+    assert len(missing) <= S132_1040_FRAME_GAP_CEILING
 
 
 def test_generated_cell_try_again_shows_fresh_result_without_session_progress(

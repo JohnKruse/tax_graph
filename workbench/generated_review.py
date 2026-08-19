@@ -22,6 +22,8 @@ GENERATED_REVIEW_DOCUMENTS = frozenset({
     "form_1040_2025",
     "schedule_1_2025",
     "schedule_a_2025",
+    "schedule_2_2025",
+    "schedule_3_2025",
 })
 FULL_FORM_REVIEW_DOCUMENTS = GENERATED_REVIEW_DOCUMENTS
 GENERATED_OUTCOME_KINDS = frozenset({
@@ -75,7 +77,14 @@ def build_generated_document_cells(
         for item in _records(micro.get("outcomes"))
         if item.get("target_cell_id")
     }
-    instruction_ids_by_line = _instruction_span_index(spans)
+    instruction_ids_by_line = _instruction_span_index(
+        spans,
+        owner_document_id=(
+            document_id
+            if document_id in {"schedule_2_2025", "schedule_3_2025"}
+            else None
+        ),
+    )
     provenance = _provenance(draft.get("metrics"))
     cells_by_anchor = _cells_by_anchor(base.cells)
     decision_cells, unplaceable = _project_decisions(
@@ -177,6 +186,11 @@ def build_generated_document_cells(
             for span_id in instruction_span_ids
             if (span := spans.get(str(span_id))) is not None
         ]
+        if not instruction_span_ids:
+            # A generated record may have no owned packet for its physical
+            # cell.  Keep the inventory's existing instruction citation rather
+            # than turning a previously cited cell into a silent gap.
+            instruction_citations = list(base_cell.get("instruction_citations") or [])
         form_citations = [
             item for item in rule_citations
             if not str(item.get("source_document_id") or item.get("document_id") or "").startswith("instructions_")
@@ -356,21 +370,34 @@ def _span_index(value: Any) -> dict[str, dict[str, Any]]:
     }
 
 
-def _instruction_span_index(spans: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
+def _instruction_span_index(
+    spans: dict[str, dict[str, Any]],
+    *,
+    owner_document_id: str | None = None,
+) -> dict[str, list[str]]:
     """Rebuild line ownership from draft spans without importing the pipeline.
 
     Current candidate-span artifacts persist ``owner_lines`` from the typed
     instruction frame.  That explicit ownership is authoritative.  Older
     sidecars may lack it, so their first non-empty heading line remains a
-    compatibility fallback.
+    compatibility fallback.  When a shared booklet carries explicit ownership,
+    the requested form's owner is applied before indexing the line packet.
     """
+    scoped_spans = [
+        (span_id, span)
+        for span_id, span in spans.items()
+        if str(span.get("relationship") or "") != "source"
+        and not (
+            owner_document_id
+            and str(span.get("owner_document_id") or "")
+            and str(span.get("owner_document_id")) != owner_document_id
+        )
+    ]
     result: dict[str, list[str]] = {}
     current_document = ""
     current_lines: set[str] = set()
     current_level: int | None = None
-    for span_id, span in spans.items():
-        if str(span.get("relationship") or "") == "source":
-            continue
+    for span_id, span in scoped_spans:
         document_id = str(span.get("document_id") or "")
         if document_id != current_document:
             current_document = document_id

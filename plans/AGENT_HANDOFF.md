@@ -292,6 +292,37 @@ Same table as above, before and after, all five documents, **counted off
 `build_generated_document_cells`.** Schedule 1-A stays 0 of 54 - it has no instruction sections at
 all - **say that explicitly rather than letting it sit in a total.**
 
+### Worker status - Codex S141 (2026-08-19)
+
+- Confirmed the persisted `candidate_spans.yaml` records before changing code. The Schedule 2
+  span `span_instructions_form_1040_2025_section_0136` owns `17a` through `17z`; the Schedule 3
+  span `span_instructions_form_1040_2025_section_0144` owns `6a` through `6z`. The evidence is
+  complete, so this is a projection defect, not an upstream ownership gap.
+- Added Schedule 2 and Schedule 3 to the generated-review projection. The projection scopes the
+  shared booklet by persisted `owner_document_id` for these forms and retains a base citation
+  when a generated formula has no owned instruction packet. This projects the existing spans;
+  it does not edit drafts or promoted artifacts.
+- Reviewer-visible coverage measured from `build_generated_document_cells` after the change:
+  `form_1040_2025` 77/199, `schedule_1_2025` 61/73, `schedule_1a_2025` 0/54,
+  `schedule_2_2025` 42/63, `schedule_3_2025` 31/37. Schedule 1-A remains 0 because its draft
+  has no instruction sections. The S141 target families are now projected for the physical
+  Schedule 2 and Schedule 3 cells.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q -k
+  "instruction_span_index or multiline_schedule"` -> 3 passed, 6 deselected in 6.26s.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q` -> 1 failed,
+  11 passed in 42.28s. The one failure is the pre-existing line 1a fixture expectation
+  (`W-2 box 1` versus `entered by filer`); it is outside S141 and was not changed.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed in
+  0.37s.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py -q` -> 5 passed
+  in 164.74s.
+- RAN: `.venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 6 passed,
+  1 xpassed in 204.50s. The named gap ceiling remains non-increasing.
+- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
+- RAN: `git diff --check` -> clean. Protected graph and field-map diff -> empty.
+- NOT RUN: `.venv\Scripts\python.exe -m pytest -q` -> the full suite is Architect-side under the
+  600-second Worker cap; focused workbench, API, and e2e sets introduced no new failures.
+
 ---
 
 **WHAT MUST NOT HAPPEN.**

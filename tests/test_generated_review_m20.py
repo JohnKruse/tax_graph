@@ -26,6 +26,8 @@ def test_generated_review_projects_formula_and_source_cells_with_provenance() ->
         "form_1040_2025": 199,
         "schedule_1_2025": 73,
         "schedule_a_2025": 33,
+        "schedule_2_2025": 63,
+        "schedule_3_2025": 37,
     }
     for document_id, count in expected.items():
         result = build_generated_document_cells(ROOT, 2025, document_id)
@@ -75,6 +77,57 @@ def test_instruction_span_index_uses_persisted_owner_lines() -> None:
 
     assert index["1i"] == ["span_line_1i"]
     assert index["2a"] == ["span_legacy"]
+
+
+@pytest.mark.m20
+def test_instruction_span_index_respects_shared_booklet_owner() -> None:
+    """Shared-booklet line tokens stay attached to their owning form."""
+    spans = {
+        "span_schedule_2": {
+            "span_id": "span_schedule_2",
+            "document_id": "instructions_form_1040_2025",
+            "owner_document_id": "schedule_2_2025",
+            "relationship": "instructions",
+            "owner_lines": ["17a", "17b"],
+            "text": "## Lines 17a Through 17b\n\nEnter the amount.",
+        },
+        "span_schedule_3": {
+            "span_id": "span_schedule_3",
+            "document_id": "instructions_form_1040_2025",
+            "owner_document_id": "schedule_3_2025",
+            "relationship": "instructions",
+            "owner_lines": ["17a", "17b"],
+            "text": "## Lines 17a Through 17b\n\nEnter the amount.",
+        },
+    }
+
+    schedule_2 = generated_review._instruction_span_index(
+        spans,
+        owner_document_id="schedule_2_2025",
+    )
+    schedule_3 = generated_review._instruction_span_index(
+        spans,
+        owner_document_id="schedule_3_2025",
+    )
+
+    assert schedule_2["17b"] == ["span_schedule_2"]
+    assert schedule_3["17b"] == ["span_schedule_3"]
+
+
+@pytest.mark.m20
+def test_generated_review_projects_all_multiline_schedule_instruction_owners() -> None:
+    """Shared line-family spans reach every owning Schedule 2 and 3 cell."""
+    expected = {
+        "schedule_2_2025": {f"17{letter}" for letter in "bcdefghijklmnopq"} | {"17z"},
+        "schedule_3_2025": {f"6{letter}" for letter in "bcdefghijklm"},
+    }
+    for document_id, anchors in expected.items():
+        cells = build_generated_document_cells(ROOT, 2025, document_id).cells
+        by_anchor = {
+            str(cell.get("official_ref") or "").lower(): cell
+            for cell in cells
+        }
+        assert all(by_anchor[anchor]["instruction_citations"] for anchor in anchors)
 
 
 @pytest.mark.m20
