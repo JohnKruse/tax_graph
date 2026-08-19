@@ -21,9 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S140 IS ACCEPTED AND IT MOVED REVIEWER-VISIBLE INSTRUCTION COVERAGE FROM 65
-CELLS TO 175. M20-S141 UNDER CURRENT ROUND CHASES THE REMAINING 34: the "Lines 17a Through 17z"
-family projects only its first line.**
+**BALL: CODEX. M20-S141 IS ACCEPTED - 211 of 426 cells now carry an instruction. BUT ONLY 106 OF
+THOSE ARE LINE-LEVEL; 105 are one block handed to many cells, and one Schedule 1 block is handed
+to 23. M20-S142 under Current round splits them at their run-in labels.**
 
 **THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
 deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
@@ -230,112 +230,78 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S141: THE "LINES 17a THROUGH 17z" FAMILY PROJECTS ONLY ITS FIRST LINE. 34 MORE CELLS.**
+**M20-S142: SPLIT THE MULTI-LINE BLOCKS AT THEIR RUN-IN LABELS. HALF OF OUR "COVERAGE" IS ONE BLOCK
+HANDED TO SEVENTEEN CELLS.**
 
-**M20-S140 IS ACCEPTED (`a8fa0dd`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION, AND IT IS A
-BIGGER WIN THAN THE ROUND REPORTED.** The fix is right and minimal: the gate read
-`if instruction_ids_by_line` - whether the GLOBAL index had anything at all - instead of
-`if exact_instruction_ids`, so a populated index for one line suppressed every record's own
-`instruction_span_ids`; and `_instruction_span_index` matched its heading regex against the whole
-multiline span, so `## Line 1i\n...` never entered the branch. **Preferring the persisted typed
-`owner_lines` over re-parsing text is the right instinct and is the one-accessor direction.**
+**M20-S141 IS ACCEPTED (`7130c05` + `428c901`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION.**
+Codex confirmed the spans from the artifact before touching code - exactly what ITEM 1 asked -
+naming `span_instructions_form_1040_2025_section_0136` as owning `17a` through `17z` and
+`..._0144` as owning `6a` through `6z`. **It is a projection defect, not an ownership gap, and the
+fix is honest: the span really does govern those lines.** My own count reproduces its numbers
+exactly: `form_1040` 77/199, `schedule_1` 61/73, `schedule_1a` 0/54, `schedule_2` 42/63,
+`schedule_3` 31/37. **211 of 426.** It also self-corrected a wrong test count in `428c901`.
 
-**THE ROUND MEASURED THE WRONG ARTIFACT AND UNDERSOLD ITSELF. I RE-RAN IT AGAINST WHAT A REVIEWER
-ACTUALLY SEES** - `build_generated_document_cells`, old module against new, same drafts:
+### THE 211 IS TWO DIFFERENT THINGS AND ONLY HALF OF IT IS WHAT WE WANTED
 
-| document | cells | cells with an instruction BEFORE | AFTER |
+**Measured off `build_generated_document_cells`, counting how many cells share each citation:**
+
+| document | covered | line-level | block-level (shared) |
 | --- | --- | --- | --- |
-| `form_1040_2025` | 199 | 25 | **77** |
-| `schedule_1_2025` | 73 | 3 | **61** |
-| `schedule_1a_2025` | 54 | 0 | 0 |
-| `schedule_2_2025` | 63 | 20 | 20 |
-| `schedule_3_2025` | 37 | 17 | 17 |
+| `form_1040_2025` | 77 | 55 | 22 |
+| `schedule_1_2025` | 61 | 26 | **35** |
+| `schedule_2_2025` | 42 | 15 | **27** |
+| `schedule_3_2025` | 31 | 10 | **21** |
+| **total** | **211** | **106** | **105** |
 
-**65 cells to 175. Schedule 1 goes 3 of 73 to 61 of 73 and nobody measured it** - the round reported
-`schedule_1 53 -> 53` from the upstream coverage block and `15/54 -> 49/54` in frame-token space.
-**Neither is the reviewer-visible number.** Report what the reviewer sees; the upstream artifact's
-own coverage block is not that.
+**One Schedule 1 block is handed to 23 cells. One Schedule 2 block to 17. One Schedule 3 block to
+14.** A reviewer opening Schedule 2 line `17f` is shown a block that opens:
 
-**THE GUARD SWAP IS NOT CODEX'S FAULT AND STILL HAS TO BE UNDONE.** It changed
-`assert len(missing) == 39` to `== 5`, which is one frozen number for another - **my ruling against
-exactly that landed in `0cbda0b`, after its commit, so it could not have seen it.** ITEM 3 below.
+    ## Lines 17a Through 17z / ### Other Additional Taxes
+    **Line 17a.** Recapture of the following credits. 1. Amounts from Form 4255, column (j), ...
 
-### ITEM 1 - THE MULTI-LINE SPAN FAMILY, MEASURED NOT GUESSED
+**That is line 17a's text under line 17f. It is the exact failure John named at the start of this
+direction** - *"line 24 references line 22 and the instructions for line 22 get jammed in."* We did
+not import it from a model; we built it ourselves by projecting a block onto every line it names.
 
-**Schedule 2 and Schedule 3 did not move at all, and it is the same defect in another shape.**
-Cells whose line HAS a draft instruction section and still has no citation:
-- **`schedule_2_2025`: 22** - `17b` through `17z`.
-- **`schedule_3_2025`: 12** - `6b` through `6m`.
+### ITEM 1 - THE SPLIT POINT IS ALREADY IN THE TEXT
 
-These sit under *"Lines 17a Through 17z"* and *"Lines 6a Through 6z"* headings. **The draft's
-`instruction_sections.yaml` carries one row per line with the full `line_tokens` list, but the
-projection appears to take only the first.** **Confirm that against `candidate_spans.yaml` before
-changing anything** - report whether `owner_lines` holds one line or all of them for those spans.
-**That is ITEM 1 and a count does not satisfy it.**
+**Do not invent a segmentation.** The blocks carry the run-in labels verbatim, and they are the same
+`inlinehd` construct S128-S132 already proved:
 
-### ITEM 2 - CLOSE IT IF THE EVIDENCE SAYS SO
+    **Line 17a.** Recapture of the following credits.
+    **Line 1a. Excess advance premium tax credit repayment.**
+    ##### Line 24a          ### Line 13b
 
-If the span carries every owner line and the projection drops all but the first, **use them all.**
-If the span genuinely carries only the first, **the defect is upstream in span construction - say
-so and stop.** Do not synthesise the missing lines in the workbench layer.
+**Cut a multi-line block at these boundaries and give each cell the run for ITS line.** Report the
+label forms you found from the artifact - **quote them** - before matching on them.
 
-### ITEM 3 - MAKE THE GAP GUARD NON-INCREASING
+### ITEM 2 - A LINE WITH NO RUN IN THE BLOCK KEEPS THE BLOCK
 
-`test_s132_1040_frame_owned_instruction_gap_count_is_measured` must assert **that the gap does not
-GROW**, not that it equals a number. Record today's value as a named ceiling constant with a comment
-saying it is a ceiling, and assert `<=`. **The `xfail`-turned-`xpass` is the signal that carries
-information; the count is a report, not a contract.**
+If a block names `17a` through `17z` but only labels a few, **the unlabelled lines keep the whole
+block and are still counted as block-level.** **Do not fabricate a run that is not there**, and do
+not drop the citation - a block is worse than a line and much better than nothing.
 
-### ITEM 4 - REPORT REVIEWER-VISIBLE COVERAGE
+### ITEM 3 - REPORT THE SPLIT, NOT THE TOTAL
 
-Same table as above, before and after, all five documents, **counted off
-`build_generated_document_cells`.** Schedule 1-A stays 0 of 54 - it has no instruction sections at
-all - **say that explicitly rather than letting it sit in a total.**
-
-### Worker status - Codex S141 (2026-08-19)
-
-- Confirmed the persisted `candidate_spans.yaml` records before changing code. The Schedule 2
-  span `span_instructions_form_1040_2025_section_0136` owns `17a` through `17z`; the Schedule 3
-  span `span_instructions_form_1040_2025_section_0144` owns `6a` through `6z`. The evidence is
-  complete, so this is a projection defect, not an upstream ownership gap.
-- Added Schedule 2 and Schedule 3 to the generated-review projection. The projection scopes the
-  shared booklet by persisted `owner_document_id` for these forms and retains a base citation
-  when a generated formula has no owned instruction packet. This projects the existing spans;
-  it does not edit drafts or promoted artifacts.
-- Reviewer-visible coverage measured from `build_generated_document_cells` after the change:
-  `form_1040_2025` 77/199, `schedule_1_2025` 61/73, `schedule_1a_2025` 0/54,
-  `schedule_2_2025` 42/63, `schedule_3_2025` 31/37. Schedule 1-A remains 0 because its draft
-  has no instruction sections. The S141 target families are now projected for the physical
-  Schedule 2 and Schedule 3 cells.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q -k
-  "instruction_span_index or multiline_schedule"` -> 3 passed, 6 deselected in 4.85s.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_generated_review_m20.py -q` -> 1 failed,
-  8 passed in 37.57s. The one failure is the pre-existing line 1a fixture expectation
-  (`W-2 box 1` versus `entered by filer`); it is outside S141 and was not changed.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q` -> 4 passed in
-  0.37s.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py -q` -> 5 passed
-  in 164.74s.
-- RAN: `.venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 6 passed,
-  1 xpassed in 204.50s. The named gap ceiling remains non-increasing.
-- RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
-- RAN: `git diff --check` -> clean. Protected graph and field-map diff -> empty.
-- NOT RUN: `.venv\Scripts\python.exe -m pytest -q` -> the full suite is Architect-side under the
-  600-second Worker cap; focused workbench, API, and e2e sets introduced no new failures.
+**Line-level and block-level, per document, before and after.** The headline number is
+**line-level**, and 106 is the figure to beat. **A rise in the total with no rise in line-level is
+not progress** - say so plainly if that is what happens.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **No draft regeneration or hand-edit.** No promoted-artifact write. No review-contract change.
-- **Do not synthesise line ownership** the source spans do not carry.
+- **No draft regeneration or hand-edit**, no promoted-artifact write, no review-contract change.
+- **Do not drop a block citation** to make the line-level ratio look better.
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **`owner_lines` content for the 17a/6a spans reported from the artifact**, before any change.
-- **If a fix lands: schedule_2 and schedule_3 move, with the before/after table.**
-- **The gap guard is `<=` against a named ceiling.**
-- **Full suite in the working tree, and ONLY IF no other suite is running** - see Standing
-  operational notes. Baseline 22 must not grow; **diff the failure SETS.**
+- **The run-in label forms quoted from the artifact** before any matching code.
+- **Line-level and block-level counts per document, before and after.**
+- **The 1040 gap ceiling guard stays `<=`** and does not grow.
+- **Focused workbench, API and e2e sets green** against their known reds.
+- **NO FULL SUITE FROM THE WORKER OR THE ARCHITECT THIS ROUND** - see Standing operational notes;
+  the duplicate runs have cost more than they caught. The Worker's focused sets plus the
+  Architect's recomputation are the check.
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
 ## Open for Architect
@@ -574,6 +540,21 @@ is not acceptable** (John, 2026-08-10).
 
 
 ## Standing operational notes
+
+**NO DUPLICATE FULL SUITES, AND THE ARCHITECT STOPS RUNNING ONE PER ROUND (Architect, 2026-08-19).**
+I started three full suites today and **every one was invalidated by the Worker committing under
+it** - the tree moves the moment John launches the next round, and pytest collects at start, so the
+run measures a mix. **Two of them also ran concurrently with the Worker's own suite, contending for
+CPU and workbench ports.** Net yield of ~3.5 hours of CPU: nothing that the focused sets and
+recomputation did not already show.
+- **The Architect's job is recomputation, not a second suite.** Re-derive the round's claims from
+  the artifacts, diff failure SETS when a suite exists, and verify the blast radius.
+- **When a full suite IS wanted, it runs in the gap between rounds and John is told to hold the next
+  launch until it lands.** Otherwise it is not a quiet window, it is a race.
+- **The one full-suite result that ever caught something the focused sets missed was S133's item 5**
+  - a check that had stopped checking. **That is the case that justifies the occasional run**, at a
+  phase boundary, not every round.
+
 
 **ONLY ONE FULL SUITE RUNS AT A TIME, AND IT BELONGS TO WHOEVER'S ROUND FLOOR DEMANDS IT
 (Architect, 2026-08-19, after wasting ~40 minutes of CPU and nearly corrupting a Worker run).**
