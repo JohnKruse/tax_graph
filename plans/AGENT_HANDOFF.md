@@ -21,8 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S136 IS ACCEPTED. M20-S137 UNDER CURRENT ROUND FIXES THE SIX BROKEN WORKBENCH
-CASES - the surface John reviews, red since 2026-08-16.**
+**BALL: CODEX. M20-S136 IS ACCEPTED AT `cb93fea`, BUT AN UNCOMMITTED S136 FOLLOW-UP IS SITTING IN
+THE TREE AND IS RED - close that first, then M20-S137: the six broken workbench cases, the surface
+John reviews, red since 2026-08-16.** Both are under Current round.
 
 **THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
 deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
@@ -252,6 +253,31 @@ about it: shifting every stored range by +/-200, +/-1000, or truncating its end 
 
 **THE 99 RANGES ARE COMPUTED, VERIFIED AND UNAPPLIED.** Applying them is a protected-set write and
 therefore John's, not a round's. **It is queued as a question for him, not as work.**
+
+### BEFORE S137 - CLOSE THE S136 FOLLOW-UP THAT IS SITTING UNCOMMITTED AND RED
+
+**The working tree carries uncommitted changes to `tax_graph/acquire/citation_range_patch.py` and
+`tests/test_citation_range_patch_m136.py` that are NOT in any commit, and two S136 tests fail
+because of them (`2 failed, 1 passed`). `cb93fea` itself is clean and my acceptance of it stands** -
+I checked that the committed test did not yet assert `accounting`, so the commit was
+self-consistent. **This is unlanded follow-up work, not a regression in what was accepted.**
+
+**THE CHANGE IS GOOD AND SHOULD LAND - I verified it rather than assuming.** Dropping
+`SourceTextIndex.ranges_for_quote` in favour of the shared `_contiguous_quote_ranges` **finds one
+more citation**, `cite_instruction_schedule_1_2025_en_us_2025_publink1000151501` at
+`535165..535213`, so the split becomes **100 proposed / 14 HTML-only**. **I applied all 100
+independently: 100 pass, 0 fail.** It also deletes a second locator implementation, which is the
+one-accessor direction. **Keep it.**
+
+**THREE THINGS CLOSE IT, and none is a design decision:**
+1. **Regenerate `plans/m20_s136_citation_ranges.json`** - the artifact on disk is stale against the
+   code and still says 99/15, and it has no `accounting` block while the new test asserts one.
+2. **Move the assertions to 100 / 14 / 615** in `test_citation_range_patch_m136.py`.
+   `checked == 614` is now `615`, and `unverifiable_after_apply` is `14`.
+3. **Commit it as its own commit** before starting S137, so the two rounds do not interleave.
+
+**THE ARITHMETIC MUST STILL CLOSE:** 511 ranged + 100 proposed + 14 HTML-only + 4 computed-table =
+629. **Say the number, do not assume it.**
 
 ### ITEM 1 - OPEN THEM BEFORE FIXING THEM
 
