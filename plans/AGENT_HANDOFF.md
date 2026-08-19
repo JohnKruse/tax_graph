@@ -290,6 +290,26 @@ the round report. **If it is large, that is the finding and this test is a sympt
 - **Full suite in the working tree** - the baseline should now reach **22**.
 - **Diff the failure SETS, not the counts.** `check_ascii` OK, `git diff --check` clean.
 
+**WORKER RESULT, 2026-08-19 - M20-S139 IMPLEMENTED.** The E2E instruction display now asserts the
+typed contract: visible non-empty text, with either ingested content or the explicit absence
+placeholder. A separate strict-false `xfail` records that the accepted S132 frame owns the Line 1i
+section but the generated cell has no instruction citation. The measurement records **54**
+frame-owned line tokens, **15** covered lines, and **39** missing lines. No pipeline code, draft,
+promoted artifact, or review contract was changed.
+
+- `RAN: .venv\\Scripts\\python.exe -c "...S132 frame and generated review measurement..."` -> **54
+  frame-owned lines; 15 covered; 39 missing**. The missing set includes `1i`; both `Line 1i` and
+  `Nontaxable Combat Pay Election` are owned by `form_1040_2025`.
+- `RAN: .venv\\Scripts\\python.exe -m pytest tests\\e2e\\test_workbench_v2_m17.py -q` -> **6 passed,
+  1 xfailed in 171.12s (0:02:51)**.
+- `RAN: .venv\\Scripts\\python.exe -m pytest pilot\\test_html_document_frame_m20_s132.py -q` ->
+  **3 passed in 16.88s**.
+- `RAN: .venv\\Scripts\\python.exe tools\\check_ascii.py tests\\e2e\\test_workbench_v2_m17.py` ->
+  **ASCII check OK**.
+- `RAN: git diff --check` -> **clean**.
+- `NOT RUN: .venv\\Scripts\\python.exe -m pytest -q` -> the full suite is only meaningful while the
+  Worker is idle; it is the Architect's quiet-window check after this commit.
+
 ## Open for Architect
 
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
