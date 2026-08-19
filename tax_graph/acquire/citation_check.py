@@ -213,7 +213,6 @@ def check_citation_integrity(
                 )
                 for item in resolved_ranges
             )
-            span = " ".join(fragments)
         except SourceDocumentNotFound:
             mismatches.append(
                 CitationMismatch(
@@ -235,6 +234,11 @@ def check_citation_integrity(
             )
             continue
         quote = str(citation["quoted_text"])
+        source_text = source_text_cache.get(source_document_id)
+        if source_text is None:
+            source_text = load_source_text(source_document_id, text_dir=text_root)
+            source_text_cache[source_document_id] = source_text
+        span = _join_source_fragments(source_text, resolved_ranges, fragments)
         telltale = _range_telltale(
             citation,
             source_document_id=source_document_id,
@@ -243,10 +247,6 @@ def check_citation_integrity(
         )
         range_telltales.append(telltale)
         if telltale.large_gap_count:
-            source_text = source_text_cache.get(source_document_id)
-            if source_text is None:
-                source_text = load_source_text(source_document_id, text_dir=text_root)
-                source_text_cache[source_document_id] = source_text
             correct_ranges = _contiguous_quote_ranges(source_text, quote)
             repair_quote, repair_blocker = _repair_provenance(source_text, quote)
             if repair_quote is not None:
@@ -374,23 +374,58 @@ def _split_table_separator_ranges(
     source_text: str,
     ranges: tuple[dict[str, int], ...],
 ) -> tuple[dict[str, int], ...]:
-    """Omit table pipe separators while retaining the surrounding source text."""
+    """Omit table and markdown separators while retaining source text."""
     split: list[dict[str, int]] = []
     for item in ranges:
         start = int(item["start"])
-        end = int(item["end"])
+        end = _extend_markdown_suffix(source_text, start, int(item["end"]))
         cursor = start
-        for match in re.finditer(r"\|", source_text[start:end]):
+        for match in re.finditer(
+            r"\|+|\*{1,2}|(?<!\w)_{1,2}(?=\S)|(?<=\S)_{1,2}(?!\w)",
+            source_text[start:end],
+        ):
             separator = start + match.start()
             before_end = separator
             while before_end > cursor and source_text[before_end - 1].isspace():
                 before_end -= 1
             if before_end > cursor:
                 split.append({"start": cursor, "end": before_end})
-            cursor = separator + 1
+            cursor = separator + len(match.group(0))
         if cursor < end:
             split.append({"start": cursor, "end": end})
     return tuple(split)
+
+
+def _extend_markdown_suffix(source_text: str, start: int, end: int) -> int:
+    """Include a closing emphasis marker and its following punctuation."""
+    if end >= len(source_text) or source_text[end] not in "*_":
+        return end
+    marker = source_text[end]
+    if marker not in source_text[start:end]:
+        return end
+    cursor = end
+    while cursor < len(source_text) and source_text[cursor] == marker:
+        cursor += 1
+    while cursor < len(source_text) and source_text[cursor] in ".,;:!?)]}":
+        cursor += 1
+    return cursor
+
+
+def _join_source_fragments(
+    source_text: str,
+    ranges: tuple[dict[str, int], ...],
+    fragments: tuple[str, ...],
+) -> str:
+    """Join range fragments without inventing space before punctuation."""
+    if not fragments:
+        return ""
+    span = fragments[0]
+    for preceding, following, fragment in zip(ranges, ranges[1:], fragments[1:]):
+        gap = source_text[int(preceding["end"]) : int(following["start"])]
+        marker_only = bool(gap) and not gap.strip("*_ \t\r\n")
+        separator = "" if marker_only and fragment[:1] in ".,;:!?)]}" else " "
+        span += separator + fragment
+    return span
 
 
 def _normalize_ws(value: str) -> str:

@@ -290,6 +290,26 @@ coordinate system is the whole point of S133.
 **ARCHITECT'S LEG.** My own full suite over `062b125` started 06:57 and is not in yet. Also still
 owed and now overdue: **the six broken S115 workbench cases**, which have been red since 2026-08-16.
 
+**WORKER COMPLETION (2026-08-19; M20-S136):** The deterministic non-destructive ranger is
+implemented in `tax_graph/acquire/citation_range_patch.py`. It emits
+`plans/m20_s136_citation_ranges.json` with **99 proposed ranges and 15 named HTML-only records**;
+the in-memory apply view verifies 614 ranged citations and leaves 15 unresolved, closing the
+corpus at 629. The existing source-range splitter now handles table pipes and source-only
+markdown furniture, including punctuation adjacent to a closing marker. No graph citation file
+or `quoted_text` was changed. The patch CLI regenerates the artifact without model or network
+access.
+
+**TEST EVIDENCE.** RAN:
+- `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex_s136_full).Path; .venv\\Scripts\\python.exe -m pytest tests/test_citation_range_patch_m136.py -q` -> **3 passed**.
+- `$env:PYTEST_DEBUG_TEMPROOT=(Resolve-Path .test_tmp_codex_s136_regressions).Path; .venv\\Scripts\\python.exe -m pytest tests/test_source_ranges_m133.py tests/test_acquire_citation_check_m134.py tests/test_acquire_citation_check_m135.py tests/test_citation_range_patch_m136.py -q` -> **12 passed**.
+- `.venv\\Scripts\\python.exe -m tax_graph.acquire.citation_range_patch --year 2025 --root . --raw-store .cache\\raw --output plans\\m20_s136_citation_ranges.json` -> **99 proposed, 15 HTML-only**.
+- `.venv\\Scripts\\python.exe tools/check_ascii.py` -> **ASCII check OK**.
+- `git diff --check` -> **clean**.
+- `git diff --exit-code -- graph/2025/citations` -> **exit 0; protected set unchanged**.
+
+**NOT RUN:** `python -m pytest -q` - the full suite is the Architect's leg called out above and
+the repository measurement is about 63 minutes.
+
 ## Open for Architect
 
 Nothing open. Raise items here.
