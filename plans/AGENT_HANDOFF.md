@@ -21,8 +21,38 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S145 IS THE ROUND: four addresses cite a nine-character line label as their
-whole instruction. S143 and S144 are accepted and verified below.**
+**BALL: JOHN. M20-S145 IS ACCEPTED AND VERIFIED. No round is in flight.**
+
+**M20-S145 IS ACCEPTED (Architect, 2026-08-19), VERIFIED BY RECOMPUTATION, BY OPENING THE CELLS, AND
+BY READING THE TEST DIFF.** My independent recount reproduces the table exactly: `schedule_2`
+**38/36/2 -> 38/38/0**, total **189/177/12 -> 189/179/10**, every other document unchanged. I opened
+the cells: `f2_21_0`, the stray second cell on line `17z`, previously carried the whole of *"Line
+17a."* and now carries *"**Line 17z.** Use line 17z to report any taxes not reported elsewhere on
+your return"*; both `17a` cells now carry *"**Line 17a.** Recapture of the following credits"*. My
+own focused run reproduces the round's: **23 passed, 1 failed**, the failure being the documented
+line 1a red.
+
+**THE WORKER CORRECTED MY HYPOTHESIS AND WAS RIGHT TO.** I specced this as an acquisition defect
+because the citation record holds a nine-character `quoted_text`. The real defect is projection
+side: `_project_background_cell` merged `base_cell["instruction_citations"]` without ever being
+handed `instruction_ids_by_line`, so a physical cell with no generated outline record kept the
+promoted inventory stub while the owned span sat unused in the index. **The fix is narrow and
+additive** - `_is_line_label_quote` matches only a bare `Line 17a.`-shaped quote, the replacement
+runs only for cells that have one, and `if not projected: return existing` means nothing is dropped
+where there is no replacement.
+
+**WHAT S145 DID NOT DO, AND IT IS STILL OPEN.** Both stub citations remain in
+`graph/2025/citations/instruction-form-1040-html.yaml` and in the `citation_refs` of all four
+addresses. **The review surface no longer shows them; the graph still holds them**, so my
+*"unverifiable 114 -> 36, zero mismatches"* still counts a nine-character range as verified
+evidence. Queued below.
+
+**TREE PROVENANCE, STATED AND NOT EXPLAINED.** The CLI Worker stopped before committing, reporting
+a concurrent edit - a second test enumerating the four affected cells, which the floor forbade. At
+20:22 that test was removed and this section was rewritten to STATUS: COMPLETE by something other
+than this Architect, leaving exactly the single live-corpus rule guard the floor asked for. **I did
+not determine who made those edits and I will not infer it from timestamps.** The Architect verified
+the resulting tree independently and committed it.
 
 **M20-S143 (`6dffa97`) AND M20-S144 (`3dd28d9`) ARE ACCEPTED (Architect, 2026-08-19), VERIFIED BY
 RECOMPUTATION, BY OPENING THE CELLS, AND BY READING THE TEST DIFF.** S143 cleared Schedule 1 to
@@ -107,9 +137,19 @@ file. Five more citations are short heading fragments (`IRA Distributions`, `Pen
 Annuities`, `Adopted child.`, `Include on line 25c any`, `Other refundable credits.`) - **decide
 whether they are the same defect or acceptable section pointers; do not assume.**
 
-**CAUSE UNKNOWN.** I have opened the citation records and the four address rows; I have NOT found
-what produced a nine-character `quoted_text` at acquisition. **Finding it is ITEM 1.** No spec
-asserts a cause without the excerpt, and I do not have one.
+**ITEM 1 CAUSE, FOUND AND QUOTED.** The acquisition artifacts are correct: the schedule drafts
+carry full owner spans. The defect is the projection path for physical cells without a generated
+outline record. In the pre-round `workbench/generated_review.py`, the background projection read:
+`"instruction_citations": _merge_citations(base_cell.get("instruction_citations"),
+background_citations[1])`. The caller did not pass the existing line-span index into that path.
+The live projection therefore retained the promoted inventory stub instead of projecting the
+owned span. The observed records were `f2_01` and `f2_02` with `cite_instruction_schedule_2_2025_en_us_2025_publink100079593 -> "Line 17a."`,
+`f2_21` with the same stub on line `17z`, and `f1_24` with
+`cite_instruction_schedule_3_2025_en_us_2025_publink10001946 -> "Line 6a."` on line `6z`.
+The same live diagnostic showed the span index already contained
+`span_instructions_form_1040_2025_section_0136` for Schedule 2 `17a`/`17z` and
+`span_instructions_form_1040_2025_section_0144` for Schedule 3 `6a`/`6z`, with full text.
+This is a projection-side defect, not an acquisition defect.
 
 **THIS IS WHERE MY OWN RANGE BACKLOG LOOKS WORSE THAN I REPORTED IT.** `218fb0a` ADDED the
 `626936..626945` range to the 17a citation - the diff shows it. So *"unverifiable 114 -> 36, checked
@@ -117,15 +157,14 @@ asserts a cause without the excerpt, and I do not have one.
 string.** The backlog verified that a nine-character label is really in the source. Byte-verifying a
 label is not evidence that a line is explained, and the metric should not have rewarded it.
 
-ITEM 1. Open all four addresses END TO END and name the cause with the excerpt. Do not assume the
-two documents share it.
+ITEM 1. DONE. All four addresses were opened end to end; the cause and artifact excerpt are above.
 
-ITEM 2. Fix it at the stage that produced it. **Do not hand-edit the citation artifacts** - see the
-PRIME DIRECTIVE. If the fix is a projection-side preference for a span citation over an inventory
-stub, say so and show why the acquisition side is right as it stands.
+ITEM 2. DONE. The projection now prefers the physical cell's owned line span over a label-only
+inventory citation, including the generated-anchor-to-physical-ref fallback. No citation or draft
+artifact was edited.
 
-ITEM 3. A guard that no generated review cell carries an instruction citation whose entire quoted
-text is a line label. **Assert the rule over the live corpus; do not enumerate these four.**
+ITEM 3. DONE. `tests/test_m20_s145.py` asserts over every live generated review cell that no
+instruction citation has a line-label-only quote; it does not enumerate the four cases.
 
 **WHAT MUST NOT HAPPEN.**
 - **No draft regeneration or hand-edit**, no promoted-artifact write, no review-contract change.
@@ -134,11 +173,33 @@ text is a line label. **Assert the rule over the live corpus; do not enumerate t
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **The cause, quoted from the artifact that shows it**, in the handoff.
-- **The distinct-line counts before and after** (`covered / own / shared`, every cell on the line).
-  `schedule_2` `17a` and `17z` are the two that should move.
-- **Focused workbench, API and e2e sets green** against their known reds.
-- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
+- **The cause, quoted from the artifact that shows it**, is recorded above.
+- **Distinct-line counts (`covered / own / shared`) before -> after:** `form_1040` `62 / 54 / 8`
+  -> `62 / 54 / 8`; `schedule_1` `60 / 60 / 0` -> `60 / 60 / 0`; `schedule_2`
+  `38 / 36 / 2` -> `38 / 38 / 0`; `schedule_3` `29 / 27 / 2` -> `29 / 27 / 2`;
+  total `189 / 177 / 12` -> `189 / 179 / 10`.
+- **Focused workbench/API/e2e evidence:** the S145 guard passed 2; the combined M20 and
+  mandatory workbench set passed 24 with the known unrelated Form 1040 line 1a red; the API
+  files passed 12; and the e2e file passed 6 with 1 xpass.
+- **`check_ascii` and `git diff --check` are required before commit; protected set remains
+  byte-identical.**
+
+**STATUS: COMPLETE.** No model call, network, draft regeneration, promoted-artifact write, or
+review-contract change was made.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s145.py -q` -> **1 passed in 12.22s**.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_m20_s142.py tests/test_m20_s143.py tests/test_m20_s144.py tests/test_m20_s145.py tests/test_generated_review_m20.py tests/test_workbench_m15.py -q`
+-> **23 passed, 1 failed in 79.42s (0:01:19)**; the only failure is the known line 1a W-2-box-1
+guard red.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py -q`
+-> **12 passed in 192.62s (0:03:12)**.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q`
+-> **6 passed, 1 xpassed in 158.77s (0:02:38)**.
+
+**NOT RUN:** full suite (`python -m pytest -q`) - prohibited for this round.
 
 ## Open for Architect
 
@@ -147,6 +208,14 @@ text is a line label. **Assert the rule over the live corpus; do not enumerate t
   Codex was right to refuse the hand fix and right to escalate.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **THE TWO LABEL-ONLY CITATIONS ARE STILL IN THE GRAPH AND STILL COUNTED AS VERIFIED (Architect,
+  2026-08-19).** S145 stopped projecting them; it did not remove them.
+  `cite_instruction_schedule_2_2025_en_us_2025_publink100079593` (`quoted_text: Line 17a.`, nine
+  characters) and `cite_instruction_schedule_3_2025_en_us_2025_publink10001946` (`Line 6a.`) remain
+  in `instruction-form-1040-html.yaml` with ranges the 2026-08-19 backlog added, and four addresses
+  still list them in `citation_refs`. **Decide whether a byte-verified label should count toward
+  the checked-citation metric at all.**
 
 - **A CELL CAN CARRY A NEIGHBOUR'S STUB CITATION, AND IT IS WHAT THE 177/12 METRIC ACTUALLY
   MEASURES NOW (Architect, opened 2026-08-19).** Schedule 2 line `17z` has a second physical cell,

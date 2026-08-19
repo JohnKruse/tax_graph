@@ -176,6 +176,13 @@ def build_generated_document_cells(
         rule_citations = [citations[value] for value in rule_citation_ids if value in citations]
         record_instruction_ids = [str(value) for value in formula.get("instruction_span_ids", []) or []]
         exact_instruction_ids = instruction_ids_by_line.get(anchor, [])
+        if not exact_instruction_ids and any(
+            _is_line_label_quote(item.get("quoted_text"))
+            for item in base_cell.get("instruction_citations") or []
+        ):
+            cell_anchor = _normalize_anchor(base_cell.get("official_ref"))
+            if cell_anchor != anchor:
+                exact_instruction_ids = instruction_ids_by_line.get(cell_anchor, [])
         instruction_span_ids = (
             exact_instruction_ids
             if exact_instruction_ids
@@ -305,6 +312,7 @@ def build_generated_document_cells(
                 base_cell,
                 background.get(str(base_cell.get("field_name") or "")),
                 spans,
+                instruction_ids_by_line,
                 provenance=provenance,
             )
         expected_count = len(base.cells)
@@ -1118,10 +1126,17 @@ def _project_background_cell(
     base_cell: dict[str, Any],
     background: dict[str, Any] | None,
     spans: dict[str, dict[str, Any]],
+    instruction_ids_by_line: dict[str, list[str]],
     *,
     provenance: dict[str, str],
 ) -> dict[str, Any]:
-    """Project one physical cell that has no formula/source outline record."""
+    """Project one physical cell that has no formula/source outline record.
+
+    A physical cell can remain outside the generated outline while its printed
+    line still has an owned instruction span. Prefer that span over the
+    inventory citation copied into the base cell; the inventory may only carry
+    a neighboring line label for a repeated form row.
+    """
     cell = dict(base_cell)
     authored_policy = str(base_cell.get("population_policy") or "")
     policy = _projected_policy(base_cell, background, None)
@@ -1137,6 +1152,11 @@ def _project_background_cell(
         str((background or {}).get("failover_class") or ""),
     )
     background_citations = _background_citations(background or {}, spans)
+    instruction_citations = _background_instruction_citations(
+        base_cell,
+        spans,
+        instruction_ids_by_line,
+    )
     status = str((background or {}).get("status") or ("authored" if authored_policy and authored_policy != "unsupported" else "review_gap"))
     cell.update(
         {
@@ -1155,7 +1175,10 @@ def _project_background_cell(
             "operation": "",
             "inputs": [],
             "form_citations": _merge_citations(base_cell.get("citations"), background_citations[0]),
-            "instruction_citations": _merge_citations(base_cell.get("instruction_citations"), background_citations[1]),
+            "instruction_citations": _merge_citations(
+                instruction_citations,
+                background_citations[1],
+            ),
             "review_gap": review_gap or None,
             "risk_bucket": _background_risk_bucket(expression),
             "population_policy": policy,
@@ -1172,6 +1195,37 @@ def _project_background_cell(
         cell["missing_capability"] = None
     cell["citations"] = cell["form_citations"]
     return cell
+
+
+def _background_instruction_citations(
+    base_cell: dict[str, Any],
+    spans: dict[str, dict[str, Any]],
+    instruction_ids_by_line: dict[str, list[str]],
+) -> list[dict[str, Any]]:
+    """Prefer owned line spans when projecting an unrecorded physical cell."""
+    anchor = _normalize_anchor(base_cell.get("official_ref"))
+    existing = list(base_cell.get("instruction_citations") or [])
+    if not any(_is_line_label_quote(item.get("quoted_text")) for item in existing):
+        return existing
+    span_ids = instruction_ids_by_line.get(anchor, [])
+    projected = [
+        _instruction_citation(str(span_id), span, anchor)
+        for span_id in span_ids
+        if (span := spans.get(str(span_id))) is not None
+    ]
+    if not projected:
+        return existing
+    existing = [
+        item
+        for item in existing
+        if not _is_line_label_quote(item.get("quoted_text"))
+    ]
+    return [*projected, *existing]
+
+
+def _is_line_label_quote(value: Any) -> bool:
+    """Return whether a citation quote is only a printed line label."""
+    return bool(re.fullmatch(r"\s*Line\s+[0-9]+[a-z]?\.\s*", str(value or ""), re.IGNORECASE))
 
 
 def _background_expression(
