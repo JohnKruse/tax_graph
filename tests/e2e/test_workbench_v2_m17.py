@@ -195,7 +195,7 @@ def test_s132_1040_line_1i_instruction_section_reaches_generated_cell() -> None:
 
 
 def test_s132_1040_frame_owned_instruction_gap_count_is_measured() -> None:
-    """Keep the measured 1040 frame-to-draft gap visible while it is queued."""
+    """Keep the five remaining 1040 frame-to-draft gaps visible while queued."""
     frame = parse_html_document_frame(
         (RAW_ROOT / "instructions_form_1040_2025.html").read_text(encoding="utf-8"),
         source_document_id="instructions_form_1040_2025",
@@ -217,7 +217,7 @@ def test_s132_1040_frame_owned_instruction_gap_count_is_measured() -> None:
             for cell in cells
         )
     }
-    assert len(missing) == 39
+    assert len(missing) == 5
 
 
 def test_generated_cell_try_again_shows_fresh_result_without_session_progress(

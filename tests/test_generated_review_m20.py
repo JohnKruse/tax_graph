@@ -53,6 +53,31 @@ def test_generated_review_keeps_form_and_instruction_slots_separate() -> None:
 
 
 @pytest.mark.m20
+def test_instruction_span_index_uses_persisted_owner_lines() -> None:
+    """Multiline frame spans keep their explicit line owner in the projection."""
+    spans = {
+        "span_line_1i": {
+            "span_id": "span_line_1i",
+            "document_id": "instructions_form_1040_2025",
+            "relationship": "instructions",
+            "owner_lines": ["1i"],
+            "text": "## Line 1i\n\n### Nontaxable Combat Pay Election\n\nEnter the amount.",
+        },
+        "span_legacy": {
+            "span_id": "span_legacy",
+            "document_id": "instructions_form_1040_2025",
+            "relationship": "instructions",
+            "text": "## Line 2a\n\n### Tax-Exempt Interest\n\nEnter the amount.",
+        },
+    }
+
+    index = generated_review._instruction_span_index(spans)
+
+    assert index["1i"] == ["span_line_1i"]
+    assert index["2a"] == ["span_legacy"]
+
+
+@pytest.mark.m20
 def test_generated_review_uses_generated_risk_policy_for_gap_cells() -> None:
     result = build_generated_document_cells(ROOT, 2025, "form_1040_2025")
     assert all(cell["population_policy"] for cell in result.cells)

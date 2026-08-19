@@ -161,7 +161,7 @@ def build_generated_document_cells(
         exact_instruction_ids = instruction_ids_by_line.get(anchor, [])
         instruction_span_ids = (
             exact_instruction_ids
-            if instruction_ids_by_line
+            if exact_instruction_ids
             else record_instruction_ids
         )
         instruction_citations = [
@@ -357,7 +357,13 @@ def _span_index(value: Any) -> dict[str, dict[str, Any]]:
 
 
 def _instruction_span_index(spans: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
-    """Rebuild line ownership from draft spans without importing the pipeline."""
+    """Rebuild line ownership from draft spans without importing the pipeline.
+
+    Current candidate-span artifacts persist ``owner_lines`` from the typed
+    instruction frame.  That explicit ownership is authoritative.  Older
+    sidecars may lack it, so their first non-empty heading line remains a
+    compatibility fallback.
+    """
     result: dict[str, list[str]] = {}
     current_document = ""
     current_lines: set[str] = set()
@@ -371,7 +377,23 @@ def _instruction_span_index(spans: dict[str, dict[str, Any]]) -> dict[str, list[
             current_lines = set()
             current_level = None
         text = str(span.get("text") or "").strip()
-        line_heading = re.match(r"^(#{1,6})\s*(?:\*\*)?lines?\s+(.+?)\s*$", text, re.IGNORECASE)
+        explicit_lines = {
+            str(value).strip().lower()
+            for value in span.get("owner_lines", []) or []
+            if str(value).strip()
+        }
+        if explicit_lines:
+            current_lines = explicit_lines
+            current_level = None
+            for line in current_lines:
+                result.setdefault(line, []).append(span_id)
+            continue
+        heading_line = next((line for line in text.splitlines() if line.strip()), "")
+        line_heading = re.match(
+            r"^(#{1,6})\s*(?:\*\*)?lines?\s+(.+?)\s*$",
+            heading_line,
+            re.IGNORECASE,
+        )
         if line_heading:
             prefix = re.split(r"\s+-\s+|\s*:\s+", line_heading.group(2), maxsplit=1)[0]
             current_lines = {

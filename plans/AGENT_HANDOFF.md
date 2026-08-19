@@ -305,6 +305,30 @@ than letting it hide in a total.
 - **Full suite in the working tree**; baseline 22 must not grow. **Diff the failure SETS.**
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
+**WORKER RESULT, 2026-08-19 - M20-S140 IMPLEMENTED.** The drop is in
+`workbench.generated_review._instruction_span_index`: the old regex was matched against the whole
+multiline span, so a span beginning `## Line 1i` followed by a newline never entered the heading
+branch. The 15 control spans had a matchable legacy shape. The smallest fix uses persisted
+`owner_lines` when present and otherwise matches the first non-empty heading line. Line 1i now
+receives `span_instructions_form_1040_2025_section_0013`; no draft, promoted artifact, or review
+surface contract was edited.
+
+- The 1040 frame-owned population moved from **15 / 54** cited lines to **49 / 54**, leaving **5**
+  measured gaps. The M20-S139 known-gap test therefore reports **1 xpassed**.
+- The canonical five-document coverage block (sections / review cells / instruction citations
+  before -> after) remains: `form_1040` **59 / 57 / 41 -> 41**; `schedule_1` **62 / 59 / 53 ->
+  53**; `schedule_1a` **0 / 48 / 0 -> 0**; `schedule_2` **17 / 43 / 38 -> 38**; `schedule_3`
+  **16 / 33 / 29 -> 29**. This round changes the workbench projection join, not that upstream
+  completeness artifact.
+- `RAN: .venv\\Scripts\\python.exe -m pytest tests\\test_generated_review_m20.py -q` -> **6
+  passed, 1 failed in 25.90s**; the one failure is the already-recorded stale line-1a baseline
+  assertion. The new owner-line guard and the line-1i projection guard passed.
+- `RAN: .venv\\Scripts\\python.exe -m pytest tests\\test_generated_review_m20.py::test_instruction_span_index_uses_persisted_owner_lines tests\\test_generated_review_m20.py::test_generated_review_keeps_form_and_instruction_slots_separate -q` -> **2 passed in 3.55s**.
+- `RAN: $env:PYTEST_DEBUG_TEMPROOT = (Resolve-Path .test_tmp_s140_codex).Path; .venv\\Scripts\\python.exe -m pytest tests\\e2e\\test_workbench_v2_m17.py -q` -> **6 passed, 1 xpassed in 205.42s (0:03:25)**.
+- `RAN: .venv\\Scripts\\python.exe tools\\check_ascii.py` -> **ASCII check OK**; `RAN: git diff --check` -> **clean**.
+- `NOT RUN: .venv\\Scripts\\python.exe -m pytest -q` -> the Architect's quiet-window run is the
+  meaningful full-suite check for this working-tree-only state.
+
 ## Open for Architect
 
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
