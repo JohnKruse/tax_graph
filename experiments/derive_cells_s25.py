@@ -38,6 +38,7 @@ from tax_graph.extract.cells import (
 from tax_graph.extract.inputs import load_document_input
 from tax_graph.extract.instruction_sections import write_instruction_sections_artifact
 from tax_graph.extract.llm_client import build_llm_client
+from tax_graph.extract.micro import _micro_max_tokens
 from tax_graph.io.loader import load_graph
 from tax_graph.extract.outline import (
     _flatten_outline_nodes,
@@ -294,6 +295,7 @@ def _row_detail(row: Any) -> dict[str, Any]:
         "source_findings": row.metadata.get("evidence_findings", []),
         "structural_skip_reason": get_structural_skip_reason(row.metadata),
         "model_outcome": row.metadata.get("model_outcome", ""),
+        "truncation_retries": row.metadata.get("truncation_retries", []),
         # What the model actually answered, kept even when it was rejected.
         # Without this a failing row can only be counted, not diagnosed.
         "attempted_payloads": row.metadata.get("attempted_payloads", []),
@@ -477,6 +479,7 @@ def run_real_document(
         None,
         client=client,
         model=resolve_llm_model(config, "micro"),
+        max_tokens=_micro_max_tokens(config),
         provider=str(get_config_value(config, "llm.provider", "configured-provider")),
         # Read from config like generator.py, critic.py, micro.py and background.py
         # already do.  Without this the derivation path silently used the parameter

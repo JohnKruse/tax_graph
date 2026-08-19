@@ -275,10 +275,11 @@ def test_real_broken_run_writes_a_complete_merged_report(
     )
     frame = _frame()
     seen_lines: list[str] = []
+    seen_max_tokens: list[object] = []
 
     monkeypatch.setattr(
         "experiments.derive_cells_s25.load_config",
-        lambda **_: {},
+        lambda **_: {"extraction": {"micro_max_tokens": 8000}},
     )
     monkeypatch.setattr(
         "experiments.derive_cells_s25.load_document_input",
@@ -314,6 +315,7 @@ def test_real_broken_run_writes_a_complete_merged_report(
 
     def fake_derive(work: CellFrame, *args: object, **kwargs: object) -> CellFrame:
         seen_lines.extend(row.line for row in work.rows)
+        seen_max_tokens.append(kwargs.get("max_tokens"))
         return CellFrame([
             CellRecord(
                 form="form_test_2025",
@@ -344,6 +346,7 @@ def test_real_broken_run_writes_a_complete_merged_report(
     )
 
     assert seen_lines == ["3", "4"]
+    assert seen_max_tokens == [8000]
     assert report["process_mode"] == "broken"
     assert report["rows"] == 4
     assert [row["status"] for row in report["rows_detail"]] == [

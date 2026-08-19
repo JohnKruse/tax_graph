@@ -21,6 +21,7 @@ from tax_graph.extract.cells import (
     validate_expression_tree,
     _line_mentioned,
 )
+from tax_graph.extract.llm_client import LlmResponseTruncated
 
 
 pytestmark = pytest.mark.m20
@@ -91,6 +92,59 @@ def test_derive_cells_returns_row_level_results_and_writes_nothing(tmp_path: Pat
     assert "provider unavailable" in result[1]["error"]
     assert client.calls[0]["purpose"] == "tax_graph_cell_derivation"
     assert "line 15" in client.calls[0]["prompt"]
+
+
+def test_truncated_cell_retries_once_at_a_larger_budget_and_reports_recovery() -> None:
+    client = FakeClient([
+        LlmResponseTruncated("finish_reason=length; completion_tokens=4000"),
+        {
+            "expression": {"op": "COPY", "args": [{"line": "21"}]},
+            "quote": "Enter the amount from line 21.",
+        },
+    ])
+
+    result = derive_cells(
+        CellFrame.from_rows([_frame()[1]]),
+        "<<line>>",
+        "secret",
+        client=client,
+        max_tokens=4000,
+    )
+
+    assert result.rows[0].status == "derived"
+    assert [call["max_tokens"] for call in client.calls] == [4000, 8000]
+    assert result.validation_report["truncation_retries"] == 1
+    assert result.validation_report["truncation_recovered"] == 1
+    assert result.validation_report["truncation_exhausted"] == 0
+    assert result.rows[0].metadata["truncation_retries"] == [{
+        "attempt": "first",
+        "initial_max_tokens": 4000,
+        "retry_max_tokens": 8000,
+        "recovered": True,
+    }]
+
+
+def test_second_truncation_is_an_explicit_row_error_after_one_retry() -> None:
+    client = FakeClient([
+        LlmResponseTruncated("finish_reason=length; completion_tokens=4000"),
+        LlmResponseTruncated("finish_reason=length; completion_tokens=8000"),
+    ])
+
+    result = derive_cells(
+        CellFrame.from_rows([_frame()[1]]),
+        "<<line>>",
+        "secret",
+        client=client,
+        max_tokens=4000,
+    )
+
+    assert result.rows[0].status == "error"
+    assert "LlmResponseTruncated" in (result.rows[0].error or "")
+    assert [call["max_tokens"] for call in client.calls] == [4000, 8000]
+    assert result.validation_report["errored"] == 1
+    assert result.validation_report["truncation_retries"] == 1
+    assert result.validation_report["truncation_recovered"] == 0
+    assert result.validation_report["truncation_exhausted"] == 1
 
 
 def test_prompt_includes_sorted_untruncated_printed_line_inventory() -> None:

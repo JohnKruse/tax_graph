@@ -17,7 +17,7 @@ import re
 from typing import Any, Iterable, Mapping, Protocol, Sequence
 
 from tax_graph.config import get_config_value
-from tax_graph.extract.llm_client import LlmClient, response_telemetry
+from tax_graph.extract.llm_client import LlmClient, LlmResponseTruncated, response_telemetry
 from tax_graph.extract.prompts import load_prompt_template, render_prompt
 from tax_graph.extract.structure import split_caption_and_instruction
 from tax_graph.io.loader import load_yaml
@@ -530,6 +530,9 @@ def derive_cells(
         "repaired": 0,
         "gapped": 0,
         "errored": 0,
+        "truncation_retries": 0,
+        "truncation_recovered": 0,
+        "truncation_exhausted": 0,
         "instruction_sections_dropped": 0,
         "instruction_drops_by_kind": {},
         "validator_failures_by_kind": {},
@@ -613,7 +616,20 @@ def derive_cells(
             }
             if seed is not None:
                 request["seed"] = seed
-            response = active_client.structured_completion(**request)
+            response, truncation_event = _structured_completion_with_truncation_retry(
+                active_client,
+                request,
+                attempt="first",
+            )
+            _record_truncation_event(row, report, truncation_event)
+        except LlmResponseTruncated as exc:
+            _record_truncation_event(row, report, _truncation_event(exc, "first"))
+            issue = _exception_issue(exc)
+            _mark_error(row, f"{type(exc).__name__}: {exc}", provider=provider, model=model)
+            report["errored"] += 1
+            row.metadata["validation_failures"] = [issue.as_dict()]
+            result_rows.append(row)
+            continue
         except Exception as exc:  # noqa: BLE001 - provider failures stay row-local
             _mark_error(row, f"{type(exc).__name__}: {exc}", provider=provider, model=model)
             report["errored"] += 1
@@ -683,7 +699,12 @@ def derive_cells(
             }
             if seed is not None:
                 request["seed"] = seed
-            response = active_client.structured_completion(**request)
+            response, truncation_event = _structured_completion_with_truncation_retry(
+                active_client,
+                request,
+                attempt="repair",
+            )
+            _record_truncation_event(row, report, truncation_event)
             payload = getattr(response, "payload", response)
             _keep_attempted_payload(row, payload, attempt="repair")
             if not isinstance(payload, Mapping):
@@ -718,6 +739,12 @@ def derive_cells(
                 max_depth=max_depth,
                 reference_inventory=reference_inventory,
             )
+        except LlmResponseTruncated as exc:
+            _record_truncation_event(row, report, _truncation_event(exc, "repair"))
+            issue = _exception_issue(exc)
+            _mark_error(row, f"{type(exc).__name__}: {exc}", provider=provider, model=model)
+            report["errored"] += 1
+            row.metadata["validation_failures"] = [issue.as_dict()]
         except Exception as exc:  # noqa: BLE001 - second failure is a named gap
             issue = _exception_issue(exc)
             _record_issues(report, (issue,))
@@ -728,6 +755,70 @@ def derive_cells(
 
     output = CellFrame(result_rows, validation=report)
     return output if input_is_frame else output.as_dicts()
+
+
+def _structured_completion_with_truncation_retry(
+    client: LlmClient,
+    request: Mapping[str, Any],
+    *,
+    attempt: str,
+) -> tuple[Any, dict[str, Any] | None]:
+    """Retry one length-truncated request once with twice its token budget.
+
+    Provider transport retries do not cover semantic truncation.  This local
+    retry keeps a row from becoming an ordinary validation gap just because
+    reasoning consumed the completion budget.  A second truncation is raised
+    so the caller can record an explicit row error.
+    """
+    try:
+        return client.structured_completion(**dict(request)), None
+    except LlmResponseTruncated as first_error:
+        initial_max_tokens = int(request["max_tokens"])
+        retry_max_tokens = max(initial_max_tokens + 1, initial_max_tokens * 2)
+        retry_request = dict(request)
+        retry_request["max_tokens"] = retry_max_tokens
+        event = {
+            "attempt": attempt,
+            "initial_max_tokens": initial_max_tokens,
+            "retry_max_tokens": retry_max_tokens,
+            "recovered": False,
+        }
+        try:
+            response = client.structured_completion(**retry_request)
+        except LlmResponseTruncated as second_error:
+            setattr(second_error, "truncation_retry", event)
+            raise
+        event["recovered"] = True
+        return response, event
+
+
+def _truncation_event(error: LlmResponseTruncated, attempt: str) -> dict[str, Any]:
+    """Return retry metadata from an exhausted truncation exception."""
+    value = getattr(error, "truncation_retry", None)
+    if isinstance(value, dict):
+        return dict(value)
+    return {
+        "attempt": attempt,
+        "initial_max_tokens": None,
+        "retry_max_tokens": None,
+        "recovered": False,
+    }
+
+
+def _record_truncation_event(
+    row: CellRecord,
+    report: dict[str, Any],
+    event: dict[str, Any] | None,
+) -> None:
+    """Persist truncation retry telemetry on the row and run report."""
+    if event is None:
+        return
+    row.metadata.setdefault("truncation_retries", []).append(dict(event))
+    report["truncation_retries"] += 1
+    if event.get("recovered"):
+        report["truncation_recovered"] += 1
+    else:
+        report["truncation_exhausted"] += 1
 
 
 def _apply_payload(

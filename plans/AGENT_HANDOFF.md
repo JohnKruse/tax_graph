@@ -169,11 +169,64 @@ against the two arms above. **This costs about $0.10 per run; you may run it at 
 - **Focused workbench, API and e2e sets green** against their known reds.
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
+**STATUS: BLOCKED - implementation and fixture tests are green, but the final permitted live
+derivation timed out before writing its report.** No zero-truncation claim or final row-status table
+is asserted. The partial final directory contains only the instruction frame and coverage files;
+it contains no `m20_s26_form_1040_2025_derive_cells_report.yaml`.
+
+**ITEM 1 MEASUREMENT.** The first live baseline measured 55 rows with completion telemetry:
+minimum **98**, median **224**, P90 **899.2**, P95 **2040.6**, P99 **3336.94**, maximum **3520**,
+mean **468.6**. Five rows hit the hard **4000** boundary: `6b`, `12e`, `16`, `19`, and `27a`.
+The configured budget was raised to **8000**, with one retry at **16000**. This is a measured
+budget choice: 8000 is twice the observed boundary and 4480 above the largest successful visible
+completion in the baseline.
+
+**ROW-STATUS EVIDENCE.** Baseline report at
+`C:\tmp\m20_s146_measurement\m20_s26_form_1040_2025_derive_cells_report.yaml`:
+**derived 51, repaired 0, gapped 0, errored 7, skipped 1**; the five truncation rows are listed
+above. Final run has no report, so its row-status table is **NOT RUN: report was not written before
+the command timeout**.
+
+**RAN:** `.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --document
+form_1040_2025 --output-dir C:\tmp\m20_s146_measurement` -> **exit 0, 518.1 seconds**;
+**derived 51, repaired 0, gapped 0, errored 7, skipped 1**.
+
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
+.venv\Scripts\python.exe -m pytest tests\test_derive_cells_m20.py tests\test_m20_s94.py -q`
+-> **first attempt: 87 passed, 4 errors** because the override directory did not exist; after
+creating `.test_tmp_s146`, the exact command was rerun -> **91 passed in 4.26s**.
+
+**RAN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
+.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py
+tests\test_workbench_cells_api_m17.py -q` -> **9 passed in 128.12s**.
+
+**NOT RUN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
+.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py tests\test_workbench_cells_api_m17.py
+tests\e2e -q` -> **timed out at 604.1s without a pytest summary**.
+
+**NOT RUN:** `$env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp_s146';
+.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **timed out at 604.0s without a pytest summary**.
+
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+**RAN:** `git diff --check` -> **clean**.
+**RAN:** protected-set diff check for `graph/2025/{nodes,edges,rules,field_maps}` ->
+**byte-identical**.
+
+**RAN:** `.venv\Scripts\python.exe experiments\derive_cells_s25.py --year 2025 --document
+form_1040_2025 --output-dir C:\tmp\m20_s146_final` -> **NOT RUN: command timed out at
+604.0s before the report was written**. This was the second and final permitted live run; no
+third provider run is authorized.
+
 ## Open for Architect
 
 - **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
   committed 2026-08-16 and the drafts were regenerated 2026-08-17 14:31 by the accepted corpus run.
   Codex was right to refuse the hand fix and right to escalate.
+- **M20-S146 is blocked on live verification.** The final permitted
+  `derive_cells_s25.py --document form_1040_2025` run with the measured 8000-token budget timed
+  out at 604.0s before its report was written. Cause unknown; the partial output proves only that
+  deterministic frame persistence completed. The implementation must not be accepted until a
+  live run produces the required row-status table and proves zero `LlmResponseTruncated` rows.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
