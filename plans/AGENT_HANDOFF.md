@@ -21,10 +21,9 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S136 IS ACCEPTED AT `cb93fea`, AND ITS FOLLOW-UP IS CLOSED AT `b3050d5` - then
-M20-S137: the six broken workbench cases, the surface John reviews, red since 2026-08-16.** S137
-has one confirmed server defect fixed; three live-draft mismatches remain surfaced under Current
-round and Open for Architect.
+**BALL: CODEX. M20-S137 AND THE S136 FOLLOW-UP ARE BOTH ACCEPTED. M20-S138 UNDER CURRENT ROUND
+FIXES THE LAST THREE WORKBENCH CASES - and the defect is the GUARDS, not the drafts: they pin a
+snapshot of regenerable output from the day before the corpus was re-derived.**
 
 **THE CITATION LINE IS DONE FOR NOW AND IT PAID FOR ITSELF.** Four rounds: the accessor and the
 deleted fallbacks (S133), exactness over the range LIST which caught two fabricated records (S134),
@@ -231,123 +230,98 @@ a broken surface awaiting the live check, not an accepted red.
 
 ## Current round
 
-**M20-S137: FIX THE SIX BROKEN WORKBENCH CASES. THIS IS THE SURFACE JOHN REVIEWS AND IT HAS BEEN RED
-SINCE 2026-08-16.** The confirmed queue-level verdict defect is fixed at `workbench/server.py`; the
-remaining three cases are live-draft/test-contract mismatches and are surfaced below.
+**M20-S138: THE THREE REMAINING WORKBENCH GUARDS ASSERT A SNAPSHOT OF REGENERABLE OUTPUT. THAT IS
+THE DEFECT, AND IT IS MINE TO RULE ON, NOT CODEX'S TO GUESS.**
 
-**M20-S136 IS ACCEPTED (`cb93fea`, Architect, 2026-08-19), VERIFIED BY RECOMPUTATION** - the pinned
-full suite is still running and I will amend here rather than silently if it disagrees.
-- **I applied all 99 proposed ranges INDEPENDENTLY, one citation at a time, and re-ran the checker:
-  99 pass, 0 fail.** Not the round's own test - my own harness against the emitted artifact.
-- **The apply view closes exactly:** 614 ranged + 15 unresolved = 629, zero mismatches, and the two
-  provenance findings still surface.
-- **The splitter generalization is principled, not special-cased:** one regex covering pipes and
-  markdown emphasis with word-boundary guards on underscores, plus a closing-marker extension for
-  the `*Tax Topic 756*.` case. The 15 HTML-only records are named and untouched, correctly.
-- **`graph/2025/citations/` is byte-identical** - last commit touching it is still S107's `5c3f91b`.
+**M20-S137 IS ACCEPTED (`7bcde70`, Architect, 2026-08-19) AND SO IS THE S136 FOLLOW-UP
+(`b3050d5`).** Codex did the two things the spec actually asked for and I want both on record:
+- **It found the real cause instead of guarding the symptom.** Queue-level verdicts legitimately
+  carry no `object_ref`, so `_scoped_verdict_ref` returned `None` and the post-verdict cell lookup
+  dereferenced it. The fix skips only the target-specific lookup when no target was supplied - five
+  lines, verdict persistence and queue-level review untouched. **`test_workbench_write_api_m15` is
+  7 passed.**
+- **It refused to hand-fix the other three and said why.** Exactly right: *"No draft or guard was
+  hand-edited."*
+- **It also corrected my premise.** I specced "six broken cases, one surface." **Three were the
+  server; three are something else.** The six-as-one-defect framing was mine and it was wrong.
 
-**THE ROUND CHANGED THE CHECKER'S OWN JOIN, NOT ONLY THE PATCH GENERATOR, AND THAT WAS THE REAL
-RISK.** `_join_source_fragments` drops the inserted space when the gap between two ranges holds
-nothing but emphasis markers and the next fragment opens with punctuation. **A looser join is
-exactly how S133 hid a wrong range, so I re-ran the full perturbation sweep rather than reasoning
-about it: shifting every stored range by +/-200, +/-1000, or truncating its end still passes ZERO of
-511, and zero of the 99 proposed. The teeth are intact.**
+**THE FOLLOW-UP ALSO CLOSED CLEANLY:** 100 proposed / 14 HTML-only / 615, artifact regenerated with
+the accounting block, focused file green.
 
-**THE 99 RANGES ARE COMPUTED, VERIFIED AND UNAPPLIED.** Applying them is a protected-set write and
-therefore John's, not a round's. **It is queued as a question for him, not as work.**
+### THE RULING CODEX ASKED FOR - THE GUARDS ARE STALE, NOT THE DRAFTS
 
-### S136 FOLLOW-UP - CLOSED AT `b3050d5`
+**I checked the dates rather than reasoning about which side looks right.**
+- The guards were committed **2026-08-16** (`4f7abf9`, S115).
+- Every file in `graph/2025/_drafts/form_1040_2025/` was regenerated **2026-08-17 14:31** - the next
+  day, by the 17-document corpus run this file already records as accepted.
 
-**The follow-up is committed separately from S137.** The shared contiguous-range accessor finds 100
-proposals and 14 HTML-only citations, the accounting block is regenerated, and the focused file is
-green. `cb93fea` itself remains clean and its acceptance stands.
+**So the guards pin a snapshot of a draft that the following day's run superseded. They are not
+detecting a regression; they are detecting that regenerable output was regenerated.** That is
+`graph/2025/_drafts` - the exact class this project calls disposable. **A test that asserts a
+histogram of disposable output will go red every time the pipeline improves, which makes it a brake
+on the pipeline rather than a guard on it.** This is queue item 15's "artifact-pinned test counts"
+defect, now costing a round.
 
-**THE CHANGE IS GOOD AND SHOULD LAND - I verified it rather than assuming.** Dropping
-`SourceTextIndex.ranges_for_quote` in favour of the shared `_contiguous_quote_ranges` **finds one
-more citation**, `cite_instruction_schedule_1_2025_en_us_2025_publink1000151501` at
-`535165..535213`, so the split becomes **100 proposed / 14 HTML-only**. **I applied all 100
-independently: 100 pass, 0 fail.** It also deletes a second locator implementation, which is the
-one-accessor direction. **Keep it.**
+### ITEM 1 - REPLACE THE THREE SNAPSHOTS WITH INVARIANTS
 
-**THREE THINGS CLOSE IT, and none is a design decision:**
-1. **The artifact is regenerated at 100 / 14 / 615** with the accounting block.
-2. **The focused assertions are updated to 100 / 14 / 615.**
-3. **The follow-up is committed as `b3050d5` before S137.**
+**This is NOT "weaken the guard until it passes."** Each one keeps a real assertion; what changes is
+that it stops asserting a number that is allowed to move.
+1. **1040 policy histogram** - guard says `15/8/52/61/63`, draft says `16/5/44/64/70`. Assert
+   instead that **every anchor carries exactly one policy, the histogram sums to the anchor count,
+   and no policy is empty or unrecognised.** That is the property that must never break; the
+   distribution is not.
+2. **Schedule A decision text** - guard says `Do you elect`, draft says `Which taxes`. Assert that
+   the decision node **asks a question at all** - non-empty, ends in `?`, and is not a placeholder.
+   The IRS's wording is not ours to freeze.
+3. **1040 line 1a expression** - guard says `line 1a = W-2 box 1`, draft has no rule for 1a.
+   Assert that the card **renders either an expression or a TYPED absence**, never blank. Absence
+   typed, not `""` - the same rule as the source-range accessor.
 
-**THE ARITHMETIC MUST STILL CLOSE:** 511 ranged + 100 proposed + 14 HTML-only + 4 computed-table =
-629. **Say the number, do not assume it.**
+### ITEM 2 - DO NOT LET THE SUBSTANTIVE QUESTION VANISH INTO A LOOSENED TEST
 
-### ITEM 1 - OPEN THEM BEFORE FIXING THEM
-
-Six cases die at `workbench/server.py:640`,
-`AttributeError: 'NoneType' object has no attribute 'get'` on `object_ref`:
-`test_workbench_cells_api_m17` (2), `test_workbench_write_api_m15` (3), `e2e/test_workbench_v2_m17`
-(1). **A null where a dict is expected is a symptom and the cause is upstream - find out which
-caller passes it and why, and report that before changing a line.** AGENTS.md hard rule; a
-`if object_ref is None: return` would make the tests green and teach us nothing.
-
-### ITEM 2 - THIS IS THE S115 CONTRACT, UNVERIFIED SINCE IT LANDED
-
-`4f7abf9` put `workbench/server.py`, `generated_review.py`, `review_defects.py` and the front end on
-`main` and no one checked it. **Say plainly whether these six are one defect or several**, and
-whether the contract is broken for real users or only under test fixtures.
-
-### ITEM 3 - DO NOT REDESIGN THE REVIEW CONTRACT
-
-**John does not review while the contract keeps moving** - that is why zero cells are approved. This
-round makes the existing contract work. **No new fields, no new endpoints, no UX change.**
+**Relaxing guard 3 must not bury a real question: SHOULD 1040 line 1a derive from W-2 box 1?** The
+line reads *"Total amount from Form(s) W-2, box 1"*, `form_w2_2025` IS in the manifest, and the
+current draft has a node and a `1a -> 1z` addend edge but **no rule at all.** Under John's
+2026-08-16 taxonomy that is `derivation_failed` - a defect - not `source_form_not_modelled`.
+**Queue it as a DERIVATION question with that framing. Do not investigate it in this round and do
+not fix it in the workbench layer.** Settling it needs a re-derive and therefore John's egress.
 
 ---
 
 **WHAT MUST NOT HAPPEN.**
-- **No null-guard that hides the cause.** Fix the caller.
-- **No contract change**, no schema change, no new review affordance.
+- **No regenerating drafts and no hand-editing them** to make a guard pass. They are disposable;
+  the guard is what is wrong.
+- **No deleting a guard.** Each keeps an assertion with content.
+- **No contract change** - still no new fields, endpoints or UX.
 - **No model call, no network.**
 
 **THE FLOOR.**
-- **The cause named before the fix**, with the caller identified.
-- **All six green**, and the full-suite baseline drops from 28 to 22.
-- **No other test moves** - diff the failure SETS, not the counts.
+- **All three cases green**, each by an invariant, with the invariant stated in the test name or
+  docstring.
+- **The 1a-from-W-2 question is in Queued**, worded as a derivation defect.
+- **Full suite in the WORKING TREE while the Worker is idle** - see Standing operational notes; a
+  worktree run is void. Baseline 28 should fall to 22.
+- **Diff the failure SETS, not the counts.**
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
-**ARCHITECT'S LEG, AND IT IS THE HALF ONLY I CAN DO.** Once the six are green I drive the workbench
-live and confirm the surface actually works for a reviewer - **a test read is not that check**, and
-it is what I have owed since 2026-08-16.
-
-### S137 STATUS - 2026-08-19
-
-**The six-failure premise is false in this checkout.** Opening the individual failures shows three
-shared server failures and three live-draft/test-contract mismatches. The server defect was that
-queue-level verdicts legitimately omitted `object_ref`, `_scoped_verdict_ref` returned `None`, and
-the post-verdict cell lookup dereferenced it. `workbench/server.py` now skips only the
-target-specific lookup when no target was supplied; verdict persistence and queue-level review stay
-unchanged.
-
-The other three are not caused by this change and must not be repaired by hand or by weakening
-guards: the local ignored Form 1040 draft reports policy counts `computed=16`, `copied=5`,
-`decision_required=44`, `unsupported=64`, `user_entered=70` instead of the committed guard's
-`15/8/52/61/63`; the Schedule A draft asks "Which taxes..." while the guard expects "Do you...";
-and the Form 1040 line 1a draft is `filer_entry` while the e2e guard expects W-2 import. These are
-pipeline artifact/test-contract drift and need Architect direction on the correct regeneration or
-fixture source. No draft or guard was hand-edited.
-
-**RAN:**
-- `.venv\Scripts\python.exe -m pytest tests/test_citation_range_patch_m136.py -q` -> 3 passed, 1 warning, 20.84s (fresh `PYTEST_DEBUG_TEMPROOT`).
-- `.venv\Scripts\python.exe -m pytest tests/test_workbench_write_api_m15.py -q` -> 7 passed in 117.14s.
-- `.venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py tests/test_m20_s115.py -q` -> 9 passed in 1.21s.
-- `.venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py -q` -> 3 passed, 2 failed in 180.44s; both failures are the draft mismatches above.
-- `.venv\Scripts\python.exe -m pytest tests/e2e/test_workbench_v2_m17.py -q` -> 4 passed, 1 failed in 242.54s; the failure is the line 1a draft mismatch above.
-- `tools/check_ascii.py` on changed files -> OK; `git diff --check` -> clean; citation protected set -> byte-identical.
+**ARCHITECT'S LEG, UNCHANGED AND STILL OWED.** Once these are green I drive the workbench live and
+confirm the surface works for a reviewer. **Three green tests are not that check.**
 
 ## Open for Architect
 
-- **S137 artifact/test-contract drift:** the local ignored drafts produce the 1040 policy histogram
-  `16/5/44/64/70`, Schedule A's question starts `Which taxes`, and 1040 line 1a is `filer_entry`,
-  while committed workbench guards expect `15/8/52/61/63`, `Do you elect`, and W-2 import. The
-  Worker did not edit drafts or guards. Choose the correct pipeline regeneration or fixture source
-  before accepting the remaining three cases; this is not a safe workbench-layer correction.
+- **ANSWERED 2026-08-19, see Current round: the guards are stale, not the drafts.** They were
+  committed 2026-08-16 and the drafts were regenerated 2026-08-17 14:31 by the accepted corpus run.
+  Codex was right to refuse the hand fix and right to escalate.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **DOES 1040 LINE 1a DERIVE FROM W-2 BOX 1, OR IS `filer_entry` CORRECT? (Architect, 2026-08-19.)**
+  The line reads *"Total amount from Form(s) W-2, box 1"*, `form_w2_2025` IS in the manifest, and
+  the 2026-08-17 draft carries a node and a `1a -> 1z` addend edge but **no rule at all**. Under
+  John's 2026-08-16 taxonomy that is **`derivation_failed`, a defect - not
+  `source_form_not_modelled`.** Surfaced by an S115 workbench guard that expected
+  `line 1a = W-2 box 1`; **the guard is being relaxed in M20-S138 and this question must not go with
+  it.** Needs a re-derive, so it needs John's egress.
 
 **JOHN'S PRIORITY, 2026-08-10: get the CORE documents processing reliably.** Ordered for that.
 **Every item below is a PIPELINE change - none of them is a per-cell human correction.**
