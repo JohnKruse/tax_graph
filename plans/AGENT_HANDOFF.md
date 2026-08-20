@@ -21,8 +21,49 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S157 IS THE ROUND: one citable passage must survive as one span. M20-S156 is
-accepted and it found the cause.**
+**BALL: JOHN. THREE ROUNDS RAN WHILE YOU WERE AT LUNCH. S155 AND S156 ARE ACCEPTED. S157 IS NOT -
+its code is sound and its measurement went the WRONG WAY, and I am not accepting it on the code.**
+
+**M20-S157 (`9a8d7a9`, `70ea85d`) IS NOT ACCEPTED (Architect, 2026-08-20).** The implementation
+does what the spec asked and honours the hard constraint: normalisation happens in a separate
+`evidence_text`, `CandidateSpan.text` stays canonical, **citation ranges are 593 -> 593**, and no
+`.cache`, `citations/` or `graph/` path is touched. The hyphen rule is narrow, and the matcher was
+TIGHTENED, not loosened - the old `_quote_matches` also accepted `source in quote`, which the new
+one drops.
+
+**BUT THE MEASUREMENT THE WORKER COULD NOT RUN, I RAN, AND IT IS BAD.** Re-extracting the three
+documents:
+
+    document          before -> after   (quote failures)   (unresolved)
+    form_1040_2025      12 -> 10          3 -> 6            8 -> 4
+    schedule_1_2025     18 -> 21          4 -> 5           14 -> 11
+    form_1116_2025       9 -> 21          3 -> 14           5 -> 6
+    TOTAL               39 -> 52         10 -> 25          27 -> 21
+
+**S155's work holds - unresolved references fall 27 -> 21. S157's target class TRIPLES, 10 -> 25**,
+and total gaps on these three documents get worse, not better.
+
+**AND THIS IS NOT A CLEAN A/B, WHICH IS MY FAULT FOR TREATING IT AS ONE.** The "before" drafts were
+generated 2026-08-17 for `schedule_1` and `form_1116` and 2026-08-20 06:45 for `form_1040`, so the
+comparison spans S150, S155, S156 AND S157 plus model resampling. **It shows the class got worse; it
+does not show that S157 did it.** Isolating that needs a re-extract at S156 and at S157.
+
+**ONE OPENED INSTANCE, USING THE EVIDENCE S156 ADDED - WHICH IS THE FIRST TIME THIS WAS POSSIBLE.**
+`form_1116_2025` line `3`:
+
+    rejected_quote: 3 Pro rata share of other deductions not definitely related: a Certain
+                    itemized deductions or standard deduction (see instructions)
+    closest_matching_span: span_form_1116_2025_0035_through_0036
+    span_text: '3 Pro rata share of other deductions not definitely
+related:'
+    instruction_span_ids: []
+    wrong_owner_instruction_spans: 11
+    rejected_payload kind: not_derivable
+
+**The joining works - the span id says `0035_through_0036`.** It is still not enough: the model was
+handed NO instruction spans and 11 wrong-owner ones, refused with `not_derivable`, and quoted the
+cell's own form-face label, which runs past the joined span into line `3a`'s subitem. **So the
+quote failure here is downstream of an evidence-packet defect, not of the join.**
 
 **M20-S156 IS ACCEPTED (`862089f`, `6e1872e`, Architect, 2026-08-20).** The rejected quote is now
 persisted with its validation reason, closest span and offset, so this class is diagnosable at all
@@ -430,74 +471,8 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S157: JOIN WHAT WE SPLIT, WITHOUT MOVING THE GROUND UNDER THE CITATIONS.**
-
-**THE TARGET.** 16 span-boundary failures plus 3 hyphenation near-misses - **19 of the 24**, and all
-of them ours. The 5 genuine fabrications are model work and stay out of this round.
-
-ITEM 1. **Make one citable passage one span.** Join adjacent source fragments **only when their
-source offsets prove continuity** - never on similarity, never on a guess. A quote that spans
-`0134` and `0135` today should see one span tomorrow.
-
-ITEM 2. **Repair line-end hyphenation** so `deduc-` + `tion` reads as `deduction` in the evidence
-the model is given and the validator checks.
-
-**ITEM 3 - AND THIS IS THE CONSTRAINT THAT MAKES THIS ROUND DELICATE.** S156 recommended correcting
-hyphenation "in the canonical acquired text". **Stored citations carry byte RANGES into that text -
-`citation_range_patch` wrote 78 of them on 2026-08-19 - and rewriting the text silently invalidates
-every one.** So either normalise in the evidence packet and leave the canonical text alone, or
-re-derive every affected range in the same round and prove it. **State which you chose and show the
-range count before and after.** A citation whose range no longer points at its quote is worse than
-the defect being fixed.
-
-ITEM 4. **Re-extract the three documents that carry these failures** (`form_1040_2025`,
-`schedule_1_2025`, `form_1116_2025`), outside the repository root, and report the quote-failure
-count before and after. Live calls permitted, about $0.40 each, **at most three documents.**
-
-**WHAT MUST NOT HAPPEN.**
-- **Do not make the validator accept dehyphenation, punctuation repair, non-contiguous joins, or
-  fuzzy similarity.** The fix is upstream of the check, never in it.
-- **Do not invalidate a stored citation range without re-deriving it.**
-- **Do not weaken, delete, or invert an assertion that is green on `main`.**
-- Do not regenerate the live drafts under `graph/2025/_drafts`.
-
-**THE FLOOR.**
-- **A quote that previously failed across a span boundary, now passing**, quoted.
-- **The citation-range count before and after**, with the choice from ITEM 3 stated.
-- **Quote-failure counts before and after** on the three re-extracted documents.
-- **Focused sets green** against their known reds. **e2e is Architect-side.**
-- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
-  byte-identical.
-
-  **WORKER EXECUTION (2026-08-20).** ITEM 3 choice: evidence-packet normalization only. The
-  acquired source text and every stored citation range were left untouched. The promoted graph
-  range count was **593 before -> 593 after**; the three acquired source files remain outside the
-  change set. The model packet removes only a letter-hyphen followed by a lower-case continuation
-  at a source line boundary. Punctuation repair, fuzzy similarity, and non-contiguous joining are
-  not accepted.
-
-  **BOUNDARY FLOOR.** The Form 1116 source offsets prove that `span_form_1116_2025_0134` followed
-  by `span_form_1116_2025_0135` is one contiguous passage. The derived span has `joined_from`
-  `(span_form_1116_2025_0134, span_form_1116_2025_0135)` and range **6022:6220**; the quote
-  `Part IV Summary of Separate Credits From Parts III (Enter amounts from Part III, line 24, for each applicable category of income.` matches it. The two original spans and their canonical text remain present.
-
-  **LIVE RE-EXTRACTION.** All three authorized commands wrote outside the repository under
-  `C:\temp\m20_s157_live`; none completed within the 600-second cap. The existing draft baseline
-  quote failures were **form_1040_2025: 3**, **schedule_1_2025: 4**, and **form_1116_2025: 3**.
-  After counts are **NOT RUN** for all three because each live command timed out before writing a
-  micro-extraction report. The partial output contains instruction-section artifacts only; no
-  `graph/2025/_drafts` artifact was regenerated.
-
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s157.py tests\test_extract_m4.py tests\test_acquire_citation_check.py tests\test_acquire_citation_check_m134.py tests\test_acquire_citation_check_m135.py tests\test_citation_range_patch_m136.py tests\test_derive_cells_m20.py tests\test_background_m20.py tests\test_prompt_experiment_m20.py tests\test_workbench_cells_m17.py -q` -> **156 passed in 46.69s**.
-
-  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s157.py -q` -> **3 passed**.
-  **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-  **RAN:** `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
-  **RAN:** `git diff --check` -> **clean**.
-  **RAN:** protected-set diff check for `graph/2025/{nodes,edges,rules,field_maps}` -> **no diff**.
-  **NOT RUN:** e2e verification -> exceeds the Worker launcher cap; Architect-side.
-  **NOT RUN:** quote-failure after-count measurement -> all three live commands timed out before
-  producing the report needed for an honest after count.
+**NONE IN FLIGHT.** Three rounds closed 2026-08-20. **S157 awaits John's call: a clean A/B to
+isolate it, or a revert.**
 
 ## Open for Architect
 
@@ -534,6 +509,17 @@ follow-up once authorized, along with e2e verification.
 
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **A CELL CAN REACH THE MODEL WITH ZERO INSTRUCTION SPANS AND ELEVEN WRONG-OWNER ONES (Architect,
+  2026-08-20).** `form_1116_2025` line `3` shows `instruction_span_ids: []` and
+  `wrong_owner_instruction_spans: 11`; the model refused with `not_derivable` and quoted the form
+  face. **Evidence-packet construction, not quote validation.** Likely the larger cause behind the
+  quote class.
+
+- **DOCUMENT TITLES ARE NOT IN THE FORM ALIAS SET (Architect, 2026-08-20).** `build_form_alias_resolver`
+  resolves `Form 6251`, bare `6251`, and all three `Schedule 1-A` spellings, but returns `None` for
+  `Additional Deductions (Form 1040) 2025` - Schedule 1-A's title. One of the two residual
+  `schedule_1a` misses.
 
 - **THE INSTRUCTIONS FILTER IN THE CORE GATE KEYS ON THE WRONG THING (Architect, 2026-08-20).**
   `_is_reviewable_candidate` drops every candidate whose owner document is `kind: instructions`.
