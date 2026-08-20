@@ -3,73 +3,62 @@ documents:
 - document_id: form_8949_2025
   kind: tax_form
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f8949--2025.pdf
   instructions_document_id: instructions_form_8949_2025
   expected_sha256: 274513891e4e281d11e14286f14b9df724c24b6030fca0f0681da64fb2e7f525
 - document_id: instructions_form_8949_2025
   kind: instructions
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/i8949--2025.pdf
   instruction_url: https://www.irs.gov/instructions/i8949
   expected_sha256: f077991c83b086810c46cbad3755e0f126cb8dfd88cf8bf8ab2d5605d6e7ab45
 - document_id: schedule_d_2025
   kind: schedule
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
   instructions_document_id: instructions_schedule_d_2025
   expected_sha256: 90564c8b7e49280363612639b804d113ebedb516c2e87c70649f29c844da1d2e
 - document_id: instructions_schedule_d_2025
   kind: instructions
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/i1040sd--2025.pdf
   instruction_url: https://www.irs.gov/instructions/i1040sd
   expected_sha256: 650643a686378b7573e4f4476ee4e7c9f9bab1384314dca32dc336f7b2276002
 - document_id: form_1040_2025
   kind: tax_form
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
   instructions_document_id: instructions_form_1040_2025
   expected_sha256: 3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982
 - document_id: instructions_form_1040_2025
   kind: instructions
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/i1040gi--2025.pdf
   instruction_url: https://www.irs.gov/instructions/i1040gi
   expected_sha256: 482e9c487c608f1bbeaceef35bc3c0933e8b35443cfff447e4279d590468364a
 - document_id: schedule_1_2025
   kind: schedule
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
   instructions_document_id: instructions_form_1040_2025
 - document_id: schedule_1a_2025
   kind: schedule
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040s1a--2025.pdf
   instructions_document_id: instructions_form_1040_2025
 - document_id: schedule_2_2025
   kind: schedule
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
   instructions_document_id: instructions_form_1040_2025
 - document_id: schedule_3_2025
   kind: schedule
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
   instructions_document_id: instructions_form_1040_2025
 - document_id: schedule_a_2025
   kind: schedule
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040sa--2025.pdf
   instructions_document_id: instructions_schedule_a_2025
 - document_id: instructions_schedule_a_2025
@@ -80,7 +69,6 @@ documents:
 - document_id: schedule_b_2025
   kind: schedule
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
   instructions_document_id: instructions_schedule_b_2025
 - document_id: instructions_schedule_b_2025
@@ -91,7 +79,6 @@ documents:
 - document_id: form_6251_2025
   kind: tax_form
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f6251--2025.pdf
   instructions_document_id: instructions_form_6251_2025
 - document_id: instructions_form_6251_2025
@@ -119,25 +106,21 @@ documents:
 - document_id: form_1099b_2025
   kind: source_document
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/f1099b--2025.pdf
   expected_sha256: 7e334cea66c2b2be3d88615a56db288a2805cb8705076b3b282a4eabbbd788ad
 - document_id: form_w2_2025
   kind: source_document
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-prior/fw2--2025.pdf
   expected_sha256: 6a52ad63693de54220a3326b22c4d0fb34f4c25084366537087312975a55ae96
 - document_id: form_1099_int_2025
   kind: source_document
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-pdf/f1099int.pdf
   expected_sha256: ee7697c9b29374596fd9645b157b7312d121ae3c2f76bebf68908c3fc2b739e6
 - document_id: form_1099_div_2025
   kind: source_document
   ownership: project-maintained
-  core: true
   url: https://www.irs.gov/pub/irs-pdf/f1099div.pdf
   expected_sha256: 4ea1de804ff1db921753bd6319beeccfe4647299e03d79816e04d852a9cd1435
 - document_id: form_13614_c_2025

@@ -18,7 +18,7 @@ IRS_PDF_URL_RE = re.compile(r"^https://www\.irs\.gov/pub/irs-(?:pdf|prior)/[fip]
 
 @dataclass(frozen=True)
 class ManifestEntry:
-    """One source document to acquire, optionally marked as part of core."""
+    """One source document to acquire."""
 
     document_id: str
     kind: str
@@ -27,7 +27,6 @@ class ManifestEntry:
     instruction_url: str | None = None
     expected_sha256: str | None = None
     ownership: str | None = None
-    core: bool = False
     region_of: str | None = None
     region_title: str | None = None
     region_parent_sha256: str | None = None
@@ -101,7 +100,6 @@ def load_manifest(path: str | Path | None = None, root: str | Path | None = None
                 region_of=(entry.get("region") or {}).get("source_document_id"),
                 region_title=(entry.get("region") or {}).get("title"),
                 region_parent_sha256=(entry.get("region") or {}).get("parent_sha256"),
-                core=bool(entry.get("core", False)),
             )
             for entry in data["documents"]
         ),

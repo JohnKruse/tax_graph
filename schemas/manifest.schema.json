@@ -53,10 +53,6 @@
           "enum": ["project-maintained", "review-cycle", "community-contributed"],
           "description": "Forward maintenance commitment for this acquired document. Regions inherit it from their parent."
         },
-        "core": {
-          "type": "boolean",
-          "description": "Whether this document belongs to the committed core set."
-        },
         "url": {
           "type": "string",
           "format": "uri",

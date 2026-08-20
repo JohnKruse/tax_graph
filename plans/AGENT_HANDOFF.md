@@ -350,6 +350,29 @@ missing or inconsistent"* and is the obvious host. Report the current count on t
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+**M20-S152 WORKER STATUS: IMPLEMENTED 2026-08-20.** ITEM 1 keeps
+`config/document_tiers.yaml` as the only core source and removes the S151 manifest flag, schema,
+loader field, and retired assertions. ITEMS 2 and 3 are written in `docs/core-refusal-gate.md`
+and implemented as five explicit candidate rules with named surfacing artifacts. ITEM 4 is wired
+into `tax_graph.cli doctor` and reports every candidate without hiding unsurfaced records.
+
+**REAL-CORPUS GATE EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli doctor --year 2025` -> **310 candidates; 300 core
+candidates; 0 core unsurfaced; 0 non-core unsurfaced; result OK; process exit 0**. This is a
+provider-free read-only check; no model call, network access, or draft regeneration was used.
+
+**FOCUSED TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest tests/test_acquire_manifest.py tests/test_m20_s41.py
+tests/test_m20_s101.py tests/test_m20_s108.py tests/test_m20_s151.py tests/test_m20_s152.py
+tests/test_doctor_m20.py -q` -> **42 passed in 24.02s**. RAN:
+`.venv\Scripts\python.exe tools/check_ascii.py` -> **ASCII check OK**. RAN:
+`.venv\Scripts\python.exe tools/check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
+RAN: `git diff --check` -> **exit 0, no output**.
+
+**E2E EVIDENCE.** NOT RUN:
+`.venv\Scripts\python.exe -m pytest tests/e2e -q` -> **e2e exceeds the Worker launcher cap;
+Architect runs it**.
+
 ## Open for Architect
 
 - **NOTHING OPEN.** S148's evidence block was pruned on acceptance 2026-08-20; `git show f45a842`

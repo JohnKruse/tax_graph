@@ -29,6 +29,7 @@ from tax_graph.operation_registry import (
     prompt_operation_documentation,
     projection_rule_for,
 )
+from pilot.core_refusal_gate import CoreRefusalReport, evaluate_core_refusals
 
 
 BAD_STATUSES = frozenset({"UNKNOWN", "DISAGREES", "STALE"})
@@ -170,6 +171,7 @@ class DoctorReport:
     operations: tuple[OperationRow, ...]
     open_items: tuple[OpenItemAge, ...]
     configured_model: str | None = None
+    core_refusals: CoreRefusalReport | None = None
 
     @property
     def problems(self) -> tuple[str, ...]:
@@ -189,6 +191,8 @@ class DoctorReport:
             for item in self.open_items
             if item.status in BAD_STATUSES
         )
+        if self.core_refusals is not None and not self.core_refusals.ok:
+            problems.append("core-refusal-gate")
         return tuple(problems)
 
     @property
@@ -207,6 +211,7 @@ class DoctorReport:
             "operations": [item.as_dict() for item in self.operations],
             "open_items": [item.as_dict() for item in self.open_items],
             "configured_model": self.configured_model,
+            "core_refusals": self.core_refusals.as_dict() if self.core_refusals else None,
         }
 
 
@@ -232,6 +237,7 @@ def run_doctor(
         root_path,
         max_commits=max_open_item_commits,
     )
+    core_refusals = evaluate_core_refusals(root=root_path, year=year_text)
     return DoctorReport(
         year=year_text,
         claims=claims,
@@ -239,6 +245,7 @@ def run_doctor(
         operations=operations,
         open_items=open_items,
         configured_model=configured_model,
+        core_refusals=core_refusals,
     )
 
 
@@ -264,6 +271,9 @@ def render_doctor_report(report: DoctorReport) -> str:
         lines.append(f"  {item.check_id}: {item.status} - {item.message}")
         for detail in item.details:
             lines.append(f"    {detail}")
+
+    if report.core_refusals is not None:
+        lines.extend(("", report.core_refusals.format_report().rstrip("\n")))
 
     lines.extend(("", "=== operation vocabulary ==="))
     lines.append("  operation | category | prompt | validator | projection | expected | engine | schema | roles | status")
