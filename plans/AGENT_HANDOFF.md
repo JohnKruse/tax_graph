@@ -21,8 +21,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S160 IS THE ROUND: read the IRS HTML and lift the model segmenter out of
-`pilot/`. John confirmed the direction 2026-08-20 after we found both were already built.**
+**BALL: CODEX. M20-S161 IS THE ROUND: S160 regressed the review shell and its own measurement never
+ran. The source switch itself is accepted.**
+
+**M20-S160 IS ACCEPTED ON THE SOURCE SWITCH AND THE RANGES (`f01fa41`, `f2d5372`, Architect,
+2026-08-20), VERIFIED WITH THE PROJECT'S OWN CHECKER.** `check_graph_citations` reports:
+
+    checked: 593    mismatches: 0    unverifiable: 36
+
+**Zero mismatches** - the 338 re-derived ranges all land on their quotes, the 255 form-face ranges
+are untouched, and the 36 unverifiable are the same 36 as before the switch. Instruction documents
+now read the acquired HTML, form faces still read `.txt`, and the segmenter is lifted into
+`tax_graph/extract/` with the deterministic parser as fallback.
+
+**MY OWN VERIFICATION WAS WRONG TWICE BEFORE I REACHED FOR THE PROJECT'S.** An ad-hoc harness
+reported 232 range failures (comparing rendered quotes against raw HTML with tags interleaved), then
+158 (markup stripped but no punctuation normalisation). **That is the third measurement harness I
+built today that measured the wrong thing** - after the refusal gate and the grader controls.
+`check_graph_citations` already existed. **Reach for the project's checker first.**
+
+**TWO THINGS S160 OWES.**
+1. **IT REGRESSED THE REVIEW SHELL.** e2e is **12 failed** across two runs against the documented
+   baseline of 11: the eleven `*_m15.py` reds **plus
+   `test_workbench_v2_m17::test_three_pane_shell_exposes_cell_river_and_local_review_state`.** It
+   PASSES ALONE in 92s, so it is order-dependent - but it fails in the suite reproducibly, and it is
+   the surface John reviews.
+2. **ITS MEASUREMENT NEVER RAN.** The lifted segmenter hard-codes `max_tokens: 12000` in two places
+   and its live calls truncate, so **we still do not know whether the HTML switch moved the 52%
+   no-instruction figure** - which is the entire reason for the round.
 
 **WHAT WE FOUND, AND IT REFRAMES THE WHOLE DAY.** S123-S132 built a model instruction segmenter,
 measured it, and concluded on 2026-08-18: *"HEADING EXTRACTION IS FINISHED. 288 OF 449... Against
@@ -535,86 +561,33 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S160: READ THE UNDAMAGED SOURCE, AND USE THE SEGMENTER WE ALREADY BUILT.**
+**M20-S161: FINISH S160 - THE SHELL, THEN THE NUMBER.**
 
-**DO NOT REBUILD EITHER PIECE.** `pilot/model_instruction_segmenter.py` and
-`prompts/instruction_segmenter.md` exist and were accepted. This round LIFTS them. If you find
-yourself writing a segmenter, stop and report.
+ITEM 1. **Fix the review-shell regression.** `test_three_pane_shell_exposes_cell_river_and_local_review_state`
+fails in the suite and passes alone, so it is order or state dependent. **Find what S160 changed
+that the shell reads** - the instruction source moved from `.pages` to `.html`, so a fixture or a
+cached read is the likely culprit. **Do not mark it as a known red; it was green before this round.**
 
-ITEM 1. **Switch the instruction-document source from the OCR page renders to the acquired IRS
-HTML.** Production reads `{document_id}.pages` in `tax_graph/extract/inputs.py`; the HTML is at
-`.cache/raw/<year>/<document_id>.html`. **Instruction documents only** - the form faces are not in
-scope and must not move.
+ITEM 2. **Size the segmenter budget from measurement, exactly as M20-S146 did for micro calls.**
+`max_tokens: 12000` is hard-coded twice in
+`tax_graph/extract/model_instruction_segmenter.py`. Measure the completion distribution, set the
+budget from it, and **retry once at a larger budget rather than losing the call**.
 
-ITEM 2. **Lift the segmenter into the package** and make it the instruction-sections frame builder,
-with the deterministic parser retained as the fallback. **The model segments the booklet and never
-sees a cell; CODE does the join** - that is John's binding ruling of 2026-08-17 and it is the whole
-reason this is permitted.
-
-**ITEM 3 - THE CONSTRAINT THAT WILL BREAK THIS ROUND IF IGNORED.** Citation `ranges` are byte
-offsets into the acquired text. **338 of the 593 ranged citations point into the four instruction
-documents whose source you are changing:** `instructions_form_1040_2025` (205),
-`instructions_schedule_d_2025` (112), `instructions_form_2441_2025`, `instructions_form_8949_2025`.
-Changing the file changes every one of those offsets. **Re-derive them in this round and prove
-every one resolves.** The standing bar from the earlier ruling is total: *"a test that 511 of 511
-resolve"*. The other 255 ranges point at form faces and must not move - show they did not.
-**A citation whose range no longer lands on its quote is a worse defect than the one being fixed,
-and this codebase has already been bitten twice by coordinate drift (M20-S124, and the two-system
-mess of 2026-08-18).**
-
-ITEM 4. **Keep the OCR path.** `2025 Tax Table` appears 0 times in the HTML and 13 times in the OCR
-text, and the EIC tables are referenced but not reproduced. **Anything the HTML does not carry still
-comes from the PDF render.** Say which documents still need it.
-
-ITEM 5. **Measure what it bought**, on `form_1040_2025` and `form_1116_2025` only, outside the
-repository root: line anchors against the 288/449 baseline, and **cells reaching the model with no
-instruction evidence, against today's 52% of 651**.
+ITEM 3. **Then run the measurement S160 owed**, on `form_1040_2025` and `form_1116_2025` only,
+outside the repository root: **cells reaching the model with no instruction evidence, against the
+52% of 651 baseline**, and section counts against 288/449. **Report whatever it is.**
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not write a new segmenter or a new deterministic matcher.** The deterministic matcher line is
-  closed - see Hard rules, proven over S116-S120.
-- **Do not move a form-face source.** Instruction documents only.
-- **Do not leave a stale citation range behind.**
-- Do not promote anything into `graph/2025/_drafts`.
+- **Do not accept the shell failure as a baseline red.** It regressed in S160.
+- **Do not lower the segmenter budget to avoid the retry.**
+- **Do not weaken, delete, or invert an assertion that is green on `main`.**
 
 **THE FLOOR.**
-- **Every one of the 338 affected ranges re-derived and resolving**, with the count stated, and the
-  255 unaffected ranges shown unchanged.
-- **The documents still requiring the OCR path**, named.
-- **Line anchors and no-instruction-evidence counts** for the two measured documents, before and
-  after.
-- **Focused sets green** against their known reds. **e2e is Architect-side.**
-- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
-  byte-identical.
-
-**WORKER STATUS (2026-08-20; M20-S160 implementation).** Instruction sources now select the
-acquired HTML for instruction documents while form faces remain acquired text. The accepted
-pilot segmenter is lifted into `tax_graph/extract/model_instruction_segmenter.py` and is the
-HTML instruction-frame path when a client is supplied; the accepted deterministic parser remains
-the no-client fallback. No draft was promoted and the protected graph set is unchanged.
-
-RAN: `.venv\Scripts\python.exe tools\rebind_instruction_html_ranges_m20_s160.py --write` ->
-affected sources `instructions_form_1040_2025`, `instructions_form_2441_2025`,
-`instructions_form_8949_2025`, `instructions_schedule_d_2025`; **338** affected ranges
-re-derived; **255** unaffected ranges unchanged; **593** ranged citations checked; **0**
-integrity mismatches.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s160.py tests\test_instruction_sections_m20.py tests\test_acquire_citation_check.py pilot\test_model_instruction_segmenter_m20_s123.py pilot\test_model_instruction_segmenter_m20_s124.py pilot\test_model_instruction_segmenter_m20_s126.py -q` -> **56 passed**.
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py tests\test_outline_span_resolution_m20.py tests\test_m20_s117.py tests\test_instruction_promotion_m18.py tests\test_instruction_html_m18.py -q` -> **45 passed, 1 skipped**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py plans\AGENT_HANDOFF.md` ->
-**diagnosis evidence check OK**.
-RAN: `.venv\Scripts\python.exe -m py_compile tax_graph\acquire\html_source.py tax_graph\acquire\source_ranges.py tax_graph\acquire\citation_check.py tax_graph\extract\model_instruction_segmenter.py tax_graph\extract\inputs.py tax_graph\extract\outline.py tax_graph\extract\outline_pipeline.py tax_graph\ingest\core_source_ranges.py tools\rebind_instruction_html_ranges_m20_s160.py` -> exit 0.
-
-OCR fallback: `instructions_form_1040_2025` still needs the OCR text for the 2025 Tax Table
-(0 HTML matches versus 13 OCR matches) and the EIC tables, which are referenced but not
-reproduced in the acquired HTML. The HTML remains the source for instruction content it carries.
-
-NOT RUN: live line-anchor and no-instruction-evidence measurement for `form_1040_2025` and
-`form_1116_2025`. The authorized attempts wrote only partial response recordings: the 120 KB
-window run failed with `LlmResponseTruncated` at `max_tokens=12000`, and the 40 KB retry failed
-with the same provider truncation after two windows. No measurement counts are claimed.
-NOT RUN: e2e, because the user specified that it exceeds the launcher cap.
+- **The shell test green in the FULL e2e suite**, not just alone - e2e back to 11.
+- **The measured token distribution** behind the new segmenter budget.
+- **The no-instruction-evidence count, before and after**, on both documents.
+- **`check_graph_citations` still at 0 mismatches.**
+- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean.
 
 ## Open for Architect
 
