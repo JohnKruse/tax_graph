@@ -108,6 +108,9 @@ def _collect(year: str, documents: list[str]) -> list[tuple[str, dict, dict]]:
         except Exception:  # noqa: BLE001
             continue
         spans = gr._span_index(draft.get("candidate_spans"))
+        spans = dict(spans)
+        spans["__ops__"] = _graph_operations(draft)
+        spans["__outcomes__"] = _outcome_summary(draft)
         micro = draft.get("micro_extraction", {}) or {}
         for record in (micro.get("formula_cells") or []) + (micro.get("review_gaps") or []):
             if isinstance(record, dict) and record.get("line_anchor"):
@@ -126,6 +129,67 @@ def _links(manifest: Any, document_id: str) -> tuple[str, str]:
         related = by_id[target]
         instructions_url = getattr(related, "instruction_url", "") or getattr(related, "url", "") or ""
     return form_url, instructions_url
+
+
+FIT_BADGE = {
+    "GOVERNS": "ok",
+    "WRONG_LINE": "WRONG",
+    "NONE_SUPPLIED": "none",
+    "UNCLEAR": "?",
+}
+
+
+def _graph_operations(draft: dict) -> dict:
+    """Map a target cell to the operation the GRAPH holds for it.
+
+    Draft rules carry a human-readable ``description`` - "line 19 = line 17 /
+    line 18" - and edges bind a rule to its target.  This is the answer to
+    "what did the pipeline actually decide", which the outcome kind alone
+    ("computation") never tells you.
+    """
+    rules = {str(r.get("rule_id")): r for r in gr._records(draft.get("rules"))}
+    out: dict[str, str] = {}
+    for edge in gr._records(draft.get("edges")):
+        rule = rules.get(str(edge.get("rule_id") or ""))
+        target = str(edge.get("target") or "")
+        if rule and target and target not in out:
+            description = str(rule.get("description") or "").strip()
+            operation = str(rule.get("operation") or "").strip()
+            if description:
+                out[target] = f"{description}   [{operation}]" if operation else description
+    for rule_id, rule in rules.items():
+        description = str(rule.get("description") or "").strip()
+        if not description:
+            continue
+        stem = rule_id[len("rule_"):] if rule_id.startswith("rule_") else rule_id
+        for suffix in ("_" + str(rule.get("operation") or "").lower(), ""):
+            target = stem[: -len(suffix)] if suffix and stem.endswith(suffix) else stem
+            out.setdefault(target, description)
+            break
+    return out
+
+
+def _outcome_summary(draft: dict) -> dict:
+    """Map a target cell to its non-computed outcome, in plain words."""
+    out: dict[str, str] = {}
+    micro = draft.get("micro_extraction", {}) or {}
+    for record in micro.get("outcomes") or []:
+        if not isinstance(record, dict):
+            continue
+        target = str(record.get("target_cell_id") or "")
+        kind = str(record.get("kind") or "")
+        if not target or not kind:
+            continue
+        form, line, box = (str(record.get(k) or "") for k in ("form", "line", "box"))
+        source = ""
+        if form and box:
+            source = f" from {form} box {box}"
+        elif form and line:
+            source = f" from {form} line {line}"
+        reason = str(record.get("reason") or "")
+        detail = f": {reason[:90]}" if kind == "not_derivable" and reason else ""
+        out[target] = f"{kind}{source}{detail}"
+    return out
 
 
 def _deep_links(year: str) -> dict:
@@ -196,10 +260,20 @@ def _instruction_text(record: dict, spans: dict) -> str:
     return "\n\n".join(out)
 
 
-def _operation(record: dict) -> str:
-    for key in ("expression", "outcome_kind", "response_kind"):
+def _operation(record: dict, spans: dict) -> str:
+    """What the graph holds for this cell, preferring the rule over the label."""
+    target = str(record.get("target_cell_id") or "")
+    operation = (spans.get("__ops__") or {}).get(target)
+    if operation:
+        return _clip(operation, 400)
+    outcome = (spans.get("__outcomes__") or {}).get(target)
+    if outcome:
+        return _clip(outcome, 400)
+    if record.get("review_gap"):
+        return "NO OPERATION - " + _clip(record.get("review_gap"), 200)
+    for key in ("outcome_kind", "response_kind"):
         if record.get(key):
-            return _clip(record.get(key), 400)
+            return _clip(record.get(key), 120) + " (no rule in graph)"
     return "(none produced)"
 
 
@@ -263,7 +337,8 @@ def _render_html(graded: list[dict], year: str) -> str:
         "table{border-collapse:collapse;width:100%}",
         "th,td{border:1px solid #d0d0d0;padding:8px;vertical-align:top;text-align:left}",
         "th{background:#f4f4f4;position:sticky;top:0}",
-        "td.g{font-weight:700;text-align:center;white-space:nowrap}",
+        "td.g{font-weight:700;text-align:center;white-space:nowrap;width:1%;font-size:12px}",
+        "code{font:12px/1.4 ui-monospace,monospace}",
         ".WRONG_LINE{background:#ffc9c9}.UNCLEAR{background:#ffe8cc}.NONE_SUPPLIED{background:#e0e0e0}.GOVERNS{background:#d6f0d6}",
         ".F{background:#ffd7d7}.D{background:#ffe8cc}.C{background:#fff6cc}",
         ".B{background:#e8f5d0}.A{background:#d6f0d6}.NO_EVIDENCE{background:#e0e0e0}",
@@ -272,8 +347,8 @@ def _render_html(graded: list[dict], year: str) -> str:
         f"<h1>Derived-cell sample, {html.escape(year)}</h1>",
         f"<p>{len(graded)} cells, worst first. {summary}</p>",
         "<p><i>NO_EVIDENCE is a verdict about what we supplied, not about the answer.</i></p>",
-        "<table><tr><th>Evidence fit</th><th>Grade</th><th>Document</th><th>Line</th><th>Face</th>"
-        "<th>Instructions supplied</th><th>Operation</th><th>Why</th><th>IRS</th></tr>",
+        "<table><tr><th title=\"ok / WRONG / none\">Fit</th><th>Grade</th><th>Document</th><th>Line</th><th>Face</th>"
+        "<th>Instructions supplied</th><th>Operation in the graph</th><th>Why</th><th>IRS</th></tr>",
     ]
     for row in graded:
         instructions = row["instructions"] or "<b>NONE SUPPLIED</b>"
@@ -285,15 +360,15 @@ def _render_html(graded: list[dict], year: str) -> str:
             label = "instr &para;" if "#" in row["instructions_url"] else "instr"
             links.append(f'<a href="{html.escape(row["instructions_url"])}">{label}</a>')
         body.append(
-            f'<tr><td class="g {html.escape(row.get("fit",""))}">{html.escape(row.get("fit",""))}'
-            f'{(" -> " + html.escape(row["governs"])) if row.get("governs") else ""}</td>'
+            f'<tr><td class="g {html.escape(row.get("fit",""))}" title="{html.escape(row.get("fit",""))}">'
+            f'{html.escape(FIT_BADGE.get(row.get("fit",""), "?"))}</td>'
             f'<td class="g {html.escape(row["grade"])}">{html.escape(row["grade"])}</td>'
             f'<td>{html.escape(row["document_id"])}{" <b>[CONTROL]</b>" if row.get("control") else ""}</td>'
             f'<td>{html.escape(str(row["line"]))}</td>'
             f'<td>{html.escape(_clip(row["face"], 160))}</td>'
             f'<td><details><summary>{"none" if not row["instructions"] else "show"}</summary>'
             f'<pre>{instructions if not row["instructions"] else html.escape(row["instructions"])}</pre></details></td>'
-            f'<td>{html.escape(_clip(row["operation"], 120))}</td>'
+            f'<td><code>{html.escape(_clip(row["operation"], 220))}</code>{("<br><small>instr belongs to line " + html.escape(row["governs"]) + "</small>") if row.get("governs") else ""}</td>'
             f'<td>{html.escape(row["reason"])}</td>'
             f'<td>{" ".join(links) or "-"}</td></tr>'
         )
@@ -336,7 +411,7 @@ def main() -> int:
     graded: list[dict] = []
     for index, (document_id, record, spans, control) in enumerate(sample, start=1):
         instructions = control if control is not None else _instruction_text(record, spans)
-        operation = _operation(record)
+        operation = _operation(record, spans)
         face = str(record.get("label") or "")
         prompt = PROMPT.format(
             face=face or "(none)",
