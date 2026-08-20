@@ -326,6 +326,54 @@ def test_formula_line_micro_path_is_bounded_and_isolates_failed_cells(tmp_path):
 
 
 @pytest.mark.m20
+def test_rejected_micro_quote_is_carried_into_review_gap_evidence(tmp_path):
+    text = "- 1z: Add lines 1a through 1h\n- 2: Add lines 1z and 2b\n"
+    text_path = tmp_path / "form_1040_2025.txt"
+    text_path.write_text(text, encoding="ascii")
+    document = SourceDocumentInput(
+        document_id="form_1040_2025",
+        kind="tax_form",
+        year="2025",
+        url="https://example.test/form.pdf",
+        text=text,
+        text_path=text_path,
+        fields={
+            "fields": [],
+            "line_anchors": [
+                {"anchor": "1z", "page": 1, "text_offset": 2, "text_length": 2},
+                {"anchor": "2", "page": 1, "text_offset": 34, "text_length": 1},
+            ],
+        },
+    )
+    client = FakeMicroClient(
+        {
+            "operation": "SUM",
+            "source_lines": ["1z", "2b"],
+            "quote": "Add lines 1z and 2b, approximately.",
+        }
+    )
+
+    batch = generate_outline_first_drafts(
+        document,
+        client=client,
+        config={"llm": {"model": "mock", "micro_model": "mock"}},
+        root=ROOT,
+    )
+
+    gaps = batch.micro_stats["review_gaps"]
+    assert len(gaps) == 2
+    failed = next(item for item in gaps if item["line_anchor"] == "2")
+    assert failed["rejected_quote"] == "Add lines 1z and 2b, approximately."
+    assert failed["rejected_payload"]["source_lines"] == ["1z", "2b"]
+    assert failed["validation_reason"] == (
+        "quote does not match the supplied form or instruction evidence"
+    )
+    closest = failed["closest_matching_span"]
+    assert closest["span_text"] == "- 2: Add lines 1z and 2b"
+    assert closest["longest_common_substring"]["length"] > 0
+
+
+@pytest.mark.m20
 def test_human_formula_answer_resolves_printed_lines_and_fails_closed(tmp_path):
     document = SourceDocumentInput(
         document_id="form_1040_2025",

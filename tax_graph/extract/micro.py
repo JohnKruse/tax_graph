@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import difflib
 import math
 import re
 from typing import Any
@@ -17,6 +18,24 @@ from tax_graph.operation_registry import operation_roles, operation_spec
 
 class MicroExtractionError(ValueError):
     """Raised when a micro-extraction response violates deterministic constraints."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        rejected_payload: dict[str, Any] | None = None,
+        validation_diagnostic: dict[str, Any] | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.rejected_payload = rejected_payload
+        self.validation_diagnostic = validation_diagnostic
+
+    def attach_rejected_payload(self, payload: Any) -> None:
+        """Keep the provider payload when deterministic validation rejects it."""
+        if isinstance(payload, dict):
+            self.rejected_payload = dict(payload)
+        else:
+            self.rejected_payload = {"raw": repr(payload)}
 
 
 def non_formula_micro_schema() -> dict[str, Any]:
@@ -237,7 +256,11 @@ def extract_formula_plan(
         request["seed"] = seed
     with llm_call_target(target_cell_id):
         response = client.structured_completion(**request)
-    validate_formula_plan(response, spans=spans, root=root, outline_node=outline_node)
+    try:
+        validate_formula_plan(response, spans=spans, root=root, outline_node=outline_node)
+    except MicroExtractionError as exc:
+        exc.attach_rejected_payload(response)
+        raise
     return response
 
 
@@ -337,7 +360,52 @@ def _validate_quote(plan: dict[str, Any], spans: list[CandidateSpan]) -> None:
     if not isinstance(quote, str) or not quote.strip():
         raise MicroExtractionError("quote must be a non-empty string")
     if not any(_quote_matches(quote, span.text) for span in spans):
-        raise MicroExtractionError("quote does not match the supplied form or instruction evidence")
+        raise MicroExtractionError(
+            "quote does not match the supplied form or instruction evidence",
+            validation_diagnostic=_closest_quote_diagnostic(quote, spans),
+        )
+
+
+def _closest_quote_diagnostic(
+    quote: str,
+    spans: list[CandidateSpan],
+) -> dict[str, Any] | None:
+    """Return inspectable nearest-span evidence without changing quote validity."""
+    if not spans:
+        return None
+    normalize = lambda value: " ".join(str(value).split())
+    normalized_quote = normalize(quote)
+    candidates: list[tuple[float, int, CandidateSpan, difflib.Match]] = []
+    for span in spans:
+        normalized_source = normalize(span.text)
+        match = difflib.SequenceMatcher(
+            None,
+            normalized_quote,
+            normalized_source,
+            autojunk=False,
+        ).find_longest_match(0, len(normalized_quote), 0, len(normalized_source))
+        ratio = difflib.SequenceMatcher(
+            None,
+            normalized_quote,
+            normalized_source,
+            autojunk=False,
+        ).ratio()
+        candidates.append((ratio, match.size, span, match))
+    ratio, _size, span, match = max(candidates, key=lambda item: (item[0], item[1]))
+    normalized_source = normalize(span.text)
+    return {
+        "span_id": span.span_id,
+        "span_text": span.text,
+        "normalized_quote": normalized_quote,
+        "normalized_span_text": normalized_source,
+        "similarity": round(ratio, 6),
+        "longest_common_substring": {
+            "quote_offset": match.a,
+            "span_offset": match.b,
+            "length": match.size,
+            "text": normalized_quote[match.a:match.a + match.size],
+        },
+    }
 
 
 def _validate_source_line(source_line: Any) -> None:
@@ -437,7 +505,11 @@ def extract_non_formula_source(
         request["seed"] = seed
     with llm_call_target(target_cell_id):
         response = client.structured_completion(**request)
-    validate_non_formula_source(response, spans=spans)
+    try:
+        validate_non_formula_source(response, spans=spans)
+    except MicroExtractionError as exc:
+        exc.attach_rejected_payload(response)
+        raise
     return response
 
 
@@ -452,7 +524,10 @@ def validate_non_formula_source(plan: dict[str, Any], *, spans: list[CandidateSp
     if not isinstance(quote, str) or not quote.strip():
         raise MicroExtractionError("quote must be a non-empty string")
     if not any(_quote_matches(quote, span.text) for span in spans):
-        raise MicroExtractionError("quote does not match the supplied form or instruction evidence")
+        raise MicroExtractionError(
+            "quote does not match the supplied form or instruction evidence",
+            validation_diagnostic=_closest_quote_diagnostic(quote, spans),
+        )
 
 
 def _formula_prompt(

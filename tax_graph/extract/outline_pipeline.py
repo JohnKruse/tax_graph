@@ -244,6 +244,7 @@ def generate_outline_first_drafts(
                     "",
                     target_cell_id=target_cell_id,
                 )
+                cell_record.update(_rejected_response_evidence(exc))
                 _record_micro_failure(micro_stats, outline_node, exc)
                 _record_review_gap(micro_stats, cell_record, f"micro extraction failed: {type(exc).__name__}: {exc}")
                 continue
@@ -961,13 +962,29 @@ def _record_micro_failure(stats: dict[str, Any], node: OutlineNode, error: Excep
     if is_transient_transport_error(error):
         stats["transport_failures"] = int(stats.get("transport_failures", 0)) + 1
     grouped = stats.setdefault("failure_reasons_by_kind", {})
-    grouped.setdefault(kind, []).append(
-        {
+    record = {
             "outline_id": node.outline_id,
             "line_anchor": node.line_anchor,
             "reason": reason,
         }
-    )
+    record.update(_rejected_response_evidence(error))
+    grouped.setdefault(kind, []).append(record)
+
+
+def _rejected_response_evidence(error: Exception) -> dict[str, Any]:
+    """Return provider output and validation diagnostics attached to a failure."""
+    payload = getattr(error, "rejected_payload", None)
+    if payload is None:
+        return {}
+    evidence: dict[str, Any] = {
+        "rejected_payload": payload,
+        "rejected_quote": payload.get("quote") if isinstance(payload, dict) else None,
+        "validation_reason": str(error),
+    }
+    diagnostic = getattr(error, "validation_diagnostic", None)
+    if isinstance(diagnostic, dict):
+        evidence["closest_matching_span"] = diagnostic
+    return evidence
 
 
 def _record_micro_finding(stats: dict[str, Any], finding: dict[str, Any]) -> None:
