@@ -21,8 +21,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S152 IS THE ROUND: the core gate - AND FIRST, UNDO THE DUPLICATE CORE
-DEFINITION THE ARCHITECT CAUSED IN S151.**
+**BALL: CODEX. M20-S153 IS THE ROUND: the core gate as built cannot fail for the reason it exists.
+S152's ITEM 1 is accepted; its gate is not.**
+
+**M20-S152 (`4440009`) IS ACCEPTED ON ITEM 1 ONLY (Architect, 2026-08-20).** The duplicate core
+definition is gone: **zero manifest entries carry a `core` flag**, the schema and loader support was
+removed with it, and `load_core_document_ids` is the single source at 22 documents. 20 core-set
+tests pass. That half is right.
+
+**THE GATE IS VACUOUS, AND ITS OWN RESULT SAYS SO: 310 CANDIDATES, 0 UNSURFACED.** A gate that
+passes everything on its first run has usually measured nothing, and this one has. The whole
+surfacing test is one line of `pilot/core_refusal_gate.py`:
+
+    surfaced=bool(reason_text and artifact.is_file())
+
+**`artifact` is the file the candidate was just parsed out of.** Every candidate is discovered by
+reading that file - `_derive_cells_report.yaml`, `review_gaps.yaml`, `frontier.yaml` - so
+`artifact.is_file()` is necessarily true for anything the gate can see. **The condition therefore
+reduces to "does the refusal have a non-empty reason string."**
+
+**THAT IS NOT THE RULING.** John, 2026-08-11: *"core means ZERO UNREPORTED refusals. Non-core may
+refuse, but the refusal must surface FOR REVIEW."* Surfacing is about a human finding it. The gate
+as built asks whether the string exists in the file the gate itself just read, which no refusal it
+can enumerate could ever fail. **The docs even state the circularity plainly:** *"A refusal is
+surfaced when its reason is present in the concrete artifact that owns the candidate."*
+
+**ALSO: PRODUCTION CODE NOW IMPORTS FROM `pilot/`.** `tax_graph/doctor.py` carries
+`from pilot.core_refusal_gate import ...`. `pilot/` is exploratory work held off to the side and
+lifted in later; it is not a home for a shipped gate.
 
 **ARCHITECT ERROR, FOUND 2026-08-20 WHILE SPECCING THE GATE.** `config/document_tiers.yaml` ALREADY
 held a machine-readable core set - `core_documents`, 22 entries, plus `core_plus_documents` and a
@@ -286,92 +312,44 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S152: ONE CORE DEFINITION, THEN THE GATE JOHN RULED FOR ON 2026-08-11.**
+**M20-S153: SURFACED MEANS A HUMAN CAN FIND IT, NOT THAT THE PARSER FOUND IT.**
 
-**ITEM 1 - COLLAPSE THE TWO DEFINITIONS TO ONE. DO THIS FIRST; THE GATE IS MEANINGLESS ON TOP OF
-TWO DISAGREEING LISTS.** `config/document_tiers.yaml` is the incumbent: it predates S151, carries
-the tier structure, and is already consumed. **Recommendation: it stays the single source, and
-S151's manifest `core: true` is removed** - nothing consumes it yet, so removing it costs nothing
-and leaving it guarantees drift. **If instead the flag is kept, it MUST be derived from the tier
-file with a test that they cannot disagree.** State which you did and why. **Do not leave two
-hand-maintained lists.**
+ITEM 1. **Move `core_refusal_gate` out of `pilot/`** into the package proper. `pilot/` is for
+exploratory work; `tax_graph/doctor.py` must not import from it.
 
-**ITEM 2 - DEFINE "REFUSAL" IN WRITING BEFORE ENFORCING IT.** John, 2026-08-11: *"core means ZERO
-UNREPORTED refusals. Non-core may refuse, but the refusal must surface for review."* **Read that
-precisely: the gate is not zero refusals, it is zero refusals that nobody can see.** The observable
-candidates already in the pipeline, all of which you must consider and rule in or out with a
-reason:
+**ITEM 2 - REPLACE THE SURFACING TEST.** `surfaced=bool(reason_text and artifact.is_file())` is
+circular: the artifact is the file the candidate was parsed from, so the second term is always true
+and only a missing reason string can fail. **Define surfacing against an artifact a REVIEWER opens,
+not the one the gate reads.** Candidates to consider, and rule each in or out with a reason:
 
-- `derive_cells` row statuses `errored`, `gapped`, `skipped`
-- a formula cell carrying `review_gap`
-- an outcome of `kind: not_derivable`
-- worksheet discovery `refused` (`cli.py` prints `discovered/written/refused`)
-- a frontier entry at `status: unmodeled` or `declared`
+- the review queue under `review_queue/`
+- the workbench preflight report (`workbench.cli preflight`)
+- the frontier registry, for a genuinely deferred branch
+- a review gap that reaches a generated review cell a human sees in the workbench
 
-**Real instances, from the 2026-08-20 `form_1040_2025` run and the rebuilt registry, so you are
-ruling on records rather than on category names:**
+**The test must be able to FAIL.** Demonstrate that: construct a refusal that is real but reaches no
+reviewer, and show the gate catching it.
 
-    row_status_counts: {derived: 50, repaired: 2, gapped: 0, errored: 6, skipped: 1}
-    line  31: validation gap after one repair: operand_not_printed: line 15 is not a printed line on schedule_3_2025
-    line  38: validation gap after one repair: subtract_direction: instruction says subtract line 34 from line 38
-    1e -> status: review_gap, review_gap: source line is not present in the deterministic outline index
-    28 -> kind: not_derivable, reason: "The evidence states that Schedule 8812 must be completed
-         to figure and claim the credit, but it does not provide the applicable Schedule 8812 line
-         or amount needed to derive Form 1040 line 28."
-    frontier status counts: {modeled: 217, unmodeled: 18, declared: 6}
+ITEM 3. **Re-run on the real corpus and report the number, whatever it is.** 310 candidates and 0
+unsurfaced was the vacuous answer. **A non-zero core count is the expected honest outcome and is
+NOT a reason to weaken the definition.** If core is dirty, say how dirty.
 
-
-**Some of these are refusals and some are ordinary outcomes; say which and why.** A `not_derivable`
-with a reason and a citation may well be a REPORTED refusal and therefore fine.
-
-**ITEM 3 - DEFINE "SURFACED".** A refusal is reported when a human can find it without reading
-logs. Name the artifact that constitutes surfacing - the review queue, a preflight report, the
-frontier registry - and be specific.
-
-**ITEM 4 - ENFORCE IT FOR CORE ONLY.** A core document with an unsurfaced refusal fails. Non-core
-may refuse freely provided it surfaces. **Wire it where it will actually be run**; `tax_graph.cli
-doctor` already exists to *"check plan claims and pipeline agreements; exit 1 when evidence is
-missing or inconsistent"* and is the obvious host. Report the current count on the real corpus -
-**if core is not clean today, that is the finding, and do NOT weaken the gate to make it pass.**
+ITEM 4. Keep the refusal-candidate definitions from `docs/core-refusal-gate.md` - **those are
+sound** - and update only the surfacing half of that document.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not invent a third core list.**
-- **Do not silence a refusal to make the gate green.** Surfacing it is the fix; hiding it is the
-  defect the gate exists to catch.
+- **Do not make the gate pass by narrowing what counts as a refusal.** The candidate list stays.
+- **Do not silence a refusal.** Surfacing it is the fix.
 - **Do not weaken, delete, or invert an assertion that is green on `main`.**
 - No model call, no network, no draft regeneration.
 
 **THE FLOOR.**
-- **One core list**, with the other removed or provably derived, and a test proving they cannot
-  disagree.
-- **The written definitions** of refusal and surfaced, with each candidate above ruled in or out.
-- **The gate's result on the real corpus**, whatever it is.
+- **A test that FAILS the gate** on a constructed unsurfaced core refusal, and passes once surfaced.
+- **The real-corpus count**, core and non-core, under the new definition.
+- **`tax_graph/doctor.py` importing from the package, not `pilot/`.**
 - **Focused sets green** against their known reds. **e2e is Architect-side.**
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
-
-**M20-S152 WORKER STATUS: IMPLEMENTED 2026-08-20.** ITEM 1 keeps
-`config/document_tiers.yaml` as the only core source and removes the S151 manifest flag, schema,
-loader field, and retired assertions. ITEMS 2 and 3 are written in `docs/core-refusal-gate.md`
-and implemented as five explicit candidate rules with named surfacing artifacts. ITEM 4 is wired
-into `tax_graph.cli doctor` and reports every candidate without hiding unsurfaced records.
-
-**REAL-CORPUS GATE EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m tax_graph.cli doctor --year 2025` -> **310 candidates; 300 core
-candidates; 0 core unsurfaced; 0 non-core unsurfaced; result OK; process exit 0**. This is a
-provider-free read-only check; no model call, network access, or draft regeneration was used.
-
-**FOCUSED TEST EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m pytest tests/test_acquire_manifest.py tests/test_m20_s41.py
-tests/test_m20_s101.py tests/test_m20_s108.py tests/test_m20_s151.py tests/test_m20_s152.py
-tests/test_doctor_m20.py -q` -> **42 passed in 24.02s**. RAN:
-`.venv\Scripts\python.exe tools/check_ascii.py` -> **ASCII check OK**. RAN:
-`.venv\Scripts\python.exe tools/check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
-RAN: `git diff --check` -> **exit 0, no output**.
-
-**E2E EVIDENCE.** NOT RUN:
-`.venv\Scripts\python.exe -m pytest tests/e2e -q` -> **e2e exceeds the Worker launcher cap;
-Architect runs it**.
 
 ## Open for Architect
 
