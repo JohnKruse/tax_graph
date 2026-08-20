@@ -1,26 +1,30 @@
 """Account for refusal candidates and their human-visible artifacts.
 
-This module is provider-free and read-only.  It turns the five refusal
+This package module is provider-free and read-only.  It turns the five refusal
 candidate shapes named by M20-S152 into records that can be checked by the
 doctor without treating a log message or a missing record as evidence.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
+import re
 from typing import Any, Iterable, Mapping
 
-from pilot.run_report import REPORT_PREFIX, REPORT_SUFFIX
 from tax_graph.acquire.corpus import load_core_document_ids
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.io.loader import load_yaml
 
 
+REPORT_PREFIX = "m20_s26_"
+REPORT_SUFFIX = "_derive_cells_report.yaml"
+
+
 @dataclass(frozen=True)
 class CandidateRule:
-    """Written definition of one refusal candidate and its surface."""
+    """Written definition of one refusal candidate and its review surface."""
 
     kind: str
     refusal: str
@@ -31,27 +35,27 @@ CANDIDATE_RULES = (
     CandidateRule(
         "derive_cell_status",
         "A derivation row has status errored, error, gapped, or skipped.",
-        "The row is present in its *_derive_cells_report.yaml with a non-empty reason field.",
+        "The generated review HTML contains the row's visible cell.",
     ),
     CandidateRule(
         "formula_review_gap",
         "A formula cell is recorded in review_gaps.yaml with status review_gap.",
-        "The document draft's review_gaps.yaml contains the cell and its review_gap text.",
+        "The generated review HTML contains the cell's visible object card.",
     ),
     CandidateRule(
         "not_derivable_outcome",
         "An extracted outcome has kind not_derivable.",
-        "The document draft's micro_extraction.yaml contains the outcome and its reason.",
+        "The generated review HTML contains the cell's visible object card.",
     ),
     CandidateRule(
         "worksheet_refusal",
         "Worksheet discovery records a worksheet whose status is not ready, or a non-advisory finding.",
-        "The worksheet-discovery*.yaml artifact contains the status or finding reason.",
+        "The generated review surface contains the worksheet's visible refusal card.",
     ),
     CandidateRule(
         "frontier_refusal",
         "The frontier registry contains an entry with status unmodeled or declared.",
-        "graph/<year>/frontier.yaml contains the entry and its status.",
+        "The generated review HTML contains a visible cell, or the entry status is declared.",
     ),
 )
 
@@ -108,7 +112,7 @@ class CoreRefusalReport:
 
     @property
     def core_unsurfaced(self) -> tuple[RefusalCandidate, ...]:
-        """Return core refusals a human cannot find in the named artifact."""
+        """Return core refusals that have no visible review cell or declaration."""
         return tuple(item for item in self.core_candidates if not item.surfaced)
 
     @property
@@ -190,6 +194,10 @@ def evaluate_core_refusals(
     candidates.extend(_not_derivable_candidates(draft_root, manifest, core_ids))
     candidates.extend(_worksheet_candidates(draft_root, manifest, core_ids))
     candidates.extend(_frontier_candidates(root_path / "graph" / year_text / "frontier.yaml", manifest, core_ids))
+    candidates = [
+        replace(item, surfaced=_is_surfaced(item, root_path, year_text))
+        for item in candidates
+    ]
     candidates.sort(key=lambda item: (item.kind, item.document_id, item.line, item.artifact, item.reason))
     return CoreRefusalReport(tax_year=year_text, candidates=tuple(candidates))
 
@@ -237,8 +245,53 @@ def _candidate(
         status=_ascii(status) or "refused",
         reason=reason_text,
         artifact=artifact_text,
-        surfaced=bool(reason_text and artifact.is_file()),
+        surfaced=False,
         is_core=owner in core_ids,
+    )
+
+
+def _slug(value: str) -> str:
+    """Match the stable ASCII slug used by the generated review HTML."""
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug or "item"
+
+
+def _review_surface_path(root: Path, year: str, document_id: str) -> Path:
+    """Return the generated per-document review surface path."""
+    return root / "graph" / year / "_drafts" / document_id / "review.html"
+
+
+def _surface_marker(candidate: RefusalCandidate) -> str:
+    """Return the DOM marker for a visible form-line cell."""
+    return f"obj-nodes-{_slug(candidate.document_id)}-root-line-{_slug(candidate.line)}"
+
+
+def _review_surface_contains(surface: Path, candidate: RefusalCandidate) -> bool:
+    """Return whether generated review HTML contains this visible refusal cell."""
+    if not surface.is_file():
+        return False
+    text = surface.read_text(encoding="utf-8", errors="replace")
+    if candidate.kind == "worksheet_refusal":
+        marker = re.escape(candidate.document_id or candidate.owner_document_id)
+        return bool(re.search(rf'data-worksheet-document-id="{marker}"', text))
+    marker = re.escape(_surface_marker(candidate))
+    return bool(re.search(rf'(?:id|data-object)="{marker}"', text))
+
+
+def _is_surfaced(candidate: RefusalCandidate, root: Path, year: str) -> bool:
+    """Apply the decided human-visible surfacing definition."""
+    if not candidate.reason:
+        return False
+    if candidate.kind == "frontier_refusal" and candidate.status.lower() == "declared":
+        return True
+    document_id = candidate.document_id
+    if not candidate.line:
+        if candidate.kind != "worksheet_refusal":
+            return False
+        document_id = candidate.owner_document_id
+    return _review_surface_contains(
+        _review_surface_path(root, year, document_id),
+        candidate,
     )
 
 

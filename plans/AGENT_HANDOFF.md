@@ -358,6 +358,38 @@ sound** - and update only the surfacing half of that document.
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+**M20-S153 WORKER STATUS (2026-08-20).** Implemented the decided surfacing definition in
+`tax_graph/core_refusal_gate.py`, moved the gate out of `pilot/`, and rewired `tax_graph/doctor.py`
+to the package module. The candidate definitions were preserved. A refusal is surfaced only by a
+visible generated review cell, a worksheet refusal card, or frontier status `declared`.
+
+**TEST-FIRST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py -q` -> **1 failed, 3 passed in
+0.23s** on the new constructed refusal guard before the production change. The failing assertion
+was `report.ok is False` while the old circular implementation returned `True`.
+
+**M20-S153 TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py -q` -> **4 passed in 0.23s**.
+RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_doctor_m20.py -q` -> **10 passed in 0.28s**.
+RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py tests\test_doctor_m20.py -q`
+-> **14 passed in 0.39s**.
+
+**M20-S153 REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli doctor --year 2025` -> **exit 1**; `provider calls:
+none`; **310 candidates, 300 core candidates, 213 core unsurfaced, 10 non-core unsurfaced**;
+`result: FAILED: core refusal is unsurfaced` and `result: NEEDS ATTENTION`. This red is the
+expected gate result under the decided definition and was not narrowed or silenced.
+
+RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN:
+`.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
+RAN: `git diff --check` -> **clean**.
+NOT RUN: `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **exceeds the 600-second Worker
+launcher cap; Architect runs e2e**.
+
 ## Open for Architect
 
 - **NOTHING OPEN.** S148's evidence block was pruned on acceptance 2026-08-20; `git show f45a842`

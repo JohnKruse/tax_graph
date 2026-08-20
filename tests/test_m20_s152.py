@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from pilot.core_refusal_gate import CANDIDATE_RULES, evaluate_core_refusals
 from tax_graph.acquire.corpus import load_core_document_ids
+from tax_graph.core_refusal_gate import CANDIDATE_RULES, evaluate_core_refusals
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -136,6 +136,24 @@ def test_gate_accounts_for_all_candidates_and_only_core_unsurfaced_blocks(tmp_pa
         ),
         encoding="ascii",
     )
+    (root / "graph" / "2025" / "_drafts" / "form_core_2025" / "review.html").write_text(
+        "\n".join(
+            [
+                '<article id="obj-nodes-form-core-2025-root-line-1" data-object="obj-nodes-form-core-2025-root-line-1"></article>',
+                '<article id="obj-nodes-form-core-2025-root-line-2" data-object="obj-nodes-form-core-2025-root-line-2"></article>',
+                '<article id="obj-nodes-form-core-2025-root-line-3" data-object="obj-nodes-form-core-2025-root-line-3"></article>',
+                '<article id="obj-nodes-form-core-2025-root-line-4" data-object="obj-nodes-form-core-2025-root-line-4"></article>',
+                '<article id="obj-nodes-form-core-2025-root-line-5" data-object="obj-nodes-form-core-2025-root-line-5"></article>',
+                '<article class="worksheet-card" data-worksheet-document-id="form_other_2025"></article>',
+                '<article class="worksheet-card" data-worksheet-document-id="form_core_2025"></article>',
+            ]
+        ),
+        encoding="ascii",
+    )
+    (root / "graph" / "2025" / "_drafts" / "form_other_2025" / "review.html").write_text(
+        '<article class="worksheet-card" data-worksheet-document-id="form_other_2025"></article>\n',
+        encoding="ascii",
+    )
 
     report = evaluate_core_refusals(root=root)
 
@@ -156,7 +174,7 @@ def test_core_unsurfaced_refusal_is_not_silenced(tmp_path: Path) -> None:
     root = tmp_path / "project"
     _write_project(root)
     (root / "output" / "m20_s26_form_core_2025_derive_cells_report.yaml").write_text(
-        "document_id: form_core_2025\nrows_detail:\n- line: 1\n  status: errored\n",
+        "document_id: form_core_2025\nrows_detail:\n- line: 1\n  status: errored\n  error: missing operand\n",
         encoding="ascii",
     )
 
@@ -164,5 +182,18 @@ def test_core_unsurfaced_refusal_is_not_silenced(tmp_path: Path) -> None:
 
     assert report.ok is False
     assert len(report.core_unsurfaced) == 1
+    assert report.core_unsurfaced[0].reason == "missing operand"
+    assert not (root / "graph" / "2025" / "_drafts" / "form_core_2025" / "review.html").exists()
     assert report.core_unsurfaced[0].artifact.endswith("m20_s26_form_core_2025_derive_cells_report.yaml")
     assert "UNSURFACED" in report.format_report()
+
+    surface = root / "graph" / "2025" / "_drafts" / "form_core_2025" / "review.html"
+    surface.write_text(
+        '<article id="obj-nodes-form-core-2025-root-line-1" data-object="obj-nodes-form-core-2025-root-line-1"></article>\n',
+        encoding="ascii",
+    )
+
+    surfaced = evaluate_core_refusals(root=root)
+
+    assert surfaced.ok
+    assert surfaced.core_unsurfaced == ()

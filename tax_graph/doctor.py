@@ -29,7 +29,7 @@ from tax_graph.operation_registry import (
     prompt_operation_documentation,
     projection_rule_for,
 )
-from pilot.core_refusal_gate import CoreRefusalReport, evaluate_core_refusals
+from tax_graph.core_refusal_gate import CoreRefusalReport, evaluate_core_refusals
 
 
 BAD_STATUSES = frozenset({"UNKNOWN", "DISAGREES", "STALE"})

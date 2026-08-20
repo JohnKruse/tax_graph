@@ -20,16 +20,27 @@ the candidate. Other statuses and advisory worksheet findings are not refusals.
 
 ## Surfaced definition
 
-A refusal is surfaced when its reason is present in the concrete artifact that
-owns the candidate. The artifacts are, respectively:
+A refusal is surfaced when it becomes a visible cell in the generated review
+surface. Form-line cells are identified by the generated review HTML object
+marker for the candidate's canonical document and line. Worksheet refusals are
+identified by their generated worksheet card. A frontier entry at status
+`declared` is surfaced by that declaration itself.
 
-| Candidate | Surfacing artifact |
+The source artifacts remain the candidate inputs, respectively:
+
+| Candidate | Candidate artifact |
 | --- | --- |
 | derivation row | `*_derive_cells_report.yaml` |
 | formula review gap | the document draft's `review_gaps.yaml` |
 | not derivable outcome | the document draft's `micro_extraction.yaml` |
 | worksheet refusal | `worksheet-discovery*.yaml` |
 | frontier refusal | `graph/<year>/frontier.yaml` |
+
+The generated review surface is the per-document `review.html` beside the
+draft. A form-line cell must have the generated object marker for
+`nodes/<document>_root_line_<line>`. A worksheet card must carry the generated
+worksheet document marker. The gate does not treat the candidate artifact,
+`review_queue/`, or preflight output as a review surface.
 
 The gate fails only when a core candidate is unsurfaced. Non-core candidates
 remain in the report and may be unsurfaced without blocking the core.
