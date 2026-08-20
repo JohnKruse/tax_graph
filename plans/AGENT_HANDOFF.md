@@ -21,8 +21,36 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S153 IS THE ROUND: the core gate as built cannot fail for the reason it exists.
-S152's ITEM 1 is accepted; its gate is not.**
+**BALL: CODEX. M20-S154 IS THE ROUND: the surfacing matcher looks for a marker format that does
+not exist. S153 is rejected on the same item S152 was - vacuously green then, vacuously red now.**
+
+**M20-S153 (`bdb1779`) IS ACCEPTED ON ITEM 1 ONLY (Architect, 2026-08-20).** The gate is out of
+`pilot/` and into `tax_graph/core_refusal_gate.py`, and `doctor.py` no longer imports from `pilot`.
+That is right.
+
+**THE 213 UNSURFACED CORE REFUSALS ARE MOSTLY FALSE, AND I NEARLY REPORTED THEM AS REAL.** I checked
+the by-document split first and it looked convincing - nine of the top ten documents HAVE a
+`review.html`, so the refusals appeared to be genuinely invisible. **Then I opened one candidate
+end to end and the claim collapsed.** Schedule 1 line `1`, `formula_review_gap`, reason *"micro
+extraction failed: MicroExtractionError: quote does not match the supplied form or instruction"*.
+The gate looks for:
+
+    nodes/schedule_1_2025_root_line_1
+
+and that string occurs **zero times** in a 1.97 MB `review.html`. `nodes/` occurs zero times.
+`root_line` occurs zero times. **The real markers are slugified and section-scoped:**
+
+    data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-1"
+
+**Schedule 1 has 59 such line-level markers, and line `1` is among them - the cell IS on the review
+surface.** So the matcher fails every form-line candidate on a format mismatch: **191 of the 213
+are `formula_review_gap` (109) and `not_derivable_outcome` (82)**, both matched this way. Only
+`frontier_refusal` (18) and `worksheet_refusal` (4) use other logic and may stand.
+
+**THE SAME HOLE TWICE, FROM OPPOSITE ENDS.** S152's gate could never fail; S153's can never pass for
+the commonest candidate kind. **My floor asked only for a test that CAN FAIL, and a constructed
+fixture satisfied that while the real corpus went 100% red for form lines.** The floor below fixes
+my omission, not just the Worker's code.
 
 **M20-S152 (`4440009`) IS ACCEPTED ON ITEM 1 ONLY (Architect, 2026-08-20).** The duplicate core
 definition is gone: **zero manifest entries carry a `core` flag**, the schema and loader support was
@@ -312,83 +340,43 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S153: SURFACED MEANS A HUMAN CAN FIND IT, NOT THAT THE PARSER FOUND IT.**
+**M20-S154: MATCH THE MARKER THE REVIEW SURFACE ACTUALLY EMITS.**
 
-ITEM 1. **Move `core_refusal_gate` out of `pilot/`** into the package proper. `pilot/` is for
-exploratory work; `tax_graph/doctor.py` must not import from it.
+ITEM 1. **Fix the surfacing matcher against the real format.** A form-line cell is identified in
+`review.html` by a slugified, section-scoped `data-object` attribute, not by a
+`nodes/<document>_root_line_<line>` path. Both of these are real, from
+`graph/2025/_drafts/schedule_1_2025/review.html`:
 
-**ITEM 2 - REPLACE THE SURFACING TEST. THE DEFINITION IS DECIDED; IMPLEMENT IT.**
-`surfaced=bool(reason_text and artifact.is_file())` is circular: the artifact is the file the
-candidate was parsed from, so the second term is always true and only a missing reason string can
-fail.
+    data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-1"
+    data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-2a"
 
-**A REFUSAL IS SURFACED WHEN IT BECOMES A VISIBLE CELL IN THE GENERATED REVIEW SURFACE, OR IS A
-FRONTIER ENTRY AT `declared`.** (Architect, decided 2026-08-20; John: *"I could care less about
-tests going red as long as we are headed in the right direction."*) The reasoning: **John's review
-model is cell-atomic** - he works per cell, approving or commenting - so a refusal that never
-becomes a cell he can land on is invisible to him whatever YAML holds it. A `declared` frontier
-entry with a target and a citation is a decision recorded, not a hole, and counts.
+**Do not hardcode the section slug** - it varies per document and per part. Match on the document
+and the line suffix. **Derive the marker from the same code that WRITES it** if that code is
+reachable; a matcher that independently guesses a format is how this round was lost.
 
-**Rejected alternatives, so they are not re-proposed:** `review_queue/` has ZERO tracked files and
-is not gitignored - defining surfacing against an empty directory fails everything and is the
-mirror image of the vacuous gate. The preflight report is a coverage check, not the artifact a
-reviewer reads cell by cell.
+ITEM 2. **Report the real-corpus number again under the corrected matcher**, core and non-core.
+**Whatever it is, it is the answer** - John, 2026-08-20: *"I could care less about tests going red
+as long as we are headed in the right direction."*
 
-**The test must be able to FAIL.** Construct a refusal that is real but reaches no reviewable cell
-and no frontier entry, and show the gate catching it.
-
-ITEM 3. **Re-run on the real corpus and report the number, whatever it is.** 310 candidates and 0
-unsurfaced was the vacuous answer. **A non-zero core count is the expected honest outcome and is
-NOT a reason to weaken the definition.** If core is dirty, say how dirty.
-
-ITEM 4. Keep the refusal-candidate definitions from `docs/core-refusal-gate.md` - **those are
-sound** - and update only the surfacing half of that document.
+ITEM 3. **`instructions_form_1040_2025` contributed 20 core candidates and has no `review.html` at
+all.** Instructions are evidence, not reviewable cells. **Decide whether an instructions document
+should be a refusal candidate, and justify it** - do not just exclude it to lower the number.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not make the gate pass by narrowing what counts as a refusal.** The candidate list stays.
-- **Do not silence a refusal.** Surfacing it is the fix.
+- **Do not narrow the refusal candidates to move the number.**
 - **Do not weaken, delete, or invert an assertion that is green on `main`.**
 - No model call, no network, no draft regeneration.
 
-**THE FLOOR.**
-- **A test that FAILS the gate** on a constructed unsurfaced core refusal, and passes once surfaced.
-- **The real-corpus count**, core and non-core, under the new definition.
-- **`tax_graph/doctor.py` importing from the package, not `pilot/`.**
+**THE FLOOR - THIS IS THE PART THE ARCHITECT GOT WRONG TWICE, READ IT.**
+- **The gate must be demonstrated in BOTH directions on REAL corpus data, not fixtures:** name a
+  real candidate the gate reports as SURFACED and show its marker in the actual `review.html`, and
+  name a real candidate it reports as UNSURFACED and show that no marker exists for it.
+  **A fixture-only failing test is what let a 100%-red matcher pass review.**
+- **Schedule 1 line `1` must come back SURFACED**, since its marker demonstrably exists.
+- The real-corpus counts, core and non-core.
 - **Focused sets green** against their known reds. **e2e is Architect-side.**
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
-
-**M20-S153 WORKER STATUS (2026-08-20).** Implemented the decided surfacing definition in
-`tax_graph/core_refusal_gate.py`, moved the gate out of `pilot/`, and rewired `tax_graph/doctor.py`
-to the package module. The candidate definitions were preserved. A refusal is surfaced only by a
-visible generated review cell, a worksheet refusal card, or frontier status `declared`.
-
-**TEST-FIRST EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py -q` -> **1 failed, 3 passed in
-0.23s** on the new constructed refusal guard before the production change. The failing assertion
-was `report.ok is False` while the old circular implementation returned `True`.
-
-**M20-S153 TEST EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py -q` -> **4 passed in 0.23s**.
-RAN:
-`.venv\Scripts\python.exe -m pytest tests\test_doctor_m20.py -q` -> **10 passed in 0.28s**.
-RAN:
-`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py tests\test_doctor_m20.py -q`
--> **14 passed in 0.39s**.
-
-**M20-S153 REAL-CORPUS EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m tax_graph.cli doctor --year 2025` -> **exit 1**; `provider calls:
-none`; **310 candidates, 300 core candidates, 213 core unsurfaced, 10 non-core unsurfaced**;
-`result: FAILED: core refusal is unsurfaced` and `result: NEEDS ATTENTION`. This red is the
-expected gate result under the decided definition and was not narrowed or silenced.
-
-RAN:
-`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN:
-`.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
-RAN: `git diff --check` -> **clean**.
-NOT RUN: `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **exceeds the 600-second Worker
-launcher cap; Architect runs e2e**.
 
 ## Open for Architect
 
