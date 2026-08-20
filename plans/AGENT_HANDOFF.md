@@ -469,6 +469,36 @@ count before and after. Live calls permitted, about $0.40 each, **at most three 
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+  **WORKER EXECUTION (2026-08-20).** ITEM 3 choice: evidence-packet normalization only. The
+  acquired source text and every stored citation range were left untouched. The promoted graph
+  range count was **593 before -> 593 after**; the three acquired source files remain outside the
+  change set. The model packet removes only a letter-hyphen followed by a lower-case continuation
+  at a source line boundary. Punctuation repair, fuzzy similarity, and non-contiguous joining are
+  not accepted.
+
+  **BOUNDARY FLOOR.** The Form 1116 source offsets prove that `span_form_1116_2025_0134` followed
+  by `span_form_1116_2025_0135` is one contiguous passage. The derived span has `joined_from`
+  `(span_form_1116_2025_0134, span_form_1116_2025_0135)` and range **6022:6220**; the quote
+  `Part IV Summary of Separate Credits From Parts III (Enter amounts from Part III, line 24, for each applicable category of income.` matches it. The two original spans and their canonical text remain present.
+
+  **LIVE RE-EXTRACTION.** All three authorized commands wrote outside the repository under
+  `C:\temp\m20_s157_live`; none completed within the 600-second cap. The existing draft baseline
+  quote failures were **form_1040_2025: 3**, **schedule_1_2025: 4**, and **form_1116_2025: 3**.
+  After counts are **NOT RUN** for all three because each live command timed out before writing a
+  micro-extraction report. The partial output contains instruction-section artifacts only; no
+  `graph/2025/_drafts` artifact was regenerated.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s157.py tests\test_extract_m4.py tests\test_acquire_citation_check.py tests\test_acquire_citation_check_m134.py tests\test_acquire_citation_check_m135.py tests\test_citation_range_patch_m136.py tests\test_derive_cells_m20.py tests\test_background_m20.py tests\test_prompt_experiment_m20.py tests\test_workbench_cells_m17.py -q` -> **156 passed in 46.69s**.
+
+  **RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s157.py -q` -> **3 passed**.
+  **RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+  **RAN:** `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
+  **RAN:** `git diff --check` -> **clean**.
+  **RAN:** protected-set diff check for `graph/2025/{nodes,edges,rules,field_maps}` -> **no diff**.
+  **NOT RUN:** e2e verification -> exceeds the Worker launcher cap; Architect-side.
+  **NOT RUN:** quote-failure after-count measurement -> all three live commands timed out before
+  producing the report needed for an honest after count.
+
 ## Open for Architect
 
 **WORKER STATUS (2026-08-20; M20-S157 implementation is ready for review).** The worker added

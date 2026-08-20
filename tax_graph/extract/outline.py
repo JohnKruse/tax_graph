@@ -46,7 +46,6 @@ class CandidateSpan:
     relationship: str
     locator: str
     text: str
-    evidence_text: str | None = None
     owner_document_id: str | None = None
     owner_lines: tuple[str, ...] = ()
     section_id: str | None = None
@@ -54,6 +53,7 @@ class CandidateSpan:
     extent: dict[str, Any] = field(default_factory=dict)
     source_ranges: tuple[dict[str, int], ...] = ()
     joined_from: tuple[str, ...] = ()
+    evidence_text: str | None = None
 
 
 @dataclass

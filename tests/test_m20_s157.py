@@ -37,22 +37,22 @@ def test_evidence_normalization_is_presentation_only_and_exact() -> None:
 
 
 def test_joined_span_uses_only_contiguous_source_offsets() -> None:
-    source = "first\nsecond\nbarrier third"
+    source = "first\nsecond\nbarrier X third"
     spans = [
         _span("span_1", 0, 5, "first"),
         _span("span_2", 6, 12, "second"),
         _span("span_3", 13, 20, "barrier"),
-        _span("span_4", 21, 26, "third"),
+        _span("span_4", 23, 28, "third"),
     ]
 
     derived = join_adjacent_source_spans(spans, source_text=source)
 
-    assert len(derived) == 3
+    assert len(derived) == 2
     first_join = next(span for span in derived if span.joined_from == ("span_1", "span_2"))
     assert first_join.text == source[0:12]
     assert first_join.evidence_text == source[0:12]
     assert first_join.source_ranges == ({"start": 0, "end": 12},)
-    assert not any(span.joined_from == ("span_2", "span_4") for span in derived)
+    assert not any(span.joined_from == ("span_3", "span_4") for span in derived)
 
 
 def test_formula_quote_validation_uses_normalized_packet_not_fuzzy_acceptance() -> None:
