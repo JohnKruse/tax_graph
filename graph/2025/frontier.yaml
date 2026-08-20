@@ -82,46 +82,26 @@ frontiers:
   purpose: Line 19 accepts the worksheet RESULT as input; the worksheet's own section-1250
     arithmetic is not modeled. Filers must compute it per the cited instructions before
     entering line 19.
-- frontier_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2
+- frontier_id: flow_form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_7_column_h_to_schedule_d_2025_line_3
   kind: outbound_flow
   source:
     document_id: form_6251_2025
-    node_id: form_6251_2025_outbound_schedule_d_column_h
-    flow_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2
-  target:
-    document_id: schedule_d_2025
-    line: '2'
-    node_id: schedule_d_2025_part_i_line_2_column_h
-  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
-  citation_ref: cite_8949_line2_totals
-  status: rejected
-  weight: 24000000
-  disposition: rejected
-  disposition_reason: False positive from AMT-FTC worksheet prose; no real outbound
-    flow from Form 6251 to Schedule D line 2.
-- frontier_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3
-  kind: outbound_flow
-  source:
-    document_id: form_6251_2025
-    node_id: form_6251_2025_outbound_schedule_d_column_h
-    flow_id: flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_3
+    node_id: form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_7_column_h
+    flow_id: flow_form_6251_2025_section_1_part_ii_alternative_minimum_tax_amt_line_7_column_h_to_schedule_d_2025_line_3
   target:
     document_id: schedule_d_2025
     line: '3'
     node_id: schedule_d_2025_part_i_line_3_column_h
   target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
   citation_ref: cite_8949_line2_totals
-  status: rejected
+  status: declared
   weight: 24000000
-  disposition: rejected
-  disposition_reason: False positive from line-2k guidance prose; no real outbound
-    flow from Form 6251 to Schedule D line 3.
-- frontier_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_1b
+- frontier_id: flow_form_8949_2025_section_1_part_i_short_term_transactions_involving_capital_assets_you_held_1_year_or_less_are_generally_short_term_see_line_2_column_h_to_schedule_d_2025_line_1b
   kind: outbound_flow
   source:
     document_id: form_8949_2025
     node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
-    flow_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_1b
+    flow_id: flow_form_8949_2025_section_1_part_i_short_term_transactions_involving_capital_assets_you_held_1_year_or_less_are_generally_short_term_see_line_2_column_h_to_schedule_d_2025_line_1b
   target:
     document_id: schedule_d_2025
     line: 1b
@@ -130,12 +110,12 @@ frontiers:
   citation_ref: cite_8949_line2_totals
   status: modeled
   weight: 24000000
-- frontier_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_2
+- frontier_id: flow_form_8949_2025_section_1_part_i_short_term_transactions_involving_capital_assets_you_held_1_year_or_less_are_generally_short_term_see_line_2_column_h_to_schedule_d_2025_line_2
   kind: outbound_flow
   source:
     document_id: form_8949_2025
     node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
-    flow_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_2
+    flow_id: flow_form_8949_2025_section_1_part_i_short_term_transactions_involving_capital_assets_you_held_1_year_or_less_are_generally_short_term_see_line_2_column_h_to_schedule_d_2025_line_2
   target:
     document_id: schedule_d_2025
     line: '2'
@@ -144,12 +124,12 @@ frontiers:
   citation_ref: cite_8949_line2_totals
   status: modeled
   weight: 24000000
-- frontier_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_3
+- frontier_id: flow_form_8949_2025_section_1_part_i_short_term_transactions_involving_capital_assets_you_held_1_year_or_less_are_generally_short_term_see_line_2_column_h_to_schedule_d_2025_line_3
   kind: outbound_flow
   source:
     document_id: form_8949_2025
     node_id: form_8949_2025_part_i_line_2_line_2_column_h_total
-    flow_id: flow_form_8949_2025_part_i_line_2_column_h_to_schedule_d_2025_line_3
+    flow_id: flow_form_8949_2025_section_1_part_i_short_term_transactions_involving_capital_assets_you_held_1_year_or_less_are_generally_short_term_see_line_2_column_h_to_schedule_d_2025_line_3
   target:
     document_id: schedule_d_2025
     line: '3'
@@ -158,12 +138,12 @@ frontiers:
   citation_ref: cite_8949_line2_totals
   status: modeled
   weight: 24000000
-- frontier_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_10
+- frontier_id: flow_form_8949_2025_section_2_part_ii_long_term_transactions_involving_capital_assets_you_held_more_than_1_year_are_generally_long_term_see_line_2_column_h_to_schedule_d_2025_line_10
   kind: outbound_flow
   source:
     document_id: form_8949_2025
     node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
-    flow_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_10
+    flow_id: flow_form_8949_2025_section_2_part_ii_long_term_transactions_involving_capital_assets_you_held_more_than_1_year_are_generally_long_term_see_line_2_column_h_to_schedule_d_2025_line_10
   target:
     document_id: schedule_d_2025
     line: '10'
@@ -172,12 +152,12 @@ frontiers:
   citation_ref: cite_8949_line2_totals
   status: modeled
   weight: 24000000
-- frontier_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_8b
+- frontier_id: flow_form_8949_2025_section_2_part_ii_long_term_transactions_involving_capital_assets_you_held_more_than_1_year_are_generally_long_term_see_line_2_column_h_to_schedule_d_2025_line_8b
   kind: outbound_flow
   source:
     document_id: form_8949_2025
     node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
-    flow_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_8b
+    flow_id: flow_form_8949_2025_section_2_part_ii_long_term_transactions_involving_capital_assets_you_held_more_than_1_year_are_generally_long_term_see_line_2_column_h_to_schedule_d_2025_line_8b
   target:
     document_id: schedule_d_2025
     line: 8b
@@ -186,12 +166,12 @@ frontiers:
   citation_ref: cite_8949_line2_totals
   status: modeled
   weight: 24000000
-- frontier_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_9
+- frontier_id: flow_form_8949_2025_section_2_part_ii_long_term_transactions_involving_capital_assets_you_held_more_than_1_year_are_generally_long_term_see_line_2_column_h_to_schedule_d_2025_line_9
   kind: outbound_flow
   source:
     document_id: form_8949_2025
     node_id: form_8949_2025_part_ii_line_2_line_2_column_h_total
-    flow_id: flow_form_8949_2025_part_ii_line_2_column_h_to_schedule_d_2025_line_9
+    flow_id: flow_form_8949_2025_section_2_part_ii_long_term_transactions_involving_capital_assets_you_held_more_than_1_year_are_generally_long_term_see_line_2_column_h_to_schedule_d_2025_line_9
   target:
     document_id: schedule_d_2025
     line: '9'
@@ -453,6 +433,468 @@ frontiers:
   citation_ref: cite_1040_tax_table
   status: modeled
   weight: 163100000
+- frontier_id: ref_cite_28_rate_gain_worksheet_2025_lines_1_to_form_8949_2025
+  kind: form_reference
+  source:
+    document_id: 28_rate_gain_worksheet_2025
+    citation_id: cite_28_rate_gain_worksheet_2025_lines_1
+  target:
+    document_id: form_8949_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f8949--2025.pdf
+  citation_ref: cite_28_rate_gain_worksheet_2025_lines_1
+  status: modeled
+  weight: 18000000
+- frontier_id: ref_cite_28_rate_gain_worksheet_2025_lines_2_to_form_8949_2025
+  kind: form_reference
+  source:
+    document_id: 28_rate_gain_worksheet_2025
+    citation_id: cite_28_rate_gain_worksheet_2025_lines_2
+  target:
+    document_id: form_8949_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f8949--2025.pdf
+  citation_ref: cite_28_rate_gain_worksheet_2025_lines_2
+  status: modeled
+  weight: 18000000
+- frontier_id: ref_cite_28_rate_gain_worksheet_2025_lines_5_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: 28_rate_gain_worksheet_2025
+    citation_id: cite_28_rate_gain_worksheet_2025_lines_5
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_28_rate_gain_worksheet_2025_lines_5
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_28_rate_gain_worksheet_2025_lines_6_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: 28_rate_gain_worksheet_2025
+    citation_id: cite_28_rate_gain_worksheet_2025_lines_6
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_28_rate_gain_worksheet_2025_lines_6
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_28_rate_gain_worksheet_2025_lines_7_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: 28_rate_gain_worksheet_2025
+    citation_id: cite_28_rate_gain_worksheet_2025_lines_7
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_28_rate_gain_worksheet_2025_lines_7
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_10_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_10
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_10
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_13_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_13
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_13
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_2_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_2
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_2
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_5_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_5
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_5
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_6_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_6
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_6
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_8_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_8
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_8
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_lines_9_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_lines_9
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_lines_9
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_4_0_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_4_0
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_4_0
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_8_1_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: capital_loss_carryover_worksheet_2025
+    citation_id: cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_8_1
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_8_1
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_credit_limit_worksheet_2025_lines_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: credit_limit_worksheet_2025
+    citation_id: cite_credit_limit_worksheet_2025_lines_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_credit_limit_worksheet_2025_lines_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_credit_limit_worksheet_2025_lines_2_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: credit_limit_worksheet_2025
+    citation_id: cite_credit_limit_worksheet_2025_lines_2
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_credit_limit_worksheet_2025_lines_2
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_credit_limit_worksheet_2025_lines_2_to_schedule_3_2025
+  kind: form_reference
+  source:
+    document_id: credit_limit_worksheet_2025
+    citation_id: cite_credit_limit_worksheet_2025_lines_2
+  target:
+    document_id: schedule_3_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
+  citation_ref: cite_credit_limit_worksheet_2025_lines_2
+  status: modeled
+  weight: 51000000
+- frontier_id: ref_cite_credit_limit_worksheet_2025_lines_3_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: credit_limit_worksheet_2025
+    citation_id: cite_credit_limit_worksheet_2025_lines_3
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_credit_limit_worksheet_2025_lines_3
+  status: modeled
+  weight: null
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000106120_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106120
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000106120
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000106120_to_publication_531
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106120
+  target:
+    external_id: publication_531
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000106120
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000106125_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106125
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000106125
+  status: modeled
+  weight: null
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000106131_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106131
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000106131
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000112648_to_schedule_3_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000112648
+  target:
+    document_id: schedule_3_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000112648
+  status: modeled
+  weight: 51000000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000158310_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158310
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000158310
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000158317_to_publication_550
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158317
+  target:
+    external_id: publication_550
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000158317
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000158390_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158390
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000158390
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000158425_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158425
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000158425
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000158460_to_publication_970
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158460
+  target:
+    external_id: publication_970
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000158460
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000158460_to_schedule_3_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000158460
+  target:
+    document_id: schedule_3_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000158460
+  status: modeled
+  weight: 51000000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink100020297_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink100020297
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink100020297
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4819_to_schedule_b_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4819
+  target:
+    document_id: schedule_b_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sb--2025.pdf
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4819
+  status: modeled
+  weight: 43000000
+- frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4876_to_publication_550
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4876
+  target:
+    external_id: publication_550
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink24811vd0e4876
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_schedule_1_2025_en_us_2025_publink1000151509_to_publication_560
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink1000151509
+  target:
+    external_id: publication_560
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_schedule_1_2025_en_us_2025_publink1000151509
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_schedule_1_2025_en_us_2025_publink1000151511_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink1000151511
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_instruction_schedule_1_2025_en_us_2025_publink1000151511
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_instruction_schedule_1_2025_en_us_2025_publink10001776_to_publication_504
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink10001776
+  target:
+    external_id: publication_504
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_schedule_1_2025_en_us_2025_publink10001776
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_schedule_1_2025_en_us_2025_publink10001779_to_schedule_c_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink10001779
+  target:
+    document_id: schedule_c_2025
+  target_url: https://www.irs.gov/forms-pubs
+  citation_ref: cite_instruction_schedule_1_2025_en_us_2025_publink10001779
+  status: unmodeled
+  weight: 28000000
+- frontier_id: ref_cite_instruction_schedule_1_2025_en_us_2025_publink100020386_to_publication_504
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_1_2025_en_us_2025_publink100020386
+  target:
+    external_id: publication_504
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_schedule_1_2025_en_us_2025_publink100020386
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_schedule_2_2025_en_us_2025_publink100079566_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_2_2025_en_us_2025_publink100079566
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_instruction_schedule_2_2025_en_us_2025_publink100079566
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_instruction_schedule_3_2025_en_us_2025_publink100020424_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100020424
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_instruction_schedule_3_2025_en_us_2025_publink100020424
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_instruction_schedule_3_2025_en_us_2025_publink100020430_to_publication_525
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100020430
+  target:
+    external_id: publication_525
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_schedule_3_2025_en_us_2025_publink100020430
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_instruction_schedule_3_2025_en_us_2025_publink100051069_to_publication_525
+  kind: pub_reference
+  source:
+    document_id: instructions_form_1040_2025
+    citation_id: cite_instruction_schedule_3_2025_en_us_2025_publink100051069
+  target:
+    external_id: publication_525
+  target_url: https://www.irs.gov/instructions/i1040gi
+  citation_ref: cite_instruction_schedule_3_2025_en_us_2025_publink100051069
+  status: unmodeled
+  weight: null
 - frontier_id: ref_cite_intake_1099b_recipient_to_form_1040_2025
   kind: form_reference
   source:
@@ -486,6 +928,259 @@ frontiers:
   citation_ref: cite_intake_1099b_recipient
   status: modeled
   weight: 24000000
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_10_to_publication_590
+  kind: pub_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_10
+  target:
+    external_id: publication_590
+  target_url: https://www.irs.gov/publications
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_10
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_12_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_12
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_12
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_3_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_3
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_3
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_4_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_4
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_4
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_8_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_8
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_8
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_8_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_8
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_8
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_9_to_publication_590
+  kind: pub_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_9
+  target:
+    external_id: publication_590
+  target_url: https://www.irs.gov/publications
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_9
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_ira_deduction_worksheet_2025_lines_9_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: ira_deduction_worksheet_2025
+    citation_id: cite_ira_deduction_worksheet_2025_lines_9
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_ira_deduction_worksheet_2025_lines_9
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_1_to_schedule_c_2025
+  kind: form_reference
+  source:
+    document_id: multiple_trades_or_businesses_worksheet_keep_for_your_records_2025
+    citation_id: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_1
+  target:
+    document_id: schedule_c_2025
+  target_url: https://www.irs.gov/forms-pubs
+  citation_ref: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_1
+  status: unmodeled
+  weight: 28000000
+- frontier_id: ref_cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_1_to_schedule_e_2025
+  kind: form_reference
+  source:
+    document_id: multiple_trades_or_businesses_worksheet_keep_for_your_records_2025
+    citation_id: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_1
+  target:
+    document_id: schedule_e_2025
+  target_url: https://www.irs.gov/forms-pubs
+  citation_ref: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_1
+  status: unmodeled
+  weight: 19000000
+- frontier_id: ref_cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_2_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: multiple_trades_or_businesses_worksheet_keep_for_your_records_2025
+    citation_id: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_2
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_multiple_trades_or_businesses_worksheet_keep_for_your_records_2025_lines_2
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_1_to_schedule_2_2025
+  kind: form_reference
+  source:
+    document_id: negative_form_8978_adjustment_worksheet_schedule_2_2025
+    citation_id: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_1
+  target:
+    document_id: schedule_2_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
+  citation_ref: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_1
+  status: modeled
+  weight: 62000000
+- frontier_id: ref_cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_2_to_schedule_2_2025
+  kind: form_reference
+  source:
+    document_id: negative_form_8978_adjustment_worksheet_schedule_2_2025
+    citation_id: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_2
+  target:
+    document_id: schedule_2_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
+  citation_ref: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_2
+  status: modeled
+  weight: 62000000
+- frontier_id: ref_cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_2_to_schedule_3_2025
+  kind: form_reference
+  source:
+    document_id: negative_form_8978_adjustment_worksheet_schedule_2_2025
+    citation_id: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_2
+  target:
+    document_id: schedule_3_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s3--2025.pdf
+  citation_ref: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_2
+  status: modeled
+  weight: 51000000
+- frontier_id: ref_cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_3_to_schedule_2_2025
+  kind: form_reference
+  source:
+    document_id: negative_form_8978_adjustment_worksheet_schedule_2_2025
+    citation_id: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_3
+  target:
+    document_id: schedule_2_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s2--2025.pdf
+  citation_ref: cite_negative_form_8978_adjustment_worksheet_schedule_2_2025_lines_3
+  status: modeled
+  weight: 62000000
+- frontier_id: ref_cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+    citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_25_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+    citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_25
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_25
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_2_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+    citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_2
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_2
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+    citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: qualified_dividends_and_capital_gain_tax_worksheet_2025
+    citation_id: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_qualified_dividends_and_capital_gain_tax_worksheet_2025_lines_3
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025
+    citation_id: cite_qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_qualified_overtime_compensation_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025_lines_2_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025
+    citation_id: cite_qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025_lines_2
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_qualified_overtime_compensation_from_more_than_one_payor_worksheet_keep_for_your_records_2025_lines_2
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025
+    citation_id: cite_qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_qualified_tips_from_more_than_one_employer_worksheet_keep_for_your_records_2025_lines_2
+  status: modeled
+  weight: 74000000
 - frontier_id: ref_cite_schedule_d_16_to_1040_7_to_form_1040_2025
   kind: form_reference
   source:
@@ -629,6 +1324,600 @@ frontiers:
   citation_ref: cite_schedule_d_line21_loss_limit
   status: modeled
   weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_10_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_10
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_10
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_11_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_11
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_11
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_12_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_12
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_12
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_13_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_13
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_13
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_14_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_14
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_14
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_15_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_15
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_15
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_16_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_16
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_16
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_17_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_17
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_17
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_18_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_18
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_18
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_19_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_19
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_19
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_1_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_1
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_1
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_20_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_20
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_20
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_21_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_21
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_21
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_22_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_22
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_22
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_23_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_23
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_23
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_24_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_24
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_24
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_25_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_25
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_25
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_26_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_26
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_26
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_27_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_27
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_27
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_28_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_28
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_28
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_29_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_29
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_29
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_2_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_2
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_2
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_2_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_2
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_2
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_30_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_30
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_30
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_31_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_31
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_31
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_32_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_32
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_32
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_33_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_33
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_33
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_34_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_34
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_34
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_35_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_35
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_35
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_36_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_36
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_36
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_37_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_37
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_37
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_38_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_38
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_38
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_39_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_39
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_39
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_3_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_3
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_3
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_40_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_40
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_40
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_41_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_41
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_41
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_42_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_42
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_42
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_43_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_43
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_43
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_44_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_44
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_44
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_45_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_45
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_45
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_46_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_46
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_46
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_47_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_47
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_47
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_47_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_47
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_47
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_4_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_4
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_4
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_5_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_5
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_5
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_6_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_6
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_6
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_7_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_7
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_7
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_8_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_8
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_8
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_lines_9_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_lines_9
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_lines_9
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_routing_sentence_after_22_0_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_22_0
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_22_0
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_routing_sentence_after_32_1_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_32_1
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_32_1
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_routing_sentence_after_34_2_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_34_2
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_34_2
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_schedule_d_tax_worksheet_2025_routing_sentence_after_40_3_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: schedule_d_tax_worksheet_2025
+    citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_40_3
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_40_3
+  status: modeled
+  weight: 24000000
 - frontier_id: ref_cite_sdtw_line_11_14_to_schedule_d_2025
   kind: form_reference
   source:
@@ -761,6 +2050,160 @@ frontiers:
   citation_ref: cite_sdtw_line_7_10
   status: modeled
   weight: 24000000
+- frontier_id: ref_cite_self_employed_health_insurance_deduction_worksheet_2025_lines_2_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: self_employed_health_insurance_deduction_worksheet_2025
+    citation_id: cite_self_employed_health_insurance_deduction_worksheet_2025_lines_2
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_self_employed_health_insurance_deduction_worksheet_2025_lines_2
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_self_employed_health_insurance_deduction_worksheet_2025_lines_3_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: self_employed_health_insurance_deduction_worksheet_2025
+    citation_id: cite_self_employed_health_insurance_deduction_worksheet_2025_lines_3
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_self_employed_health_insurance_deduction_worksheet_2025_lines_3
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_simplified_method_worksheet_2025_lines_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: simplified_method_worksheet_2025
+    citation_id: cite_simplified_method_worksheet_2025_lines_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_simplified_method_worksheet_2025_lines_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_simplified_method_worksheet_2025_lines_9_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: simplified_method_worksheet_2025
+    citation_id: cite_simplified_method_worksheet_2025_lines_9
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_simplified_method_worksheet_2025_lines_9
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_18_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_18
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_18
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_18_to_publication_915
+  kind: pub_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_18
+  target:
+    external_id: publication_915
+  target_url: https://www.irs.gov/publications
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_18
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_1_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_1
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_1
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_3_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_3
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_3
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_4_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_4
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_4
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_6_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_6
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_6
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_7_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_7
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_7
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_social_security_benefits_worksheet_2025_lines_9_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: social_security_benefits_worksheet_2025
+    citation_id: cite_social_security_benefits_worksheet_2025_lines_9
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_social_security_benefits_worksheet_2025_lines_9
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_span_form_1040_2025_0012_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: form_1040_2025
+    citation_id: cite_span_form_1040_2025_0012
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_span_form_1040_2025_0012
+  status: modeled
+  weight: null
 - frontier_id: ref_cite_span_form_1040_2025_0030_to_schedule_1_2025
   kind: form_reference
   source:
@@ -981,17 +2424,6 @@ frontiers:
   citation_ref: cite_span_schedule_2_2025_0019
   status: modeled
   weight: 163100000
-- frontier_id: ref_cite_span_schedule_2_2025_0064_to_form_1040_2025
-  kind: form_reference
-  source:
-    document_id: schedule_2_2025
-    citation_id: cite_span_schedule_2_2025_0064
-  target:
-    document_id: form_1040_2025
-  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
-  citation_ref: cite_span_schedule_2_2025_0064
-  status: modeled
-  weight: 163100000
 - frontier_id: ref_cite_span_schedule_3_2025_0004_to_form_1116_2025
   kind: form_reference
   source:
@@ -999,10 +2431,21 @@ frontiers:
     citation_id: cite_span_schedule_3_2025_0004
   target:
     document_id: form_1116_2025
-  target_url: https://www.irs.gov/forms-pubs
+  target_url: https://www.irs.gov/pub/irs-prior/f1116--2025.pdf
   citation_ref: cite_span_schedule_3_2025_0004
-  status: unmodeled
+  status: modeled
   weight: 1000000
+- frontier_id: ref_cite_span_schedule_3_2025_0005_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: schedule_3_2025
+    citation_id: cite_span_schedule_3_2025_0005
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_span_schedule_3_2025_0005
+  status: modeled
+  weight: null
 - frontier_id: ref_cite_span_schedule_3_2025_0027_to_form_1040_2025
   kind: form_reference
   source:
@@ -1036,3 +2479,223 @@ frontiers:
   citation_ref: cite_span_schedule_b_2025_0015
   status: modeled
   weight: 163100000
+- frontier_id: ref_cite_standard_deduction_worksheet_for_dependents_2025_lines_4a_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: standard_deduction_worksheet_for_dependents_2025
+    citation_id: cite_standard_deduction_worksheet_for_dependents_2025_lines_4a
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_standard_deduction_worksheet_for_dependents_2025_lines_4a
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_standard_deduction_worksheet_for_dependents_2025_lines_4c_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: standard_deduction_worksheet_for_dependents_2025
+    citation_id: cite_standard_deduction_worksheet_for_dependents_2025_lines_4c
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_standard_deduction_worksheet_for_dependents_2025_lines_4c
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_standard_deduction_worksheet_for_dependents_2025_lines_4c_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: standard_deduction_worksheet_for_dependents_2025
+    citation_id: cite_standard_deduction_worksheet_for_dependents_2025_lines_4c
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_standard_deduction_worksheet_for_dependents_2025_lines_4c
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_state_and_local_income_tax_refund_worksheet_2025_lines_5_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: state_and_local_income_tax_refund_worksheet_2025
+    citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_5
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_state_and_local_income_tax_refund_worksheet_2025_lines_5
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_state_and_local_income_tax_refund_worksheet_2025_lines_9_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: state_and_local_income_tax_refund_worksheet_2025
+    citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_lines_9
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_state_and_local_income_tax_refund_worksheet_2025_lines_9
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_state_and_local_income_tax_refund_worksheet_2025_note_after_4_1_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: state_and_local_income_tax_refund_worksheet_2025
+    citation_id: cite_state_and_local_income_tax_refund_worksheet_2025_note_after_4_1
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_state_and_local_income_tax_refund_worksheet_2025_note_after_4_1
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_student_loan_interest_deduction_worksheet_2025_lines_1_to_publication_970
+  kind: pub_reference
+  source:
+    document_id: student_loan_interest_deduction_worksheet_2025
+    citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_1
+  target:
+    external_id: publication_970
+  target_url: https://www.irs.gov/publications
+  citation_ref: cite_student_loan_interest_deduction_worksheet_2025_lines_1
+  status: unmodeled
+  weight: null
+- frontier_id: ref_cite_student_loan_interest_deduction_worksheet_2025_lines_1_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: student_loan_interest_deduction_worksheet_2025
+    citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_1
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_student_loan_interest_deduction_worksheet_2025_lines_1
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_student_loan_interest_deduction_worksheet_2025_lines_2_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: student_loan_interest_deduction_worksheet_2025
+    citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_2
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_student_loan_interest_deduction_worksheet_2025_lines_2
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_student_loan_interest_deduction_worksheet_2025_lines_3_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: student_loan_interest_deduction_worksheet_2025
+    citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_3
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_student_loan_interest_deduction_worksheet_2025_lines_3
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_student_loan_interest_deduction_worksheet_2025_lines_9_to_schedule_1_2025
+  kind: form_reference
+  source:
+    document_id: student_loan_interest_deduction_worksheet_2025
+    citation_id: cite_student_loan_interest_deduction_worksheet_2025_lines_9
+  target:
+    document_id: schedule_1_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040s1--2025.pdf
+  citation_ref: cite_student_loan_interest_deduction_worksheet_2025_lines_9
+  status: modeled
+  weight: 74000000
+- frontier_id: ref_cite_unrecaptured_section_1250_gain_worksheet_2025_lines_15_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: unrecaptured_section_1250_gain_worksheet_2025
+    citation_id: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_15
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_15
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_unrecaptured_section_1250_gain_worksheet_2025_lines_16_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: unrecaptured_section_1250_gain_worksheet_2025
+    citation_id: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_16
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_16
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_unrecaptured_section_1250_gain_worksheet_2025_lines_18_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: unrecaptured_section_1250_gain_worksheet_2025
+    citation_id: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_18
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_18
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_unrecaptured_section_1250_gain_worksheet_2025_lines_18_to_schedule_d_2025
+  kind: form_reference
+  source:
+    document_id: unrecaptured_section_1250_gain_worksheet_2025
+    citation_id: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_18
+  target:
+    document_id: schedule_d_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040sd--2025.pdf
+  citation_ref: cite_unrecaptured_section_1250_gain_worksheet_2025_lines_18
+  status: modeled
+  weight: 24000000
+- frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_11_to_form_1040_2025
+  kind: form_reference
+  source:
+    document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+    citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_11
+  target:
+    document_id: form_1040_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f1040--2025.pdf
+  citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_11
+  status: modeled
+  weight: 163100000
+- frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+    citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13
+  status: modeled
+  weight: null
+- frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+    citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1
+  status: modeled
+  weight: null
+- frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+    citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5
+  status: modeled
+  weight: null
+- frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9_to_form_2441_2025
+  kind: form_reference
+  source:
+    document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+    citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9
+  target:
+    document_id: form_2441_2025
+  target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+  citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9
+  status: modeled
+  weight: null

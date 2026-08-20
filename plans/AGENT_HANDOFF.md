@@ -295,6 +295,117 @@ produces it.
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+**WORKER STATUS (M20-S151): IMPLEMENTED; awaiting Architect review.** The manifest now marks
+exactly 17 core documents, the manifest loader exposes `core`, and the schema accepts the boolean
+marker. The equality guard is independent of the live markers and fails if one is removed. The
+SOI map now contains both Form 2441 labels; `frontier build` produced the following records
+verbatim, with builder-assigned status and null SOI weight in every case:
+
+    - frontier_id: ref_cite_credit_limit_worksheet_2025_lines_3_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: credit_limit_worksheet_2025
+        citation_id: cite_credit_limit_worksheet_2025_lines_3
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_credit_limit_worksheet_2025_lines_3
+      status: modeled
+      weight: null
+
+    - frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000106125_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: instructions_form_1040_2025
+        citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106125
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000106125
+      status: modeled
+      weight: null
+
+    - frontier_id: ref_cite_span_form_1040_2025_0012_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: form_1040_2025
+        citation_id: cite_span_form_1040_2025_0012
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_span_form_1040_2025_0012
+      status: modeled
+      weight: null
+
+    - frontier_id: ref_cite_span_schedule_3_2025_0005_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: schedule_3_2025
+        citation_id: cite_span_schedule_3_2025_0005
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_span_schedule_3_2025_0005
+      status: modeled
+      weight: null
+
+    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13
+      status: modeled
+      weight: null
+
+    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1
+      status: modeled
+      weight: null
+
+    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5
+      status: modeled
+      weight: null
+
+    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9_to_form_2441_2025
+      kind: form_reference
+      source:
+        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
+        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9
+      target:
+        document_id: form_2441_2025
+      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
+      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9
+      status: modeled
+      weight: null
+
+RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s151.py tests/test_acquire_manifest.py tests/test_m20_s101.py tests/test_frontier_soi_m7.py tests/test_frontier_build_m7.py -q` -> **28 passed in 15.87s**.
+RAN: `.venv\Scripts\python.exe -m tax_graph.cli frontier build --year 2025` -> **declared: 6; modeled: 217; unmodeled: 18**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
+RAN: `git diff --check` -> **exit 0, no output**.
+RAN: `git diff --name-only -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> **exit 0, no output; protected set unchanged**.
+NOT RUN: `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **exceeds the Worker launcher cap; Architect runs it**.
+No model call, network access, or draft regeneration was used.
+
 ## Open for Architect
 
 - **NOTHING OPEN.** S148's evidence block was pruned on acceptance 2026-08-20; `git show f45a842`
