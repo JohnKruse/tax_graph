@@ -282,11 +282,19 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
   by observation - find out what each SHOULD render and why, then fix the pipeline or the string
   with the reason recorded.**
 
-- **THE FOUR PERSISTENT 1040 DERIVATION ERRORS (Architect, measured 2026-08-20).** `27a` and `25c`
-  `operand_document_not_found` (`form_w2g_2025`, an earned-income-credit worksheet); `31`
-  `operand_not_printed` (line 15 not printed on `schedule_3_2025`); `35a` `quote_not_verbatim`;
-  `38` `subtract_direction`. **`27a`, `31`, `35a`, `38` survive every arm** - open three end to end
-  before naming a class; they are almost certainly not one.
+- **THE FOUR PERSISTENT 1040 DERIVATION ERRORS (Architect, measured 2026-08-20).** These are the
+  ERROR STRINGS the run reported, pasted verbatim. **They name the stage that raised. None of them
+  is a diagnosis and this item does not claim one:**
+
+      line  12e: validation gap after one repair: payload: ValueError: LOOKUP_TABLE arguments must be named leaf operands with a role
+      line  25c: validation gap after one repair: operand_document_not_found: cross-form operand names unknown document form_w2g_2025
+      line  27a: validation gap after one repair: operand_document_not_found: cross-form operand names unknown document earned_income_credit_worksh
+      line   31: validation gap after one repair: operand_not_printed: line 15 is not a printed line on schedule_3_2025
+      line  35a: validation gap after one repair: quote_not_verbatim: ValueError: quote is not verbatim from the cell evidence
+      line   38: validation gap after one repair: subtract_direction: instruction says subtract line 34 from line 38
+
+  `27a`, `31`, `35a` and `38` survive every arm. **Run `explain-cell` on three of them before
+  naming a class; they are almost certainly not one class.**
 
 - **THE TRUNCATION COUNTERS ARE NOT IN THE DERIVE REPORT (Architect, 2026-08-19).** S146 added
   `truncation_retries` / `truncation_recovered` / `truncation_exhausted` to the validation report

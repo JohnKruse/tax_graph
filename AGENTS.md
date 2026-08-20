@@ -112,6 +112,15 @@ Global project canary: **Ledger Llama**.
     **right, and it found a two-line defect that moved coverage from 65 cells to 175.**
   - **A story that explains the evidence is not evidence.** Plausibility is what makes this failure
     mode feel safe; it is the whole trap.
+  - **THIS RULE IS NOW CHECKED BY A SCRIPT, BECAUSE STATING IT FIVE TIMES DID NOT WORK.** Run
+    `.venv\Scripts\python.exe tools/check_diagnosis_evidence.py` beside `check_ascii`. It fails
+    any Current-round or Queued unit that names a specific failing cell without pasting a record or
+    citing `explain-cell`. **A phrase-matching version was tried first and passed the very item
+    that prompted it** (`git show fe0acf1`), so the trigger is the SUBJECT of the unit, not its
+    wording. Its regression case is that real item, in `tests/test_check_diagnosis_evidence.py`.
+  - **AND LOOKING IS NOW ONE COMMAND:** `.venv\Scripts\python.exe -m tax_graph.cli explain-cell
+    --doc <id> --line <anchor>` prints form face, instruction span, model record, finding, and the
+    resolver's computed key with its lookup result. **There is no longer a cost excuse.**
 
 - **REVIEW THE TEST DIFF, NOT ONLY THE CODE DIFF - A GUARD THAT WAS GREEN BEFORE THE ROUND IS
   EVIDENCE, NOT SCAFFOLDING (Architect, 2026-08-19).** A round may not weaken, delete, or invert an
