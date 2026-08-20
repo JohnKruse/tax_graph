@@ -189,9 +189,15 @@ def test_generated_review_renders_resolved_external_sources_and_hides_sentinels(
     line_1a = next(item for item in result.cells if item["official_ref"] == "1a")
     line_1e = next(item for item in result.cells if item["official_ref"] == "1e")
     line_28 = next(item for item in result.cells if item["official_ref"] == "28")
+    # Verdict: pipeline wrong (renderer); the expectation is right. The structured draft
+    # fields identify W-2 box 1, so the renderer must project that identity.
     assert line_1a["expression"]["text"] == "line 1a = W-2 box 1"
+    # Verdict: pipeline wrong. The form face names Form 2441 line 26, but the draft's
+    # deterministic outline join reports that source line as absent.
     assert line_1e["expression"]["text"] == "line 1e = Form 2441, line 26"
-    assert line_28["expression"]["text"] == "line 28 = unresolved source"
+    # Verdict: expectation wrong. The outcome is explicitly not_derivable because the
+    # evidence names Schedule 8812 but supplies no usable line or amount to calculate.
+    assert line_28["expression"]["text"] == "line 28 = not derivable"
     assert "line none" not in str(line_28["expression"])
 
 

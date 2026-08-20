@@ -18,6 +18,7 @@ from workbench.address_verdicts import (
 )
 from workbench.cell_inventory import DocumentCells
 from workbench.generated_review import _outcome_expression
+from workbench.generated_review import _source_label
 from workbench.review_defects import append_defect_report, defect_queue_path, load_defect_reports
 from workbench.server import create_app
 
@@ -70,6 +71,12 @@ def test_s113_outcomes_project_as_their_own_review_kinds() -> None:
     assert election == {"kind": "reference", "text": "Where should the overpayment go?"}
     assert not_derivable["kind"] == "review_gap"
     assert not_derivable["reason"] == "The evidence packet omits filing status."
+
+
+def test_source_label_normalizes_form_names_without_title_casing_punctuation() -> None:
+    assert _source_label("information_return", "Form(s) W-2", "", "1") == "W-2 box 1"
+    assert _source_label("information_return", "Form(s) 1099-NEC", "", "1") == "1099-NEC box 1"
+    assert _source_label("form_line", "form_2441", "26", "") == "Form 2441, line 26"
 
 
 def test_try_again_comment_is_curated_only_after_accept(tmp_path: Path) -> None:

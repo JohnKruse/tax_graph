@@ -1055,7 +1055,12 @@ def _operand_label(node_id: str, cells: list[dict[str, Any]]) -> str:
 
 
 def _source_label(source_kind: str, form: str, line: str, box: str) -> str:
-    form_label = "W-2" if _compact(form) in {"w2", "formw2"} else form.replace("_", " ").strip().title()
+    form_label = form.replace("_", " ").strip()
+    form_label = re.sub(r"^form\(s\)\s+", "", form_label, count=1, flags=re.IGNORECASE)
+    if _compact(form_label) in {"w2", "formw2"}:
+        form_label = "W-2"
+    elif form_label and form_label[0].islower():
+        form_label = form_label[0].upper() + form_label[1:]
     if source_kind == "information_return" and box:
         return f"{form_label} box {box}"
     return f"{form_label}, line {line}" if line else form_label

@@ -244,6 +244,52 @@ needs. **This is the item with a real judgement in it; do not rush it.**
 - **Focused workbench and API sets green** against their known reds. **e2e is Architect-side.**
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
+**WORKER STATUS (Codex, 2026-08-20):** `_source_label` now removes a generic leading
+`Form(s)` marker, preserves punctuation instead of using `str.title()`, and retains the existing
+W-2 canonical label. It does not special-case the string `Form(s) W-2`.
+
+The rendered values after the change are:
+
+```text
+1a: line 1a = W-2 box 1
+1e: line 1e = unresolved source
+28: line 28 = not derivable
+```
+
+Verdicts:
+
+- ITEM 2 (`1a`): **pipeline wrong** (renderer); the expectation is right. The draft outcome has
+  structured `form: Form(s) W-2`, `line: 1a`, and `box: 1`; the renderer must project that named
+  filer-input identity as `W-2 box 1`.
+- ITEM 3 (`1e`): **pipeline wrong**. The form-face label names Form 2441 line 26, while the
+  draft records `status: review_gap` and `review_gap: source line is not present in the
+  deterministic outline index`. The assertion remains unchanged and the red guard is honest.
+- ITEM 4 (`28`): **expectation wrong**. The draft outcome is `kind: not_derivable`, and its
+  reason says Schedule 8812 must be completed but supplies no applicable line or amount. The
+  review contract needs to distinguish a named-but-insufficient derivation from an unresolved
+  source, so `not derivable` is the useful reviewer-facing claim.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s115.py -q` -> **6 passed in
+0.88s**.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py tests\test_m20_s113.py
+tests\test_m20_s115.py -q` -> **21 passed in 1.26s**.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_cells_api_m17.py
+tests\test_workbench_write_api_m15.py -q` -> **12 passed in 196.57s (0:03:16)**.
+
+**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_generated_review_m20.py -q` -> **9
+passed, 1 failed in 41.50s**. The sole failure is the intentionally preserved `1e` expectation;
+`1a` and `28` pass.
+
+**NOT RUN:** `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> the e2e set exceeds the Worker
+launcher cap; Architect runs it.
+
+**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+**RAN:** `git diff --check` -> **clean**.
+**RAN:** `git diff --quiet -- graph/2025/nodes graph/2025/edges graph/2025/rules
+graph/2025/field_maps` -> **no diff; byte-identical**.
+
 ## Open for Architect
 
 - **NOTHING OPEN.** S148's evidence block was pruned on acceptance 2026-08-20; `git show f45a842`
