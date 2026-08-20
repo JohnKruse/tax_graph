@@ -140,6 +140,20 @@ def line_inventory(document: Any) -> tuple[str, ...]:
     return tuple(dict.fromkeys(str(row.line).lower() for row in frame.rows if row.line))
 
 
+def line_inventory_details(document: Any) -> tuple[dict[str, str], ...]:
+    """Return printed anchors with their existing form-face wording."""
+    frame = build_cell_frame_from_document(document)
+    details: dict[str, dict[str, str]] = {}
+    for row in frame.rows:
+        token = str(row.line or "").lower()
+        if token and token not in details:
+            details[token] = {
+                "line": token,
+                "form_face": str(row.form_face_text or row.label or ""),
+            }
+    return tuple(details.values())
+
+
 def fixed_spans(
     document_id: str,
     *,
@@ -229,6 +243,7 @@ def build_attribution_prompt(
     spans: Sequence[FixedSpan],
     line_tokens: Sequence[str],
     *,
+    line_details: Sequence[Mapping[str, str]] | None = None,
     template: str | None = None,
 ) -> str:
     """Render the closed inventory and fixed-span evidence into one prompt."""
@@ -236,16 +251,24 @@ def build_attribution_prompt(
         Path(ROOT / "prompts" / "instruction_attribution_m20_s158.md")
         .read_text(encoding="ascii")
     )
+    inventory_payload = list(line_details or ({"line": line} for line in line_tokens))
     payload = {
         "document_id": document_id,
-        "line_inventory": list(line_tokens),
+        "line_inventory": inventory_payload,
         "spans": [span.as_prompt_record() for span in spans],
     }
+    token_list = ""
+    if line_details is None:
+        token_list = (
+            "Closed line token list (the only allowed answer values):\n"
+            f"{json.dumps(list(line_tokens), separators=(',', ':'))}\n"
+        )
     return (
         f"{instructions.rstrip()}\n\n"
         f"Form document_id: {document_id}\n"
-        "Closed printed line inventory (the only allowed answer tokens):\n"
-        f"{json.dumps(list(line_tokens), separators=(',', ':'))}\n"
+        "Closed printed line inventory (the line field is the only allowed answer token):\n"
+        f"{json.dumps(inventory_payload, ensure_ascii=True, separators=(',', ':'))}\n"
+        f"{token_list}"
         "Fixed spans and their source evidence:\n"
         f"{json.dumps(payload['spans'], ensure_ascii=True, separators=(',', ':'))}\n"
         "Return one attribution record per span.\n"
@@ -372,7 +395,12 @@ def run_document(
     document = load_document_input(document_id, year=year, root=root_path, config=settings)
     spans = fixed_spans(document_id, year=year, root=root_path)
     inventory = line_inventory(document)
-    prompt = build_attribution_prompt(document_id, spans, inventory)
+    prompt = build_attribution_prompt(
+        document_id,
+        spans,
+        inventory,
+        line_details=line_inventory_details(document),
+    )
     schema = attribution_schema(
         span_ids=(span.span_id for span in spans),
         line_tokens=inventory,

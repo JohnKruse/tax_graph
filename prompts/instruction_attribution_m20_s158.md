@@ -7,8 +7,10 @@ For each span, answer which printed lines of the named form that span governs,
 or return an empty list when it governs no line. The line inventory is closed:
 use only its exact tokens. Do not invent a token.
 
-Governance is the span's own heading and semantic scope. Do not mine line
-references from body prose. A body mention such as "line 7" does not make this
+Governance is the span's own heading and semantic scope. The printed line
+inventory includes each line's form-face wording; use that wording to identify
+the parameter line, but do not ask the model to discover or reconstruct the
+inventory. Do not mine line references from body prose. A body mention such as "line 7" does not make this
 span govern line 7. A span can govern no line even when its body mentions lines.
 Topic sections can govern several lines when their scope clearly covers those
 lines. General information, examples, worksheets, tables, and arithmetic

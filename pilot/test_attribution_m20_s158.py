@@ -44,6 +44,8 @@ def test_prompt_contains_inventory_and_forbids_body_reference_mining() -> None:
         template="Do not mine line references from body prose.",
     )
     assert '"1","2a"' in prompt
+    assert '"line":"1"' in prompt
+    assert '"line":"2a"' in prompt
     assert "span_a" in prompt
     assert "Do not mine line references from body prose." in prompt
     assert "form cell" not in prompt.lower()

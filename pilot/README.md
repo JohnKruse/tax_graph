@@ -342,3 +342,16 @@ Run it against a candidate workspace as:
 
     .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s84\review_panel.html
     .venv\Scripts\python.exe pilot\review_panel.py C:\path\to\candidate --output C:\tmp\m20_s84\top25.html --top 25
+
+## M20-S158 fixed-span instruction attribution
+
+`attribution_m20_s158.py` labels already byte-verified HTML instruction spans with
+zero or more tokens from a deterministic printed-line inventory. It does not
+choose span boundaries, mine line references from body prose, or write graph or
+draft state. Empty `governs` is a first-class answer and the report exposes its
+rate, zero-instruction cells before and after, and the Schedule 1-A denominator
+with its arithmetic ceiling excluded.
+
+The permitted two-document live measurement writes outside the repository:
+
+    .venv\Scripts\python.exe -m pilot.attribution_m20_s158 --output C:\tmp\m20_s158\attribution.json --document schedule_1a_2025 --document form_1116_2025

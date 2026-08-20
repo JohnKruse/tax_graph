@@ -538,6 +538,61 @@ number this round exists to move.
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+**WORKER STATUS (2026-08-20; M20-S158 implemented and measured).** The attribution stage labels
+only the accepted S132 HTML spans after checking their byte slices. It builds the closed line
+inventory from the deterministic form frame, including existing form-face wording, and sends no
+model request to build that inventory. It has no body-prose line-reference parser, does not change
+span boundaries, and writes only scratch output under `C:\tmp\m20_s158`.
+
+**FINAL LIVE MEASUREMENT.** RAN:
+`.venv\Scripts\python.exe -m pilot.attribution_m20_s158 --root C:\Users\devbox\projects\tax_graph --year 2025 --output C:\tmp\m20_s158\attribution_final_v3.json --document schedule_1a_2025 --document form_1116_2025`
+-> **2 calls, cost 0.02317732**. The final report is outside the repository. Earlier
+exploratory measurements are superseded by this run; the final counts below are the exact
+latest-run values.
+
+**FINAL COUNTS.** Schedule 1-A: **50/69 spans none (72.46%)**, zero-instruction cells **48 -> 30**,
+and **7/19** governing-prose cells reached. The **18 arithmetic ceiling cells are excluded**
+from the denominator and **0** ceiling cells were reached. Form 1116: **131/174 spans none
+(75.29%)**, zero-instruction cells **21 -> 10**.
+
+**THREE ATTRIBUTED SPANS.** These are quoted from the scratch report, with the model's labels:
+
+    Maximum amount of deduction. [qualified tips]
+    "You can't deduct more than $25,000 of qualified tips, regardless of your filing status."
+    said to govern: 7, 9
+
+    Line 4a.
+    "Line 4a. See Determining the amount of qualified tips received by an employee for 2025,
+    earlier, for the amount to enter on this line. If you received qualified tips as an employee
+    with respect to employment with more than one employer, enter -0- on line 4a and see the
+    instructions for line 4c."
+    said to govern: 4a
+
+    Line 4b.
+    "Line 4b. Enter the qualified tips included on Form 4137, line 1, row A, column (c). If you
+    have multiple jobs for which you filed a Form 4137, see the instructions for line 4c and the
+    Qualified Tips From More Than One Employer Worksheet."
+    said to govern: 4b
+
+**TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest pilot\test_attribution_m20_s158.py -q` -> **6 passed in 0.21s**.
+RAN:
+`.venv\Scripts\python.exe -m pytest pilot\test_html_document_frame_m20_s132.py -q` -> **3 passed in 14.70s**.
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tgt'; .venv\Scripts\python.exe -m pytest pilot -q`
+-> **112 passed, 12 failed in 171.52s**. The 12 failures are the pre-existing real-candidate
+tests whose external Claude scratch candidate fails with the quoted error **`ValueError: candidate
+manifest has no documents`**; no attribution test failed.
+RAN:
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN:
+`.venv\Scripts\python.exe tools\check_diagnosis_evidence.py plans\AGENT_HANDOFF.md` ->
+**diagnosis evidence check OK**.
+RAN: `git diff --check` -> **clean (exit 0)**.
+RAN: `git diff --exit-code -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps`
+-> **exit 0; protected set byte-identical**.
+NOT RUN: `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **e2e exceeds the launcher cap;
+Architect-side**.
+
 ## Open for Architect
 
 **WORKER STATUS (2026-08-20; M20-S158 implementation is ready for review).** The scratch pilot is
