@@ -21,8 +21,30 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S159 IS THE ROUND: S158's mechanism works, its headline number is contaminated,
-and the Architect caused the contamination.**
+**BALL: CODEX. M20-S160 IS THE ROUND: read the IRS HTML and lift the model segmenter out of
+`pilot/`. John confirmed the direction 2026-08-20 after we found both were already built.**
+
+**WHAT WE FOUND, AND IT REFRAMES THE WHOLE DAY.** S123-S132 built a model instruction segmenter,
+measured it, and concluded on 2026-08-18: *"HEADING EXTRACTION IS FINISHED. 288 OF 449... Against
+PDF-deterministic 255, with no model call. Do not spec another heading round."* and **"KEEP THE
+MODEL."** It has sat in `pilot/model_instruction_segmenter.py` - 61KB, with
+`prompts/instruction_segmenter.md` - and **has zero references in `tax_graph/`.** Production calls
+the deterministic `build_instruction_sections_frame`.
+
+**THE SAME ROUNDS NAMED THE ROOT CAUSE:** *"THE ARTIFACT WE SEGMENT IS THE DAMAGED COPY... Every
+structural defect of six rounds is an artifact of the OCR path."* Measured today against the two
+files we already hold:
+
+    line-end hyphen splits in the OCR markdown : 19
+    line-end hyphen splits in the IRS HTML     :  0
+
+**The hyphenation defect M20-S157 was written to repair does not exist in the source already on
+disk.** Production reads `{document_id}.pages`, the OCR markdown. The IRS HTML has been downloaded
+since 2026-08-14.
+
+**AND THE ARCHITECT SPENT 2026-08-20 ON ITS SYMPTOMS.** Split-span quote failures, hyphenation,
+part of the misattribution - all downstream of a diagnosis written two days ago in the file I edited
+all day. I read that section this morning and treated it as background.
 
 **M20-S158 (`8949907`, `3611a56`) IS ACCEPTED ON MECHANISM, REJECTED ON ITS SCHEDULE 1-A METRIC.**
 Real movement: **zero-instruction cells fall `schedule_1a` 48 -> 30 and `form_1116` 21 -> 10**, for
@@ -513,35 +535,55 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S159: TAKE THE ANSWER OUT OF THE PROMPT AND SCORE IT AGAIN.**
+**M20-S160: READ THE UNDAMAGED SOURCE, AND USE THE SEGMENTER WE ALREADY BUILT.**
 
-ITEM 1. **Delete the Schedule 1-A expectation from
-`prompts/instruction_attribution_m20_s158.md`.** The conservative-behaviour guidance around it
-stays - *"most fixed spans govern no line"*, definitions and examples and tables are empty - because
-that is a RULE. **A per-document count is an ANSWER and must never appear in a prompt.** Check the
-prompt for any other document-specific number while you are there.
+**DO NOT REBUILD EITHER PIECE.** `pilot/model_instruction_segmenter.py` and
+`prompts/instruction_segmenter.md` exist and were accepted. This round LIFTS them. If you find
+yourself writing a segmenter, stop and report.
 
-ITEM 2. **Re-run Schedule 1-A with the clean prompt and report the none-rate and the 19-cell score
-again.** Both numbers may fall. **That is the point; a lower honest number beats a higher
-contaminated one.**
+ITEM 1. **Switch the instruction-document source from the OCR page renders to the acquired IRS
+HTML.** Production reads `{document_id}.pages` in `tax_graph/extract/inputs.py`; the HTML is at
+`.cache/raw/<year>/<document_id>.html`. **Instruction documents only** - the form faces are not in
+scope and must not move.
 
-ITEM 3. **Add a guard that no prompt file contains a document-specific measured count.** This is the
-third time a measured number has leaked into a mechanism in this project. **Make it mechanical, like
-`check_diagnosis_evidence.py`, not a paragraph of advice.**
+ITEM 2. **Lift the segmenter into the package** and make it the instruction-sections frame builder,
+with the deterministic parser retained as the fallback. **The model segments the booklet and never
+sees a cell; CODE does the join** - that is John's binding ruling of 2026-08-17 and it is the whole
+reason this is permitted.
 
-ITEM 4. **7 of 19 is the real problem once the metric is clean.** Report which of the 12 missed
-cells had governing prose in a span that the stage saw and labelled "none". **Do not fix it in this
-round** - name the shape.
+**ITEM 3 - THE CONSTRAINT THAT WILL BREAK THIS ROUND IF IGNORED.** Citation `ranges` are byte
+offsets into the acquired text. **338 of the 593 ranged citations point into the four instruction
+documents whose source you are changing:** `instructions_form_1040_2025` (205),
+`instructions_schedule_d_2025` (112), `instructions_form_2441_2025`, `instructions_form_8949_2025`.
+Changing the file changes every one of those offsets. **Re-derive them in this round and prove
+every one resolves.** The standing bar from the earlier ruling is total: *"a test that 511 of 511
+resolve"*. The other 255 ranges point at form faces and must not move - show they did not.
+**A citation whose range no longer lands on its quote is a worse defect than the one being fixed,
+and this codebase has already been bitten twice by coordinate drift (M20-S124, and the two-system
+mess of 2026-08-18).**
+
+ITEM 4. **Keep the OCR path.** `2025 Tax Table` appears 0 times in the HTML and 13 times in the OCR
+text, and the EIC tables are referenced but not reproduced. **Anything the HTML does not carry still
+comes from the PDF render.** Say which documents still need it.
+
+ITEM 5. **Measure what it bought**, on `form_1040_2025` and `form_1116_2025` only, outside the
+repository root: line anchors against the 288/449 baseline, and **cells reaching the model with no
+instruction evidence, against today's 52% of 651**.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not put any measured count into a prompt** to recover the number.
-- **Do not weaken, delete, or invert an assertion that is green on `main`.**
+- **Do not write a new segmenter or a new deterministic matcher.** The deterministic matcher line is
+  closed - see Hard rules, proven over S116-S120.
+- **Do not move a form-face source.** Instruction documents only.
+- **Do not leave a stale citation range behind.**
 - Do not promote anything into `graph/2025/_drafts`.
 
 **THE FLOOR.**
-- **The clean-prompt none-rate and 19-cell score**, next to the contaminated ones.
-- **The guard from ITEM 3, failing on the current prompt** before the deletion, passing after.
-- **The 12 missed cells characterised**, not fixed.
+- **Every one of the 338 affected ranges re-derived and resolving**, with the count stated, and the
+  255 unaffected ranges shown unchanged.
+- **The documents still requiring the OCR path**, named.
+- **Line anchors and no-instruction-evidence counts** for the two measured documents, before and
+  after.
+- **Focused sets green** against their known reds. **e2e is Architect-side.**
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
