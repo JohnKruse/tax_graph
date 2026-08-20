@@ -21,8 +21,23 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. M20-S151 IS ACCEPTED. The core set is now machine-readable and Form 2441 reached the
-frontier through the derivation. Nothing is in flight.**
+**BALL: CODEX. M20-S152 IS THE ROUND: the core gate - AND FIRST, UNDO THE DUPLICATE CORE
+DEFINITION THE ARCHITECT CAUSED IN S151.**
+
+**ARCHITECT ERROR, FOUND 2026-08-20 WHILE SPECCING THE GATE.** `config/document_tiers.yaml` ALREADY
+held a machine-readable core set - `core_documents`, 22 entries, plus `core_plus_documents` and a
+`tiers` map (`T1`, `T2`, `T4`, `review-cycle`) - and it is ALREADY wired to refusal accounting via
+`load_core_document_ids`, whose own docstring reads *"Load the explicit core set used by refusal
+accounting."* It is consumed today by `tax_graph/ingest/core_source_ranges.py`. **I specced S151
+from the handoff ruling without checking `config/` for an existing list, so S151 built a SECOND
+core definition in the manifest.** `read-the-open-list` names this exact failure.
+
+**AND THE PRE-EXISTING LIST IS THE MORE FAITHFUL ONE.** The manifest marking is a strict subset -
+17 against 22, nothing marked that the tier file lacks. The five it misses are `form_1116_2025`,
+`instructions_form_1116_2025`, `instructions_form_6251_2025`, `instructions_schedule_a_2025`,
+`instructions_schedule_b_2025`. **John's own 2026-08-11 ruling calls 1116 core in the same
+paragraph I specced from:** *"That is a missing CORE document, not an out-of-corpus form; do not
+stub it."* I read the tier sentence and not the next one.
 
 **M20-S151 IS ACCEPTED (`bec3510`, Architect, 2026-08-20).** **17 documents carry `core: true` and
 the set matches John's 2026-08-11 ruling exactly** - I recomputed it independently, symmetric
@@ -271,7 +286,69 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**NONE IN FLIGHT.** S151 closed 2026-08-20.
+**M20-S152: ONE CORE DEFINITION, THEN THE GATE JOHN RULED FOR ON 2026-08-11.**
+
+**ITEM 1 - COLLAPSE THE TWO DEFINITIONS TO ONE. DO THIS FIRST; THE GATE IS MEANINGLESS ON TOP OF
+TWO DISAGREEING LISTS.** `config/document_tiers.yaml` is the incumbent: it predates S151, carries
+the tier structure, and is already consumed. **Recommendation: it stays the single source, and
+S151's manifest `core: true` is removed** - nothing consumes it yet, so removing it costs nothing
+and leaving it guarantees drift. **If instead the flag is kept, it MUST be derived from the tier
+file with a test that they cannot disagree.** State which you did and why. **Do not leave two
+hand-maintained lists.**
+
+**ITEM 2 - DEFINE "REFUSAL" IN WRITING BEFORE ENFORCING IT.** John, 2026-08-11: *"core means ZERO
+UNREPORTED refusals. Non-core may refuse, but the refusal must surface for review."* **Read that
+precisely: the gate is not zero refusals, it is zero refusals that nobody can see.** The observable
+candidates already in the pipeline, all of which you must consider and rule in or out with a
+reason:
+
+- `derive_cells` row statuses `errored`, `gapped`, `skipped`
+- a formula cell carrying `review_gap`
+- an outcome of `kind: not_derivable`
+- worksheet discovery `refused` (`cli.py` prints `discovered/written/refused`)
+- a frontier entry at `status: unmodeled` or `declared`
+
+**Real instances, from the 2026-08-20 `form_1040_2025` run and the rebuilt registry, so you are
+ruling on records rather than on category names:**
+
+    row_status_counts: {derived: 50, repaired: 2, gapped: 0, errored: 6, skipped: 1}
+    line  31: validation gap after one repair: operand_not_printed: line 15 is not a printed line on schedule_3_2025
+    line  38: validation gap after one repair: subtract_direction: instruction says subtract line 34 from line 38
+    1e -> status: review_gap, review_gap: source line is not present in the deterministic outline index
+    28 -> kind: not_derivable, reason: "The evidence states that Schedule 8812 must be completed
+         to figure and claim the credit, but it does not provide the applicable Schedule 8812 line
+         or amount needed to derive Form 1040 line 28."
+    frontier status counts: {modeled: 217, unmodeled: 18, declared: 6}
+
+
+**Some of these are refusals and some are ordinary outcomes; say which and why.** A `not_derivable`
+with a reason and a citation may well be a REPORTED refusal and therefore fine.
+
+**ITEM 3 - DEFINE "SURFACED".** A refusal is reported when a human can find it without reading
+logs. Name the artifact that constitutes surfacing - the review queue, a preflight report, the
+frontier registry - and be specific.
+
+**ITEM 4 - ENFORCE IT FOR CORE ONLY.** A core document with an unsurfaced refusal fails. Non-core
+may refuse freely provided it surfaces. **Wire it where it will actually be run**; `tax_graph.cli
+doctor` already exists to *"check plan claims and pipeline agreements; exit 1 when evidence is
+missing or inconsistent"* and is the obvious host. Report the current count on the real corpus -
+**if core is not clean today, that is the finding, and do NOT weaken the gate to make it pass.**
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not invent a third core list.**
+- **Do not silence a refusal to make the gate green.** Surfacing it is the fix; hiding it is the
+  defect the gate exists to catch.
+- **Do not weaken, delete, or invert an assertion that is green on `main`.**
+- No model call, no network, no draft regeneration.
+
+**THE FLOOR.**
+- **One core list**, with the other removed or provably derived, and a test proving they cannot
+  disagree.
+- **The written definitions** of refusal and surfaced, with each candidate above ruled in or out.
+- **The gate's result on the real corpus**, whatever it is.
+- **Focused sets green** against their known reds. **e2e is Architect-side.**
+- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
+  byte-identical.
 
 ## Open for Architect
 
