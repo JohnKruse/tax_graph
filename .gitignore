@@ -54,6 +54,12 @@ workbench_output/
 .venv_old_shim/
 .pytest_tmp/
 .test_tmp/
+# Suffixed pytest temp roots (.test_tmp_s101, .test_tmp_codex_s127, ...).  Only the
+# bare names were ignored, so 70 of these accumulated in the repo root by
+# 2026-08-20 and made an ordinary repo-wide grep unusable: a search for
+# core_documents returned 58 files, about 45 of them this detritus.
+.test_tmp*/
+.e/
 
 # local panel scratch output
 /tmp/
