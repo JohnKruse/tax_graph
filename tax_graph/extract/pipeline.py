@@ -17,6 +17,7 @@ from tax_graph.extract.inputs import FORM_KINDS, load_document_input
 from tax_graph.extract.llm_client import LlmClient, build_llm_client
 from tax_graph.extract.observability import extraction_run
 from tax_graph.extract.outline_pipeline import generate_outline_first_drafts
+from tax_graph.extract.references import FormAliasResolver
 from tax_graph.extract.route import route_drafts, write_routed_drafts
 from tax_graph.extract.models import CheckIssue, RoutedDrafts
 from tax_graph.verify.properties import check_draft_batch_properties
@@ -33,6 +34,8 @@ def _extract_document_impl(
     manifest: AcquisitionManifest | None = None,
     raw_store: str | Path | None = None,
     gate: str | None = None,
+    line_index: dict[tuple[str, str], str] | None = None,
+    form_aliases: FormAliasResolver | None = None,
 ) -> RoutedDrafts:
     """Run rendered input -> generator -> critic -> checks -> draft writeout."""
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -51,7 +54,14 @@ def _extract_document_impl(
         batch = generate_drafts(document, client=llm_client, config=settings, root=root_path)
         critique_drafts(document, batch, client=llm_client, config=settings, root=root_path)
     elif mode == "outline_first":
-        batch = generate_outline_first_drafts(document, client=llm_client, config=settings, root=root_path)
+        batch = generate_outline_first_drafts(
+            document,
+            client=llm_client,
+            config=settings,
+            root=root_path,
+            line_index=line_index,
+            form_aliases=form_aliases,
+        )
         expression_mode = str(get_config_value(settings, "extraction.expression_mode", "generator"))
         if expression_mode == "generator":
             expression_batch = generate_drafts(document, client=llm_client, config=settings, root=root_path)
@@ -86,6 +96,8 @@ def extract_document(
     manifest: AcquisitionManifest | None = None,
     raw_store: str | Path | None = None,
     gate: str | None = None,
+    line_index: dict[tuple[str, str], str] | None = None,
+    form_aliases: FormAliasResolver | None = None,
 ) -> RoutedDrafts:
     """Run one document inside an inspectable provider-call run context."""
     root_path = Path(root).resolve() if root is not None else project_root()
@@ -105,6 +117,8 @@ def extract_document(
             manifest=manifest,
             raw_store=raw_store,
             gate=gate,
+            line_index=line_index,
+            form_aliases=form_aliases,
         )
 
 

@@ -8,6 +8,10 @@ from typing import Any
 
 from tax_graph.extract.assembly import _line_reference_key, _resolve_source_line
 from tax_graph.extract.models import SourceDocumentInput
+from tax_graph.extract.references import (
+    build_form_alias_resolver,
+    build_modelled_line_index,
+)
 from tax_graph.io.loader import load_yaml
 
 
@@ -44,9 +48,30 @@ def explain_cell(
         text="",
         text_path=root / "outline.yaml",
     )
-    line_index = _outline_line_index(document_id, outline.get("children", []))
-    key = _line_reference_key(document, source_line) if source_line is not None else None
-    resolved = _resolve_source_line(document, source_line, line_index=line_index) if source_line is not None else None
+    project_root = root.parents[3] if len(root.parents) > 3 else root
+    form_aliases = build_form_alias_resolver(project_root, year=year)
+    line_index = build_modelled_line_index(
+        project_root,
+        year=year,
+        current_document_id=document_id,
+        current_nodes=outline.get("children", []),
+        resolver=form_aliases,
+    )
+    key = (
+        _line_reference_key(document, source_line, form_aliases=form_aliases)
+        if source_line is not None
+        else None
+    )
+    resolved = (
+        _resolve_source_line(
+            document,
+            source_line,
+            line_index=line_index,
+            form_aliases=form_aliases,
+        )
+        if source_line is not None
+        else None
+    )
     lookup_keys = []
     if key is not None:
         lookup_keys = [key, key[1]]

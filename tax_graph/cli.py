@@ -1507,12 +1507,21 @@ def extract_command(
     year: str = "2025",
     root: str | Path | None = None,
     client: object | None = None,
+    output_dir: str | Path | None = None,
 ) -> int:
     """Extract draft graph objects for one document or manifest year."""
     from tax_graph.extract import extract_document, extract_year
 
     root_path = Path(root).resolve() if root is not None else project_root()
     config = load_config(root=root_path)
+    if output_dir is not None:
+        destination = Path(output_dir).resolve()
+        if destination == root_path or root_path in destination.parents:
+            raise ValueError("extract output_dir must be outside the project root")
+        project = config.setdefault("project", {})
+        paths = project.setdefault("paths", {})
+        paths["graph_dir"] = str(destination / "graph")
+        paths["output_dir"] = str(destination / "output")
     if doc:
         routed = extract_document(doc, year=year, root=root_path, client=client, config=config)
         _print_extract_summary(doc, routed)
@@ -2464,9 +2473,14 @@ def _build_typer_app():
         doc: str | None = typer.Option(None, "--doc", help="Manifest document id to extract."),
         year: str = typer.Option("2025", "--year", "-y", help="Tax year to extract."),
         root: Path | None = typer.Option(None, "--root", help="Project root override."),
+        output_dir: Path | None = typer.Option(
+            None,
+            "--output-dir",
+            help="External extraction output directory; never writes the project drafts.",
+        ),
     ) -> None:
         """Extract draft graph objects from rendered source artifacts."""
-        raise_code = extract_command(doc=doc, year=year, root=root)
+        raise_code = extract_command(doc=doc, year=year, root=root, output_dir=output_dir)
         if raise_code:
             raise typer.Exit(raise_code)
 

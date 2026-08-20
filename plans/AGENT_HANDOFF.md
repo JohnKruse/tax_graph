@@ -459,9 +459,31 @@ about $0.40 per document. Do NOT re-extract the whole corpus.**
 
 ## Open for Architect
 
-- **NOTHING OPEN.** S148's evidence block was pruned on acceptance 2026-08-20; `git show f45a842`
-  recovers it. The one substantive item in it - that ITEM 2 ran the wrong pipeline path - is in
-  BALL and in Queued.
+- **M20-S155 WORKER CHECKPOINT (2026-08-20).** The deterministic implementation and hermetic
+  guards are present in the shared worktree. `RAN: .venv\\Scripts\\python.exe -m pytest
+  tests/test_m20_s155.py -q -> 3 passed in 0.27s`. `RAN: .venv\\Scripts\\python.exe -m pytest
+  tests/test_m20_s150.py tests/test_generated_review_m20.py tests/test_extract_outline_m4.py -q
+  -> 31 passed, 2 failed`; the failures are the known stale live Form 2441 projection and the
+  pre-existing deeper-heading guard. `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli
+  explain-cell --doc form_1040_2025 --line 31 --year 2025 -> exit 0; found=true and
+  resolved_source_id=schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15`.
+  `RAN: .venv\\Scripts\\python.exe -m compileall -q tax_graph/extract tax_graph/cli.py
+  tests/test_m20_s155.py -> exit 0`; `RAN: .venv\\Scripts\\python.exe tools/check_ascii.py ->
+  ASCII check OK`; `RAN: .venv\\Scripts\\python.exe tools/check_diagnosis_evidence.py
+  plans/AGENT_HANDOFF.md -> diagnosis evidence check OK`; `RAN: git diff --check -> clean`.
+  Current before counts in the three measurement drafts are unresolved-source-line findings
+  `schedule_1a_2025=20`, `form_6251_2025=12`, `schedule_1_2025=14` (review-gap totals 26/18/18).
+  The resolver now proves the observed parenthesized-year spellings; its fail-closed residue is
+  `Form 2555`, `Form 1040, 1040-SR, or 1040-NR`, `Form 4952 (AMT)`, `Schedule K-1 (Form 1041)`,
+  `Form 8853`, `Form 8889`, `Forms 5471, Schedule(s) I`, `Forms 8992`, `Form 461`,
+  `Form 1040 or Form 1040-SR`, `Schedule SE`, two worksheet names, and five non-mapping source
+  declarations`. `NOT RUN: .venv\\Scripts\\python.exe -m tax_graph.cli extract --doc
+  schedule_1a_2025 --year 2025 --output-dir C:\\Users\\devbox\\scratch\\m20_s155_20260820`;
+  `NOT RUN: .venv\\Scripts\\python.exe -m tax_graph.cli extract --doc form_6251_2025 --year
+  2025 --output-dir C:\\Users\\devbox\\scratch\\m20_s155_20260820`; `NOT RUN: .venv\\Scripts\\python.exe
+  -m tax_graph.cli extract --doc schedule_1_2025 --year 2025 --output-dir
+  C:\\Users\\devbox\\scratch\\m20_s155_20260820` -> the environment refused external LLM
+  egress; explicit user authorization is required, and no live draft was touched.
 
 ## Queued (ONE LINE each - do not spec ahead)
 

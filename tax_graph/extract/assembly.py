@@ -15,6 +15,7 @@ from tax_graph.extract.outline import (
     node_type_for_outline,
 )
 from tax_graph.extract.prompts import closed_operations
+from tax_graph.extract.references import FormAliasResolver
 from tax_graph.operation_registry import OPERATION_SPECS, operation_roles, operation_spec
 
 
@@ -45,6 +46,7 @@ def assemble_formula_plan(
     line_index: dict[Any, str] | None = None,
     line_kinds: dict[Any, str] | None = None,
     line_children: dict[Any, list[str]] | None = None,
+    form_aliases: FormAliasResolver | None = None,
     resolution_events: list[dict[str, Any]] | None = None,
 ) -> ExtractionBatch:
     """Convert an intermediate operation plan into canonical draft objects."""
@@ -70,6 +72,7 @@ def assemble_formula_plan(
         line_index=line_index,
         line_kinds=line_kinds,
         line_children=line_children,
+        form_aliases=form_aliases,
         resolution_events=resolution_events,
     )
     objects: list[DraftObject] = []
@@ -345,6 +348,7 @@ def _steps_for_plan(
     line_index: dict[Any, str] | None,
     line_kinds: dict[Any, str] | None,
     line_children: dict[Any, list[str]] | None,
+    form_aliases: FormAliasResolver | None,
     resolution_events: list[dict[str, Any]] | None,
 ) -> list[dict[str, Any]]:
     """Translate line and printed-constant output into one operation step."""
@@ -371,13 +375,19 @@ def _steps_for_plan(
                 }
             )
             continue
-        source_id = _resolve_source_line(document, source_line, line_index=line_index)
-        source_key = _line_reference_key(document, source_line)
+        source_id = _resolve_source_line(
+            document,
+            source_line,
+            line_index=line_index,
+            form_aliases=form_aliases,
+        )
+        source_key = _line_reference_key(document, source_line, form_aliases=form_aliases)
         candidates = _line_ref_candidates(
             document,
             source_line,
             line_index=line_index,
             line_children=line_children,
+            form_aliases=form_aliases,
         )
         is_heading = bool(source_key and line_kinds and line_kinds.get(source_key) == "heading")
         expand = bool(candidates) and (source_id is None or is_heading)
@@ -399,6 +409,7 @@ def _steps_for_plan(
                 source_line,
                 source_lines=source_lines,
                 line_index=line_index,
+                form_aliases=form_aliases,
             ):
                 if resolution_events is not None:
                     resolution_events.append(
@@ -448,9 +459,10 @@ def _resolve_source_line(
     source_line: Any,
     *,
     line_index: dict[Any, str] | None,
+    form_aliases: FormAliasResolver | None = None,
 ) -> str | None:
     """Resolve a printed line through the supplied outline index only."""
-    key = _line_reference_key(document, source_line)
+    key = _line_reference_key(document, source_line, form_aliases=form_aliases)
     if key is None:
         return None
     index = line_index or {}
@@ -468,11 +480,12 @@ def _line_ref_candidates(
     *,
     line_index: dict[Any, str] | None,
     line_children: dict[Any, list[str]] | None = None,
+    form_aliases: FormAliasResolver | None = None,
 ) -> list[str]:
     """Return lettered children when a bare parent reference cannot be chosen."""
     if not isinstance(source_line, (str, dict)):
         return []
-    key = _line_reference_key(document, source_line)
+    key = _line_reference_key(document, source_line, form_aliases=form_aliases)
     if key is None:
         return []
     form, anchor = key
@@ -499,6 +512,7 @@ def _is_unprinted_optional_child(
     *,
     source_lines: list[Any],
     line_index: dict[Any, str] | None,
+    form_aliases: FormAliasResolver | None = None,
 ) -> bool:
     """Accept a skipped letter only inside an explicit printed line range.
 
@@ -508,7 +522,7 @@ def _is_unprinted_optional_child(
     Outside that narrow range the normal fail-closed resolution remains in
     force.
     """
-    key = _line_reference_key(document, source_line)
+    key = _line_reference_key(document, source_line, form_aliases=form_aliases)
     if key is None or line_index is None:
         return False
     anchor = key[1]
@@ -530,7 +544,7 @@ def _is_unprinted_optional_child(
     referenced = {
         str(item[1]).strip().lower()
         for item in (
-            _line_reference_key(document, value)
+            _line_reference_key(document, value, form_aliases=form_aliases)
             for value in source_lines
         )
         if item is not None and item[0] == key[0]
@@ -547,6 +561,8 @@ _EXPANDABLE_OPERATIONS = frozenset(spec.name for spec in OPERATION_SPECS if spec
 def _line_reference_key(
     document: SourceDocumentInput,
     source_line: Any,
+    *,
+    form_aliases: FormAliasResolver | None = None,
 ) -> tuple[str, str] | None:
     """Normalize a model's printed line reference to a form/anchor key."""
     if isinstance(source_line, str):
@@ -563,6 +579,13 @@ def _line_reference_key(
     normalized_form = re.sub(r"[^a-z0-9]+", "_", form).strip("_")
     normalized_current = re.sub(r"[^a-z0-9]+", "", current_form)
     current_stem = current_form.removesuffix(f"_{document.year}")
+    if form_aliases is not None and form_aliases.aliases:
+        resolved_form = form_aliases.resolve(form)
+        if resolved_form is None and form.strip():
+            return None
+        if resolved_form is not None:
+            form = resolved_form
+            normalized_form = re.sub(r"[^a-z0-9]+", "_", form).strip("_")
     same_form_alias = _compact(normalized_form) in {"", _compact(current_form), _compact(current_stem)}
     if "form1040" in _compact(normalized_form) and "form1040" in normalized_current:
         same_form_alias = True

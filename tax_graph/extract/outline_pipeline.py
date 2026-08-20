@@ -36,6 +36,11 @@ from tax_graph.extract.outline import (
     _geometry_assembled_source_row,
     _line_anchor_variants,
 )
+from tax_graph.extract.references import (
+    FormAliasResolver,
+    build_form_alias_resolver,
+    build_modelled_line_index,
+)
 from tax_graph.extract.tables import assemble_table_subunits
 
 
@@ -81,6 +86,8 @@ def generate_outline_first_drafts(
     client: LlmClient,
     config: dict[str, Any] | None = None,
     root: str | Path | None = None,
+    line_index: dict[tuple[str, str], str] | None = None,
+    form_aliases: FormAliasResolver | None = None,
 ) -> ExtractionBatch:
     """Generate draft objects by walking deterministic outline nodes."""
     outline = build_outline_tree(document)
@@ -130,7 +137,16 @@ def generate_outline_first_drafts(
         "transport_failures": 0,
         "instruction_sections_coverage": instruction_frame.coverage,
     }
-    line_index = _outline_line_index(document.document_id, outline.children)
+    if form_aliases is None:
+        form_aliases = build_form_alias_resolver(root, year=document.year)
+    if line_index is None:
+        line_index = build_modelled_line_index(
+            root,
+            year=document.year,
+            current_document_id=document.document_id,
+            current_nodes=outline.children,
+            resolver=form_aliases,
+        )
     line_kinds, line_children = _outline_line_metadata(document.document_id, outline.children)
     instruction_owners = _instruction_owner_map(spans)
     model_nodes = _model_formula_outline_nodes(outline.children)
@@ -250,6 +266,7 @@ def generate_outline_first_drafts(
                 line_index=line_index,
                 stats=micro_stats,
                 cell=cell_record,
+                form_aliases=form_aliases,
             )
             continue
         if response_kind not in {"computation", "election", "form_line", "filer_entry", "information_return", "not_derivable"}:
@@ -266,6 +283,7 @@ def generate_outline_first_drafts(
                 line_index=line_index,
                 line_kinds=line_kinds,
                 line_children=line_children,
+                form_aliases=form_aliases,
                 resolution_events=micro_stats["resolved_line_refs"],
             )
         except FormulaAssemblyFinding as exc:
@@ -374,6 +392,7 @@ def generate_outline_first_drafts(
             config=config,
             root=root,
             line_index=line_index,
+            form_aliases=form_aliases,
             instruction_owners=instruction_owners,
             model=model,
             stats=micro_stats,
@@ -415,6 +434,7 @@ def _extract_non_formula_cells(
     config: dict[str, Any] | None,
     root: str | Path | None,
     line_index: dict[tuple[str, str], str],
+    form_aliases: FormAliasResolver | None,
     instruction_owners: dict[str, frozenset[str]],
     model: str,
     stats: dict[str, Any],
@@ -542,6 +562,7 @@ def _resolve_declared_source(
     record: dict[str, Any],
     *,
     line_index: dict[tuple[str, str], str],
+    form_aliases: FormAliasResolver | None = None,
 ) -> str | None:
     """Resolve a model's printed source declaration through deterministic indexes."""
     if record.get("source_kind") not in {"form_line", "information_return"}:
@@ -557,7 +578,12 @@ def _resolve_declared_source(
     line = str(record.get("line") or "").strip()
     if not line:
         return None
-    resolved = _resolve_source_line(document, {"form": form, "line": line}, line_index=line_index)
+    resolved = _resolve_source_line(
+        document,
+        {"form": form, "line": line},
+        line_index=line_index,
+        form_aliases=form_aliases,
+    )
     if resolved:
         return resolved
     if _is_external_form_reference(document, form):
@@ -683,6 +709,7 @@ def _record_union_non_computation(
     spans: list[CandidateSpan],
     *,
     line_index: dict[tuple[str, str], str],
+    form_aliases: FormAliasResolver | None,
     stats: dict[str, Any],
     cell: dict[str, Any],
 ) -> None:
@@ -752,7 +779,12 @@ def _record_union_non_computation(
     record = dict(outcome)
     record["status"] = "complete"
     if kind in {"information_return", "form_line"}:
-        resolved = _resolve_declared_source(document, record, line_index=line_index)
+        resolved = _resolve_declared_source(
+            document,
+            record,
+            line_index=line_index,
+            form_aliases=form_aliases,
+        )
         record["resolved_source_id"] = resolved
         if resolved:
             stats.setdefault("resolved_source_addresses", []).append(cell["target_cell_id"])
