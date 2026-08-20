@@ -21,8 +21,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S156 IS THE ROUND: the second-largest gap class cannot be diagnosed, because
-the rejected quote is thrown away and a replay accepts the cell.**
+**BALL: CODEX. M20-S157 IS THE ROUND: one citable passage must survive as one span. M20-S156 is
+accepted and it found the cause.**
+
+**M20-S156 IS ACCEPTED (`862089f`, `6e1872e`, Architect, 2026-08-20).** The rejected quote is now
+persisted with its validation reason, closest span and offset, so this class is diagnosable at all
+for the first time. The 24 classify as:
+
+    near-miss: 3
+    genuine fabrication: 5
+    wrong span supplied or span-boundary failure: 16
+
+**SIXTEEN OF TWENTY-FOUR ARE OUR DEFECT, NOT THE MODEL'S** - the quote is real source text that
+crosses two of our spans (Form 1116 line 26 across `0134`/`0135`; the 1099-DIV box descriptions
+across `0175`-`0189`). **The model quoted the document correctly and we split the sentence.**
+
+**THE THREE NEAR-MISSES ARE LINE-END HYPHENATION IN THE ACQUIRED TEXT, AND I CONFIRMED IT
+INDEPENDENTLY.** Scanning `.cache/raw/2025` finds **20 line-end hyphen splits**: `opera-|tion`,
+`in-|come`, `house-|hold`, `re-|ceived`, `to-|tal`, and `div-|dividends`. So
+*"...may be able to take this deduc-
+tion."* cannot match a quote containing "deduction".
+
+**THE ROUND ALSO CORRECTED ME, AND IT WAS RIGHT TO.** I reported that `prompt-bench` ACCEPTS 1040
+line `3a`. Re-run, it returns `decision: rejected` on a different response that stitches the line 3a
+sentence to the later box 1b sentence. **Both runs are real; the model is unstable across samples.**
+My reading of one sample as proof of near-miss was too fast. **That instability is evidence about
+the model, not permission to weaken the check.**
 
 **M20-S155 IS ACCEPTED (`a330b08`, `65333f2`, Architect, 2026-08-20), VERIFIED BY OPENING THE
 RESOLVER.** `explain-cell --doc form_1040_2025 --line 31` now reports `found: true` and
@@ -406,140 +430,44 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S156: A FAILURE THAT DISCARDS ITS OWN EVIDENCE CANNOT BE FIXED.**
+**M20-S157: JOIN WHAT WE SPLIT, WITHOUT MOVING THE GROUND UNDER THE CITATIONS.**
 
-**THE CLASS.** 24 review gaps read *"micro extraction failed: MicroExtractionError: quote does not
-match the supplied form or instruction evidence"* - the second-largest cause, spread thinly across
-13 documents (1 to 4 each), so it is cross-cutting rather than one document's problem.
+**THE TARGET.** 16 span-boundary failures plus 3 hyphenation near-misses - **19 of the 24**, and all
+of them ours. The 5 genuine fabrications are model work and stay out of this round.
 
-**IT CANNOT BE DIAGNOSED FROM THE ARTIFACT, AND I TRIED.** `explain-cell --doc form_1040_2025
---line 3a` returns the form face, the instruction span and the record - and **the record does not
-contain the quote that was rejected.** Only that it failed. There is nothing to compare against the
-evidence.
+ITEM 1. **Make one citable passage one span.** Join adjacent source fragments **only when their
+source offsets prove continuity** - never on similarity, never on a guess. A quote that spans
+`0134` and `0135` today should see one span tomorrow.
 
-**AND A REPLAY ACCEPTS THE SAME CELL.** `verify prompt-bench --doc form_1040_2025 --id
-form_1040_2025_root_line_3a` returns:
+ITEM 2. **Repair line-end hyphenation** so `deduc-` + `tion` reads as `deduction` in the evidence
+the model is given and the validator checks.
 
-    "quote": "Enter your total qualified dividends on line 3a.",
-    decision: accepted
-    why: all deterministic validations passed
+**ITEM 3 - AND THIS IS THE CONSTRAINT THAT MAKES THIS ROUND DELICATE.** S156 recommended correcting
+hyphenation "in the canonical acquired text". **Stored citations carry byte RANGES into that text -
+`citation_range_patch` wrote 78 of them on 2026-08-19 - and rewriting the text silently invalidates
+every one.** So either normalise in the evidence packet and leave the canonical text alone, or
+re-derive every affected range in the same round and prove it. **State which you chose and show the
+range count before and after.** A citation whose range no longer points at its quote is worse than
+the defect being fixed.
 
-That quote IS verbatim in `section_0016`. **So the recorded failure does not reproduce**, which
-means these are very likely near-misses rather than fabrications - but **I am NOT asserting that,
-because the rejected string was never kept.** Establishing it is ITEM 2.
-
-ITEM 1. **Persist the rejected quote on the failure**, with the validation reason and, where
-computable, the closest matching span text and the offset where the match broke. **A validation that
-throws away the string it rejected is the defect; the 24 gaps are the symptom.**
-
-ITEM 2. **Then classify the 24 with the string in hand.** Near-miss (whitespace, unicode, casing,
-truncation, an ellipsis) versus genuine fabrication versus wrong span supplied. **Report counts per
-class with three quoted examples**, and do not generalise from one.
-
-ITEM 3. **Only then propose the fix**, and say plainly whether it is normalisation on our side or a
-prompt change. **Do not loosen the verbatim check to make the number fall** - a citation that is not
-verbatim is worthless in a graph whose value is its citations.
-
-**LIVE CALLS ARE PERMITTED** for a targeted re-extract to capture real rejected quotes: at most
-THREE documents, outside the repository root, about $0.40 each. `form_1040_2025`, `schedule_1_2025`
-and `form_1116_2025` carry 3, 4 and 3 of them.
+ITEM 4. **Re-extract the three documents that carry these failures** (`form_1040_2025`,
+`schedule_1_2025`, `form_1116_2025`), outside the repository root, and report the quote-failure
+count before and after. Live calls permitted, about $0.40 each, **at most three documents.**
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not weaken the verbatim quote check.**
+- **Do not make the validator accept dehyphenation, punctuation repair, non-contiguous joins, or
+  fuzzy similarity.** The fix is upstream of the check, never in it.
+- **Do not invalidate a stored citation range without re-deriving it.**
 - **Do not weaken, delete, or invert an assertion that is green on `main`.**
 - Do not regenerate the live drafts under `graph/2025/_drafts`.
 
 **THE FLOOR.**
-- **A rejected quote persisted and shown** for a real failing cell.
-- **The 24 classified**, with counts and three quoted examples.
-- **A named fix with its side stated** - ours or the model's - not applied blind.
+- **A quote that previously failed across a span boundary, now passing**, quoted.
+- **The citation-range count before and after**, with the choice from ITEM 3 stated.
+- **Quote-failure counts before and after** on the three re-extracted documents.
 - **Focused sets green** against their known reds. **e2e is Architect-side.**
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
-
-### M20-S156 result
-
-**ITEM 1 COMPLETE.** The outline-first micro validator now attaches the rejected provider
-payload to `MicroExtractionError`. The outline pipeline copies it into both `micro_extraction.yaml`
-failure records and `review_gaps.yaml`, including `rejected_quote`, `validation_reason`, the full
-`rejected_payload`, and `closest_matching_span` with normalized quote/span offsets. The strict
-verbatim predicate was not changed.
-
-External live evidence from `C:\tmp\m20_s156_live` shows the persisted record for a real failure:
-
-    target_cell_id: form_1040_2025_root_line_3a
-    rejected_quote: Enter your total qualified dividends on line 3a. Generally, these dividends are shown in box 1b of Form(s) 1099-DIV.
-    validation_reason: quote does not match the supplied form or instruction evidence
-    closest_matching_span.span_id: span_form_1040_2025_0079
-    closest_matching_span.span_text: if required. 3a Qualified dividends 3a b Ordinary dividends 3b
-    closest_matching_span.longest_common_substring.quote_offset: 18
-    closest_matching_span.longest_common_substring.span_offset: 17
-
-The three targeted live runs persisted 2 quote failures for `form_1040_2025`, 5 for
-`schedule_1_2025`, and 2 for `form_1116_2025` in their external drafts. The older 24-cell set was
-classified from provider response bodies in `output/logs`, keyed by each failing target cell;
-nine of those cells were independently recaptured in the three permitted live runs.
-
-**ITEM 2 COMPLETE.** Classification of the 24 recovered rejected strings:
-
-    near-miss: 3
-    genuine fabrication: 5
-    wrong span supplied or span-boundary failure: 16
-    total: 24
-
-Near-miss means the answer tracks one source passage but the supplied text has a visible
-acquisition/rendering defect: `If you were self-employed or a partner, you may be able to take
-this deduction.` was supplied with `deduc-` and `tion` split across the source span; the other
-two are the analogous `dis-` split on Schedule 1 line 24h and the clipped `interest` on Form
-1099-INT line 9. Genuine fabrication includes the current 1040 line 3a replay answer, which
-stitches non-contiguous instruction sentences: `Enter your total qualified dividends on line 3a.
-Generally, these dividends are shown in box 1b of Form(s) 1099-DIV.` It also includes the two
-"evidence not available" refusals and the random one-character Schedule A answer. The remaining
-16 are source-derived text that is absent from one supplied span, crosses adjacent spans, or is
-present in the packet while the validator's result does not reproduce; examples include the
-Form 1116 line 26 quote crossing spans 0134 and 0135 and the Form 1099-DIV box descriptions split
-across spans 0175-0189.
-
-The handoff's earlier claim that prompt-bench ACCEPTS the same 1040 line is not reproducible in
-the current tree. The command below returned `decision: rejected` for a different response whose
-quote stitches the line 3a sentence to the later box 1b sentence. That is evidence of response
-instability, not permission to weaken the quote check.
-
-**ITEM 3 COMPLETE.** The recommended fix is on our side: repair evidence-span construction and
-source-text normalization before validation so one citable passage remains one span, adjacent
-source fragments are joined only when their source offsets prove continuity, and line-end
-hyphenation is corrected in the canonical acquired text. Do not make the validator accept
-dehyphenation, punctuation repair, non-contiguous joins, or fuzzy similarity. The five genuine
-fabrications remain model/prompt work after this pipeline fix; the strict check should continue to
-reject them.
-
-**EVIDENCE AND TEST STATUS.**
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py::test_rejected_micro_quote_is_carried_into_review_gap_evidence -q` -> 1 passed.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_llm_attribution_m20.py -q` -> 8 passed.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s113.py -q` -> 9 passed, 2 failed; known baseline failures `test_filer_entry_preserves_a_named_information_return_source` and `test_declines_are_outcomes_and_never_review_gaps` call `_record_union_non_computation` without the pre-existing required `form_aliases` argument.
-
-RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py -q` -> 21 passed, 1 failed; known baseline failure `test_instruction_section_body_survives_deeper_heading` expects heading/title spans that the current matcher returns as body only.
-
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli extract --year 2025 --doc form_1040_2025 --output-dir C:\tmp\m20_s156_live\form_1040_2025` -> auto_accepted 172, human_review 10, deterministic_issues 129; external output only.
-
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli extract --year 2025 --doc schedule_1_2025 --output-dir C:\tmp\m20_s156_live\schedule_1_2025` -> auto_accepted 182, human_review 7, deterministic_issues 38; external output only.
-
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli extract --year 2025 --doc form_1116_2025 --output-dir C:\tmp\m20_s156_live\form_1116_2025` -> auto_accepted 111, human_review 6, deterministic_issues 70; external output only.
-
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli verify prompt-bench --doc form_1040_2025 --id form_1040_2025_root_line_3a` -> decision rejected; `MicroExtractionError: quote does not match the supplied form or instruction evidence`.
-
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli explain-cell --root C:\tmp\m20_s156_live\form_1040_2025 --doc form_1040_2025 --line 3a` -> persisted `rejected_quote`, `rejected_payload`, validation reason, closest span, and offsets shown.
-
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
-
-RAN: `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> diagnosis evidence check OK.
-
-RAN: `git diff --check` -> clean. Protected set diff -> EMPTY.
-
-NOT RUN: e2e; it exceeds the launcher cap and is Architect-side.
 
 ## Open for Architect
 
