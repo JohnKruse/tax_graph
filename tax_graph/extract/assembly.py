@@ -416,10 +416,11 @@ def _steps_for_plan(
                     "target_cell_id": _canonical_target_id(document, outline_node),
                     "source_line": source_line,
                     "candidates": candidates,
-                    "reason": (
-                        "bare source line is ambiguous because only lettered child lines exist"
-                        if candidates
-                        else "source line is not present in the deterministic outline index"
+                    "reason": _source_line_finding_reason(
+                        document,
+                        source_line,
+                        source_key,
+                        candidates=candidates,
                     ),
                 }
             )
@@ -559,17 +560,46 @@ def _line_reference_key(
     if not anchor:
         return None
     current_form = document.document_id.lower()
-    normalized_form = re.sub(r"[^a-z0-9]+", "", form)
+    normalized_form = re.sub(r"[^a-z0-9]+", "_", form).strip("_")
     normalized_current = re.sub(r"[^a-z0-9]+", "", current_form)
     current_stem = current_form.removesuffix(f"_{document.year}")
-    same_form_alias = normalized_form in {"", _compact(current_form), _compact(current_stem)}
-    if "form1040" in normalized_form and "form1040" in normalized_current:
+    same_form_alias = _compact(normalized_form) in {"", _compact(current_form), _compact(current_stem)}
+    if "form1040" in _compact(normalized_form) and "form1040" in normalized_current:
         same_form_alias = True
     if same_form_alias:
         form = current_form
     elif not form.endswith(f"_{document.year}"):
-        form = f"{form}_{document.year}"
+        form = f"{normalized_form}_{document.year}"
+    else:
+        form = normalized_form
     return form, anchor
+
+
+def _source_line_finding_reason(
+    document: SourceDocumentInput,
+    source_line: Any,
+    key: tuple[str, str] | None,
+    *,
+    candidates: list[str],
+) -> str:
+    """Describe the planned operand and deterministic lookup evidence."""
+    if isinstance(source_line, dict):
+        operand = (
+            f'form="{str(source_line.get("form", ""))}" '
+            f'line="{str(source_line.get("line", ""))}"'
+        )
+    else:
+        operand = f'line="{str(source_line)}"'
+    if candidates:
+        return (
+            f"ambiguous_parent_source_line: {operand} -> key {key!r} "
+            "has multiple lettered children in outline index; "
+            "bare source line is ambiguous because only lettered child lines exist"
+        )
+    return (
+        f"unresolved_source_line: {operand} -> key {key!r} not in outline index; "
+        "source line is not present in the deterministic outline index"
+    )
 
 
 def _canonical_target_id(document: SourceDocumentInput, outline_node: OutlineNode) -> str:

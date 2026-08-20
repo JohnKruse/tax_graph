@@ -1541,6 +1541,22 @@ def extract_command(
     return 0
 
 
+def explain_cell_command(
+    *,
+    doc: str,
+    line: str,
+    year: str = "2025",
+    root: str | Path | None = None,
+) -> int:
+    """Print every persisted evidence layer for one draft cell."""
+    from tax_graph.extract.explain import explain_cell, format_explanation
+
+    root_path = Path(root).resolve() if root is not None else project_root()
+    draft_root = root_path / "graph" / str(year) / "_drafts" / doc
+    print(format_explanation(explain_cell(draft_root, document_id=doc, year=year, line=line)), end="")
+    return 0
+
+
 def prompt_bench_command(
     *,
     doc: str,
@@ -2454,6 +2470,18 @@ def _build_typer_app():
         if raise_code:
             raise typer.Exit(raise_code)
 
+    @cli.command("explain-cell")
+    def explain_cell_cli(
+        doc: str = typer.Option(..., "--doc", help="Draft document id to inspect."),
+        line: str = typer.Option(..., "--line", help="Printed line anchor to inspect."),
+        year: str = typer.Option("2025", "--year", "-y", help="Tax year to inspect."),
+        root: Path | None = typer.Option(None, "--root", help="Project root override."),
+    ) -> None:
+        """Print the persisted form, instruction, model, finding, and resolver layers."""
+        raise_code = explain_cell_command(doc=doc, line=line, year=year, root=root)
+        if raise_code:
+            raise typer.Exit(raise_code)
+
     @cli.command("intake")
     def intake_cli(
         drop_dir: Path = typer.Option(..., "--drop-dir", help="Local directory containing rendered tax documents."),
@@ -2693,6 +2721,12 @@ def _fallback_app() -> int:
     extract_parser.add_argument("--year", "-y", default="2025")
     extract_parser.add_argument("--root", default=None)
 
+    explain_cell_parser = subparsers.add_parser("explain-cell")
+    explain_cell_parser.add_argument("--doc", required=True)
+    explain_cell_parser.add_argument("--line", required=True)
+    explain_cell_parser.add_argument("--year", "-y", default="2025")
+    explain_cell_parser.add_argument("--root", default=None)
+
     promote_instructions_parser = subparsers.add_parser("promote-instructions")
     promote_instructions_parser.add_argument("--year", "-y", default="2025")
     promote_instructions_parser.add_argument("--source-document-id", default=None)
@@ -2921,6 +2955,8 @@ def _fallback_app() -> int:
         return acquire_command(year=args.year, check=args.check, root=args.root)
     if args.command == "extract":
         return extract_command(doc=args.doc, year=args.year, root=args.root)
+    if args.command == "explain-cell":
+        return explain_cell_command(doc=args.doc, line=args.line, year=args.year, root=args.root)
     if args.command == "promote-instructions":
         return promote_instruction_command(
             year=args.year,

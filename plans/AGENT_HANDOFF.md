@@ -254,6 +254,124 @@ the printed form-face label, the owning instruction span text, the model's plan 
 any finding for that cell, and the resolver's computed key with its lookup result. **The Architect
 wrote that script from scratch three times on 2026-08-20; that is the cost asymmetry this removes.**
 
+**WORKER CHECKPOINT (Codex, 2026-08-20).** The assembly path now normalizes model-spelled form
+references once and uses that value for the lookup. The recorded `{form: "Form 2441", line: "26"}`
+operand resolves in an assembly-level test when the canonical external key is present. The new
+finding text is:
+
+    unresolved_source_line: form="Form 2441" line="26" -> key ('form_2441_2025', '26') not in outline index; source line is not present in the deterministic outline index
+
+The read-only `explain-cell` command is wired into both CLI paths and reads only the persisted
+draft YAML. It does not acquire source documents, build an LLM client, call a provider, or write
+an artifact. The live 1040 draft still contains the pre-S150 generic finding because this round
+does not regenerate drafts. Its full output is:
+
+    === explain-cell: form_1040_2025 line 1e ===
+    === form-face ===
+    {
+      "label": "1099-R if tax e Taxable dependent care benefits from Form 2441, line 26 1e",
+      "outline_id": "root_line_1e",
+      "page": 1
+    }
+    === instruction ===
+    {
+      "spans": [
+        {
+          "locator": "page 24, lines 1128-1133",
+          "span_id": "span_instructions_form_1040_2025_section_0006",
+          "text": "## Line 1e\n\n### Taxable Dependent Care Benefits From Form 2441, Line 26\n\nEnter the total of your taxable dependent care benefits from Form 2441, line 26. Dependent care benefits should be shown in box 10 of your Form(s) W-2. But first complete Form 2441 to see if you can exclude part or all of the benefits.\n\n"
+        }
+      ]
+    }
+    === model plan or outcome ===
+    {
+      "record": {
+        "has_expression": false,
+        "has_form_face_citation": false,
+        "has_instruction_citation": true,
+        "has_verbatim_citation": false,
+        "instruction_span_ids": [
+          "span_instructions_form_1040_2025_section_0006"
+        ],
+        "label": "1099-R if tax e Taxable dependent care benefits from Form 2441, line 26 1e",
+        "line_anchor": "1e",
+        "response_kind": "computation",
+        "review_gap": "source line is not present in the deterministic outline index",
+        "status": "review_gap",
+        "target_cell_id": "form_1040_2025_root_line_1e",
+        "wrong_owner_instruction_spans": 0
+      },
+      "record_source": "micro_extraction.formula_cells"
+    }
+    === finding ===
+    {
+      "candidates": [],
+      "code": "unresolved_source_line",
+      "reason": "source line is not present in the deterministic outline index",
+      "source_line": {
+        "form": "Form 2441",
+        "line": "26",
+        "role": null
+      },
+      "target_cell_id": "form_1040_2025_root_line_1e"
+    }
+    === resolver ===
+    {
+      "computed_key": [
+        "form_2441_2025",
+        "26"
+      ],
+      "computed_key_text": "('form_2441_2025', '26')",
+      "found": false,
+      "lookup_keys": [
+        [
+          "form_2441_2025",
+          "26"
+        ],
+        "26"
+      ],
+      "matched_key": null,
+      "planned_operand": {
+        "form": "Form 2441",
+        "line": "26",
+        "role": null
+      },
+      "resolved_source_id": null,
+      "searched": "outline index"
+    }
+
+Line 1e does not resolve in the live 1040 draft. The key normalization defect is fixed; the next
+observed blocker is that the 1040 deterministic outline index contains no `form_2441_2025` line
+26 entry. This round does not decide whether the Form 2441 overlay is the correct next repair.
+
+**S150 TEST EVIDENCE (Codex, 2026-08-20).** RAN:
+
+    .venv\Scripts\python.exe -m pytest tests/test_m20_s150.py tests/test_extract_outline_m4.py -k "human_formula_answer_resolves_printed_lines_and_fails_closed or line_reference_resolves_schedule_alias_and_reports_bare_parent or test_assembly_resolves_recorded_spelled_form_operand or test_explain_cell_reads_the_persisted_stack" -q
+
+    -> 4 passed, 19 deselected in 0.32s
+
+    .venv\Scripts\python.exe -m pytest tests/test_workbench_m15.py -q
+
+    -> 4 passed in 0.38s
+
+    .venv\Scripts\python.exe -m pytest tests/test_workbench_cells_api_m17.py tests/test_workbench_write_api_m15.py -q
+
+    -> 12 passed in 199.38s (0:03:19)
+
+    .venv\Scripts\python.exe -m pytest tests/test_extract_outline_m4.py -q
+
+    -> 1 failed, 20 passed in 0.85s. The remaining failure is
+    `test_instruction_section_body_survives_deeper_heading` at line 447; this round did not
+    change instruction-span selection, and the focused assembly guards are green.
+
+    .venv\Scripts\python.exe tools/check_ascii.py tax_graph/extract/assembly.py tax_graph/extract/explain.py tax_graph/cli.py tests/test_m20_s150.py
+
+    -> ASCII check OK
+
+    git diff --check
+
+    -> clean after the S150 source/test changes; rerun after this handoff edit before commit.
+
 **WHAT MUST NOT HAPPEN.**
 - **No model call, no network, no draft regeneration.** Everything needed is in the draft.
 - **Do not weaken, delete, or invert an assertion that is green on `main`.**
@@ -267,6 +385,121 @@ wrote that script from scratch three times on 2026-08-20; that is the cost asymm
 - **Say plainly whether line 1e now resolves**, and if it does not, what the next blocker is.
 - **Focused workbench and API sets green** against their known reds. **e2e is Architect-side.**
 - **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
+
+**M20-S150 WORKER STATUS (Codex, 2026-08-20).** Items 1-3 are implemented. `_line_reference_key`
+now normalizes the model form spelling once to the canonical underscore form and uses that value.
+The assembly finding now carries the planned operand, computed key, and searched index. The new
+draft-only `explain-cell` command reads the persisted outline, instruction spans, micro record,
+finding, and resolver result without constructing an extraction client. No model call, network
+egress, or draft regeneration occurred.
+
+The new review-gap evidence text, produced from the recorded operand, is:
+
+    unresolved_source_line: form="Form 2441" line="26" -> key ('form_2441_2025', '26') not in outline index; source line is not present in the deterministic outline index
+
+The current persisted draft was not rewritten, so its old `review_gap` text remains visible in the
+explanation output. This is expected under the no-regeneration instruction. Line 1e does **not**
+resolve in the current 1040 outline index: the normalized key is present in the resolver evidence,
+but lookup returns no match. The output establishes that observation only; it makes no claim about
+whether a Form 2441 overlay is a second blocker.
+
+**FULL `explain-cell` OUTPUT (real draft, 2026-08-20):**
+
+    === explain-cell: form_1040_2025 line 1e ===
+    === form-face ===
+    {
+      "label": "1099-R if tax e Taxable dependent care benefits from Form 2441, line 26 1e",
+      "outline_id": "root_line_1e",
+      "page": 1
+    }
+    === instruction ===
+    {
+      "spans": [
+        {
+          "locator": "page 24, lines 1128-1133",
+          "span_id": "span_instructions_form_1040_2025_section_0006",
+          "text": "## Line 1e\n\n### Taxable Dependent Care Benefits From Form 2441, Line 26\n\nEnter the total of your taxable dependent care benefits from Form 2441, line 26. Dependent care benefits should be shown in box 10 of your Form(s) W-2. But first complete Form 2441 to see if you can exclude part or all of the benefits.\n\n"
+        }
+      ]
+    }
+    === model plan or outcome ===
+    {
+      "record": {
+        "has_expression": false,
+        "has_form_face_citation": false,
+        "has_instruction_citation": true,
+        "has_verbatim_citation": false,
+        "instruction_span_ids": [
+          "span_instructions_form_1040_2025_section_0006"
+        ],
+        "label": "1099-R if tax e Taxable dependent care benefits from Form 2441, line 26 1e",
+        "line_anchor": "1e",
+        "response_kind": "computation",
+        "review_gap": "source line is not present in the deterministic outline index",
+        "status": "review_gap",
+        "target_cell_id": "form_1040_2025_root_line_1e",
+        "wrong_owner_instruction_spans": 0
+      },
+      "record_source": "micro_extraction.formula_cells"
+    }
+    === finding ===
+    {
+      "candidates": [],
+      "code": "unresolved_source_line",
+      "reason": "source line is not present in the deterministic outline index",
+      "source_line": {
+        "form": "Form 2441",
+        "line": "26",
+        "role": null
+      },
+      "target_cell_id": "form_1040_2025_root_line_1e"
+    }
+    === resolver ===
+    {
+      "computed_key": [
+        "form_2441_2025",
+        "26"
+      ],
+      "computed_key_text": "('form_2441_2025', '26')",
+      "found": false,
+      "lookup_keys": [
+        [
+          "form_2441_2025",
+          "26"
+        ],
+        "26"
+      ],
+      "matched_key": null,
+      "planned_operand": {
+        "form": "Form 2441",
+        "line": "26",
+        "role": null
+      },
+      "resolved_source_id": null,
+      "searched": "outline index"
+    }
+
+**M20-S150 TEST EVIDENCE:**
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tmp\tgpt'; .venv\Scripts\python.exe -m pytest tests\test_m20_s150.py -q` -> **2 passed in 0.23s**.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tmp\tgpt'; .venv\Scripts\python.exe -m pytest tests\test_m20_s150.py tests\test_llm_attribution_m20.py -q` -> **10 passed in 0.38s**.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tmp\tgpt'; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py -q` -> **20 passed, 1 failed in 0.93s**. The unchanged failure is `test_instruction_section_body_survives_deeper_heading`; no test assertion was edited or weakened.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tmp\tgpt'; .venv\Scripts\python.exe -m pytest tests\test_extract_outline_m4.py tests\test_llm_attribution_m20.py tests\test_generated_review_m20.py -q` -> **37 passed, 2 failed in 44.40s**. The two failures are the same known heading-span red and the pre-existing generated-review line 1e red; no guard assertion was changed.
+
+RAN: `$env:PYTEST_DEBUG_TEMPROOT='C:\tmp\tgpt'; .venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py tests\test_workbench_write_api_m15.py tests\test_workbench_cells_api_m17.py tests\test_workbench_cells_m17.py -q` -> **27 passed in 218.93s (0:03:38)**.
+
+RAN: `.venv\Scripts\python.exe -m tax_graph.cli explain-cell --doc form_1040_2025 --line 1e --year 2025` -> **exit 0**, full output pasted above.
+
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+
+RAN: `git diff --check` -> **clean**.
+
+RAN: `git diff --name-only -- graph nodes edges rules field_maps` -> **no output; protected set byte-identical**.
+
+NOT RUN: e2e focused set -> **launcher cap; Architect runs it**.
 
 ## Open for Architect
 
