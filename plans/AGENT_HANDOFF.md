@@ -457,33 +457,69 @@ about $0.40 per document. Do NOT re-extract the whole corpus.**
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+**WORKER STATUS (M20-S155, 2026-08-20).** The extraction resolver now builds a collision-safe
+cross-document line index from modelled address-backed draft outlines. Form aliases are derived
+from manifest ids, `data/soi/form_id_map.yaml`, and document address printed labels. Unknown or
+colliding spellings remain unresolved. Form 1040 line 31 now resolves to the Schedule 3 line 15
+outline node; `explain-cell` reports `found: true` and the computed key
+`('schedule_3_2025', '15')`.
+
+**LIVE MEASUREMENT.** All output below is outside the repository at
+`C:\tmp\m20_s155_live_20260820`; no live `graph/2025/_drafts` directory was regenerated.
+Persisted `findings` entries with `code: unresolved_source_line`:
+
+    schedule_1a_2025: 20 -> 2
+    form_6251_2025: 12 -> 9
+    schedule_1_2025: 14 -> 10
+
+The initial serial command was terminated by the 600-second launcher cap after the Schedule
+1-A artifact completed. The two remaining documents were then run individually. The complete
+per-document results were:
+
+    RAN: .venv\Scripts\python.exe -m tax_graph.cli extract --doc form_6251_2025 --year 2025 --output-dir C:\tmp\m20_s155_live_20260820 -> exit 0; 576.2s; auto_accepted=164; human_review=13; deterministic_issues=42
+    RAN: .venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_1_2025 --year 2025 --output-dir C:\tmp\m20_s155_live_20260820 -> exit 0; 447.6s; auto_accepted=182; human_review=7; deterministic_issues=38
+    RAN: .venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_1a_2025 --year 2025 --output-dir C:\tmp\m20_s155_live_20260820 -> completed external draft; enclosing three-document command timed out before stdout was returned
+
+**RESIDUAL SPELLINGS (every persisted unresolved record).**
+
+    schedule_1a_2025
+    - `Additional Deductions (Form 1040) 2025`, line `1`
+    - `Schedule 1-A (Form 1040) 2025, line 22a, column (iii)`, no line field
+    form_6251_2025
+    - `Form 1040, 1040-SR, or 1040-NR`, line `11b`
+    - `4952`, line `8`
+    - `Form 8949`, line `column (g)`
+    - `Form 3921, box 4 multiplied by Form 3921, box 5`, no line field
+    - `Form 4797, Sales of Business Property`, no line field
+    - `Form 6251`, line `3`
+    - `Form 1040 or 1040-SR, line 16 (or Form 1040-NR, line 16) minus any tax from Form 4972, plus Schedule 2 (Form 1040), line 1z, minus Schedule 3 (Form 1040), line 1, and minus any negative amount reported on Form 8978, line 14 treated as a positive number`, no line field
+    - `6251`, line `32`
+    - `Form 6251`, line `32`
+    schedule_1_2025
+    - `Form 2555`, line `45`
+    - `Form 8853`, line `8`
+    - `Form 8889`, line `16`
+    - `Form 5471, Schedule I`, line `1a`
+    - `Form 8992`, line `Part II, line 5`
+    - `Form 1040 or 1040-SR`, line `1a or 1d`
+    - `Schedule SE`, line `13`
+    - `Self-Employed Health Insurance Deduction Worksheet`, line `1`
+    - `IRA Deduction Worksheet`, line `12a`
+    - `Student Loan Interest Deduction Worksheet`, line `1`
+
+**TEST EVIDENCE.**
+
+    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_m20_s155.py tests\test_m20_s150.py -q -> 4 passed in 2.78s
+    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_extract_m16.py -q -> 4 passed in 1.52s
+    RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK
+    RAN: .venv\Scripts\python.exe tools\check_diagnosis_evidence.py -> diagnosis evidence check OK
+    RAN: git diff --check -> clean
+    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_m20_s150.py tests\test_generated_review_m20.py -q -> 11 passed, 1 failed in 39.66s; pre-existing stale Form 2441 live projection assertion
+    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_m20_s155.py tests\test_m20_s150.py tests\test_extract_m16.py tests\test_extract_outline_m4.py -q -> 28 passed, 1 failed; pre-existing `test_instruction_section_body_survives_deeper_heading` stub-section mismatch; no hunk in this round touches that path
+    NOT RUN: tests\e2e -> exceeds launcher cap; Architect-side per round spec
+
 ## Open for Architect
 
-- **M20-S155 WORKER CHECKPOINT (2026-08-20).** The deterministic implementation and hermetic
-  guards are present in the shared worktree. `RAN: .venv\\Scripts\\python.exe -m pytest
-  tests/test_m20_s155.py -q -> 3 passed in 0.27s`. `RAN: .venv\\Scripts\\python.exe -m pytest
-  tests/test_m20_s150.py tests/test_generated_review_m20.py tests/test_extract_outline_m4.py -q
-  -> 31 passed, 2 failed`; the failures are the known stale live Form 2441 projection and the
-  pre-existing deeper-heading guard. `RAN: .venv\\Scripts\\python.exe -m tax_graph.cli
-  explain-cell --doc form_1040_2025 --line 31 --year 2025 -> exit 0; found=true and
-  resolved_source_id=schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15`.
-  `RAN: .venv\\Scripts\\python.exe -m compileall -q tax_graph/extract tax_graph/cli.py
-  tests/test_m20_s155.py -> exit 0`; `RAN: .venv\\Scripts\\python.exe tools/check_ascii.py ->
-  ASCII check OK`; `RAN: .venv\\Scripts\\python.exe tools/check_diagnosis_evidence.py
-  plans/AGENT_HANDOFF.md -> diagnosis evidence check OK`; `RAN: git diff --check -> clean`.
-  Current before counts in the three measurement drafts are unresolved-source-line findings
-  `schedule_1a_2025=20`, `form_6251_2025=12`, `schedule_1_2025=14` (review-gap totals 26/18/18).
-  The resolver now proves the observed parenthesized-year spellings; its fail-closed residue is
-  `Form 2555`, `Form 1040, 1040-SR, or 1040-NR`, `Form 4952 (AMT)`, `Schedule K-1 (Form 1041)`,
-  `Form 8853`, `Form 8889`, `Forms 5471, Schedule(s) I`, `Forms 8992`, `Form 461`,
-  `Form 1040 or Form 1040-SR`, `Schedule SE`, two worksheet names, and five non-mapping source
-  declarations`. `NOT RUN: .venv\\Scripts\\python.exe -m tax_graph.cli extract --doc
-  schedule_1a_2025 --year 2025 --output-dir C:\\Users\\devbox\\scratch\\m20_s155_20260820`;
-  `NOT RUN: .venv\\Scripts\\python.exe -m tax_graph.cli extract --doc form_6251_2025 --year
-  2025 --output-dir C:\\Users\\devbox\\scratch\\m20_s155_20260820`; `NOT RUN: .venv\\Scripts\\python.exe
-  -m tax_graph.cli extract --doc schedule_1_2025 --year 2025 --output-dir
-  C:\\Users\\devbox\\scratch\\m20_s155_20260820` -> the environment refused external LLM
-  egress; explicit user authorization is required, and no live draft was touched.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
