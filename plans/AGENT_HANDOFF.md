@@ -21,8 +21,34 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S154 IS THE ROUND: the surfacing matcher looks for a marker format that does
-not exist. S153 is rejected on the same item S152 was - vacuously green then, vacuously red now.**
+**BALL: JOHN. M20-S154 IS ACCEPTED AND THE CORE GATE FINALLY MEASURES SOMETHING: 27 of 280 core
+refusals never reach a reviewable cell. Nothing is in flight.**
+
+**M20-S154 IS ACCEPTED (`17ecc2d`, Architect, 2026-08-20), VERIFIED IN BOTH DIRECTIONS ON REAL DATA
+BY THE ARCHITECT, NOT TAKEN FROM THE REPORT.** **290 candidates, 280 core, 27 core unsurfaced, 2
+non-core** - roughly 10%, spread over twelve documents at one to seven each. **That is the shape of
+a real defect distribution**, unlike the two numbers before it.
+
+- **SURFACED:** `schedule_1_2025` line `1` returns `True`, and its marker
+  `data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-1"` is in the file.
+- **UNSURFACED:** `form_1040_2025` line `31`, `formula_review_gap`, *"source line is not present in
+  the deterministic outline index"*. I checked its neighbours: markers exist for `-line-30`,
+  `-line-32`, `-line-33`, `-line-34`, `-line-35a`, `-line-36`, and **none for 31.** The line fails
+  to derive AND has no cell a reviewer can land on. **That is exactly the invisible refusal this
+  gate exists to catch, and it is real.**
+
+**WHY THE PREVIOUS MATCHER LOOKED SANE AND WAS NOT.** Form 1040 emits
+`obj-nodes-form-1040-2025-root-line-30`; Schedule 1 emits section-scoped slugs. The guessed pattern
+fit one document's format and not the other's. **The matcher now derives its pattern from
+`review_html.object_dom_id` - the code that writes the markers** - which is what the spec demanded
+and why it works.
+
+**ONE OVERREACH, RECORDED RATHER THAN ACCEPTED SILENTLY.** The round cut candidates 310 -> 290 by
+excluding every candidate whose OWNER document has `kind: instructions`. The reasoning - instructions
+are evidence, not reviewable cells - is right for form-line candidates. **But the 20 dropped are 16
+`frontier_refusal` at `unmodeled` and 4 `worksheet_refusal`, none of them form-line candidates.** A
+refused worksheet is real regardless of which document's instructions spawned it. **The filter keys
+on the owner's kind where it should key on the candidate's kind.** Queued.
 
 **M20-S153 (`bdb1779`) IS ACCEPTED ON ITEM 1 ONLY (Architect, 2026-08-20).** The gate is out of
 `pilot/` and into `tax_graph/core_refusal_gate.py`, and `doctor.py` no longer imports from `pilot`.
@@ -340,73 +366,7 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S154: MATCH THE MARKER THE REVIEW SURFACE ACTUALLY EMITS.**
-
-ITEM 1. **Fix the surfacing matcher against the real format.** A form-line cell is identified in
-`review.html` by a slugified, section-scoped `data-object` attribute, not by a
-`nodes/<document>_root_line_<line>` path. Both of these are real, from
-`graph/2025/_drafts/schedule_1_2025/review.html`:
-
-    data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-1"
-    data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-2a"
-
-**Do not hardcode the section slug** - it varies per document and per part. Match on the document
-and the line suffix. **Derive the marker from the same code that WRITES it** if that code is
-reachable; a matcher that independently guesses a format is how this round was lost.
-
-ITEM 2. **Report the real-corpus number again under the corrected matcher**, core and non-core.
-**Whatever it is, it is the answer** - John, 2026-08-20: *"I could care less about tests going red
-as long as we are headed in the right direction."*
-
-ITEM 3. **`instructions_form_1040_2025` contributed 20 core candidates and has no `review.html` at
-all.** Instructions are evidence, not reviewable cells. **Decide whether an instructions document
-should be a refusal candidate, and justify it** - do not just exclude it to lower the number.
-
-**WHAT MUST NOT HAPPEN.**
-- **Do not narrow the refusal candidates to move the number.**
-- **Do not weaken, delete, or invert an assertion that is green on `main`.**
-- No model call, no network, no draft regeneration.
-
-**THE FLOOR - THIS IS THE PART THE ARCHITECT GOT WRONG TWICE, READ IT.**
-- **The gate must be demonstrated in BOTH directions on REAL corpus data, not fixtures:** name a
-  real candidate the gate reports as SURFACED and show its marker in the actual `review.html`, and
-  name a real candidate it reports as UNSURFACED and show that no marker exists for it.
-  **A fixture-only failing test is what let a 100%-red matcher pass review.**
-- **Schedule 1 line `1` must come back SURFACED**, since its marker demonstrably exists.
-- The real-corpus counts, core and non-core.
-- **Focused sets green** against their known reds. **e2e is Architect-side.**
-- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
-  byte-identical.
-
-**M20-S154 WORKER STATUS.** The matcher now reuses `review_html.object_dom_id` and
-`review_html.dom_slug`, then matches the writer's document prefix, any section-scoped path, and
-an exact line-token boundary. Schedule 1 line 1 is no longer a false refusal. Candidates owned by
-manifest entries with `kind: instructions` are excluded from the review-cell gate: instructions
-are source evidence, not reviewable cells, and have no review.html surface. This removes 20
-instruction-owned candidates for that semantic reason (not to lower the refusal count).
-
-**M20-S154 REAL-CORPUS EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m tax_graph.cli doctor --year 2025 2>&1 | Select-String -Pattern
-'=== core refusal gate ===|tax year: 2025|candidates:|core candidates:|core unsurfaced:|non-core
-unsurfaced:|schedule_1_2025 line 1;|form_1040_2025 line 31;|result:'`
--> **exit 1; 290 candidates (280 core, 10 non-core), 27 core unsurfaced, 2 non-core unsurfaced**.
-The red is the real result and refusal candidates were not narrowed to move it. The real
-SURFACED candidate is `schedule_1_2025` line `1`; its actual
-`graph/2025/_drafts/schedule_1_2025/review.html` contains exactly one
-`data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-1"` marker.
-The real UNSURFACED candidate is `form_1040_2025` line `31`; its actual
-`graph/2025/_drafts/form_1040_2025/review.html` contains zero writer-derived line-31 markers.
-The former guessed `obj-nodes-schedule-1-2025-root-line-1` marker occurs zero times.
-
-**M20-S154 TEST EVIDENCE.** RAN:
-`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py tests\test_m20_s154.py -q`
--> **6 passed in 5.15s**. RAN:
-`.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py -q`
--> **27 passed in 5.62s**. RAN `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII
-check OK**. RAN `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis
-evidence check OK**. RAN `git diff --check` -> **clean**. NOT RUN:
-`.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **e2e exceeds the Worker's launcher cap;
-Architect-side per the floor**. No model call, network egress, or draft regeneration was used.
+**NONE IN FLIGHT.** S154 closed 2026-08-20.
 
 ## Open for Architect
 
@@ -415,6 +375,18 @@ Architect-side per the floor**. No model call, network egress, or draft regenera
   BALL and in Queued.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **THE INSTRUCTIONS FILTER IN THE CORE GATE KEYS ON THE WRONG THING (Architect, 2026-08-20).**
+  `_is_reviewable_candidate` drops every candidate whose owner document is `kind: instructions`.
+  Measured: that removes **16 `frontier_refusal` at `unmodeled` and 4 `worksheet_refusal`**, zero of
+  them form-line candidates. **Only a form-line candidate is unreviewable on an instructions
+  document**; a refused worksheet still needs to reach a human - see the existing refused-worksheet
+  item. Key the exclusion on the candidate kind.
+
+- **1040 LINE 31 HAS NO REVIEW CELL AT ALL (Architect, found via the gate 2026-08-20).** Markers
+  exist for lines 30 and 32 through 36; there is none for 31. It is also one of the four persistent
+  derivation errors (`operand_not_printed: line 15 is not a printed line on schedule_3_2025`).
+  **A line that neither derives nor appears is invisible twice over.** Open it with `explain-cell`.
 
 - **`frontier.yaml` IS COMMITTED OUTPUT DERIVED FROM GITIGNORED INPUT (Architect, 2026-08-20).**
   `frontier build` reads `graph/<year>/_drafts/<doc>/outbound_flows.yaml`; `graph/*/_drafts` is
