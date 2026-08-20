@@ -21,8 +21,35 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S151 IS THE ROUND: mark the core set (John's 2026-08-11 ruling, still unbuilt
-nine days on) and let Form 2441 reach the frontier.**
+**BALL: JOHN. M20-S151 IS ACCEPTED. The core set is now machine-readable and Form 2441 reached the
+frontier through the derivation. Nothing is in flight.**
+
+**M20-S151 IS ACCEPTED (`bec3510`, Architect, 2026-08-20).** **17 documents carry `core: true` and
+the set matches John's 2026-08-11 ruling exactly** - I recomputed it independently, symmetric
+difference empty. `ownership` untouched, schema and loader updated. Focused sets 28 passed; e2e
+Architect-side **11 failed, 6 passed, 1 xpassed**, the documented eleven.
+
+**THE 2441 ENTRIES ARE DERIVED, NOT WRITTEN, AND ONE OF THEM CLOSES THIS MORNING'S LOOP.** Eight
+entries, all from `frontier build` after two labels were added to `data/soi/form_id_map.yaml`. One
+is `ref_cite_instruction_form_1040_2025_en_us_2025_publink1000106125_to_form_2441_2025` - **that is
+the citation carried by 1040 line `1e`**, the reference that has been unresolvable all day. Status
+`modeled`, `weight: null` (SOI carries no count for 2441).
+
+**RUNNING THE BUILD SURFACED SOMETHING LARGER THAN THIS ROUND: THE REGISTRY WENT 89 -> 241 ENTRIES,
+161 ADDED AND 9 REMOVED, AND ONLY 8 OF THE ADDITIONS CONCERN 2441.** The cause is structural, and
+checked rather than assumed: `frontier build` derives from graph citations AND from
+`graph/<year>/_drafts/<doc>/outbound_flows.yaml`, and **`graph/*/_drafts` is gitignored while
+`frontier.yaml` is committed.** A committed artifact is derived from uncommitted inputs, so the
+registry had been stale for days and two machines with different drafts produce different
+registries from one commit. **The Architect's 06:45 regeneration of the 1040 draft is the likely
+source of most of the 153 non-2441 additions - likely, not established.** This is not S151's doing;
+S151 is simply the first round in a while to run the build.
+
+**THE VERDICT STORE IS SAFE.** The two removed `rejected` entries took their status from
+`graph/2025/flow-dispositions.yaml`, which is committed and re-read on every build, so human
+judgement does not live in the derived file. **What vanished are the entries, because the flows
+that carried them are no longer produced from the drafts.** Whether that is correct is queued as a
+question.
 
 **M20-S150 IS ACCEPTED (`7a57c13`, Architect, 2026-08-20), AND I USED THE TOOL TO VERIFY THE TOOL.**
 `explain-cell --doc form_1040_2025 --line 1e` prints form face, instruction span, model record,
@@ -244,167 +271,7 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S151: MAKE "IS THE CORE GREEN?" A QUESTION THE PIPELINE CAN ANSWER.**
-
-**JOHN'S RULING, 2026-08-11, RECORDED AND NEVER IMPLEMENTED.** Core is Tier 1 + Tier 2 of
-`docs/tax_graph_requirements.md` section 9, **plus Schedule A, Schedule 1-A, and Form 6251**. Form
-2441 is NOT core. **All 17 are already in `config/manifest.yaml` and all are
-`ownership: project-maintained`** - the Architect checked every one. Nothing is missing; what is
-missing is that **no code can express the set.** `ownership` is a superset (22 documents), and
-`schemas/manifest.schema.json` has no `core` key.
-
-**BOOLEAN, NOT TIERS (John, 2026-08-20).** Tier 1 versus Tier 2 changes no behaviour. Tier 0 lives
-in `frontier.yaml` and tier 3 in `graph_ext`; neither is a manifest state. Duplicating the tier
-tables into the manifest would re-create the drift the 2026-08-11 item already warned about.
-
-ITEM 1. Add `core: true` to those 17 manifest entries and to the document schema. **Note
-`$defs.document` sets `additionalProperties: false`, so this is a schema change, not a YAML edit.**
-Leave `ownership` alone - it is a different axis.
-
-ITEM 2. **A test that the marked core set equals the ruling**, sourced so drift is caught rather
-than discovered. The failure this prevents is real: on 2026-08-11 the tier list and the manifest had
-already drifted apart.
-
-**ITEM 3 - LET FORM 2441 REACH THE FRONTIER, AND DO IT THROUGH THE DERIVATION.** The registry is
-NOT hand-maintained: `tax-graph frontier build` scans every citation in the loaded graph for a label
-from `data/soi/form_id_map.yaml`, emits a `form_reference`, and computes status itself - `modeled`
-if the target is in the graph, `declared` if in the manifest only, `unmodeled` otherwise - with an
-SOI filing-frequency weight. **Form 2441 never appears because that map holds only 12 labels and
-`Form 2441` is not one of them:**
-
-    labels: 12
-    2441 labels: {}
-    sample: [('Form 1040', 'form_1040_2025'), ('Schedule 1', 'schedule_1_2025'), ...]
-
-Add Form 2441 and its instructions to `data/soi/form_id_map.yaml`, re-run `frontier build`, and
-**report the entry and the status the derivation assigned.** Do not hand-write a frontier entry -
-that is the hand-authoring the PRIME DIRECTIVE forbids, and the whole point is that the mechanism
-produces it.
-
-**WHAT MUST NOT HAPPEN.**
-- **Do not hand-add an entry to `frontier.yaml`.** It is derived output.
-- **Do not invent a tier field**, and do not move the tier tables out of the requirements doc.
-- **Do not weaken, delete, or invert an assertion that is green on `main`.**
-- No model call, no network. `frontier build` reads committed data.
-
-**THE FLOOR.**
-- **The 17 marked entries**, and the test from ITEM 2 failing when one is removed.
-- **The new frontier entry for Form 2441, quoted, with the status the build assigned** and whether
-  its `weight` came back populated or null.
-- **Focused sets green** against their known reds. **e2e is Architect-side.**
-- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
-  byte-identical.
-
-**WORKER STATUS (M20-S151): IMPLEMENTED; awaiting Architect review.** The manifest now marks
-exactly 17 core documents, the manifest loader exposes `core`, and the schema accepts the boolean
-marker. The equality guard is independent of the live markers and fails if one is removed. The
-SOI map now contains both Form 2441 labels; `frontier build` produced the following records
-verbatim, with builder-assigned status and null SOI weight in every case:
-
-    - frontier_id: ref_cite_credit_limit_worksheet_2025_lines_3_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: credit_limit_worksheet_2025
-        citation_id: cite_credit_limit_worksheet_2025_lines_3
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_credit_limit_worksheet_2025_lines_3
-      status: modeled
-      weight: null
-
-    - frontier_id: ref_cite_instruction_form_1040_2025_en_us_2025_publink1000106125_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: instructions_form_1040_2025
-        citation_id: cite_instruction_form_1040_2025_en_us_2025_publink1000106125
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_instruction_form_1040_2025_en_us_2025_publink1000106125
-      status: modeled
-      weight: null
-
-    - frontier_id: ref_cite_span_form_1040_2025_0012_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: form_1040_2025
-        citation_id: cite_span_form_1040_2025_0012
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_span_form_1040_2025_0012
-      status: modeled
-      weight: null
-
-    - frontier_id: ref_cite_span_schedule_3_2025_0005_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: schedule_3_2025
-        citation_id: cite_span_schedule_3_2025_0005
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_span_schedule_3_2025_0005
-      status: modeled
-      weight: null
-
-    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
-        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_13
-      status: modeled
-      weight: null
-
-    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
-        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_1
-      status: modeled
-      weight: null
-
-    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
-        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_5
-      status: modeled
-      weight: null
-
-    - frontier_id: ref_cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9_to_form_2441_2025
-      kind: form_reference
-      source:
-        document_id: worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025
-        citation_id: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9
-      target:
-        document_id: form_2441_2025
-      target_url: https://www.irs.gov/pub/irs-prior/f2441--2025.pdf
-      citation_ref: cite_worksheet_a_worksheet_for_2024_expenses_paid_in_2025_2025_lines_9
-      status: modeled
-      weight: null
-
-RAN: `.venv\Scripts\python.exe -m pytest tests/test_m20_s151.py tests/test_acquire_manifest.py tests/test_m20_s101.py tests/test_frontier_soi_m7.py tests/test_frontier_build_m7.py -q` -> **28 passed in 15.87s**.
-RAN: `.venv\Scripts\python.exe -m tax_graph.cli frontier build --year 2025` -> **declared: 6; modeled: 217; unmodeled: 18**.
-RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-RAN: `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis evidence check OK**.
-RAN: `git diff --check` -> **exit 0, no output**.
-RAN: `git diff --name-only -- graph/2025/nodes graph/2025/edges graph/2025/rules graph/2025/field_maps` -> **exit 0, no output; protected set unchanged**.
-NOT RUN: `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **exceeds the Worker launcher cap; Architect runs it**.
-No model call, network access, or draft regeneration was used.
+**NONE IN FLIGHT.** S151 closed 2026-08-20.
 
 ## Open for Architect
 
@@ -413,6 +280,24 @@ No model call, network access, or draft regeneration was used.
   BALL and in Queued.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **`frontier.yaml` IS COMMITTED OUTPUT DERIVED FROM GITIGNORED INPUT (Architect, 2026-08-20).**
+  `frontier build` reads `graph/<year>/_drafts/<doc>/outbound_flows.yaml`; `graph/*/_drafts` is
+  gitignored. **Rebuilding on 2026-08-20 moved it 89 -> 241 entries.** Either the registry should
+  not be committed, or its inputs must be. **Pick one; the current arrangement makes the file's
+  contents a function of whose machine ran last.**
+
+- **TWO `rejected` OUTBOUND FLOWS DISAPPEARED IN THE REBUILD (Architect, open QUESTION 2026-08-20).**
+  `flow_form_6251_2025_outbound_schedule_d_column_h_to_schedule_d_2025_line_2` and `_line_3`, both
+  `status: rejected`, are absent from the rebuilt registry, along with six `modeled` Form 8949
+  flows. Their disposition still exists in `flow-dispositions.yaml`. **Establish whether the source
+  flows were legitimately removed or are missing, before concluding anything.**
+
+- **IS `modeled` THE RIGHT STATUS FOR FORM 2441? (Architect, open QUESTION 2026-08-20.)** The build
+  calls a target `modeled` when it appears in `graph.items("documents")`. 2441 does, yet it has no
+  canonical addresses under `graph/2025/addresses/` and its objects live in the `graph_ext` overlay.
+  **The status vocabulary may not distinguish "in the core graph" from "in an extension"** - which
+  is exactly the distinction the core marking now makes elsewhere.
 
 - **THE CORE GATE ITSELF: ZERO UNREPORTED REFUSALS (John's 2026-08-11 ruling; queued 2026-08-20).**
   The marking is only worth having if it is enforced - *"core means ZERO UNREPORTED refusals.
