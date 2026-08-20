@@ -547,6 +547,42 @@ round** - name the shape.
 
 ## Open for Architect
 
+**WORKER STATUS (2026-08-20; M20-S159 prompt hygiene is implemented).** Removed the
+Schedule 1-A-specific measured answer from `prompts/instruction_attribution_m20_s158.md` while
+keeping the general conservative rule. Added `tools/check_prompt_measured_counts.py`, which scans
+all prompt Markdown files for a form/schedule identifier paired with measurement language and a
+numeric count, plus `tests/test_prompt_measured_counts_m20.py`. The guard failed on the old prompt
+with exactly one violation, then passed after deletion.
+
+**THE 12 MISSES ARE CHARACTERIZED, NOT FIXED.** Read from the final S158 report at
+`C:\tmp\m20_s158\attribution_final_v3.json`:
+
+- `1, 2a, 2b, 2c, 2d, 2e, 3`: the fixed Part I MAGI span
+  `html_document_instructions_form_1040_2025_0510` was shown to the model and returned
+  `governs: []`. This is one multi-line semantic-scope miss, not seven missing spans.
+- `4`: the fixed employee-tip calculation span
+  `html_document_instructions_form_1040_2025_0523` was shown and returned `governs: []`; the
+  parent calculation prose did not transfer to the Schedule 1-A line 4 cell.
+- `33, 34`: the Part V broad scope span `..._0573` was returned empty, while the separate
+  maximum-deduction span `..._0576` attributed only its endpoint lines `32` and `35`. This is
+  partial endpoint attribution around an intermediate calculation, not a span-boundary defect.
+- `36a, 36b`: Part V scope `..._0573` and Valid SSN `..._0577` were both shown and returned
+  empty. This is eligibility prose lacking line-specific attribution for the two spouse/person
+  fields.
+
+**TEST EVIDENCE.** RAN before deletion:
+`.venv\Scripts\python.exe tools\check_prompt_measured_counts.py` -> **exit 1, one violation**
+in `instruction_attribution_m20_s158.md`. RAN after deletion:
+`.venv\Scripts\python.exe tools\check_prompt_measured_counts.py` -> **prompt measured-count
+check OK**. RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_prompt_measured_counts_m20.py pilot\test_attribution_m20_s158.py -q`
+-> **8 passed in 0.25s**. `git diff --check` is clean for the current changes.
+
+**NOT RUN: CLEAN-PROMPT LIVE SCORE.** I did not re-run the two live attribution calls after
+removing the contaminated count, so the clean none-rate and clean 19-cell score remain
+unverified. External LLM egress requires explicit user authorization; no new scratch report,
+draft, graph, or promoted artifact was written.
+
 **WORKER STATUS (2026-08-20; M20-S158 implementation is ready for review).** The scratch pilot is
 `pilot/attribution_m20_s158.py` with prompt `prompts/instruction_attribution_m20_s158.md` and
 guards in `pilot/test_attribution_m20_s158.py`. It builds the line inventory from the deterministic

@@ -21,9 +21,9 @@ Be conservative. Most fixed spans govern no line. Do not propagate a broad
 Part, chapter, or parent heading to all of its child lines. Definitions,
 examples, general instructions, worksheets, tables, and broad topic summaries
 are empty unless the span's own scope is an unmistakable rule for a particular
-printed line. If uncertain, return an empty list. For Schedule 1-A, the
-measured expectation is 50 empty labels out of 69 spans; fewer empty labels is
-fabricated coverage and must be avoided.
+printed line. If uncertain, return an empty list. For Schedule 1-A,
+conservative behavior matters: do not replace uncertainty with fabricated
+coverage.
 
 Return exactly one record for every supplied span. Keep the supplied span_id.
 The boundaries, offsets, and span text are evidence already selected by code;
