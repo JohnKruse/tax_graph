@@ -128,6 +128,63 @@ def _links(manifest: Any, document_id: str) -> tuple[str, str]:
     return form_url, instructions_url
 
 
+def _deep_links(year: str) -> dict:
+    """Map (document, line) to a page number and an IRS instructions anchor.
+
+    81 of 82 stored instruction citations carry a locator like
+    ``html#en_US_2025_publink1000106118``, which is a real anchor on the IRS
+    instructions page.  Pairing that with the address artifact's page number
+    turns "here is a row" into "here is the paragraph", which is the difference
+    between a report you can read and one you can act on.
+    """
+    import yaml
+
+    anchors: dict[str, tuple[str, str]] = {}
+    citations_dir = ROOT / "graph" / year / "citations"
+    if citations_dir.is_dir():
+        for path in citations_dir.glob("*.yaml"):
+            try:
+                payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+            except Exception:  # noqa: BLE001
+                continue
+            items = payload if isinstance(payload, list) else (payload or {}).get("citations", [])
+            for citation in items or []:
+                if not isinstance(citation, dict):
+                    continue
+                locator = str(citation.get("locator") or "")
+                url = str(citation.get("url") or "")
+                if "#" in locator and url:
+                    anchors[str(citation.get("citation_id"))] = (url, locator.split("#", 1)[1])
+
+    out: dict[tuple[str, str], dict] = {}
+    addresses_dir = ROOT / "graph" / year / "addresses"
+    if addresses_dir.is_dir():
+        for path in addresses_dir.glob("*.yaml"):
+            try:
+                payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+            except Exception:  # noqa: BLE001
+                continue
+            rows = payload if isinstance(payload, list) else (payload or {}).get("addresses", [])
+            for row in rows or []:
+                if not isinstance(row, dict) or not row.get("official_ref"):
+                    continue
+                page = ""
+                for item in row.get("evidence") or []:
+                    if isinstance(item, dict) and item.get("page"):
+                        page = str(item["page"])
+                        break
+                anchor_url = ""
+                for ref in row.get("citation_refs") or []:
+                    if str(ref) in anchors:
+                        url, fragment = anchors[str(ref)]
+                        anchor_url = f"{url}#{fragment}"
+                        break
+                key = (str(path.stem), str(row["official_ref"]).lower())
+                if key not in out or (not out[key].get("anchor") and anchor_url):
+                    out[key] = {"page": page, "anchor": anchor_url}
+    return out
+
+
 def _instruction_text(record: dict, spans: dict) -> str:
     ids = record.get("instruction_span_ids") or []
     if not ids:
@@ -222,9 +279,11 @@ def _render_html(graded: list[dict], year: str) -> str:
         instructions = row["instructions"] or "<b>NONE SUPPLIED</b>"
         links = []
         if row["form_url"]:
-            links.append(f'<a href="{html.escape(row["form_url"])}">form</a>')
+            label = "form p." + row["form_url"].split("#page=")[1] if "#page=" in row["form_url"] else "form"
+            links.append(f'<a href="{html.escape(row["form_url"])}">{html.escape(label)}</a>')
         if row["instructions_url"]:
-            links.append(f'<a href="{html.escape(row["instructions_url"])}">instr</a>')
+            label = "instr &para;" if "#" in row["instructions_url"] else "instr"
+            links.append(f'<a href="{html.escape(row["instructions_url"])}">{label}</a>')
         body.append(
             f'<tr><td class="g {html.escape(row.get("fit",""))}">{html.escape(row.get("fit",""))}'
             f'{(" -> " + html.escape(row["governs"])) if row.get("governs") else ""}</td>'
@@ -272,6 +331,7 @@ def main() -> int:
     client = build_llm_client(config)
     model = resolve_llm_model(config, "micro")
     manifest = load_manifest(root=ROOT)
+    deep = _deep_links(args.year)
 
     graded: list[dict] = []
     for index, (document_id, record, spans, control) in enumerate(sample, start=1):
@@ -307,6 +367,12 @@ def main() -> int:
             grade, reason = "F", f"grader error: {type(exc).__name__}: {exc}"[:200]
             fit, governs = "UNCLEAR", ""
         form_url, instructions_url = _links(manifest, document_id)
+        extra = deep.get((document_id, str(record.get('line_anchor') or '').lower()), {})
+        if form_url and extra.get('page'):
+            form_url = f"{form_url}#page={extra['page']}"
+        if extra.get('anchor'):
+            instructions_url = extra['anchor']
+            
         graded.append({
             "document_id": document_id, "line": record.get("line_anchor"),
             "face": face, "instructions": instructions, "operation": operation,
