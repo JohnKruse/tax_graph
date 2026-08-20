@@ -21,9 +21,19 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. THREE ROUNDS RAN OVERNIGHT 2026-08-19/20 WHILE YOU SLEPT. S146 IS ACCEPTED, S147 IS
-HALF ACCEPTED, S148 IS ACCEPTED EXCEPT ITS ITEM 2 EVIDENCE. Nothing is in flight and nothing needs
-you before morning.**
+**BALL: CODEX. M20-S149 IS THE ROUND: the renderer mangles a form name, and the line 1a guard's
+three expectations each need a verdict. S146-S148 are closed; see History and `git log`.**
+
+**THE 1040 DRAFT WAS REGENERATED 2026-08-20 06:45-06:53 ON JOHN'S INSTRUCTION.** `tax_graph.cli
+extract --doc form_1040_2025 --year 2025`, **7m55s, 120 model calls, $0.40**; 161 auto-accepted, 8
+to human review, 129 deterministic issues. The draft is gitignored regenerable output and is not
+committed.
+
+**M20-S147'S PIPELINE FIX IS NOW PROVEN, ON THE PATH THAT ACTUALLY MATTERS.** Line 1a's outcome
+record came back from the model as `form: 'Form(s) W-2'`, `line: '1a'`, `box: '1'`, quoting *"Enter
+the total amount from Form(s) W-2, box 1."* **The fields the model left empty for three days are
+populated by the prompt change, with no regex anywhere near them.** Rejecting the prose-scraping
+shortcut in S148 is what made this a real test.
 
 **M20-S148 (`48c8108`, `f45a842`) IS ACCEPTED ON ITEMS 1 AND 3 (Architect, 2026-08-20).** The
 quote-regex is gone from `_filer_entry_source`, which now reads structured fields only; **no test
@@ -179,8 +189,60 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**NONE IN FLIGHT.** Three rounds closed overnight; the next is
-John's call - see Queued.
+**M20-S149: RENDER THE FORM NAME THE PIPELINE GAVE US, AND GIVE EACH STALE EXPECTATION A VERDICT.**
+
+**NO MODEL CALL, NO NETWORK, AND DO NOT REGENERATE THE DRAFT.** It was regenerated this morning at
+a cost of $0.40; everything below reads the draft as it stands.
+
+**ITEM 1 - THE RENDERER MANGLES THE FORM NAME.** `_source_label` in
+`workbench/generated_review.py` reads:
+
+    form_label = "W-2" if _compact(form) in {"w2", "formw2"} else form.replace("_", " ").strip().title()
+
+The model returns `Form(s) W-2`. `_compact('Form(s) W-2')` is `formsw2`, which is not in that set,
+so it falls through to `.title()` - **and `str.title()` capitalises after every non-letter, so
+`(s)` becomes `(S)`.** The cell renders `line 1a = Form(S) W-2 box 1`. Two defects in one line: the
+normaliser does not know the model's spelling, and `.title()` corrupts any form name containing
+punctuation. **Fix both. Do not special-case the string `Form(s) W-2`** - a normaliser that only
+knows the spellings we have seen will break on the next one.
+
+**ITEMS 2-4 - EACH EXPECTATION IN
+`test_generated_review_renders_resolved_external_sources_and_hides_sentinels` GETS ITS OWN VERDICT.**
+The test was never fully evaluated: `1a` failed first and hid the rest. **For each of the three,
+decide whether the EXPECTATION is wrong or the PIPELINE is wrong, and record which.** Do not update
+a string to match observed output - that is how a guard stops meaning anything.
+
+ITEM 2. `1a`, expects `line 1a = W-2 box 1`. The outcome record now carries the form and the box, so
+**the expectation looks right and ITEM 1 is what stands between them.** Confirm rather than assume.
+
+ITEM 3. `1e`, expects `line 1e = Form 2441, line 26`; renders `unresolved source`. The draft says
+`status: review_gap`, `review_gap: source line is not present in the deterministic outline index`,
+while the printed label reads *"Taxable dependent care benefits from Form 2441, line 26"*. **The
+form face names the source and the pipeline failed to resolve it. If that is what you find, the
+EXPECTATION IS RIGHT AND THE PIPELINE IS WRONG - leave the assertion alone, leave the test red, and
+say so.** Do not fix it by lowering it.
+
+ITEM 4. `28`, expects `line 28 = unresolved source`; renders `not derivable`. The outcome is
+`kind: not_derivable` with `reason:` *"The evidence states that Schedule 8812 must be completed to
+figure and claim the credit, but it does not provide the applicable Schedule 8812 line or amount
+needed to derive Form 1040 line 28."* The label names Schedule 8812 as the source. **Decide what
+this cell SHOULD say and justify it against the review contract** - `unresolved source` and
+`not derivable` are different claims about the same cell, and one of them is the one a reviewer
+needs. **This is the item with a real judgement in it; do not rush it.**
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not regenerate the draft, hand-edit it, or touch `graph/`.**
+- **Do not weaken, delete, or invert an assertion that is green on `main`.**
+- **Do not change an expectation to match what the code prints today** without recording why the
+  new string is correct and the old one was not.
+- No model call, no network.
+
+**THE FLOOR.**
+- **The rendered text for `1a`, `1e` and `28`**, quoted after the change.
+- **A verdict line per item**: expectation wrong, or pipeline wrong, with the reason.
+- **The guard's colour, stated plainly.** Red is an acceptable outcome if the pipeline is at fault.
+- **Focused workbench and API sets green** against their known reds. **e2e is Architect-side.**
+- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
 ## Open for Architect
 
