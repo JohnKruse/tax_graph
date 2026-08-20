@@ -71,13 +71,11 @@ def test_applied_ranges_are_in_the_graph_and_verify_exactly() -> None:
         str(item["citation_id"]): item for item in graph.items("citations")
     }
 
-    # Written by the apply run: a multi-range record whose gaps are emphasis
-    # markup only, and a single-range intake record.
+    # Rebound by M20-S160 into the acquired HTML byte coordinate space, plus
+    # the single-range intake record.
     emphasis = citations["cite_instruction_form_1040_2025_en_us_2025_publink1000106118"]
     assert emphasis["ranges"] == [
-        {"start": 89778, "end": 90051},
-        {"start": 90053, "end": 90066},
-        {"start": 90067, "end": 90068},
+        {"start": 330268, "end": 330654},
     ]
     assert citations["cite_intake_13614c_quality"].get("ranges")
 

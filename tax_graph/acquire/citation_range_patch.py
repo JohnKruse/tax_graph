@@ -42,7 +42,11 @@ def build_citation_range_patch(
         )
         source_text = texts.get(source_document_id)
         if source_text is None:
-            source_text = load_source_text(source_document_id, text_dir=text_dir)
+            source_text = load_source_text(
+                source_document_id,
+                text_dir=text_dir,
+                prefer_html=False,
+            )
             texts[source_document_id] = source_text
         quote = str(citation.get("quoted_text") or "")
         exact_start = source_text.find(quote)

@@ -9,8 +9,8 @@
     retirement plan distributions that were nontaxable because you are a retired public safety officer
   kind: row
   ranges:
-  - start: 536889
-    end: 537462
+  - start: 2183743
+    end: 2184475
 - citation_id: cite_self_employed_health_insurance_deduction_worksheet_2025_lines_2
   document_id: self_employed_health_insurance_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
@@ -20,21 +20,19 @@
     exempt from self-employment tax
   kind: row
   ranges:
-  - start: 537506
-    end: 537763
+  - start: 2184625
+    end: 2184897
 - citation_id: cite_self_employed_health_insurance_deduction_worksheet_2025_lines_3
   document_id: self_employed_health_insurance_deduction_worksheet_2025
   source_document_id: instructions_form_1040_2025
   locator: source_document=instructions_form_1040_2025;worksheet=Self-Employed Health Insurance Deduction Worksheet;lines=3
-  quoted_text: 3. **Self-employed health insurance deduction.** Enter the **smaller** of line 1 or line 2 here and on Schedule
-    1, line 17. **Don't** include this amount in figuring any medical expense deduction on Schedule A If you used either optional
-    method to figure your net earnings from self-employment, don't enter your net profit. Instead, enter the amount from Schedule
-    SE, line 4b. **Earned income includes net earnings and gains from the sale, transfer, or licensing of property you created.
-    However, it doesn't include capital gain income. If you were a more-than-2% shareholder in the S corporation under which
-    the insurance plan is established, earned income is your Medicare wages (box 5 of Form W-2) from that corporation
+  quoted_text: 3. Self-employed health insurance deduction. Enter the smaller of line 1 or line 2 here and on Schedule 1,
+    line 17. Don't include this amount in figuring any medical expense deduction on Schedule A 3. _____ *If you used either
+    optional method to figure your net earnings from self-employment, don't enter your net profit. Instead, enter the amount
+    from Schedule SE, line 4b. **Earned income includes net earnings and gains from the sale, transfer, or licensing of property
+    you created. However, it doesn't include capital gain income. If you were a more-than-2% shareholder in the S corporation
+    under which the insurance plan is established, earned income is your Medicare wages (box 5 of Form W-2) from that corporation.
   kind: row
   ranges:
-  - start: 537787
-    end: 537996
-  - start: 538019
-    end: 538532
+  - start: 2185047
+    end: 2186323

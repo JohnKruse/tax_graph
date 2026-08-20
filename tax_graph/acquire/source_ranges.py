@@ -11,6 +11,8 @@ from pathlib import Path
 import re
 from typing import Iterable, Mapping
 
+from tax_graph.acquire.html_source import HtmlSourceIndex, html_source_path
+
 
 TOKEN_RE = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)?|[0-9]+(?:[A-Za-z]+)?")
 DOT_LEADER_RE = re.compile(r"(?:\.{2,}|\.\s+\.|_{2,}|\\_{2,})")
@@ -25,12 +27,18 @@ class SourceDocumentNotFound(SourceRangeError):
 
 
 class SourceRangeOutOfBounds(SourceRangeError):
-    """A source range is outside the acquired text's character coordinates."""
+    """A source range is outside the acquired source's coordinates."""
 
 
-def load_source_text(source_document_id: str, *, text_dir: str | Path) -> str:
+def load_source_text(
+    source_document_id: str,
+    *,
+    text_dir: str | Path,
+    prefer_html: bool = True,
+) -> str:
     """Load one acquired source text with the range contract's newline rule."""
-    source_path = Path(text_dir) / f"{source_document_id}.txt"
+    html_path = html_source_path(text_dir, source_document_id) if prefer_html else None
+    source_path = html_path or (Path(text_dir) / f"{source_document_id}.txt")
     if not source_path.exists():
         raise SourceDocumentNotFound(
             f"missing acquired source text for {source_document_id}: {source_path}"
@@ -47,18 +55,24 @@ def resolve_source_range(
     text_dir: str | Path | None = None,
     source_text: str | None = None,
 ) -> str:
-    """Resolve a half-open character range in the acquired source text.
+    """Resolve a half-open range in the acquired source text.
 
-    Ranges are character offsets into the acquired ``<source_document_id>.txt``
-    file after universal-newline handling.  The ``source_text`` escape hatch is
-    only for callers that already hold that same acquired text; it does not
-    permit an HTML or PDF fallback.  Missing files and invalid ranges raise
-    distinct typed failures, so neither can be mistaken for an empty span.
+    Form-face ranges are character offsets into the acquired ``.txt`` file
+    after universal-newline handling. Instruction-document ranges are UTF-8
+    byte offsets into the acquired ``.html`` file. The ``source_text`` escape
+    hatch is only for callers that already hold that same acquired text; it
+    does not permit an HTML or PDF fallback. Missing files and invalid ranges
+    raise distinct typed failures, so neither can be mistaken for an empty
+    span.
     """
     if (text_dir is None) == (source_text is None):
         raise ValueError("provide exactly one of text_dir or source_text")
+    source_is_html = False
     if source_text is None:
+        source_is_html = html_source_path(text_dir, source_document_id) is not None
         source_text = load_source_text(source_document_id, text_dir=text_dir)
+    else:
+        source_is_html = source_document_id.startswith("instructions_") and "<" in source_text[:1000]
     if (
         isinstance(start, bool)
         or isinstance(end, bool)
@@ -66,12 +80,14 @@ def resolve_source_range(
         or not isinstance(end, int)
         or start < 0
         or end < start
-        or end > len(source_text)
+        or end > (len(source_text.encode("utf-8")) if source_is_html else len(source_text))
     ):
         raise SourceRangeOutOfBounds(
-            f"range {start}:{end} is outside {source_document_id} character text "
-            f"of length {len(source_text)}"
+            f"range {start}:{end} is outside {source_document_id} source "
+            f"of length {len(source_text.encode('utf-8')) if source_is_html else len(source_text)}"
         )
+    if source_is_html:
+        return source_text.encode("utf-8")[start:end].decode("utf-8")
     return source_text[start:end]
 
 

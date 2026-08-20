@@ -9,6 +9,7 @@ from typing import Any
 
 from tax_graph.acquire.manifest import AcquisitionManifest, load_manifest
 from tax_graph.acquire.source_ranges import resolve_source_range
+from tax_graph.acquire.html_source import HtmlSourceIndex, html_source_path
 from tax_graph.config import get_config_value, load_config, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
 from tax_graph.io.loader import load_graph
@@ -60,6 +61,10 @@ def load_document_input(
 
     text_dir = store / str(year)
     text_path = text_dir / f"{document_id}.txt"
+    if entry.kind in INSTRUCTION_KINDS:
+        html_path = text_dir / f"{document_id}.html"
+        if html_path.exists():
+            text_path = html_path
     if not text_path.exists():
         raise FileNotFoundError(f"missing rendered text: {text_path}")
 
@@ -159,6 +164,9 @@ def _load_region_document_input(
             f"promoted region line nodes are missing from graph: {document_id}"
         )
     source_path = root / ".cache" / "raw" / year / f"{parent_id}.txt"
+    html_path = source_path.with_suffix(".html")
+    if html_path.exists():
+        source_path = html_path
     source_text = source_path.read_text(encoding="utf-8") if source_path.exists() else ""
     html_faces = _worksheet_html_faces(
         document_id,
@@ -336,15 +344,18 @@ def _worksheet_face_from_ranges(
     source_document_id = str(
         citation.get("source_document_id") or citation.get("document_id") or ""
     )
-    source_value = " ".join(
-        resolve_source_range(
-            source_document_id,
-            int(item["start"]),
-            int(item["end"]),
-            source_text=source_text,
+    if source_document_id.startswith("instructions_") and "<" in source_text[:1000]:
+        source_value = HtmlSourceIndex(source_text).visible_text_for_ranges(citation["ranges"])
+    else:
+        source_value = " ".join(
+            resolve_source_range(
+                source_document_id,
+                int(item["start"]),
+                int(item["end"]),
+                source_text=source_text,
+            )
+            for item in citation["ranges"]
         )
-        for item in citation["ranges"]
-    )
     expected = tuple(_FACE_TOKEN_RE.finditer(source_value))
     actual = tuple(_FACE_TOKEN_RE.finditer(html_face))
     if not expected or not actual:
@@ -437,6 +448,10 @@ def _load_not_modeled_fields(document_id: str, *, year: str | int, root: Path) -
 def _load_related_source(document_id: str, *, entries, text_dir: Path, relationship: str) -> RelatedSourceInput:
     entry = entries[document_id]
     text_path = text_dir / f"{document_id}.txt"
+    if entry.kind in INSTRUCTION_KINDS:
+        html_path = text_dir / f"{document_id}.html"
+        if html_path.exists():
+            text_path = html_path
     if not text_path.exists():
         raise FileNotFoundError(f"missing related rendered text: {text_path}")
 

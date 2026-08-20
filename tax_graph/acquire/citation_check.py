@@ -17,6 +17,7 @@ from tax_graph.acquire.source_ranges import (
     load_source_text,
     resolve_source_range,
 )
+from tax_graph.acquire.html_source import HtmlSourceIndex, html_source_path
 
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.io.loader import load_graph
@@ -97,11 +98,16 @@ def check_graph_citations(
     graph = load_graph(year, root)
     text_dir = Path(raw_store) / str(year)
     manifest = load_manifest(root=root)
-    source_pins = {
-        entry.document_id: entry.expected_sha256
-        for entry in manifest.documents
-        if entry.expected_sha256
-    }
+    source_pins = {}
+    for entry in manifest.documents:
+        if not entry.expected_sha256:
+            continue
+        html_metadata = text_dir / f"{entry.document_id}.html.json"
+        if html_metadata.exists():
+            metadata = json.loads(html_metadata.read_text(encoding="utf-8"))
+            source_pins[entry.document_id] = str(metadata.get("content_hash") or "")
+        else:
+            source_pins[entry.document_id] = entry.expected_sha256
     return check_citation_integrity(
         graph.items("citations"),
         text_dir=text_dir,
@@ -136,6 +142,7 @@ def check_citation_integrity(
     checked = 0
     checked_sources: set[str] = set()
     source_text_cache: dict[str, str] = {}
+    html_index_cache: dict[str, HtmlSourceIndex] = {}
 
     for citation in citations:
         document_id = citation["document_id"]
@@ -238,7 +245,17 @@ def check_citation_integrity(
         if source_text is None:
             source_text = load_source_text(source_document_id, text_dir=text_root)
             source_text_cache[source_document_id] = source_text
-        span = _join_source_fragments(source_text, resolved_ranges, fragments)
+        html_index = None
+        if html_source_path(text_root, source_document_id) is not None:
+            html_index = html_index_cache.get(source_document_id)
+            if html_index is None:
+                html_index = HtmlSourceIndex(source_text)
+                html_index_cache[source_document_id] = html_index
+        span = (
+            html_index.visible_text_for_ranges(resolved_ranges)
+            if html_index is not None
+            else _join_source_fragments(source_text, resolved_ranges, fragments)
+        )
         telltale = _range_telltale(
             citation,
             source_document_id=source_document_id,
@@ -299,7 +316,9 @@ def _detect_source_drift(text_root: Path, source_document_id: str, source_pins: 
     expected = source_pins.get(source_document_id)
     if not expected:
         return None
-    metadata_path = text_root / f"{source_document_id}.json"
+    metadata_path = text_root / f"{source_document_id}.html.json"
+    if not metadata_path.exists():
+        metadata_path = text_root / f"{source_document_id}.json"
     if not metadata_path.exists():
         return f"source drift: missing metadata for pinned document {source_document_id}"
     metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
@@ -341,6 +360,8 @@ def _range_telltale(
 
 def _contiguous_quote_ranges(source_text: str, quote: str) -> tuple[dict[str, int], ...] | None:
     """Find a single contiguous token passage for provenance diagnosis."""
+    if "<html" in source_text[:1000].lower() or "<div" in source_text[:1000].lower():
+        return HtmlSourceIndex(source_text).ranges_for_quote(quote)
     source_index = SourceTextIndex(source_text)
     quote_tokens = SourceTextIndex(quote).tokens
     if not source_index.tokens or not quote_tokens:

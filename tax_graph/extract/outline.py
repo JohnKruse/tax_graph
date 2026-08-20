@@ -22,10 +22,16 @@ from tax_graph.acquire.source_ranges import SourceTextIndex
 from tax_graph.extract.evidence import normalize_evidence_text
 from tax_graph.extract.structure import StructureFinding, StructureRow
 from tax_graph.extract.instruction_sections import (
+    InstructionLocator,
+    InstructionSection,
     InstructionSectionsFrame,
     build_instruction_sections,
     empty_instruction_sections_frame,
     write_instruction_sections_artifact,
+)
+from tax_graph.extract.model_instruction_segmenter import (
+    ModelInstructionFrame,
+    build_frame_from_source,
 )
 
 
@@ -595,7 +601,11 @@ def join_adjacent_source_spans(
     return result
 
 
-def build_candidate_spans(document: SourceDocumentInput) -> list[CandidateSpan]:
+def build_candidate_spans(
+    document: SourceDocumentInput,
+    *,
+    instruction_frame: InstructionSectionsFrame | None = None,
+) -> list[CandidateSpan]:
     """Segment form and bundled sources into verbatim candidate spans.
 
     Instruction spans are projections of the deterministic
@@ -608,7 +618,15 @@ def build_candidate_spans(document: SourceDocumentInput) -> list[CandidateSpan]:
     spans.extend(source_spans)
     spans.extend(join_adjacent_source_spans(source_spans, source_text=document.text))
     for source in document.related_sources:
-        spans.extend(_spans_for_related_source(source))
+        spans.extend(
+            _spans_for_related_source(
+                source,
+                frame=instruction_frame
+                if instruction_frame is not None
+                and instruction_frame.source_document_id == source.document_id
+                else None,
+            )
+        )
     return spans
 
 
@@ -681,8 +699,11 @@ def build_instruction_sections_frame(
     document: SourceDocumentInput,
     *,
     outline: OutlineTree | None = None,
+    client: Any | None = None,
+    config: dict[str, Any] | None = None,
+    root: str | Path | None = None,
 ) -> InstructionSectionsFrame:
-    """Build the persisted instruction frame for one form extraction."""
+    """Build the instruction frame, using the model for acquired HTML."""
     tree = outline if outline is not None else build_outline_tree(document)
     expected_lines = {
         document.document_id: sorted(
@@ -703,11 +724,32 @@ def build_instruction_sections_frame(
             year=document.year,
             source_path=None,
         )
+    if source.text_path.suffix.lower() == ".html" and client is not None:
+        model_frame = build_frame_from_source(
+            source.text_path,
+            source_document_id=source.document_id,
+            config=config or {},
+            root=root or project_root(),
+            client=client,
+            year=document.year,
+        )
+        return _instruction_frame_from_model(
+            model_frame,
+            source_text=source.text,
+            expected_lines=expected_lines,
+        )
+
+    fallback_path = source.text_path
+    if fallback_path.suffix.lower() == ".html":
+        candidate = fallback_path.with_suffix(".txt")
+        if candidate.exists():
+            fallback_path = candidate
+    fallback_text = fallback_path.read_text(encoding="utf-8") if fallback_path.exists() else source.text
     return build_instruction_sections(
-        source.text,
+        fallback_text,
         source_document_id=source.document_id,
         year=document.year,
-        source_path=source.text_path,
+        source_path=fallback_path,
         expected_lines=expected_lines,
     )
 
@@ -788,15 +830,110 @@ def _flatten_outline_nodes(nodes: list[OutlineNode]) -> list[OutlineNode]:
     return flattened
 
 
-def _spans_for_related_source(source: RelatedSourceInput) -> list[CandidateSpan]:
-    frame = build_instruction_sections(
-        source.text,
-        source_document_id=source.document_id,
-        source_path=source.text_path,
-    )
+def _spans_for_related_source(
+    source: RelatedSourceInput,
+    *,
+    frame: InstructionSectionsFrame | None = None,
+) -> list[CandidateSpan]:
+    if frame is None:
+        source_path = source.text_path
+        source_text = source.text
+        if source_path.suffix.lower() == ".html":
+            fallback_path = source_path.with_suffix(".txt")
+            if fallback_path.exists():
+                source_path = fallback_path
+                source_text = fallback_path.read_text(encoding="utf-8")
+        frame = build_instruction_sections(
+            source_text,
+            source_document_id=source.document_id,
+            source_path=source_path,
+        )
     if frame.sections:
-        return _spans_for_instruction_frame(frame, source_text=source.text)
+        source_text = source.text
+        if frame.source_path and str(frame.source_path).lower().endswith(".txt"):
+            source_text = Path(frame.source_path).read_text(encoding="utf-8")
+        return _spans_for_instruction_frame(frame, source_text=source_text)
     return _spans_for_text(source.document_id, source.relationship, source.text)
+
+
+def _instruction_frame_from_model(
+    model_frame: ModelInstructionFrame,
+    *,
+    source_text: str,
+    expected_lines: dict[str, list[str]],
+) -> InstructionSectionsFrame:
+    """Project verified model byte sections into the shared frame contract."""
+    source_bytes = source_text.encode("utf-8")
+    sections: list[InstructionSection] = []
+    for model_section in model_frame.sections:
+        start = model_section.start_byte
+        end = model_section.end_byte
+        section_text = source_bytes[start:end].decode("utf-8")
+        start_line = source_bytes[:start].decode("utf-8").count("\n") + 1
+        end_line = start_line + section_text.count("\n")
+        line_tokens = tuple(
+            token.lower()
+            for token in model_section.governs
+            if re.fullmatch(r"[0-9]+[a-z]?", token, re.IGNORECASE)
+        )
+        section_id = model_section.section_id
+        locator = InstructionLocator(
+            source_document_id=model_frame.source_document_id,
+            source_path=model_frame.source_path,
+            start_line=start_line,
+            end_line=max(start_line, end_line),
+            start_offset=start,
+            end_offset=end,
+            page=None,
+            heading_level=model_section.level,
+        )
+        owned_lines = line_tokens or ("",)
+        for line in owned_lines:
+            sections.append(
+                InstructionSection(
+                    section_id=section_id,
+                    document_id=model_section.document_id,
+                    line=line,
+                    line_tokens=line_tokens,
+                    heading=model_section.heading,
+                    context_heading=model_section.heading,
+                    text=section_text,
+                    locator=locator,
+                )
+            )
+    coverage = dict(model_frame.coverage)
+    coverage["forms"] = _model_coverage_by_form(sections, expected_lines)
+    coverage["source_coordinate_space"] = "utf8_bytes"
+    return InstructionSectionsFrame(
+        schema_version=1,
+        year=model_frame.year,
+        source_document_id=model_frame.source_document_id,
+        source_path=model_frame.source_path,
+        sections=tuple(sections),
+        coverage=coverage,
+    )
+
+
+def _model_coverage_by_form(
+    sections: list[InstructionSection],
+    expected_lines: dict[str, list[str]],
+) -> dict[str, dict[str, Any]]:
+    """Summarize model-owned line coverage with the legacy frame keys."""
+    result: dict[str, dict[str, Any]] = {}
+    for document_id, expected in expected_lines.items():
+        found = sorted({line for section in sections if section.document_id == document_id for line in section.line_tokens})
+        expected_values = sorted({str(line).lower() for line in expected})
+        result[document_id] = {
+            "section_count": len({section.section_id for section in sections if section.document_id == document_id}),
+            "line_count": len(found),
+            "lines_with_section": found,
+            "expected_line_count": len(expected_values),
+            "lines_without_section": [line for line in expected_values if line not in found],
+            "wrong_owner_spans_before": 0,
+            "wrong_owner_spans_after": 0,
+            "has_sections": any(section.document_id == document_id for section in sections),
+        }
+    return result
 
 
 def _spans_for_instruction_frame(

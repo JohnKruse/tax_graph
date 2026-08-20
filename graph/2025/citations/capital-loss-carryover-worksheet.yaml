@@ -3,11 +3,11 @@
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;lines=1
   quoted_text: 1. Enter the amount from your 2024 Form 1040, 1040-SR, or 1040-NR, line 15. If the amount would have been a
-    loss if you could enter a negative number on that line, enclose the amount in parentheses | 1
+    loss if you could enter a negative number on that line, enclose the amount in parentheses 1.
   kind: row
   ranges:
-  - start: 60883
-    end: 61084
+  - start: 169831
+    end: 170122
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_2
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -15,17 +15,17 @@
   quoted_text: 2. Enter the loss from your 2024 Schedule D, line 21, as a positive amount
   kind: row
   ranges:
-  - start: 61112
-    end: 61186
+  - start: 170236
+    end: 170353
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_3
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;lines=3
-  quoted_text: 3. Combine lines 1 and 2. If zero or less, enter -0
+  quoted_text: 3. Combine lines 1 and 2. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 61204
-    end: 61255
+  - start: 170517
+    end: 170612
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_4
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -33,8 +33,8 @@
   quoted_text: 4. Enter the smaller of line 2 or line 3
   kind: row
   ranges:
-  - start: 61274
-    end: 61314
+  - start: 170776
+    end: 170890
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_5
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -42,17 +42,17 @@
   quoted_text: 5. Enter the loss from your 2024 Schedule D, line 7, as a positive amount
   kind: row
   ranges:
-  - start: 61454
-    end: 61527
+  - start: 171476
+    end: 171592
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_6
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;lines=6
-  quoted_text: 6. Enter any gain from your 2024 Schedule D, line 15. If a loss, enter -0
+  quoted_text: 6. Enter any gain from your 2024 Schedule D, line 15. If a loss, enter -0-
   kind: row
   ranges:
-  - start: 61545
-    end: 61618
+  - start: 171756
+    end: 171861
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_7
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -60,18 +60,18 @@
   quoted_text: 7. Add lines 4 and 6
   kind: row
   ranges:
-  - start: 61637
-    end: 61657
+  - start: 172121
+    end: 172184
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_8
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;lines=8
-  quoted_text: 8. **Short-term capital loss carryover for 2025.** Subtract line 7 from line 5. If zero or less, enter -0-.
-    If more than zero, also enter this amount on Schedule D, line 6
+  quoted_text: 8. Short-term capital loss carryover for 2025. Subtract line 7 from line 5. If zero or less, enter -0-. If
+    more than zero, also enter this amount on Schedule D, line 6
   kind: row
   ranges:
-  - start: 61675
-    end: 61846
+  - start: 172348
+    end: 172601
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_9
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -79,26 +79,26 @@
   quoted_text: 9. Enter the loss from your 2024 Schedule D, line 15, as a positive amount
   kind: row
   ranges:
-  - start: 61974
-    end: 62048
+  - start: 173079
+    end: 173196
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_10
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;lines=10
-  quoted_text: 10. Enter any gain from your 2024 Schedule D, line 7. If a loss, enter -0
+  quoted_text: 10. Enter any gain from your 2024 Schedule D, line 7. If a loss, enter -0-
   kind: row
   ranges:
-  - start: 62066
-    end: 62139
+  - start: 173360
+    end: 173465
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_11
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;lines=11
-  quoted_text: 11. Subtract line 5 from line 4. If zero or less, enter -0
+  quoted_text: 11. Subtract line 5 from line 4. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 62159
-    end: 62217
+  - start: 173726
+    end: 173816
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_12
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -106,41 +106,40 @@
   quoted_text: 12. Add lines 10 and 11
   kind: row
   ranges:
-  - start: 62237
-    end: 62260
+  - start: 174077
+    end: 174143
 - citation_id: cite_capital_loss_carryover_worksheet_2025_lines_13
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;lines=13
-  quoted_text: 13. **Long-term capital loss carryover for 2025.** Subtract line 12 from line 9. If zero or less, enter -0-.
-    If more than zero, also enter this amount on Schedule D, line 14
+  quoted_text: 13. Long-term capital loss carryover for 2025. Subtract line 12 from line 9. If zero or less, enter -0-. If
+    more than zero, also enter this amount on Schedule D, line 14
   kind: row
   ranges:
-  - start: 62279
-    end: 62452
+  - start: 174308
+    end: 174563
 - citation_id: cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_4_0
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;after=4
-  quoted_text: '| **If line 7 of your 2024 Schedule D is a loss, go to line 5; otherwise, enter -0- on line 5 and go to line
-    9.** | |'
+  quoted_text: If line 7 of your 2024 Schedule D is a loss, go to line 5; otherwise, enter -0- on line 5 and go to line 9.
   kind: routing_sentence
   governs:
   - '7'
   - '5'
   - '9'
   ranges:
-  - start: 61329
-    end: 61450
+  - start: 171200
+    end: 171307
 - citation_id: cite_capital_loss_carryover_worksheet_2025_routing_sentence_after_8_1
   document_id: capital_loss_carryover_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Capital Loss Carryover Worksheet;after=8
-  quoted_text: '| **If line 15 of your 2024 Schedule D is a loss, go to line 9; otherwise, skip lines 9 through 13.** | |'
+  quoted_text: If line 15 of your 2024 Schedule D is a loss, go to line 9; otherwise, skip lines 9 through 13.
   kind: routing_sentence
   governs:
   - '15'
   - '9'
   ranges:
-  - start: 61861
-    end: 61970
+  - start: 172815
+    end: 172910

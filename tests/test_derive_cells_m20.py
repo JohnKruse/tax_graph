@@ -1911,6 +1911,12 @@ def test_real_1040_frame_carries_join_ownership_and_printed_line_inventory() -> 
     )
     source_texts = {document.text}
     source_texts.update(source.text for source in document.related_sources)
+    source_texts.update(
+        source.text_path.with_suffix(".txt").read_text(encoding="utf-8")
+        for source in document.related_sources
+        if source.text_path.suffix == ".html"
+        and source.text_path.with_suffix(".txt").exists()
+    )
     # Assembled physical rows join source lines with one space; compare spans
     # after whitespace normalization, which preserves the acquired text order.
     normalized = lambda value: " ".join(value.split())

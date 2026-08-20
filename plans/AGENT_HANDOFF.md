@@ -587,6 +587,35 @@ instruction evidence, against today's 52% of 651**.
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+**WORKER STATUS (2026-08-20; M20-S160 implementation).** Instruction sources now select the
+acquired HTML for instruction documents while form faces remain acquired text. The accepted
+pilot segmenter is lifted into `tax_graph/extract/model_instruction_segmenter.py` and is the
+HTML instruction-frame path when a client is supplied; the accepted deterministic parser remains
+the no-client fallback. No draft was promoted and the protected graph set is unchanged.
+
+RAN: `.venv\Scripts\python.exe tools\rebind_instruction_html_ranges_m20_s160.py --write` ->
+affected sources `instructions_form_1040_2025`, `instructions_form_2441_2025`,
+`instructions_form_8949_2025`, `instructions_schedule_d_2025`; **338** affected ranges
+re-derived; **255** unaffected ranges unchanged; **593** ranged citations checked; **0**
+integrity mismatches.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s160.py tests\test_instruction_sections_m20.py tests\test_acquire_citation_check.py pilot\test_model_instruction_segmenter_m20_s123.py pilot\test_model_instruction_segmenter_m20_s124.py pilot\test_model_instruction_segmenter_m20_s126.py -q` -> **56 passed**.
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py tests\test_outline_span_resolution_m20.py tests\test_m20_s117.py tests\test_instruction_promotion_m18.py tests\test_instruction_html_m18.py -q` -> **45 passed, 1 skipped**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py plans\AGENT_HANDOFF.md` ->
+**diagnosis evidence check OK**.
+RAN: `.venv\Scripts\python.exe -m py_compile tax_graph\acquire\html_source.py tax_graph\acquire\source_ranges.py tax_graph\acquire\citation_check.py tax_graph\extract\model_instruction_segmenter.py tax_graph\extract\inputs.py tax_graph\extract\outline.py tax_graph\extract\outline_pipeline.py tax_graph\ingest\core_source_ranges.py tools\rebind_instruction_html_ranges_m20_s160.py` -> exit 0.
+
+OCR fallback: `instructions_form_1040_2025` still needs the OCR text for the 2025 Tax Table
+(0 HTML matches versus 13 OCR matches) and the EIC tables, which are referenced but not
+reproduced in the acquired HTML. The HTML remains the source for instruction content it carries.
+
+NOT RUN: live line-anchor and no-instruction-evidence measurement for `form_1040_2025` and
+`form_1116_2025`. The authorized attempts wrote only partial response recordings: the 120 KB
+window run failed with `LlmResponseTruncated` at `max_tokens=12000`, and the 40 KB retry failed
+with the same provider truncation after two windows. No measurement counts are claimed.
+NOT RUN: e2e, because the user specified that it exceeds the launcher cap.
+
 ## Open for Architect
 
 **WORKER STATUS (2026-08-20; M20-S159 prompt hygiene is implemented).** Removed the

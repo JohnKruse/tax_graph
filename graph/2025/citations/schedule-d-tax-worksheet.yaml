@@ -4,11 +4,11 @@
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=1
   quoted_text: 1. Enter your taxable income from Form 1040, 1040-SR, or 1040-NR, line 15. (However, if you are filing Form
     2555 (relating to foreign earned income), enter instead the amount from line 3 of the Foreign Earned Income Tax Worksheet
-    in the instructions for Form 1040, line 16
+    in the instructions for Form 1040, line 16.)
   kind: row
   ranges:
-  - start: 81227
-    end: 81499
+  - start: 209667
+    end: 210037
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_2
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -16,8 +16,8 @@
   quoted_text: 2. Enter your qualified dividends from Form 1040, 1040-SR, or 1040-NR, line 3a
   kind: row
   ranges:
-  - start: 81509
-    end: 81587
+  - start: 210320
+    end: 210493
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_3
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -25,35 +25,35 @@
   quoted_text: 3. Enter the amount from Form 4952 (used to figure investment interest expense deduction), line 4g
   kind: row
   ranges:
-  - start: 81595
-    end: 81693
+  - start: 210839
+    end: 211020
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_4
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=4
-  quoted_text: 4. Enter the amount from Form 4952, line 4e
+  quoted_text: 4. Enter the amount from Form 4952, line 4e*
   kind: row
   ranges:
-  - start: 81701
-    end: 81744
+  - start: 211355
+    end: 211482
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_5
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=5
-  quoted_text: 5. Subtract line 4 from line 3. If zero or less, enter -0
+  quoted_text: 5. Subtract line 4 from line 3. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 81753
-    end: 81810
+  - start: 211817
+    end: 211970
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_6
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=6
-  quoted_text: 6. Subtract line 5 from line 2. If zero or less, enter -0
+  quoted_text: 6. Subtract line 5 from line 2. If zero or less, enter -0-**
   kind: row
   ranges:
-  - start: 81819
-    end: 81876
+  - start: 212316
+    end: 212471
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_7
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -61,8 +61,8 @@
   quoted_text: 7. Enter the smaller of line 15 or line 16 of Schedule D
   kind: row
   ranges:
-  - start: 81887
-    end: 81943
+  - start: 212805
+    end: 212999
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_8
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -70,17 +70,17 @@
   quoted_text: 8. Enter the smaller of line 3 or line 4
   kind: row
   ranges:
-  - start: 81951
-    end: 81991
+  - start: 213345
+    end: 213523
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_9
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=9
-  quoted_text: 9. Subtract line 8 from line 7. If zero or less, enter -0
+  quoted_text: 9. Subtract line 8 from line 7. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 81999
-    end: 82056
+  - start: 196774
+    end: 196875
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_10
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -88,17 +88,17 @@
   quoted_text: 10. Add lines 6 and 9
   kind: row
   ranges:
-  - start: 82067
-    end: 82088
+  - start: 214358
+    end: 214475
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_11
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=11
-  quoted_text: 11. Add lines 18 and 19 of Schedule D
+  quoted_text: 11. Add lines 18 and 19 of Schedule D**
   kind: row
   ranges:
-  - start: 82097
-    end: 82134
+  - start: 214810
+    end: 214944
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_12
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -106,8 +106,8 @@
   quoted_text: 12. Enter the smaller of line 9 or line 11
   kind: row
   ranges:
-  - start: 82145
-    end: 82187
+  - start: 215279
+    end: 215460
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_13
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -115,27 +115,27 @@
   quoted_text: 13. Subtract line 12 from line 10
   kind: row
   ranges:
-  - start: 82196
-    end: 82229
+  - start: 215795
+    end: 215924
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_14
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=14
-  quoted_text: 14. Subtract line 13 from line 1. If zero or less, enter -0
+  quoted_text: 14. Subtract line 13 from line 1. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 82238
-    end: 82297
+  - start: 216208
+    end: 216364
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_15
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=15
   quoted_text: '15. Enter: $48,350 if single or married filing separately; $96,700 if married filing jointly or qualifying
-    surviving spouse; or $64,750 if head of household'
+    surviving spouse; or $64,750 if head of household.'
   kind: row
   ranges:
-  - start: 82307
-    end: 82466
+  - start: 216648
+    end: 217140
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_16
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -143,8 +143,8 @@
   quoted_text: 16. Enter the smaller of line 1 or line 15
   kind: row
   ranges:
-  - start: 82476
-    end: 82518
+  - start: 217599
+    end: 217767
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_17
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -152,27 +152,27 @@
   quoted_text: 17. Enter the smaller of line 14 or line 16
   kind: row
   ranges:
-  - start: 82527
-    end: 82570
+  - start: 218130
+    end: 218311
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_18
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=18
-  quoted_text: 18. Subtract line 10 from line 1. If zero or less, enter -0
+  quoted_text: 18. Subtract line 10 from line 1. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 82579
-    end: 82638
+  - start: 218646
+    end: 218801
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_19
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=19
   quoted_text: '19. Enter the smaller of line 1 or: $197,300 if single or married filing separately; $394,600 if married filing
-    jointly or qualifying surviving spouse; or $197,300 if head of household'
+    jointly or qualifying surviving spouse; or $197,300 if head of household.'
   kind: row
   ranges:
-  - start: 82648
-    end: 82835
+  - start: 219135
+    end: 219892
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_20
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -180,8 +180,8 @@
   quoted_text: 20. Enter the smaller of line 14 or line 19
   kind: row
   ranges:
-  - start: 82845
-    end: 82888
+  - start: 220376
+    end: 220544
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_21
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -189,17 +189,17 @@
   quoted_text: 21. Enter the larger of line 18 or line 20
   kind: row
   ranges:
-  - start: 82897
-    end: 82939
+  - start: 220934
+    end: 221115
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_22
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=22
-  quoted_text: 22. Subtract line 17 from line 16. This amount is taxed at 0
+  quoted_text: 22. Subtract line 17 from line 16. This amount is taxed at 0%
   kind: row
   ranges:
-  - start: 82948
-    end: 83008
+  - start: 221450
+    end: 221607
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_23
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -207,36 +207,36 @@
   quoted_text: 23. Enter the smaller of line 1 or line 13
   kind: row
   ranges:
-  - start: 83120
-    end: 83162
+  - start: 222259
+    end: 222439
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_24
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=24
-  quoted_text: 24. Enter the amount from line 22. (If line 22 is blank, enter -0
+  quoted_text: 24. Enter the amount from line 22. (If line 22 is blank, enter -0-.)
   kind: row
   ranges:
-  - start: 83171
-    end: 83236
+  - start: 222774
+    end: 222937
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_25
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=25
-  quoted_text: 25. Subtract line 24 from line 23. If zero or less, enter -0
+  quoted_text: 25. Subtract line 24 from line 23. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 83247
-    end: 83307
+  - start: 223272
+    end: 223428
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_26
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=26
   quoted_text: '26. Enter: $533,400 if single; $300,000 if married filing separately; $600,050 if married filing jointly or
-    qualifying surviving spouse; or $566,700 if head of household'
+    qualifying surviving spouse; or $566,700 if head of household.'
   kind: row
   ranges:
-  - start: 83317
-    end: 83490
+  - start: 223912
+    end: 224532
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_27
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -244,8 +244,8 @@
   quoted_text: 27. Enter the smaller of line 1 or line 26
   kind: row
   ranges:
-  - start: 83500
-    end: 83542
+  - start: 225077
+    end: 225201
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_28
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -253,17 +253,17 @@
   quoted_text: 28. Add lines 21 and 22
   kind: row
   ranges:
-  - start: 83551
-    end: 83574
+  - start: 225766
+    end: 225871
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_29
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=29
-  quoted_text: 29. Subtract line 28 from line 27. If zero or less, enter -0
+  quoted_text: 29. Subtract line 28 from line 27. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 83583
-    end: 83643
+  - start: 226434
+    end: 226577
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_30
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -271,168 +271,168 @@
   quoted_text: 30. Enter the smaller of line 25 or line 29
   kind: row
   ranges:
-  - start: 83653
-    end: 83696
+  - start: 227142
+    end: 227310
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_31
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=31
-  quoted_text: 31. | Multiply line 30 by 15% (0.15
+  quoted_text: 31. Multiply line 30 by 15% (0.15)
   kind: row
   ranges:
-  - start: 83781
-    end: 83816
+  - start: 228824
+    end: 228941
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_32
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=32
-  quoted_text: 32. | Add lines 24 and 30 | 32. | |
+  quoted_text: 32. Add lines 24 and 30 32.
   kind: row
   ranges:
-  - start: 83859
-    end: 83897
+  - start: 229281
+    end: 229486
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_33
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=33
-  quoted_text: 33. | Subtract line 32 from line 23
+  quoted_text: 33. Subtract line 32 from line 23
   kind: row
   ranges:
-  - start: 84024
-    end: 84059
+  - start: 230307
+    end: 230423
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_34
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=34
-  quoted_text: 34. | Multiply line 33 by 20% (0.20) | 34. | |
+  quoted_text: 34. Multiply line 33 by 20% (0.20) 34.
   kind: row
   ranges:
-  - start: 84075
-    end: 84124
+  - start: 230853
+    end: 231021
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_35
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=35
-  quoted_text: 35. | Enter the **smaller** of line 9 above or Schedule D, line 19
+  quoted_text: 35. Enter the smaller of line 9 above or Schedule D, line 19
   kind: row
   ranges:
-  - start: 84261
-    end: 84327
+  - start: 231581
+    end: 231766
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_36
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=36
-  quoted_text: 36. | Add lines 10 and 21
+  quoted_text: 36. Add lines 10 and 21
   kind: row
   ranges:
-  - start: 84343
-    end: 84368
+  - start: 232088
+    end: 232193
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_37
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=37
-  quoted_text: 37. | Enter the amount from line 1 above
+  quoted_text: 37. Enter the amount from line 1 above
   kind: row
   ranges:
-  - start: 84384
-    end: 84424
+  - start: 232527
+    end: 232647
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_38
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=38
-  quoted_text: 38. | Subtract line 37 from line 36. If zero or less, enter -0
+  quoted_text: 38. Subtract line 37 from line 36. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 84440
-    end: 84502
+  - start: 232981
+    end: 233124
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_39
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=39
-  quoted_text: 39. | Subtract line 38 from line 35. If zero or less, enter -0
+  quoted_text: 39. Subtract line 38 from line 35. If zero or less, enter -0-
   kind: row
   ranges:
-  - start: 84519
-    end: 84581
+  - start: 233446
+    end: 233590
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_40
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=40
-  quoted_text: 40. | Multiply line 39 by 25% (0.25) | 40. | |
+  quoted_text: 40. Multiply line 39 by 25% (0.25) 40.
   kind: row
   ranges:
-  - start: 84598
-    end: 84647
+  - start: 233912
+    end: 234081
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_41
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=41
-  quoted_text: 41. | Add lines 21, 22, 30, 33, and 39
+  quoted_text: 41. Add lines 21, 22, 30, 33, and 39
   kind: row
   ranges:
-  - start: 84784
-    end: 84822
+  - start: 234627
+    end: 234746
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_42
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=42
-  quoted_text: 42. | Subtract line 41 from line 1
+  quoted_text: 42. Subtract line 41 from line 1
   kind: row
   ranges:
-  - start: 84838
-    end: 84872
+  - start: 235068
+    end: 235183
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_43
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=43
-  quoted_text: 43. | Multiply line 42 by 28% (0.28
+  quoted_text: 43. Multiply line 42 by 28% (0.28)
   kind: row
   ranges:
-  - start: 84888
-    end: 84923
+  - start: 235505
+    end: 235622
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_44
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=44
-  quoted_text: 44. | Figure the tax on the amount on **line 21**. If the amount on line 21 is less than $100,000, use the
-    Tax Table to figure the tax. If the amount on line 21 is $100,000 or more, use the Tax Computation Worksheet
+  quoted_text: 44. Figure the tax on the amount on line 21. If the amount on line 21 is less than $100,000, use the Tax Table
+    to figure the tax. If the amount on line 21 is $100,000 or more, use the Tax Computation Worksheet
   kind: row
   ranges:
-  - start: 84940
-    end: 85155
+  - start: 235893
+    end: 236228
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_45
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=45
-  quoted_text: 45. | Add lines 31, 34, 40, 43, and 44
+  quoted_text: 45. Add lines 31, 34, 40, 43, and 44
   kind: row
   ranges:
-  - start: 85171
-    end: 85209
+  - start: 236499
+    end: 236618
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_46
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=46
-  quoted_text: 46. | Figure the tax on the amount on **line 1**. If the amount on line 1 is less than $100,000, use the Tax
-    Table to figure the tax. If the amount on line 1 is $100,000 or more, use the Tax Computation Worksheet
+  quoted_text: 46. Figure the tax on the amount on line 1. If the amount on line 1 is less than $100,000, use the Tax Table
+    to figure the tax. If the amount on line 1 is $100,000 or more, use the Tax Computation Worksheet
   kind: row
   ranges:
-  - start: 85225
-    end: 85437
+  - start: 236889
+    end: 237221
 - citation_id: cite_schedule_d_tax_worksheet_2025_lines_47
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;lines=47
-  quoted_text: 47. | **Tax on all taxable income (including capital gains and qualified dividends).** Enter the **smaller**
-    of line 45 or line 46. Also, include this amount on Form 1040, 1040-SR, or 1040-NR, line 16. (If you are filing Form 2555,
-    don't enter this amount on Form 1040 or 1040-SR, line 16. Instead, enter it on line 4 of the Foreign Earned Income Tax
-    Worksheet in the Instructions for Form 1040.) | 47. | | * If applicable, enter instead the smaller amount you entered
-    on the dotted line next to line 4e of Form 4952. ** If you are filing Form 2555, see the footnote in the Foreign Earned
-    Income Tax Worksheet in the Instructions for Form 1040, line 16, before completing this line
+  quoted_text: 47. Tax on all taxable income (including capital gains and qualified dividends). Enter the smaller of line
+    45 or line 46. Also, include this amount on Form 1040, 1040-SR, or 1040-NR, line 16. (If you are filing Form 2555, don't
+    enter this amount on Form 1040 or 1040-SR, line 16. Instead, enter it on line 4 of the Foreign Earned Income Tax Worksheet
+    in the Instructions for Form 1040.) 47. _____ * If applicable, enter instead the smaller amount you entered on the dotted
+    line next to line 4e of Form 4952. ** If you are filing Form 2555, see the footnote in the Foreign Earned Income Tax Worksheet
+    in the Instructions for Form 1040, line 16, before completing this line.
   kind: row
   ranges:
-  - start: 85453
-    end: 86138
+  - start: 237492
+    end: 239457
 - citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_22_0
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
@@ -443,46 +443,45 @@
   - '44'
   - '23'
   ranges:
-  - start: 83018
-    end: 83119
+  - start: 222019
+    end: 222120
 - citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_32_1
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;after=32
-  quoted_text: '| **If lines 1 and 32 are the same, skip lines 33 through 43 and go to line 44. Otherwise, go to line 33.**
-    | | | |'
+  quoted_text: If lines 1 and 32 are the same, skip lines 33 through 43 and go to line 44. Otherwise, go to line 33.
   kind: routing_sentence
   governs:
   - '44'
   - '33'
   ranges:
-  - start: 83897
-    end: 84020
+  - start: 230064
+    end: 230165
 - citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_34_2
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;after=34
-  quoted_text: '| **If Schedule D, line 19, is zero or blank, skip lines 35 through 40 and go to line 41. Otherwise, go to
-    line 35.** | | | |'
+  quoted_text: If Schedule D, line 19, is zero or blank, skip lines 35 through 40 and go to line 41. Otherwise, go to line
+    35.
   kind: routing_sentence
   governs:
   - '19'
   - '41'
   - '35'
   ranges:
-  - start: 84124
-    end: 84257
+  - start: 231344
+    end: 231455
 - citation_id: cite_schedule_d_tax_worksheet_2025_routing_sentence_after_40_3
   document_id: schedule_d_tax_worksheet_2025
   source_document_id: instructions_schedule_d_2025
   locator: source_document=instructions_schedule_d_2025;worksheet=Schedule D Tax Worksheet;after=40
-  quoted_text: '| **If Schedule D, line 18, is zero or blank, skip lines 41 through 43 and go to line 44. Otherwise, go to
-    line 41.** | | | |'
+  quoted_text: If Schedule D, line 18, is zero or blank, skip lines 41 through 43 and go to line 44. Otherwise, go to line
+    41.
   kind: routing_sentence
   governs:
   - '18'
   - '44'
   - '41'
   ranges:
-  - start: 84647
-    end: 84780
+  - start: 234390
+    end: 234501

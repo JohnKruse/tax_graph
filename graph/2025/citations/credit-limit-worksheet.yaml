@@ -2,28 +2,63 @@
   document_id: credit_limit_worksheet_2025
   source_document_id: instructions_form_2441_2025
   locator: source_document=instructions_form_2441_2025;worksheet=Credit Limit Worksheet;lines=1
-  quoted_text: 1. 1. Enter the amount from Form 1040, 1040-SR, or 1040-NR, line 18
+  quoted_text: If you are filing Schedule C (Form 1040) as a statutory employee, the amount shown on line 1 of the schedule.
+    Nontaxable combat pay if you elect to include it in earned income. However, including this income will only give you a
+    larger credit if your (or your spouse's) other earned income is less than the amount entered on line 3. To make the election,
+    include all of your nontaxable combat pay in the amount you enter on line 4 (line 5 for your spouse if filing jointly).
+    If you are filing jointly and both you and your spouse received nontaxable combat pay, you can each make your own election.
+    (In other words, if one of you makes the election, the other one can also make it but doesn't have to.) The amount of
+    your nontaxable combat pay should be shown in box 12 of your Form(s) W-2 with code Q. You can elect to include your nontaxable
+    combat pay in earned income when figuring your credit, even if you elect not to include it in earned income for the earned
+    income credit (EIC) or the exclusion or deduction for child and dependent care benefits. You must reduce your earned income
+    by any loss from self-employment. Child support payments received by you aren't included in your gross income and aren't
+    considered as earned income for figuring this credit. See Pub. 503 for additional details on what is considered earned
+    income. If You or Your Spouse Was a Student or Disabled Your spouse's earned income. For each month or part of a month
+    your spouse was a student or was disabled, they are considered to have worked and earned income. Their earned income for
+    each month is considered to be at least $250 ($500 if you had two or more qualifying persons at any time during 2025).
+    Enter that amount on line 5. If your spouse also worked during that month, use the higher of $250 (or $500) or their actual
+    earned income for that month. For any month that your spouse wasn't a student or disabled, use your spouse's actual earned
+    income if they worked during the month. Your spouse was a full-time student if they were enrolled as a full-time student
+    at a school for some part of each of 5 calendar months during 2025. The months need not be consecutive. A school doesn't
+    include an on-the-job training course, a correspondence school, or a school offering courses only through the Internet.
+    Your spouse was disabled if they weren't physically or mentally capable of caring for themselves. Figure your spouse's
+    earned income on a monthly basis. Your earned income. These rules for a spouse who was a student or disabled also apply
+    to you if you were a student or disabled. For each month or part of a month you were a student or disabled, your earned
+    income is considered to be at least $250 ($500 if you had two or more qualifying persons at any time during 2025). Enter
+    that amount on line 4. If you also worked during that month, enter the higher of $250 (or $500) or your actual earned
+    income for that month. Both spouses were students or disabled. If, in the same month, both you and your spouse were either
+    students or disabled, only one of you can be treated as having earned income in that month under these rules. Special
+    Situations If you are filing jointly, disregard community property laws in determining the earned income of an individual.
+    Community property laws are explained in Pub. 555. If your spouse died in 2025, see Pub. 503. If you enter deemed income
+    of $250 or $500 a month on Form 2441, you must check the box on Form 2441, line B. Line 9b If you had qualified expenses
+    for 2024 that you didn't pay until 2025 and you didn't claim a credit on the maximum amount of qualified expenses for
+    2024, you may be able to increase the amount of the credit you can take in 2025. To figure the credit, complete Worksheet
+    A at the end of these instructions. Enter on line 9b the amount from line 13 of Worksheet A. Example. In 2024, you had
+    childcare expenses of $2,600 for your 4-year-old child. Of the $2,600, you paid $2,000 in 2024 and $600 in 2025. You will
+    use Worksheet A to figure your credit on the 2024 expenses paid in 2025. The credit for these expenses will be entered
+    on your 2025 Form 2441, line 9b. Line 10 Credit Limit Worksheet Complete this worksheet to figure the amount to enter
+    on line 10. 1. Enter the amount from Form 1040, 1040-SR, or 1040-NR, line 18
   kind: row
   ranges:
-  - start: 25254
-    end: 25321
+  - start: 110700
+    end: 118228
 - citation_id: cite_credit_limit_worksheet_2025_lines_2
   document_id: credit_limit_worksheet_2025
   source_document_id: instructions_form_2441_2025
   locator: source_document=instructions_form_2441_2025;worksheet=Credit Limit Worksheet;lines=2
-  quoted_text: 2. Enter the amount from Schedule 3 (Form 1040), line 1 (foreign tax
-    credit) and line 6 (Form 8978, line 14
+  quoted_text: 2. Enter the amount from Schedule 3 (Form 1040), line 1 (foreign tax credit) and line 6l (Form 8978, line 14)
   kind: row
   ranges:
-  - start: 25349
-    end: 25456
+  - start: 118448
+    end: 118604
 - citation_id: cite_credit_limit_worksheet_2025_lines_3
   document_id: credit_limit_worksheet_2025
   source_document_id: instructions_form_2441_2025
   locator: source_document=instructions_form_2441_2025;worksheet=Credit Limit Worksheet;lines=3
-  quoted_text: 3. 3. Subtract line 2 from line 1. Also enter this amount on Form 2441,
-    line 10. But if zero or less, stop; you can't take the credit
+  quoted_text: Enter the amount from Schedule 3 (Form 1040), line 1 (foreign tax credit) and line 6l (Form 8978, line 14)
+    2. _____ 3. Subtract line 2 from line 1. Also enter this amount on Form 2441, line 10. But if zero or less, stop; you
+    can't take the credit
   kind: row
   ranges:
-  - start: 25482
-    end: 25615
+  - start: 118498
+    end: 119027

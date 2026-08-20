@@ -92,8 +92,14 @@ def generate_outline_first_drafts(
 ) -> ExtractionBatch:
     """Generate draft objects by walking deterministic outline nodes."""
     outline = build_outline_tree(document)
-    instruction_frame = build_instruction_sections_frame(document, outline=outline)
-    spans = build_candidate_spans(document)
+    instruction_frame = build_instruction_sections_frame(
+        document,
+        outline=outline,
+        client=client,
+        config=config,
+        root=root,
+    )
+    spans = build_candidate_spans(document, instruction_frame=instruction_frame)
     flows = build_outbound_flows(document, outline=outline, spans=spans)
     run_outline_artifact_checks(document, outline, spans, flows).raise_for_issues()
     model = _micro_model(config or {})

@@ -24,6 +24,7 @@ from tax_graph.acquire.source_ranges import (
     normalize_source_quote,
     resolve_source_range,
 )
+from tax_graph.acquire.html_source import HtmlSourceIndex, html_source_path
 from tax_graph.config import get_config_value, load_config
 from tax_graph.ingest.worksheet_harvest import (
     QDCGT_WORKSHEET_TARGET,
@@ -91,7 +92,11 @@ def _raw_root(root: Path, year: str) -> Path:
 def _source_texts(root: Path, year: str, source_ids: Iterable[str]) -> dict[str, str]:
     raw_root = _raw_root(root, year)
     return {
-        source_id: (raw_root / f"{source_id}.txt").read_text(encoding="utf-8")
+        source_id: (
+            (raw_root / f"{source_id}.html").read_text(encoding="utf-8")
+            if html_source_path(raw_root, source_id) is not None
+            else (raw_root / f"{source_id}.txt").read_text(encoding="utf-8")
+        )
         for source_id in sorted(set(source_ids))
     }
 
@@ -202,6 +207,8 @@ def _source_quote(
     source_document_id: str = "core_source",
 ) -> str:
     """Render a new quote only from the acquired ranges that own it."""
+    if source_document_id.startswith("instructions_") and "<" in source:
+        return HtmlSourceIndex(source).visible_text_for_ranges(ranges)
     return normalize_source_quote(
         " ".join(
             resolve_source_range(
@@ -482,6 +489,8 @@ def _ranges_match_quote(
 ) -> bool:
     """Return whether ranges reproduce the pinned quote without rewriting it."""
     try:
+        if source_document_id.startswith("instructions_") and "<" in source:
+            return HtmlSourceIndex(source).visible_text_for_ranges(ranges) == normalize_source_quote(quote)
         reconstructed = normalize_source_quote(
             " ".join(
                 resolve_source_range(
@@ -502,7 +511,7 @@ def _bind_citation(
     citation: dict[str, Any],
     *,
     source: str,
-    index: SourceTextIndex,
+    index: SourceTextIndex | HtmlSourceIndex,
     used_starts: set[int],
 ) -> bool:
     citation_id = str(citation.get("citation_id") or "")
@@ -516,34 +525,34 @@ def _bind_citation(
         source_document_id=source_document_id,
     ):
         return True
-    ranges = _tax_liability_ranges(source, citation_id)
+    ranges = _html_special_ranges(source, citation_id, source_document_id)
+    if ranges is None:
+        ranges = _tax_liability_ranges(source, citation_id)
     special_ranges = ranges is not None
     if ranges is None:
         bounds = _line_bounds(source, str(citation.get("locator") or ""))
-        ranges = index.ranges_for_quote(
+        ranges = _index_quote_ranges(
+            index,
             quote,
             start=bounds[0] if bounds else 0,
             end=bounds[1] if bounds else None,
         )
         if ranges is None and bounds is not None:
-            ranges = index.ranges_for_quote(quote)
+            ranges = _index_quote_ranges(index, quote)
     if ranges is not None and not _ranges_match_quote(
         source,
         quote,
         ranges,
         source_document_id=source_document_id,
     ):
-        ranges = index.ranges_for_quote(quote)
+        ranges = _index_quote_ranges(index, quote)
         special_ranges = False
     if ranges is None:
         citation.pop("ranges", None)
         return False
     first_start = int(ranges[0]["start"])
     if first_start in used_starts and not special_ranges:
-        ranges = index.ranges_for_quote(
-            quote,
-            start=first_start + 1,
-        ) or ranges
+        ranges = _index_quote_ranges(index, quote, start=first_start + 1) or ranges
     if not _ranges_match_quote(
         source,
         quote,
@@ -555,6 +564,50 @@ def _bind_citation(
     used_starts.add(int(ranges[0]["start"]))
     citation["ranges"] = [dict(item) for item in ranges]
     return True
+
+
+def _index_quote_ranges(
+    index: SourceTextIndex | HtmlSourceIndex,
+    quote: str,
+    *,
+    start: int = 0,
+    end: int | None = None,
+) -> tuple[dict[str, int], ...] | None:
+    if isinstance(index, HtmlSourceIndex):
+        return index.ranges_for_quote(quote)
+    return index.ranges_for_quote(quote, start=start, end=end)
+
+
+def _html_special_ranges(
+    source: str,
+    citation_id: str,
+    source_document_id: str,
+) -> tuple[dict[str, int], ...] | None:
+    """Return HTML byte ranges for acquired rate-table sections."""
+    if not source_document_id.startswith("instructions_") or "<" not in source:
+        return None
+    suffixes = {
+        "single": ("Section A-Use if your filing status is", "Section B-Use if"),
+        "joint_qss": ("Section B-Use if your filing status is", "Section C-Use if"),
+        "mfs": ("Section C-Use if your filing status is", "Section D-Use if"),
+        "hoh": ("Section D-Use if your filing status is", None),
+    }
+    for suffix, (start_marker, end_marker) in suffixes.items():
+        if not citation_id.endswith(f"tax_brackets_{suffix}"):
+            continue
+        start = source.find(start_marker)
+        if start < 0:
+            return None
+        end = source.find(end_marker, start + len(start_marker)) if end_marker else len(source)
+        if end < 0:
+            end = len(source)
+        return (
+            {
+                "start": len(source[:start].encode("utf-8")),
+                "end": len(source[:end].encode("utf-8")),
+            },
+        )
+    return None
 
 
 def rebind_core_source_ranges(
@@ -602,7 +655,14 @@ def rebind_core_source_ranges(
         if entry.document_id in core_ids
     )
     sources = _source_texts(root_path, year_text, source_ids)
-    indexes = {source_id: SourceTextIndex(text) for source_id, text in sources.items()}
+    indexes = {
+        source_id: (
+            HtmlSourceIndex(text)
+            if source_id.startswith("instructions_") and "<" in text
+            else SourceTextIndex(text)
+        )
+        for source_id, text in sources.items()
+    }
     for path, records in records_by_path.items():
         for citation in records:
             source_id = str(citation.get("source_document_id") or "")

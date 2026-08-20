@@ -13,6 +13,7 @@ from tax_graph.extract.inputs import load_document_input
 from pilot.source_extents import measure_source_extents
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.acquire.source_ranges import normalize_source_quote
+from tax_graph.acquire.html_source import HtmlSourceIndex
 from tax_graph.ingest.core_source_ranges import (
     COMPUTED_TABLE_CITATION_IDS,
     COMPUTED_TABLE_KIND,
@@ -75,7 +76,7 @@ def _baseline_quote_text() -> dict[str, object]:
 
 
 def test_s107_reextracts_exactly_the_named_paraphrases() -> None:
-    """Only the 30 named A9 paraphrases may change their quote text."""
+    """Only named migrations and the S160 HTML source switch may change quotes."""
     baseline = _baseline_quote_text()
     current = _citation_records()
     changed = {
@@ -85,8 +86,16 @@ def test_s107_reextracts_exactly_the_named_paraphrases() -> None:
         and citation_id not in COMPUTED_TABLE_CITATION_IDS
         and item.get("quoted_text") != baseline[citation_id]
     }
-    assert changed == set(PARAPHRASE_CITATION_IDS)
-    assert len(changed) == 30
+    html_sources = {
+        "instructions_form_1040_2025",
+        "instructions_schedule_d_2025",
+        "instructions_form_2441_2025",
+        "instructions_form_8949_2025",
+    }
+    html_changed = changed - set(PARAPHRASE_CITATION_IDS)
+    assert all(current[citation_id].get("source_document_id") in html_sources for citation_id in html_changed)
+    assert len(changed) == 210
+    assert len(html_changed) == 180
     assert all(
         citation_id in current and current[citation_id].get("quoted_text")
         for citation_id in PARAPHRASE_CITATION_IDS
@@ -122,7 +131,8 @@ def test_core_citations_reconstruct_from_acquired_ranges() -> None:
         if citation.get("document_id") == LEGACY_RANGE_EXEMPTION:
             continue
         checked += 1
-        source = (raw_root / f"{source_id}.txt").read_text(encoding="ascii")
+        html_path = raw_root / f"{source_id}.html"
+        source = (html_path if html_path.exists() else raw_root / f"{source_id}.txt").read_text(encoding="utf-8")
         ranges = citation.get("ranges") or []
         assert ranges, citation["citation_id"]
         assert all(
@@ -132,9 +142,14 @@ def test_core_citations_reconstruct_from_acquired_ranges() -> None:
         if citation.get("kind") == COMPUTED_TABLE_KIND:
             assert citation.get("derivation")
             continue
-        assert _source_slice(citation, source) == normalize_source_quote(
-            str(citation["quoted_text"])
-        ), citation["citation_id"]
+        if html_path.exists():
+            assert HtmlSourceIndex(source).visible_text_for_ranges(ranges) == normalize_source_quote(
+                str(citation["quoted_text"])
+            ), citation["citation_id"]
+        else:
+            assert _source_slice(citation, source) == normalize_source_quote(
+                str(citation["quoted_text"])
+            ), citation["citation_id"]
     # The rework removes the 74 unreferenced source-gap records. The invariant
     # applies to every citation that remains, rather than to the old artifact's
     # record count.
