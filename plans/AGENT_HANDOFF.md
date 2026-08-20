@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. M20-S150 IS ACCEPTED. Diagnosis is now cheap: one command prints the whole stack for
-a cell, and the failure string carries its own evidence. Nothing is in flight.**
+**BALL: CODEX. M20-S151 IS THE ROUND: mark the core set (John's 2026-08-11 ruling, still unbuilt
+nine days on) and let Form 2441 reach the frontier.**
 
 **M20-S150 IS ACCEPTED (`7a57c13`, Architect, 2026-08-20), AND I USED THE TOOL TO VERIFY THE TOOL.**
 `explain-cell --doc form_1040_2025 --line 1e` prints form face, instruction span, model record,
@@ -244,7 +244,56 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**NONE IN FLIGHT.** S150 closed 2026-08-20.
+**M20-S151: MAKE "IS THE CORE GREEN?" A QUESTION THE PIPELINE CAN ANSWER.**
+
+**JOHN'S RULING, 2026-08-11, RECORDED AND NEVER IMPLEMENTED.** Core is Tier 1 + Tier 2 of
+`docs/tax_graph_requirements.md` section 9, **plus Schedule A, Schedule 1-A, and Form 6251**. Form
+2441 is NOT core. **All 17 are already in `config/manifest.yaml` and all are
+`ownership: project-maintained`** - the Architect checked every one. Nothing is missing; what is
+missing is that **no code can express the set.** `ownership` is a superset (22 documents), and
+`schemas/manifest.schema.json` has no `core` key.
+
+**BOOLEAN, NOT TIERS (John, 2026-08-20).** Tier 1 versus Tier 2 changes no behaviour. Tier 0 lives
+in `frontier.yaml` and tier 3 in `graph_ext`; neither is a manifest state. Duplicating the tier
+tables into the manifest would re-create the drift the 2026-08-11 item already warned about.
+
+ITEM 1. Add `core: true` to those 17 manifest entries and to the document schema. **Note
+`$defs.document` sets `additionalProperties: false`, so this is a schema change, not a YAML edit.**
+Leave `ownership` alone - it is a different axis.
+
+ITEM 2. **A test that the marked core set equals the ruling**, sourced so drift is caught rather
+than discovered. The failure this prevents is real: on 2026-08-11 the tier list and the manifest had
+already drifted apart.
+
+**ITEM 3 - LET FORM 2441 REACH THE FRONTIER, AND DO IT THROUGH THE DERIVATION.** The registry is
+NOT hand-maintained: `tax-graph frontier build` scans every citation in the loaded graph for a label
+from `data/soi/form_id_map.yaml`, emits a `form_reference`, and computes status itself - `modeled`
+if the target is in the graph, `declared` if in the manifest only, `unmodeled` otherwise - with an
+SOI filing-frequency weight. **Form 2441 never appears because that map holds only 12 labels and
+`Form 2441` is not one of them:**
+
+    labels: 12
+    2441 labels: {}
+    sample: [('Form 1040', 'form_1040_2025'), ('Schedule 1', 'schedule_1_2025'), ...]
+
+Add Form 2441 and its instructions to `data/soi/form_id_map.yaml`, re-run `frontier build`, and
+**report the entry and the status the derivation assigned.** Do not hand-write a frontier entry -
+that is the hand-authoring the PRIME DIRECTIVE forbids, and the whole point is that the mechanism
+produces it.
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not hand-add an entry to `frontier.yaml`.** It is derived output.
+- **Do not invent a tier field**, and do not move the tier tables out of the requirements doc.
+- **Do not weaken, delete, or invert an assertion that is green on `main`.**
+- No model call, no network. `frontier build` reads committed data.
+
+**THE FLOOR.**
+- **The 17 marked entries**, and the test from ITEM 2 failing when one is removed.
+- **The new frontier entry for Form 2441, quoted, with the status the build assigned** and whether
+  its `weight` came back populated or null.
+- **Focused sets green** against their known reds. **e2e is Architect-side.**
+- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
+  byte-identical.
 
 ## Open for Architect
 
@@ -253,6 +302,30 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
   BALL and in Queued.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **THE CORE GATE ITSELF: ZERO UNREPORTED REFUSALS (John's 2026-08-11 ruling; queued 2026-08-20).**
+  The marking is only worth having if it is enforced - *"core means ZERO UNREPORTED refusals.
+  Non-core may refuse, but the refusal must surface for review."* **Needs a definition of "refusal"
+  and the stage that enforces it**; that is a round of its own, after S151.
+
+- **THE FRONTIER'S REACH IS CAPPED BY A 12-LABEL HAND-MAINTAINED MAP (Architect, 2026-08-20).**
+  `data/soi/form_id_map.yaml` is what `frontier build` can see, so any form absent from it is
+  invisible to the registry no matter how often the corpus cites it. **That is a hand-authored
+  bottleneck in a derived pipeline.** Ask whether the label set should itself be derived from the
+  manifest.
+
+- **REVISIT `README.md` AND THE SUPPORTING MD FILES (John, 2026-08-20).** Three jobs: **(1)** state
+  the project accurately as of wrap-up; **(2)** real operating instructions for users; **(3)**
+  documentation for ingesting new forms and contributions. **Today the README says nothing about
+  extensions at all** - the model exists only in `docs/self-serve-extension.md`. **(3) needs
+  thinking through and John has explicitly deferred execution.**
+
+- **NON-CORE MODULARITY: HOW A CONTRIBUTOR'S FORM IS FOUND AND ADOPTED (John, 2026-08-20, execution
+  deferred).** His sketch: a contributor publishes their own repo, a user opts in. **Much of the
+  mechanism exists** - `tax-graph extend` writes discrete per-form graphs under
+  `graph_ext/<year>/<doc_id>/`, checks collisions against the shipped graph AND other extensions,
+  and `extend package` emits a deterministic ZIP. **The unsolved half is discovery and trust, not
+  collision.** After core finality.
 
 - **WHERE IS A CROSS-DOCUMENT OPERAND SUPPOSED TO RESOLVE? (Architect, open QUESTION 2026-08-20 -
   not a diagnosis.)** The micro-extraction index is single-document by construction
