@@ -317,18 +317,25 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 ITEM 1. **Move `core_refusal_gate` out of `pilot/`** into the package proper. `pilot/` is for
 exploratory work; `tax_graph/doctor.py` must not import from it.
 
-**ITEM 2 - REPLACE THE SURFACING TEST.** `surfaced=bool(reason_text and artifact.is_file())` is
-circular: the artifact is the file the candidate was parsed from, so the second term is always true
-and only a missing reason string can fail. **Define surfacing against an artifact a REVIEWER opens,
-not the one the gate reads.** Candidates to consider, and rule each in or out with a reason:
+**ITEM 2 - REPLACE THE SURFACING TEST. THE DEFINITION IS DECIDED; IMPLEMENT IT.**
+`surfaced=bool(reason_text and artifact.is_file())` is circular: the artifact is the file the
+candidate was parsed from, so the second term is always true and only a missing reason string can
+fail.
 
-- the review queue under `review_queue/`
-- the workbench preflight report (`workbench.cli preflight`)
-- the frontier registry, for a genuinely deferred branch
-- a review gap that reaches a generated review cell a human sees in the workbench
+**A REFUSAL IS SURFACED WHEN IT BECOMES A VISIBLE CELL IN THE GENERATED REVIEW SURFACE, OR IS A
+FRONTIER ENTRY AT `declared`.** (Architect, decided 2026-08-20; John: *"I could care less about
+tests going red as long as we are headed in the right direction."*) The reasoning: **John's review
+model is cell-atomic** - he works per cell, approving or commenting - so a refusal that never
+becomes a cell he can land on is invisible to him whatever YAML holds it. A `declared` frontier
+entry with a target and a citation is a decision recorded, not a hole, and counts.
 
-**The test must be able to FAIL.** Demonstrate that: construct a refusal that is real but reaches no
-reviewer, and show the gate catching it.
+**Rejected alternatives, so they are not re-proposed:** `review_queue/` has ZERO tracked files and
+is not gitignored - defining surfacing against an empty directory fails everything and is the
+mirror image of the vacuous gate. The preflight report is a coverage check, not the artifact a
+reviewer reads cell by cell.
+
+**The test must be able to FAIL.** Construct a refusal that is real but reaches no reviewable cell
+and no frontier entry, and show the gate catching it.
 
 ITEM 3. **Re-run on the real corpus and report the number, whatever it is.** 310 candidates and 0
 unsurfaced was the vacuous answer. **A non-zero core count is the expected honest outcome and is
