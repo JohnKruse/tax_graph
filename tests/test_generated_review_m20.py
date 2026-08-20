@@ -192,8 +192,14 @@ def test_generated_review_renders_resolved_external_sources_and_hides_sentinels(
     # Verdict: pipeline wrong (renderer); the expectation is right. The structured draft
     # fields identify W-2 box 1, so the renderer must project that identity.
     assert line_1a["expression"]["text"] == "line 1a = W-2 box 1"
-    # Verdict: pipeline wrong. The form face names Form 2441 line 26, but the draft's
-    # deterministic outline join reports that source line as absent.
+    # Verdict: pipeline wrong, and the cause is a KEY NORMALIZATION BUG, not an outline
+    # gap. The model plans this correctly as {form: "Form 2441", line: "26"}; see
+    # micro_extraction.findings. _line_reference_key in tax_graph/extract/assembly.py
+    # lowercases and appends the year but never replaces the internal space, so it builds
+    # ('form 2441_2025', '26') - a key no document id can match. Passing form_2441 to the
+    # same function yields ('form_2441_2025', '26'). An earlier version of this comment
+    # blamed the outline join; that was read off the review_gap string without opening the
+    # finding, and it was wrong.
     assert line_1e["expression"]["text"] == "line 1e = Form 2441, line 26"
     # Verdict: expectation wrong. The outcome is explicitly not_derivable because the
     # evidence names Schedule 8812 but supplies no usable line or amount to calculate.

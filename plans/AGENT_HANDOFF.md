@@ -21,8 +21,8 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. M20-S149 IS ACCEPTED. The line 1a chain is closed end to end and the guard now fails
-for exactly one reason, which is a real defect. Nothing is in flight.**
+**BALL: CODEX. M20-S150 IS THE ROUND: make looking at the artifact cheaper than guessing. John,
+2026-08-20: "In aggregate, we've wasted days chasing bad diagnoses."**
 
 **M20-S149 IS ACCEPTED (`a0c5d11`, Architect, 2026-08-20), VERIFIED BY OPENING THE CELLS AND BY
 READING THE TEST DIFF.** The three renders are now:
@@ -213,8 +213,60 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**NONE IN FLIGHT.** S149 closed 2026-08-20. Next is John's call -
-see Queued; line `1e` is the obvious one.
+**M20-S150: THE CHEAP READ MUST BE THE TRUE READ.**
+
+**WHY THIS ROUND EXISTS.** Five separate statements of "open the artifact before you name a cause"
+already exist - `look-at-the-artifact`, `open-the-individual-failures`, `check-the-payload-first`,
+plus TWO hard rules at the top of `AGENTS.md`, one added 2026-08-19. **The Architect quoted one of
+them in the same queue item where he broke it.** A sixth restatement is the intervention that has
+failed five times, so this round changes the ARTIFACT and the TOOLING instead of the wording.
+
+**THE WORKED EXAMPLE, PROVEN BY RUNNING THE FUNCTION, NOT BY READING AROUND IT.** For Form 1040
+line `1e` the model plans correctly. `micro_extraction.findings[0]`:
+
+    code: unresolved_source_line
+    target_cell_id: form_1040_2025_root_line_1e
+    source_line: {form: Form 2441, line: '26', role: null}
+    candidates: []
+    reason: source line is not present in the deterministic outline index
+
+`_line_reference_key` in `tax_graph/extract/assembly.py` lowercases the form and appends the year
+but **never replaces the internal space**, so it returns `('form 2441_2025', '26')` - a key no
+document id can match. Run against `form_2441` the same function returns `('form_2441_2025', '26')`.
+**It computes `normalized_form` with punctuation stripped, uses it only for the same-form alias
+test, and then throws it away.**
+
+ITEM 1. Fix the normalization so a model-spelled form resolves. **Normalize once and use the
+normalized value** - do not add a second ad-hoc cleanup beside the existing one. Prove it with an
+assembly-level test that feeds the RECORDED operand `{form: "Form 2441", line: "26"}` through; **no
+model call is needed and none is permitted.**
+
+ITEM 2. **Make the failure self-describing.** `review_gap` currently reads *"source line is not
+present in the deterministic outline index"*, which is a summary that reads like a cause and is
+exactly what fooled the Architect. It must carry the facts: **the operand as planned, the key that
+was computed, and what was searched** - e.g. `unresolved_source_line: form="Form 2441" line="26" ->
+key ('form 2441_2025','26') not in outline index`. **A reader quoting this string must thereby be
+quoting evidence.** This helps John's reviewers exactly as much as it helps an agent.
+
+ITEM 3. **One command that dumps the whole stack for one cell**, so looking costs one call instead
+of a throwaway script: `explain-cell --doc <id> --line <anchor>` under the existing CLI, printing
+the printed form-face label, the owning instruction span text, the model's plan or outcome record,
+any finding for that cell, and the resolver's computed key with its lookup result. **The Architect
+wrote that script from scratch three times on 2026-08-20; that is the cost asymmetry this removes.**
+
+**WHAT MUST NOT HAPPEN.**
+- **No model call, no network, no draft regeneration.** Everything needed is in the draft.
+- **Do not weaken, delete, or invert an assertion that is green on `main`.**
+- **Do not chase whether Form 2441's overlay is a SECOND blocker behind the key bug.** It may be;
+  it is not established, and this round does not claim either way. Report what you observe.
+
+**THE FLOOR.**
+- **The assembly-level test** from ITEM 1, using the recorded operand.
+- **The new `review_gap` text for line `1e`, quoted.**
+- **`explain-cell` output for `form_1040_2025` line `1e`, pasted in full.**
+- **Say plainly whether line 1e now resolves**, and if it does not, what the next blocker is.
+- **Focused workbench and API sets green** against their known reds. **e2e is Architect-side.**
+- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
 
 ## Open for Architect
 
@@ -224,13 +276,10 @@ see Queued; line `1e` is the obvious one.
 
 ## Queued (ONE LINE each - do not spec ahead)
 
-- **LINE 1e: THE FORM FACE NAMES THE SOURCE AND THE PIPELINE CANNOT FIND IT (Architect, verdict
-  recorded 2026-08-20).** Printed label *"Taxable dependent care benefits from Form 2441, line
-  26"*; draft says `status: review_gap`, `review_gap: source line is not present in the
-  deterministic outline index`. **It is the only assertion failing in
-  `test_generated_review_renders_resolved_external_sources_and_hides_sentinels`. OPEN IT
-  INDIVIDUALLY** - on 2026-08-15 that exact error string turned out to be five unrelated defects,
-  so it names the stage that raised, not the cause.
+- **[SUPERSEDED BY M20-S150 - AND BY A DIAGNOSIS I GOT WRONG TWICE.]** I queued line `1e` as an
+  outline-join failure, read off the `review_gap` string without opening
+  `micro_extraction.findings`. Then I blamed the missing `graph/2025/addresses/form_2441*`. **Both
+  were inferences.** The proven cause is in the round below.
 
 - **S147'S PROMPT FIX IS UNTESTED: EXERCISE THE MICRO PATH, NOT `derive_cells_s25` (Architect,
   2026-08-20).** The change is in `micro.py` / `outline_pipeline.py`, which write
