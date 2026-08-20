@@ -618,6 +618,24 @@ NOT RUN: e2e, because the user specified that it exceeds the launcher cap.
 
 ## Open for Architect
 
+**WORKER STATUS (2026-08-20; S160 HTML-coordinate correction).** The initial lift treated the
+raw HTML file as the segmenter's line-oriented input. The package now builds a heading-aware
+visible view from the acquired HTML, runs the accepted segmenter over that view, and maps each
+model section back to raw UTF-8 HTML bytes. The frame projection uses visible evidence text while
+retaining those raw ranges. Form faces remain on the acquired `.txt` path; the deterministic
+`.txt` parser remains the no-client fallback. This is an adapter around the accepted segmenter,
+not a new segmenter or matcher.
+
+RAN: `.venv\Scripts\python.exe -m pytest tests\test_m20_s160.py tests\test_acquire_citation_check.py -q`
+-> **18 passed in 11.44s**. The added fixture uses an HTML entity and verifies visible `caf\u00e9`
+text plus raw byte coordinates through a fake structured-output client; no live model call ran.
+RAN: `.venv\Scripts\python.exe tools\rebind_instruction_html_ranges_m20_s160.py` -> **338
+affected ranges re-derived; 255 unaffected ranges unchanged; write=False**.
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
+RAN: `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py plans\AGENT_HANDOFF.md` ->
+**diagnosis evidence check OK**. RAN `py_compile` over the changed HTML, segmenter, outline, and
+S160 test modules -> **exit 0**. `git diff --check` -> **clean for the S160 changes**.
+
 **WORKER STATUS (2026-08-20; M20-S159 prompt hygiene is implemented).** Removed the
 Schedule 1-A-specific measured answer from `prompts/instruction_attribution_m20_s158.md` while
 keeping the general conservative rule. Added `tools/check_prompt_measured_counts.py`, which scans

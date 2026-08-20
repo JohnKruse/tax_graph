@@ -71,3 +71,92 @@ def test_lifted_segmenter_replays_accepted_fixture() -> None:
 
     assert frame.source_document_id == "instructions_form_1040_2025"
     assert frame.sections
+
+
+def test_html_segmentable_view_preserves_heading_lines_and_utf8_ranges() -> None:
+    source = (
+        '<div class="book"><h2>Line 1</h2><p>Enter caf&eacute; amount.</p>'
+        "<h2>Line 2</h2><p>Next amount.</p></div>"
+    )
+    index = HtmlSourceIndex(source)
+
+    assert index.segmentable_text.startswith("## Line 1\n")
+    assert "Enter caf\u00e9 amount." in index.segmentable_text
+    start = index.segmentable_text.encode("utf-8").index(b"## Line 1")
+    end = index.segmentable_text.encode("utf-8").index(b"## Line 2")
+    raw_range = index.raw_range_for_segment_bytes(start, end)
+
+    assert raw_range is not None
+    visible = index.visible_text_for_ranges((raw_range,))
+    assert "Line 1" in visible
+    assert "caf\u00e9 amount" in visible
+
+
+def test_lifted_segmenter_maps_html_model_coordinates_to_raw_bytes(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    from tax_graph.extract import model_instruction_segmenter as segmenter
+
+    source_path = tmp_path / "instructions_form_1040_2025.html"
+    source_path.write_text(
+        '<div class="book"><h1>First</h1><p>Enter caf&eacute; amount.</p>'
+        "<h1>Second</h1><p>Enter the next amount.</p></div>",
+        encoding="utf-8",
+    )
+    source_index = HtmlSourceIndex(source_path.read_text(encoding="utf-8"))
+    source_bytes = source_index.segmentable_text.encode("utf-8")
+    second_start = source_bytes.index(b"# Second")
+
+    monkeypatch.setattr(
+        segmenter,
+        "manifest_owner_document_ids",
+        lambda *args, **kwargs: frozenset({"form_1040_2025"}),
+    )
+    monkeypatch.setattr(
+        segmenter,
+        "manifest_worksheet_document_ids",
+        lambda *args, **kwargs: frozenset(),
+    )
+
+    class FakeClient:
+        def structured_completion(self, **request):
+            return {
+                "sections": [
+                    {
+                        "heading": "# First",
+                        "level": 1,
+                        "start_byte": 0,
+                        "end_byte": len(source_bytes),
+                        "document_id": "form_1040_2025",
+                        "governs": ["1"],
+                    },
+                    {
+                        "heading": "# Second",
+                        "level": 1,
+                        "start_byte": second_start,
+                        "end_byte": len(source_bytes),
+                        "document_id": "form_1040_2025",
+                        "governs": ["2"],
+                    },
+                ]
+            }
+
+    frame = segmenter.build_frame_from_source(
+        source_path,
+        source_document_id="instructions_form_1040_2025",
+        config={"llm": {"temperature": 0, "micro_model": "fixture-model"}},
+        root=ROOT,
+        client=FakeClient(),
+        max_window_bytes=10000,
+        overlap_bytes=100,
+    )
+
+    assert frame.coverage["source_coordinate_space"] == "raw_html_utf8_bytes"
+    assert len(frame.sections) == 2
+    first = frame.sections[0]
+    first_visible = HtmlSourceIndex(source_path.read_text(encoding="utf-8")).visible_text_for_ranges(
+        ({"start": first.start_byte, "end": first.end_byte},)
+    )
+    assert "First" in first_visible
+    assert "caf\u00e9 amount" in first_visible

@@ -26,6 +26,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from tax_graph.acquire.manifest import load_manifest  # noqa: E402
+from tax_graph.acquire.html_source import HtmlSourceIndex  # noqa: E402
 from tax_graph.config import (  # noqa: E402
     get_config_value,
     load_config,
@@ -1281,8 +1282,16 @@ def build_frame_from_source(
     """Call the configured model over one acquired booklet and verify its frame."""
     path = Path(source_path)
     source_bytes = path.read_bytes()
+    html_index = None
+    if path.suffix.lower() == ".html":
+        html_index = HtmlSourceIndex(source_bytes.decode("utf-8"))
+        model_text = html_index.segmentable_text
+        model_bytes = model_text.encode("utf-8")
+    else:
+        model_text = source_bytes.decode("utf-8")
+        model_bytes = source_bytes
     chapters = build_source_chapters(
-        source_bytes,
+        model_bytes,
         source_document_id=source_document_id,
         year=year,
     )
@@ -1295,7 +1304,7 @@ def build_frame_from_source(
         source_document_id=source_document_id,
     )
     windows = build_source_windows(
-        source_bytes,
+        model_bytes,
         max_window_bytes=max_window_bytes,
         overlap_bytes=overlap_bytes,
         chapters=chapters,
@@ -1308,7 +1317,7 @@ def build_frame_from_source(
             worksheet_document_ids=worksheet_ids,
         )
         prompt = build_window_prompt(
-            source_bytes,
+            model_bytes,
             window,
             source_document_id=source_document_id,
             allowed_document_ids=allowed_ids,
@@ -1342,8 +1351,8 @@ def build_frame_from_source(
                 "response": dict(response),
             }
         )
-    return build_model_frame(
-        source_bytes.decode("utf-8"),
+    frame = build_model_frame(
+        model_text,
         source_document_id=source_document_id,
         responses=records,
         year=year,
@@ -1352,6 +1361,31 @@ def build_frame_from_source(
         chapters=chapters,
         worksheet_document_ids=worksheet_ids,
     )
+    if html_index is None:
+        return frame
+    mapped_sections: list[ModelSection] = []
+    for section in frame.sections:
+        raw_range = html_index.raw_range_for_segment_bytes(
+            section.start_byte,
+            section.end_byte,
+        )
+        if raw_range is None:
+            raise SegmenterError(
+                "model section does not map to acquired HTML bytes: "
+                f"{section.start_byte}:{section.end_byte}"
+            )
+        mapped_sections.append(
+            replace(
+                section,
+                start_byte=raw_range["start"],
+                end_byte=raw_range["end"],
+            )
+        )
+    coverage = dict(frame.coverage)
+    coverage["model_coordinate_space"] = "segmentable_utf8_bytes"
+    coverage["source_coordinate_space"] = "raw_html_utf8_bytes"
+    coverage["source_file_size_bytes"] = len(source_bytes)
+    return replace(frame, sections=tuple(mapped_sections), coverage=coverage)
 
 
 def _line_tokens(governs: Iterable[str]) -> tuple[str, ...]:

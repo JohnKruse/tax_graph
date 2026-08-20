@@ -16,6 +16,7 @@ from typing import Any
 import yaml
 
 from tax_graph.acquire.text_normalize import normalize_punctuation
+from tax_graph.acquire.html_source import HtmlSourceIndex
 from tax_graph.config import get_config_value, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
 from tax_graph.acquire.source_ranges import SourceTextIndex
@@ -864,11 +865,22 @@ def _instruction_frame_from_model(
 ) -> InstructionSectionsFrame:
     """Project verified model byte sections into the shared frame contract."""
     source_bytes = source_text.encode("utf-8")
+    html_index = (
+        HtmlSourceIndex(source_text)
+        if model_frame.source_path
+        and str(model_frame.source_path).lower().endswith(".html")
+        else None
+    )
     sections: list[InstructionSection] = []
     for model_section in model_frame.sections:
         start = model_section.start_byte
         end = model_section.end_byte
-        section_text = source_bytes[start:end].decode("utf-8")
+        if html_index is not None:
+            section_text = html_index.visible_text_for_ranges(
+                ({"start": start, "end": end},)
+            )
+        else:
+            section_text = source_bytes[start:end].decode("utf-8")
         start_line = source_bytes[:start].decode("utf-8").count("\n") + 1
         end_line = start_line + section_text.count("\n")
         line_tokens = tuple(
