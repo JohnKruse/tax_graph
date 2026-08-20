@@ -21,8 +21,22 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. THREE ROUNDS RAN WHILE YOU WERE AT LUNCH. S155 AND S156 ARE ACCEPTED. S157 IS NOT -
-its code is sound and its measurement went the WRONG WAY, and I am not accepting it on the code.**
+**BALL: CODEX. M20-S158 IS THE ROUND: attribution as its own stage. John approved it 2026-08-18;
+today's measurement is why it is now first.**
+
+**THE MEASUREMENT THAT PROMOTED IT (Architect, 2026-08-20), over 651 formula and gap records in
+every draft:**
+
+    with NO instruction spans      : 341  (52%)
+    with wrong-owner spans present : 273  (41%)
+    BOTH                           :  85
+    worst: form_6251 23, form_1116 19, schedule_d 13, form_2441 8, form_1040 7
+
+**Half the corpus reaches the model with no instructions for the line.** It is not an acquisition
+failure: `form_1116_2025`'s draft holds 25 instruction spans from `instructions_form_1116_2025`,
+and they simply never reach the cells. **A model with no instruction can only refuse or quote the
+form face - which is exactly what `form_1116` line 3 did.** This one defect plausibly drives the
+quote class, the `not_derivable` outcomes, and a large share of the coverage gaps.
 
 **M20-S157 (`9a8d7a9`, `70ea85d`) IS NOT ACCEPTED (Architect, 2026-08-20).** The implementation
 does what the spec asked and honours the hard constraint: normalisation happens in a separate
@@ -471,8 +485,58 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**NONE IN FLIGHT.** Three rounds closed 2026-08-20. **S157 awaits John's call: a clean A/B to
-isolate it, or a revert.**
+**M20-S158: ASK WHICH LINES A FIXED SPAN GOVERNS, AND LET MOST SPANS ANSWER "NONE".**
+
+**APPROVED BY JOHN 2026-08-18** and specced from the queued item verbatim; its four constraints are
+the round, not decoration.
+
+**1. IT MUST NOT BE A LINE-REFERENCE MINER.** Measured previously: prose that GOVERNS a line never
+names it, and prose that NAMES a line does not govern it. **If this round produces a regex over body
+prose, it has failed regardless of its score.**
+
+**2. GIVE THE MODEL THE FORM'S LINE INVENTORY.** It cannot answer *"which lines does this govern"*
+without knowing which lines exist. **Build the inventory from the printed anchors we already hold -
+no model call to build it.** A closed menu attached to a fixed span is a lookup, and that does not
+break cell-naivety.
+
+**3. "NONE" IS A FIRST-CLASS ANSWER AND MOST SPANS MUST TAKE IT.** 50 of the 69 Schedule 1-A
+sections govern no line. **Report the "none" rate as a HEADLINE. A run where few spans answer "none"
+is evidence of fabrication, not coverage** - and I will reject it on that alone.
+
+**4. SCORE AGAINST WHAT THE PROSE SAYS.** On `schedule_1a_2025` the reference answer is the **19
+cells with governing prose**; the other 18 are the instruction ceiling and reaching them would mean
+the model invented an instruction. **Do not count the 18 as misses.**
+
+ITEM 1. Implement attribution as its own stage over spans whose boundaries are already fixed and
+byte-verified. **The model labels a boundary it did not choose**, which is what makes this permitted
+under the binding ruling in `AGENTS.md`.
+
+ITEM 2. **Constrain the answer to line tokens from the inventory, or empty.** Free text is the
+defect the queue already records - 93 distinct non-line `governs` values in the live 1040 frame.
+
+ITEM 3. **Run it on `schedule_1a_2025` first**, because it is the only document with a known
+reference answer, then on `form_1116_2025`, the worst of the packet defect. **At most TWO documents,
+output OUTSIDE the repository root. Report the call count and the cost.**
+
+ITEM 4. **Report cells with zero instruction spans, before and after, per document.** That is the
+number this round exists to move.
+
+**WHAT MUST NOT HAPPEN.**
+- **No regex over body prose to find line references.** See constraint 1.
+- **Do not promote anything into `graph/2025/_drafts`.** Scratch output only.
+- **Do not weaken, delete, or invert an assertion that is green on `main`.**
+- Do not change span boundaries; this stage labels them, it does not choose them.
+
+**THE FLOOR.**
+- **The "none" rate, stated as a headline.**
+- **Cells with zero instruction spans, before and after, both documents.**
+- **Of Schedule 1-A's 19 governing-prose cells, how many were reached** - and the 18 ceiling cells
+  explicitly excluded from the denominator.
+- **Three attributed spans quoted**, with the lines each was said to govern, so I can judge whether
+  the label is true.
+- **Focused sets green** against their known reds. **e2e is Architect-side.**
+- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
+  byte-identical.
 
 ## Open for Architect
 
