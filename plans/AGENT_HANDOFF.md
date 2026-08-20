@@ -21,9 +21,28 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S155 IS THE ROUND: a reference to another form cannot resolve, and that is 55%
-of every review gap we have. John is at lunch; the Architect is running three rounds against a
-measured target.**
+**BALL: CODEX. M20-S156 IS THE ROUND: the second-largest gap class cannot be diagnosed, because
+the rejected quote is thrown away and a replay accepts the cell.**
+
+**M20-S155 IS ACCEPTED (`a330b08`, `65333f2`, Architect, 2026-08-20), VERIFIED BY OPENING THE
+RESOLVER.** `explain-cell --doc form_1040_2025 --line 31` now reports `found: true` and
+`resolved_source_id:
+schedule_3_2025_section_1_part_ii_other_payments_and_refundable_credits_line_15` - **a core-to-core
+reference that has never resolved now resolves to a real node.** Live unresolved findings on the
+three re-extracted documents went **46 -> 21**: `schedule_1a_2025` **20 -> 2**, `form_6251_2025`
+12 -> 9, `schedule_1_2025` 14 -> 10. The resolver is fail-closed by construction - aliases that
+would identify more than one modelled document are dropped rather than guessed.
+
+**LINE 1e STILL DOES NOT RESOLVE, AND THAT IS NOW CORRECT.** `('form_2441_2025','26')` is absent
+because 2441 has no address-backed outline in the main graph, and S151 already put it on the
+frontier. **It is a declared frontier case, not a resolver defect.**
+
+**THE RESIDUE SPLITS THREE WAYS, WHICH IS WHY IT WAS WORTH LISTING.** Of the 21 left: genuinely
+unmodelled forms (`2555`, `8853`, `8889`, `5471`, `8992`, `4952`, `4797`, `3921`) - correct to leave
+unresolved; **a self-reference bug** (`Form 6251` line `3` inside `form_6251_2025`, which should
+resolve within its own document); and malformed extraction, where the model put a whole sentence,
+an expression, or a column into the `form` field - *"Form 3921, box 4 multiplied by Form 3921, box
+5"*, and a sixty-word sentence. **Only the third class is a candidate for a model-side fix.**
 
 **THE TARGET, AND THE BASELINE IT IS MEASURED FROM (John, 2026-08-20: "get to at least 90% before I
 review manually").** Read as the review-gap share, which is the number the Architect graded on:
@@ -387,136 +406,56 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S155: A REFERENCE TO ANOTHER FORM MUST RESOLVE WHEN BOTH FORMS ARE MODELLED.**
+**M20-S156: A FAILURE THAT DISCARDS ITS OWN EVIDENCE CANNOT BE FIXED.**
 
-**THE DEFECT IS STRUCTURAL AND IS PROVEN AT `outline_pipeline.py:133`:**
+**THE CLASS.** 24 review gaps read *"micro extraction failed: MicroExtractionError: quote does not
+match the supplied form or instruction evidence"* - the second-largest cause, spread thinly across
+13 documents (1 to 4 each), so it is cross-cutting rather than one document's problem.
 
-    line_index = _outline_line_index(document.document_id, outline.children)
+**IT CANNOT BE DIAGNOSED FROM THE ARTIFACT, AND I TRIED.** `explain-cell --doc form_1040_2025
+--line 3a` returns the form face, the instruction span and the record - and **the record does not
+contain the quote that was rejected.** Only that it failed. There is nothing to compare against the
+evidence.
 
-**The index holds only the document being extracted**, so no cross-document key can ever be found in
-it. `explain-cell --doc form_1040_2025 --line 31` shows the consequence on a CORE-TO-CORE reference:
+**AND A REPLAY ACCEPTS THE SAME CELL.** `verify prompt-bench --doc form_1040_2025 --id
+form_1040_2025_root_line_3a` returns:
 
-    planned_operand: {form: "Schedule 3", line: "15", role: "amount"}
-    computed_key_text: "('schedule_3_2025', '15')"
-    found: false
-    searched: "outline index"
+    "quote": "Enter your total qualified dividends on line 3a.",
+    decision: accepted
+    why: all deterministic validations passed
 
-**Schedule 3 line 15 exists as a canonical address**, printed label *"Line 15 - 1040, 1040-SR, or
-1040-NR, line 31"* - the exact reciprocal of the 1040 line. Both documents are core, both modelled,
-and the reference still fails. **This is not a long-tail or overlay problem.**
+That quote IS verbatim in `section_0016`. **So the recorded failure does not reproduce**, which
+means these are very likely near-misses rather than fabrications - but **I am NOT asserting that,
+because the rejected string was never kept.** Establishing it is ITEM 2.
 
-**AND THERE IS A SECOND DEFECT INSIDE THE SAME 74.** The model's form spellings vary, and the
-current normaliser cannot map them:
+ITEM 1. **Persist the rejected quote on the failure**, with the validation reason and, where
+computable, the closest matching span text and the offset where the match broke. **A validation that
+throws away the string it rejected is the defect; the 24 gaps are the symptom.**
 
-        7  Schedule 1-A (Form 1040)
-        5  Schedule 1-A (Form 1040) 2025
-        4  Schedule 1-A (Form 1040) (2025)
-        4  6251
-        3  Form 2441
+ITEM 2. **Then classify the 24 with the string in hand.** Near-miss (whitespace, unicode, casing,
+truncation, an ellipsis) versus genuine fabrication versus wrong span supplied. **Report counts per
+class with three quoted examples**, and do not generalise from one.
 
-`_line_reference_key` lowercases and substitutes non-alphanumerics, so
-`Schedule 1-A (Form 1040) (2025)` becomes `schedule_1_a_form_1040_2025_2025` - matching nothing.
-**Three spellings of one form must reach `schedule_1a_2025`.**
+ITEM 3. **Only then propose the fix**, and say plainly whether it is normalisation on our side or a
+prompt change. **Do not loosen the verbatim check to make the number fall** - a citation that is not
+verbatim is worthless in a graph whose value is its citations.
 
-**WHY THIS ROUND IS DETERMINISTIC AND NOT A MODEL CALL (Architect, 2026-08-20).** John has
-authorised an in-graph "match maker" AI stage if it is the right answer. **It is not the right FIRST
-answer here.** Mapping `Schedule 1-A (Form 1040) (2025)` to `schedule_1a_2025` is normalisation, and
-the index lookup is exact once the key is right - **asking a model to do arithmetic on strings we
-can normalise would be spending money to add variance.** The correct sequence is deterministic
-first, then let the RESIDUE argue for a model: whatever spellings and references remain unresolved
-after this round are the evidence for a match-maker stage, and ITEM 3 requires that residue to be
-listed rather than summarised. **A model stage justified by a measured residue is a different thing
-from one adopted because the deterministic path was never tried.**
-
-ITEM 1. **Build the line index across modelled documents, not just the one under extraction.** The
-key already carries the document, so `('schedule_3_2025','15')` can only match Schedule 3's line 15
-- **precision comes from the key, so do not add fuzzy matching on the line.**
-
-ITEM 2. **Resolve a model form spelling to a document id, and FAIL CLOSED.** Derive the alias set
-from what already exists - manifest document ids, `data/soi/form_id_map.yaml` labels, address
-printed labels - **do not hand-write a spelling table.** An unrecognised spelling must stay an
-unresolved finding; **a wrong edge is far worse than a missing one**, so prefer a miss to a guess
-and say which spellings still miss.
-
-ITEM 3. **Measure it.** Re-extract the three worst documents only - `schedule_1a_2025` (26 gaps),
-`form_6251_2025` (18), `schedule_1_2025` (18) - to an output directory OUTSIDE the repository, and
-report the unresolved-source-line count before and after. **Live calls are permitted for this;
-about $0.40 per document. Do NOT re-extract the whole corpus.**
+**LIVE CALLS ARE PERMITTED** for a targeted re-extract to capture real rejected quotes: at most
+THREE documents, outside the repository root, about $0.40 each. `form_1040_2025`, `schedule_1_2025`
+and `form_1116_2025` carry 3, 4 and 3 of them.
 
 **WHAT MUST NOT HAPPEN.**
-- **Do not create an edge to a line you did not positively identify.** Fail closed.
-- **Do not hand-author an alias table** to make specific spellings pass.
+- **Do not weaken the verbatim quote check.**
 - **Do not weaken, delete, or invert an assertion that is green on `main`.**
 - Do not regenerate the live drafts under `graph/2025/_drafts`.
 
 **THE FLOOR.**
-- **1040 line `31` resolves to Schedule 3 line 15**, shown through `explain-cell`.
-- **The unresolved-source-line count before and after** on the three re-extracted documents.
-- **The spellings that still fail**, listed. A shorter list is progress; a silent zero is suspicious.
+- **A rejected quote persisted and shown** for a real failing cell.
+- **The 24 classified**, with counts and three quoted examples.
+- **A named fix with its side stated** - ours or the model's - not applied blind.
 - **Focused sets green** against their known reds. **e2e is Architect-side.**
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
-
-**WORKER STATUS (M20-S155, 2026-08-20).** The extraction resolver now builds a collision-safe
-cross-document line index from modelled address-backed draft outlines. Form aliases are derived
-from manifest ids, `data/soi/form_id_map.yaml`, and document address printed labels. Unknown or
-colliding spellings remain unresolved. Form 1040 line 31 now resolves to the Schedule 3 line 15
-outline node; `explain-cell` reports `found: true` and the computed key
-`('schedule_3_2025', '15')`.
-
-**LIVE MEASUREMENT.** All output below is outside the repository at
-`C:\tmp\m20_s155_live_20260820`; no live `graph/2025/_drafts` directory was regenerated.
-Persisted `findings` entries with `code: unresolved_source_line`:
-
-    schedule_1a_2025: 20 -> 2
-    form_6251_2025: 12 -> 9
-    schedule_1_2025: 14 -> 10
-
-The initial serial command was terminated by the 600-second launcher cap after the Schedule
-1-A artifact completed. The two remaining documents were then run individually. The complete
-per-document results were:
-
-    RAN: .venv\Scripts\python.exe -m tax_graph.cli extract --doc form_6251_2025 --year 2025 --output-dir C:\tmp\m20_s155_live_20260820 -> exit 0; 576.2s; auto_accepted=164; human_review=13; deterministic_issues=42
-    RAN: .venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_1_2025 --year 2025 --output-dir C:\tmp\m20_s155_live_20260820 -> exit 0; 447.6s; auto_accepted=182; human_review=7; deterministic_issues=38
-    RAN: .venv\Scripts\python.exe -m tax_graph.cli extract --doc schedule_1a_2025 --year 2025 --output-dir C:\tmp\m20_s155_live_20260820 -> completed external draft; enclosing three-document command timed out before stdout was returned
-
-**RESIDUAL SPELLINGS (every persisted unresolved record).**
-
-    schedule_1a_2025
-    - `Additional Deductions (Form 1040) 2025`, line `1`
-    - `Schedule 1-A (Form 1040) 2025, line 22a, column (iii)`, no line field
-    form_6251_2025
-    - `Form 1040, 1040-SR, or 1040-NR`, line `11b`
-    - `4952`, line `8`
-    - `Form 8949`, line `column (g)`
-    - `Form 3921, box 4 multiplied by Form 3921, box 5`, no line field
-    - `Form 4797, Sales of Business Property`, no line field
-    - `Form 6251`, line `3`
-    - `Form 1040 or 1040-SR, line 16 (or Form 1040-NR, line 16) minus any tax from Form 4972, plus Schedule 2 (Form 1040), line 1z, minus Schedule 3 (Form 1040), line 1, and minus any negative amount reported on Form 8978, line 14 treated as a positive number`, no line field
-    - `6251`, line `32`
-    - `Form 6251`, line `32`
-    schedule_1_2025
-    - `Form 2555`, line `45`
-    - `Form 8853`, line `8`
-    - `Form 8889`, line `16`
-    - `Form 5471, Schedule I`, line `1a`
-    - `Form 8992`, line `Part II, line 5`
-    - `Form 1040 or 1040-SR`, line `1a or 1d`
-    - `Schedule SE`, line `13`
-    - `Self-Employed Health Insurance Deduction Worksheet`, line `1`
-    - `IRA Deduction Worksheet`, line `12a`
-    - `Student Loan Interest Deduction Worksheet`, line `1`
-
-**TEST EVIDENCE.**
-
-    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_m20_s155.py tests\test_m20_s150.py -q -> 4 passed in 2.78s
-    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_extract_m16.py -q -> 4 passed in 1.52s
-    RAN: .venv\Scripts\python.exe tools\check_ascii.py -> ASCII check OK
-    RAN: .venv\Scripts\python.exe tools\check_diagnosis_evidence.py -> diagnosis evidence check OK
-    RAN: git diff --check -> clean
-    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_m20_s150.py tests\test_generated_review_m20.py -q -> 11 passed, 1 failed in 39.66s; pre-existing stale Form 2441 live projection assertion
-    RAN: $env:PYTEST_DEBUG_TEMPROOT='C:\Users\devbox\projects\tax_graph\.test_tmp'; .venv\Scripts\python.exe -m pytest tests\test_m20_s155.py tests\test_m20_s150.py tests\test_extract_m16.py tests\test_extract_outline_m4.py -q -> 28 passed, 1 failed; pre-existing `test_instruction_section_body_survives_deeper_heading` stub-section mismatch; no hunk in this round touches that path
-    NOT RUN: tests\e2e -> exceeds launcher cap; Architect-side per round spec
 
 ## Open for Architect
 
