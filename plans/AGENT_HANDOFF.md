@@ -21,8 +21,29 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: JOHN. M20-S154 IS ACCEPTED AND THE CORE GATE FINALLY MEASURES SOMETHING: 27 of 280 core
-refusals never reach a reviewable cell. Nothing is in flight.**
+**BALL: CODEX. M20-S155 IS THE ROUND: a reference to another form cannot resolve, and that is 55%
+of every review gap we have. John is at lunch; the Architect is running three rounds against a
+measured target.**
+
+**THE TARGET, AND THE BASELINE IT IS MEASURED FROM (John, 2026-08-20: "get to at least 90% before I
+review manually").** Read as the review-gap share, which is the number the Architect graded on:
+
+    derived cells: 2120
+    derived states: approved=0, needs_recheck=2, review_gap=591, unreviewed=1527
+
+**591 / 2120 = 27.9% review gap. The target is <= 10%.**
+
+**WHERE THE GAPS COME FROM, MEASURED ACROSS EVERY DRAFT.** 151 formula-cell review gaps produce
+those 591 units (a gap backs about four physical units). By cause:
+
+     83  source line is not present in the deterministic outline index
+     24  micro extraction failed: quote does not match the supplied form or instruction
+     20  micro extraction failed: information_return box must ...
+      5  micro extraction failed: LlmUnavailable: structured-output request
+      3  evidence packet is incomplete; provider call suppressed
+
+**Of the 83, SEVENTY-FOUR name another form** and nine are bare same-document lines. **That single
+cause is 55% of all gaps**, and clearing it should move roughly 320 units.
 
 **M20-S154 IS ACCEPTED (`17ecc2d`, Architect, 2026-08-20), VERIFIED IN BOTH DIRECTIONS ON REAL DATA
 BY THE ARCHITECT, NOT TAKEN FROM THE REPORT.** **290 candidates, 280 core, 27 core unsurfaced, 2
@@ -366,7 +387,75 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**NONE IN FLIGHT.** S154 closed 2026-08-20.
+**M20-S155: A REFERENCE TO ANOTHER FORM MUST RESOLVE WHEN BOTH FORMS ARE MODELLED.**
+
+**THE DEFECT IS STRUCTURAL AND IS PROVEN AT `outline_pipeline.py:133`:**
+
+    line_index = _outline_line_index(document.document_id, outline.children)
+
+**The index holds only the document being extracted**, so no cross-document key can ever be found in
+it. `explain-cell --doc form_1040_2025 --line 31` shows the consequence on a CORE-TO-CORE reference:
+
+    planned_operand: {form: "Schedule 3", line: "15", role: "amount"}
+    computed_key_text: "('schedule_3_2025', '15')"
+    found: false
+    searched: "outline index"
+
+**Schedule 3 line 15 exists as a canonical address**, printed label *"Line 15 - 1040, 1040-SR, or
+1040-NR, line 31"* - the exact reciprocal of the 1040 line. Both documents are core, both modelled,
+and the reference still fails. **This is not a long-tail or overlay problem.**
+
+**AND THERE IS A SECOND DEFECT INSIDE THE SAME 74.** The model's form spellings vary, and the
+current normaliser cannot map them:
+
+        7  Schedule 1-A (Form 1040)
+        5  Schedule 1-A (Form 1040) 2025
+        4  Schedule 1-A (Form 1040) (2025)
+        4  6251
+        3  Form 2441
+
+`_line_reference_key` lowercases and substitutes non-alphanumerics, so
+`Schedule 1-A (Form 1040) (2025)` becomes `schedule_1_a_form_1040_2025_2025` - matching nothing.
+**Three spellings of one form must reach `schedule_1a_2025`.**
+
+**WHY THIS ROUND IS DETERMINISTIC AND NOT A MODEL CALL (Architect, 2026-08-20).** John has
+authorised an in-graph "match maker" AI stage if it is the right answer. **It is not the right FIRST
+answer here.** Mapping `Schedule 1-A (Form 1040) (2025)` to `schedule_1a_2025` is normalisation, and
+the index lookup is exact once the key is right - **asking a model to do arithmetic on strings we
+can normalise would be spending money to add variance.** The correct sequence is deterministic
+first, then let the RESIDUE argue for a model: whatever spellings and references remain unresolved
+after this round are the evidence for a match-maker stage, and ITEM 3 requires that residue to be
+listed rather than summarised. **A model stage justified by a measured residue is a different thing
+from one adopted because the deterministic path was never tried.**
+
+ITEM 1. **Build the line index across modelled documents, not just the one under extraction.** The
+key already carries the document, so `('schedule_3_2025','15')` can only match Schedule 3's line 15
+- **precision comes from the key, so do not add fuzzy matching on the line.**
+
+ITEM 2. **Resolve a model form spelling to a document id, and FAIL CLOSED.** Derive the alias set
+from what already exists - manifest document ids, `data/soi/form_id_map.yaml` labels, address
+printed labels - **do not hand-write a spelling table.** An unrecognised spelling must stay an
+unresolved finding; **a wrong edge is far worse than a missing one**, so prefer a miss to a guess
+and say which spellings still miss.
+
+ITEM 3. **Measure it.** Re-extract the three worst documents only - `schedule_1a_2025` (26 gaps),
+`form_6251_2025` (18), `schedule_1_2025` (18) - to an output directory OUTSIDE the repository, and
+report the unresolved-source-line count before and after. **Live calls are permitted for this;
+about $0.40 per document. Do NOT re-extract the whole corpus.**
+
+**WHAT MUST NOT HAPPEN.**
+- **Do not create an edge to a line you did not positively identify.** Fail closed.
+- **Do not hand-author an alias table** to make specific spellings pass.
+- **Do not weaken, delete, or invert an assertion that is green on `main`.**
+- Do not regenerate the live drafts under `graph/2025/_drafts`.
+
+**THE FLOOR.**
+- **1040 line `31` resolves to Schedule 3 line 15**, shown through `explain-cell`.
+- **The unresolved-source-line count before and after** on the three re-extracted documents.
+- **The spellings that still fail**, listed. A shorter list is progress; a silent zero is suspicious.
+- **Focused sets green** against their known reds. **e2e is Architect-side.**
+- **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
+  byte-identical.
 
 ## Open for Architect
 
