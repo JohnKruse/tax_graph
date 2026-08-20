@@ -533,6 +533,12 @@ RAN: `.venv\Scripts\python.exe -m tax_graph.cli verify prompt-bench --doc form_1
 
 RAN: `.venv\Scripts\python.exe -m tax_graph.cli explain-cell --root C:\tmp\m20_s156_live\form_1040_2025 --doc form_1040_2025 --line 3a` -> persisted `rejected_quote`, `rejected_payload`, validation reason, closest span, and offsets shown.
 
+RAN: `.venv\Scripts\python.exe tools\check_ascii.py` -> ASCII check OK.
+
+RAN: `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> diagnosis evidence check OK.
+
+RAN: `git diff --check` -> clean. Protected set diff -> EMPTY.
+
 NOT RUN: e2e; it exceeds the launcher cap and is Architect-side.
 
 ## Open for Architect
