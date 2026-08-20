@@ -19,6 +19,7 @@ import yaml
 
 from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
 from tax_graph.extract.llm_client import LlmClient, is_transient_transport_error, response_telemetry
+from tax_graph.extract.evidence import evidence_quote_matches, normalize_evidence_text, span_evidence_text
 from tax_graph.extract.models import LlmCallTelemetry, SourceDocumentInput
 from tax_graph.extract.observability import llm_call_target
 from tax_graph.extract.outline import CandidateSpan
@@ -118,7 +119,7 @@ def extract_background_policy(
     citation_span_ids = [
         span.span_id
         for span in evidence
-        if _quote_matches(quote, span.text)
+        if evidence_quote_matches(quote, span_evidence_text(span))
     ]
     if not any(span.relationship == "source" for span in evidence if span.span_id in citation_span_ids):
         raise MicroExtractionError("background policy quote has no form-face citation")
@@ -141,7 +142,7 @@ def validate_background_policy(
     reason = response.get("reason")
     if not isinstance(reason, str) or not reason.strip():
         raise MicroExtractionError("background policy reason must be non-empty")
-    if not any(_quote_matches(quote, span.text) for span in evidence):
+    if not any(evidence_quote_matches(quote, span_evidence_text(span)) for span in evidence):
         raise MicroExtractionError("background policy quote does not match supplied evidence")
 
 
@@ -385,7 +386,7 @@ def background_evidence(
             and span.owner_document_id != owner_document_id
         ):
             continue
-        span_tokens = set(_meaningful_tokens(span.text))
+        span_tokens = set(_meaningful_tokens(span_evidence_text(span)))
         overlap = len(tokens & span_tokens)
         if overlap == 0:
             continue
@@ -431,7 +432,7 @@ def _unique_spans(spans: list[CandidateSpan]) -> list[CandidateSpan]:
 
 def _background_prompt(field: dict[str, Any], evidence: list[CandidateSpan]) -> str:
     rendered = "\n".join(
-        f"- {span.span_id} ({span.relationship}, {span.locator}): {span.text}"
+        f"- {span.span_id} ({span.relationship}, {span.locator}): {span_evidence_text(span)}"
         for span in evidence
     )
     return "\n".join([
@@ -529,8 +530,7 @@ def _nested_origin_counts(values: Counter[tuple[str, str]]) -> dict[str, dict[st
 
 
 def _quote_matches(quote: str, source: str) -> bool:
-    normalize = lambda value: " ".join(str(value).split()).lower()
-    return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
+    return evidence_quote_matches(quote, source)
 
 
 def _background_model(settings: dict[str, Any]) -> str:

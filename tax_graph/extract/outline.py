@@ -19,6 +19,7 @@ from tax_graph.acquire.text_normalize import normalize_punctuation
 from tax_graph.config import get_config_value, project_root
 from tax_graph.extract.models import RelatedSourceInput, SourceDocumentInput
 from tax_graph.acquire.source_ranges import SourceTextIndex
+from tax_graph.extract.evidence import normalize_evidence_text
 from tax_graph.extract.structure import StructureFinding, StructureRow
 from tax_graph.extract.instruction_sections import (
     InstructionSectionsFrame,
@@ -45,12 +46,14 @@ class CandidateSpan:
     relationship: str
     locator: str
     text: str
+    evidence_text: str | None = None
     owner_document_id: str | None = None
     owner_lines: tuple[str, ...] = ()
     section_id: str | None = None
     findings: tuple[dict[str, Any], ...] = ()
     extent: dict[str, Any] = field(default_factory=dict)
     source_ranges: tuple[dict[str, int], ...] = ()
+    joined_from: tuple[str, ...] = ()
 
 
 @dataclass
@@ -540,6 +543,58 @@ def _merge_structure_anchor_index(document: SourceDocumentInput, records: list[d
     document.fields["line_anchors"] = existing
 
 
+def join_adjacent_source_spans(
+    spans: list[CandidateSpan],
+    *,
+    source_text: str,
+) -> list[CandidateSpan]:
+    """Add joined source spans when stored offsets prove adjacency.
+
+    The original per-line spans are retained. A joined span is derived only
+    when one source range follows another with whitespace-only text between
+    them. Text similarity is never used to create a join.
+    """
+    result: list[CandidateSpan] = []
+    source_spans = [
+        span for span in spans
+        if span.relationship == "source" and not span.joined_from
+    ]
+    for first, following in zip(source_spans, source_spans[1:]):
+        if len(first.source_ranges) == 1 and len(following.source_ranges) == 1:
+            previous_end = int(first.source_ranges[0]["end"])
+            following_start = int(following.source_ranges[0]["start"])
+        else:
+            continue
+        if (
+            following.document_id != first.document_id
+            or following_start < previous_end
+            or source_text[previous_end:following_start].strip()
+        ):
+            continue
+        group = [first, following]
+        if len(group) > 1:
+            start = int(group[0].source_ranges[0]["start"])
+            end = int(group[-1].source_ranges[0]["end"])
+            result.append(
+                CandidateSpan(
+                    span_id=f"{group[0].span_id}_through_{group[-1].span_id.rsplit('_', 1)[-1]}",
+                    document_id=first.document_id,
+                    relationship="source",
+                    locator=f"{group[0].locator} through {group[-1].locator}",
+                    text=source_text[start:end],
+                    evidence_text=normalize_evidence_text(source_text[start:end]),
+                    owner_document_id=first.owner_document_id,
+                    owner_lines=first.owner_lines,
+                    section_id=first.section_id,
+                    findings=tuple(item for span in group for item in span.findings),
+                    extent=dict(first.extent),
+                    source_ranges=({"start": start, "end": end},),
+                    joined_from=tuple(span.span_id for span in group),
+                )
+            )
+    return result
+
+
 def build_candidate_spans(document: SourceDocumentInput) -> list[CandidateSpan]:
     """Segment form and bundled sources into verbatim candidate spans.
 
@@ -549,7 +604,9 @@ def build_candidate_spans(document: SourceDocumentInput) -> list[CandidateSpan]:
     create an instruction owner and therefore fails closed for the join.
     """
     spans: list[CandidateSpan] = []
-    spans.extend(_spans_for_text(document.document_id, "source", document.text))
+    source_spans = _spans_for_text(document.document_id, "source", document.text)
+    spans.extend(source_spans)
+    spans.extend(join_adjacent_source_spans(source_spans, source_text=document.text))
     for source in document.related_sources:
         spans.extend(_spans_for_related_source(source))
     return spans
@@ -673,6 +730,8 @@ def span_to_dict(span: CandidateSpan) -> dict[str, Any]:
         "locator": span.locator,
         "text": span.text,
     }
+    if span.evidence_text is not None:
+        data["evidence_text"] = span.evidence_text
     if span.owner_document_id:
         data["owner_document_id"] = span.owner_document_id
     if span.owner_lines:
@@ -681,6 +740,8 @@ def span_to_dict(span: CandidateSpan) -> dict[str, Any]:
         data["section_id"] = span.section_id
     if span.source_ranges:
         data["ranges"] = [dict(item) for item in span.source_ranges]
+    if span.joined_from:
+        data["joined_from"] = list(span.joined_from)
     return data
 
 
@@ -759,6 +820,7 @@ def _spans_for_instruction_frame(
                 relationship="instructions",
                 locator=f"{page}lines {locator.start_line}-{locator.end_line}",
                 text=section.text,
+                evidence_text=normalize_evidence_text(section.text),
                 owner_document_id=section.document_id,
                 owner_lines=section.line_tokens,
                 section_id=section.section_id,
@@ -799,6 +861,7 @@ def _spans_for_text(document_id: str, relationship: str, text: str) -> list[Cand
                 relationship=relationship,
                 locator=f"page {page}, line {line_number}",
                 text=line,
+                evidence_text=normalize_evidence_text(line),
                 source_ranges=source_index.ranges_for_quote(
                     line,
                     start=cursor,

@@ -7,6 +7,7 @@ import re
 from typing import Any
 
 from tax_graph.extract.models import DraftObject, ExtractionBatch, SourceDocumentInput
+from tax_graph.extract.evidence import evidence_quote_matches, span_evidence_text
 from tax_graph.extract.outline import (
     CandidateSpan,
     OutboundFlow,
@@ -294,7 +295,7 @@ def _assemble_model_election(
                 span
                 for span in spans
                 if span.relationship == "source"
-                and _quote_matches(str(plan.get("quote", "")), span.text)
+                and _quote_matches(str(plan.get("quote", "")), span_evidence_text(span))
             ),
             None,
         )
@@ -441,7 +442,7 @@ def _steps_for_plan(
     citation_span_ids = [
         span.span_id
         for span in spans
-        if _quote_matches(quote, span.text)
+        if _quote_matches(quote, span_evidence_text(span))
     ][:1]
     output = f"line_{outline_node.line_anchor}" if outline_node.line_anchor else outline_node.outline_id
     return [
@@ -631,8 +632,7 @@ def _canonical_target_id(document: SourceDocumentInput, outline_node: OutlineNod
 
 
 def _quote_matches(quote: str, source: str) -> bool:
-    normalize = lambda value: " ".join(str(value).split())
-    return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
+    return evidence_quote_matches(quote, source)
 
 
 def realize_outbound_flows(

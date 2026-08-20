@@ -17,6 +17,7 @@ import re
 from typing import Any, Iterable, Mapping, Protocol, Sequence
 
 from tax_graph.config import get_config_value
+from tax_graph.extract.evidence import evidence_quote_matches, normalize_evidence_text
 from tax_graph.extract.llm_client import LlmClient, LlmResponseTruncated, response_telemetry
 from tax_graph.extract.prompts import load_prompt_template, render_prompt
 from tax_graph.extract.structure import split_caption_and_instruction
@@ -2923,8 +2924,8 @@ def _render_cell_prompt(
         "form": row.form,
         "line": row.line,
         "label": row.label,
-        "form_face_text": row.form_face_text,
-        "instruction_text": row.instruction_text,
+        "form_face_text": normalize_evidence_text(row.form_face_text),
+        "instruction_text": normalize_evidence_text(row.instruction_text),
         "instruction_locator": row.instruction_locator,
         "printed_lines": ", ".join(printed_lines),
         "document_inventory": _document_inventory_prompt(reference_inventory),
@@ -3193,10 +3194,7 @@ def _known_quote_spans(row: CellRecord, quote: str) -> list[tuple[str, str]]:
 
 
 def _contains_verbatim(source: str, quote: str) -> bool:
-    if quote in source:
-        return True
-    normalize = lambda value: " ".join(str(value).split())
-    return normalize(quote) in normalize(source)
+    return evidence_quote_matches(quote, normalize_evidence_text(source))
 
 
 def _keep_attempted_payload(row: CellRecord, payload: Any, *, attempt: str) -> None:

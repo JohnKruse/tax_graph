@@ -11,6 +11,7 @@ from tax_graph.config import get_config_value, resolve_llm_model
 from tax_graph.documents import document_class_for
 from tax_graph.extract.assembly import FormulaAssemblyFinding, _resolve_source_line, assemble_formula_plan
 from tax_graph.extract.background import extract_background_controls
+from tax_graph.extract.evidence import evidence_quote_matches, span_evidence_text
 from tax_graph.extract.outline_checks import run_outline_artifact_checks
 from tax_graph.extract.llm_client import LlmClient, is_transient_transport_error, response_telemetry
 from tax_graph.extract.micro import (
@@ -510,7 +511,7 @@ def _extract_non_formula_cells(
             )
             quote = record["quote"]
             record["citation_span_ids"] = [
-                span.span_id for span in node_spans if _quote_matches(quote, span.text)
+                span.span_id for span in node_spans if _quote_matches(quote, span_evidence_text(span))
             ][:1]
             resolved = _resolve_declared_source(
                 document,
@@ -595,8 +596,7 @@ def _resolve_declared_source(
 
 def _quote_matches(quote: str, source: str) -> bool:
     """Compare source evidence after folding line-break whitespace only."""
-    normalize = lambda value: " ".join(str(value).split())
-    return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
+    return evidence_quote_matches(quote, source)
 
 
 def _is_external_form_reference(document: SourceDocumentInput, form: str) -> bool:
@@ -717,7 +717,7 @@ def _record_union_non_computation(
     """Record a grounded non-computation outcome without making it a gap."""
     kind = formula_response_kind(plan)
     quote = str(plan.get("quote") or "")
-    citation_span_ids = [span.span_id for span in spans if _quote_matches(quote, span.text)][:1]
+    citation_span_ids = [span.span_id for span in spans if _quote_matches(quote, span_evidence_text(span))][:1]
     cell["citation_span_ids"] = citation_span_ids
     cell["has_verbatim_citation"] = bool(citation_span_ids)
     cell["has_form_face_citation"] = any(
@@ -1137,7 +1137,10 @@ def _spans_for_outline_node(
             and spans_by_id[span_id].relationship != "source"
         )
         if source_span is not None:
-            source_spans = [span for span in spans if span.relationship == "source"]
+            source_spans = [
+                span for span in spans
+                if span.relationship == "source" and not span.joined_from
+            ]
             # Locate the anchor row positionally, not by identity or equality.
             anchor_line = _locator_line_number(source_span.locator)
             source_index = next(
@@ -1150,6 +1153,18 @@ def _spans_for_outline_node(
             )
             if source_index >= 0:
                 context = source_spans[max(0, source_index - 20): source_index + 21]
+                source_ranges = source_span.source_ranges
+                if source_ranges:
+                    source_start = int(source_ranges[0]["start"])
+                    source_end = int(source_ranges[-1]["end"])
+                    joined_context = [
+                        span for span in spans
+                        if span.joined_from
+                        and span.source_ranges
+                        and int(span.source_ranges[0]["start"]) <= source_end
+                        and int(span.source_ranges[-1]["end"]) >= source_start
+                    ]
+                    selected.extend(joined_context)
                 selected.extend(span for span in context if span not in selected)
         selected.extend(instruction_hits[:3])
     if table_mode and node.columns:

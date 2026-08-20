@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from tax_graph.config import get_config_value, resolve_llm_seed
+from tax_graph.extract.evidence import evidence_quote_matches, span_evidence_text
 from tax_graph.extract.background import (
     _background_max_tokens,
     _background_model,
@@ -204,7 +205,7 @@ def _validate_background_with_citation(
     validate_background_policy(response, evidence)
     quote = str(response["quote"])
     if not any(
-        span.relationship == "source" and _quote_matches(quote, span.text)
+        span.relationship == "source" and evidence_quote_matches(quote, span_evidence_text(span))
         for span in evidence
     ):
         raise MicroExtractionError("background policy quote has no form-face citation")
@@ -258,10 +259,10 @@ def _bench_result(
             "span_id": span.span_id,
             "relationship": span.relationship,
             "locator": span.locator,
-            "text": span.text,
+            "text": span_evidence_text(span),
         }
         for span in spans
-        if isinstance(quote, str) and _quote_matches(quote, span.text)
+        if isinstance(quote, str) and _quote_matches(quote, span_evidence_text(span))
     ]
     return {
         "target_id": target_id,
@@ -283,5 +284,4 @@ def _temperature(config: dict[str, Any]) -> float | None:
 
 
 def _quote_matches(quote: str, source: str) -> bool:
-    normalize = lambda value: " ".join(str(value).split())
-    return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
+    return evidence_quote_matches(quote, source)

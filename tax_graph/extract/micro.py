@@ -9,6 +9,7 @@ import re
 from typing import Any
 
 from tax_graph.config import get_config_value, resolve_llm_model, resolve_llm_seed
+from tax_graph.extract.evidence import evidence_quote_matches, span_evidence_text
 from tax_graph.extract.llm_client import LlmClient
 from tax_graph.extract.outline import CandidateSpan, OutlineNode
 from tax_graph.extract.observability import llm_call_target
@@ -359,7 +360,7 @@ def _validate_quote(plan: dict[str, Any], spans: list[CandidateSpan]) -> None:
     quote = plan.get("quote")
     if not isinstance(quote, str) or not quote.strip():
         raise MicroExtractionError("quote must be a non-empty string")
-    if not any(_quote_matches(quote, span.text) for span in spans):
+    if not any(evidence_quote_matches(quote, span_evidence_text(span)) for span in spans):
         raise MicroExtractionError(
             "quote does not match the supplied form or instruction evidence",
             validation_diagnostic=_closest_quote_diagnostic(quote, spans),
@@ -377,7 +378,7 @@ def _closest_quote_diagnostic(
     normalized_quote = normalize(quote)
     candidates: list[tuple[float, int, CandidateSpan, difflib.Match]] = []
     for span in spans:
-        normalized_source = normalize(span.text)
+        normalized_source = normalize(span_evidence_text(span))
         match = difflib.SequenceMatcher(
             None,
             normalized_quote,
@@ -392,10 +393,10 @@ def _closest_quote_diagnostic(
         ).ratio()
         candidates.append((ratio, match.size, span, match))
     ratio, _size, span, match = max(candidates, key=lambda item: (item[0], item[1]))
-    normalized_source = normalize(span.text)
+    normalized_source = normalize(span_evidence_text(span))
     return {
         "span_id": span.span_id,
-        "span_text": span.text,
+        "span_text": span_evidence_text(span),
         "normalized_quote": normalized_quote,
         "normalized_span_text": normalized_source,
         "similarity": round(ratio, 6),
@@ -523,7 +524,7 @@ def validate_non_formula_source(plan: dict[str, Any], *, spans: list[CandidateSp
     quote = plan.get("quote")
     if not isinstance(quote, str) or not quote.strip():
         raise MicroExtractionError("quote must be a non-empty string")
-    if not any(_quote_matches(quote, span.text) for span in spans):
+    if not any(evidence_quote_matches(quote, span_evidence_text(span)) for span in spans):
         raise MicroExtractionError(
             "quote does not match the supplied form or instruction evidence",
             validation_diagnostic=_closest_quote_diagnostic(quote, spans),
@@ -537,10 +538,10 @@ def _formula_prompt(
     form_spans = [span for span in spans if span.relationship == "source"]
     instruction_spans = [span for span in spans if span.relationship != "source"]
     rendered_form = "\n".join(
-        f"- {span.span_id}: {span.text}" for span in form_spans[:40]
+        f"- {span.span_id}: {span_evidence_text(span)}" for span in form_spans[:40]
     ) or "(not available)"
     rendered_instructions = "\n".join(
-        f"- {span.span_id}: {span.text}" for span in instruction_spans[:6]
+        f"- {span.span_id}: {span_evidence_text(span)}" for span in instruction_spans[:6]
     ) or "(not available)"
     return "\n".join(
         [
@@ -578,8 +579,8 @@ def _non_formula_prompt(outline_node: OutlineNode, spans: list[CandidateSpan]) -
     """Ask the human question for a line that is not a formula."""
     form_spans = [span for span in spans if span.relationship == "source"]
     instruction_spans = [span for span in spans if span.relationship != "source"]
-    rendered_form = "\n".join(span.text for span in form_spans[:40]) or "(not available)"
-    rendered_instructions = "\n".join(span.text for span in instruction_spans[:8]) or "(not available)"
+    rendered_form = "\n".join(span_evidence_text(span) for span in form_spans[:40]) or "(not available)"
+    rendered_instructions = "\n".join(span_evidence_text(span) for span in instruction_spans[:8]) or "(not available)"
     return "\n".join(
         [
             "Answer the human question for one non-computed form line.",
@@ -603,7 +604,7 @@ def _non_formula_prompt(outline_node: OutlineNode, spans: list[CandidateSpan]) -
 def _table_formula_prompt(outline_node: OutlineNode, spans: list[CandidateSpan]) -> str:
     """Ask the retained table-specific path about column formulas."""
     rendered_spans = "\n".join(
-        f"- {span.span_id}: {span.document_id} {span.locator}: {span.text}"
+        f"- {span.span_id}: {span.document_id} {span.locator}: {span_evidence_text(span)}"
         for span in spans
     )
     return "\n".join(
@@ -628,8 +629,7 @@ def _table_formula_prompt(outline_node: OutlineNode, spans: list[CandidateSpan])
 
 def _quote_matches(quote: str, source: str) -> bool:
     """Compare evidence after folding line-break whitespace only."""
-    normalize = lambda value: " ".join(str(value).split())
-    return normalize(quote) in normalize(source) or normalize(source) in normalize(quote)
+    return evidence_quote_matches(quote, source)
 
 
 def _validate_printed_constant(source_line: dict[str, Any]) -> None:

@@ -471,6 +471,37 @@ count before and after. Live calls permitted, about $0.40 each, **at most three 
 
 ## Open for Architect
 
+**WORKER STATUS (2026-08-20; M20-S157 implementation is ready for review).** The worker added
+source-offset-proven adjacent source joins in `tax_graph/extract/outline.py`. Original
+`CandidateSpan.text` and citation ranges remain canonical; joined spans carry a single combined
+range plus `joined_from`, and the draft packet records a separate `evidence_text`. Form 1116
+0134/0135 now produces one joined span whose quote matches after whitespace folding. The worker
+also routes every formula, non-formula, background, cell, outline-pipeline, and prompt-bench
+validator through the prepared evidence value. Cell provenance remains canonical; only the cell
+prompt renderer and quote check normalize the model-facing packet.
+
+**ITEM 3 CHOICE AND COUNTS.** The worker chose evidence-packet normalization and did not rewrite
+the canonical acquired text. The stored citation-range count was **593 before -> 593 after** this
+round; the already-accepted S156 backlog was **515 -> 593**. No promoted graph or draft artifact
+was regenerated.
+
+**TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_m20_s157.py -q` -> **3 passed in 0.27s**.
+RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_m20_s157.py tests\test_extract_outline_m4.py tests\test_background_m20.py tests\test_prompt_experiment_m20.py tests\test_generated_review_m20.py tests\test_derive_cells_m20.py tests\test_outline_span_resolution_m20.py -q`
+-> **132 passed, 2 failed in 52.01s**. The two failures are the known reds
+`test_extract_outline_m4.py::test_instruction_section_body_survives_deeper_heading` and
+`test_generated_review_m20.py::test_generated_review_renders_resolved_external_sources_and_hides_sentinels`;
+no S157 test failed. RAN `.venv\Scripts\python.exe -m compileall -q tax_graph tests\test_m20_s157.py`
+and `git diff --check` -> **clean**. RAN `.venv\Scripts\python.exe tools\check_ascii.py`
+-> **ASCII check OK**. RAN `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py plans\AGENT_HANDOFF.md`
+-> **diagnosis evidence check OK**.
+
+**NOT RUN: LIVE FLOOR MEASUREMENT.** The three live re-extractions and their before/after
+quote-failure counts were not run. External LLM egress requires explicit user authorization in
+this environment; no live drafts were touched. The live re-extraction remains the Architect-side
+follow-up once authorized, along with e2e verification.
+
 
 ## Queued (ONE LINE each - do not spec ahead)
 
