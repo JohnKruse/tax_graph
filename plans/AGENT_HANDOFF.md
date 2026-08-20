@@ -21,8 +21,32 @@ place; do NOT spawn new per-topic note files. Standing rules: `../AGENTS.md`. Ma
 
 ## BALL
 
-**BALL: CODEX. M20-S149 IS THE ROUND: the renderer mangles a form name, and the line 1a guard's
-three expectations each need a verdict. S146-S148 are closed; see History and `git log`.**
+**BALL: JOHN. M20-S149 IS ACCEPTED. The line 1a chain is closed end to end and the guard now fails
+for exactly one reason, which is a real defect. Nothing is in flight.**
+
+**M20-S149 IS ACCEPTED (`a0c5d11`, Architect, 2026-08-20), VERIFIED BY OPENING THE CELLS AND BY
+READING THE TEST DIFF.** The three renders are now:
+
+    1a: line 1a = W-2 box 1        <- passes
+    1e: line 1e = unresolved source <- FAILS, correctly
+    28: line 28 = not derivable     <- passes
+
+**LINE 1a IS CORRECT END TO END FOR THE FIRST TIME.** The model supplies `form: 'Form(s) W-2'`,
+`box: '1'`; the renderer normalises it; the assertion passes **on pipeline output, with no regex and
+no lowered expectation.** That chain took S147 (ask for the provenance), S148 (delete the fake), the
+regeneration, and S149 (render it) - and every step of it was verified against the artifact rather
+than the round's own report.
+
+**THE NORMALISER IS GENERIC, WHICH WAS THE POINT.** `_source_label` strips a leading `Form(s)`
+rather than matching the one spelling we happened to see, and capitalises only a leading lowercase
+letter instead of `.title()`, so punctuation survives. Spot-checked: `Form(s) 1099-R` ->
+`1099-R box 7`, `schedule_8812` -> `Schedule 8812, line 5`. `test_m20_s115.py` gained a test; none
+was weakened.
+
+**THE GUARD IS STILL RED AND THAT IS NOW A FEATURE.** It fails on line `1e` alone, with the verdict
+recorded in the test beside the assertion. **A red that names one real defect is worth more than a
+green that hid three stale strings.** Focused sets **26 passed, 1 failed**; e2e Architect-side
+**11 failed, 6 passed, 1 xpassed** - the documented `*_m15.py` eleven, unchanged.
 
 **THE 1040 DRAFT WAS REGENERATED 2026-08-20 06:45-06:53 ON JOHN'S INSTRUCTION.** `tax_graph.cli
 extract --doc form_1040_2025 --year 2025`, **7m55s, 120 model calls, $0.40**; 161 auto-accepted, 8
@@ -189,106 +213,8 @@ do-not-drop-`quoted_text` constraint. They are no longer repeated here.
 
 ## Current round
 
-**M20-S149: RENDER THE FORM NAME THE PIPELINE GAVE US, AND GIVE EACH STALE EXPECTATION A VERDICT.**
-
-**NO MODEL CALL, NO NETWORK, AND DO NOT REGENERATE THE DRAFT.** It was regenerated this morning at
-a cost of $0.40; everything below reads the draft as it stands.
-
-**ITEM 1 - THE RENDERER MANGLES THE FORM NAME.** `_source_label` in
-`workbench/generated_review.py` reads:
-
-    form_label = "W-2" if _compact(form) in {"w2", "formw2"} else form.replace("_", " ").strip().title()
-
-The model returns `Form(s) W-2`. `_compact('Form(s) W-2')` is `formsw2`, which is not in that set,
-so it falls through to `.title()` - **and `str.title()` capitalises after every non-letter, so
-`(s)` becomes `(S)`.** The cell renders `line 1a = Form(S) W-2 box 1`. Two defects in one line: the
-normaliser does not know the model's spelling, and `.title()` corrupts any form name containing
-punctuation. **Fix both. Do not special-case the string `Form(s) W-2`** - a normaliser that only
-knows the spellings we have seen will break on the next one.
-
-**ITEMS 2-4 - EACH EXPECTATION IN
-`test_generated_review_renders_resolved_external_sources_and_hides_sentinels` GETS ITS OWN VERDICT.**
-The test was never fully evaluated: `1a` failed first and hid the rest. **For each of the three,
-decide whether the EXPECTATION is wrong or the PIPELINE is wrong, and record which.** Do not update
-a string to match observed output - that is how a guard stops meaning anything.
-
-ITEM 2. `1a`, expects `line 1a = W-2 box 1`. The outcome record now carries the form and the box, so
-**the expectation looks right and ITEM 1 is what stands between them.** Confirm rather than assume.
-
-ITEM 3. `1e`, expects `line 1e = Form 2441, line 26`; renders `unresolved source`. The draft says
-`status: review_gap`, `review_gap: source line is not present in the deterministic outline index`,
-while the printed label reads *"Taxable dependent care benefits from Form 2441, line 26"*. **The
-form face names the source and the pipeline failed to resolve it. If that is what you find, the
-EXPECTATION IS RIGHT AND THE PIPELINE IS WRONG - leave the assertion alone, leave the test red, and
-say so.** Do not fix it by lowering it.
-
-ITEM 4. `28`, expects `line 28 = unresolved source`; renders `not derivable`. The outcome is
-`kind: not_derivable` with `reason:` *"The evidence states that Schedule 8812 must be completed to
-figure and claim the credit, but it does not provide the applicable Schedule 8812 line or amount
-needed to derive Form 1040 line 28."* The label names Schedule 8812 as the source. **Decide what
-this cell SHOULD say and justify it against the review contract** - `unresolved source` and
-`not derivable` are different claims about the same cell, and one of them is the one a reviewer
-needs. **This is the item with a real judgement in it; do not rush it.**
-
-**WHAT MUST NOT HAPPEN.**
-- **Do not regenerate the draft, hand-edit it, or touch `graph/`.**
-- **Do not weaken, delete, or invert an assertion that is green on `main`.**
-- **Do not change an expectation to match what the code prints today** without recording why the
-  new string is correct and the old one was not.
-- No model call, no network.
-
-**THE FLOOR.**
-- **The rendered text for `1a`, `1e` and `28`**, quoted after the change.
-- **A verdict line per item**: expectation wrong, or pipeline wrong, with the reason.
-- **The guard's colour, stated plainly.** Red is an acceptable outcome if the pipeline is at fault.
-- **Focused workbench and API sets green** against their known reds. **e2e is Architect-side.**
-- **`check_ascii` OK**, `git diff --check` clean, protected set byte-identical.
-
-**WORKER STATUS (Codex, 2026-08-20):** `_source_label` now removes a generic leading
-`Form(s)` marker, preserves punctuation instead of using `str.title()`, and retains the existing
-W-2 canonical label. It does not special-case the string `Form(s) W-2`.
-
-The rendered values after the change are:
-
-```text
-1a: line 1a = W-2 box 1
-1e: line 1e = unresolved source
-28: line 28 = not derivable
-```
-
-Verdicts:
-
-- ITEM 2 (`1a`): **pipeline wrong** (renderer); the expectation is right. The draft outcome has
-  structured `form: Form(s) W-2`, `line: 1a`, and `box: 1`; the renderer must project that named
-  filer-input identity as `W-2 box 1`.
-- ITEM 3 (`1e`): **pipeline wrong**. The form-face label names Form 2441 line 26, while the
-  draft records `status: review_gap` and `review_gap: source line is not present in the
-  deterministic outline index`. The assertion remains unchanged and the red guard is honest.
-- ITEM 4 (`28`): **expectation wrong**. The draft outcome is `kind: not_derivable`, and its
-  reason says Schedule 8812 must be completed but supplies no applicable line or amount. The
-  review contract needs to distinguish a named-but-insufficient derivation from an unresolved
-  source, so `not derivable` is the useful reviewer-facing claim.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_m20_s115.py -q` -> **6 passed in
-0.88s**.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_m15.py tests\test_m20_s113.py
-tests\test_m20_s115.py -q` -> **21 passed in 1.26s**.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_workbench_cells_api_m17.py
-tests\test_workbench_write_api_m15.py -q` -> **12 passed in 196.57s (0:03:16)**.
-
-**RAN:** `.venv\Scripts\python.exe -m pytest tests\test_generated_review_m20.py -q` -> **9
-passed, 1 failed in 41.50s**. The sole failure is the intentionally preserved `1e` expectation;
-`1a` and `28` pass.
-
-**NOT RUN:** `.venv\Scripts\python.exe -m pytest tests\e2e -q` -> the e2e set exceeds the Worker
-launcher cap; Architect runs it.
-
-**RAN:** `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK**.
-**RAN:** `git diff --check` -> **clean**.
-**RAN:** `git diff --quiet -- graph/2025/nodes graph/2025/edges graph/2025/rules
-graph/2025/field_maps` -> **no diff; byte-identical**.
+**NONE IN FLIGHT.** S149 closed 2026-08-20. Next is John's call -
+see Queued; line `1e` is the obvious one.
 
 ## Open for Architect
 
@@ -297,6 +223,14 @@ graph/2025/field_maps` -> **no diff; byte-identical**.
   BALL and in Queued.
 
 ## Queued (ONE LINE each - do not spec ahead)
+
+- **LINE 1e: THE FORM FACE NAMES THE SOURCE AND THE PIPELINE CANNOT FIND IT (Architect, verdict
+  recorded 2026-08-20).** Printed label *"Taxable dependent care benefits from Form 2441, line
+  26"*; draft says `status: review_gap`, `review_gap: source line is not present in the
+  deterministic outline index`. **It is the only assertion failing in
+  `test_generated_review_renders_resolved_external_sources_and_hides_sentinels`. OPEN IT
+  INDIVIDUALLY** - on 2026-08-15 that exact error string turned out to be five unrelated defects,
+  so it names the stage that raised, not the cause.
 
 - **S147'S PROMPT FIX IS UNTESTED: EXERCISE THE MICRO PATH, NOT `derive_cells_s25` (Architect,
   2026-08-20).** The change is in `micro.py` / `outline_pipeline.py`, which write
