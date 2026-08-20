@@ -378,6 +378,36 @@ should be a refusal candidate, and justify it** - do not just exclude it to lowe
 - **`check_ascii` OK, `check_diagnosis_evidence` OK**, `git diff --check` clean, protected set
   byte-identical.
 
+**M20-S154 WORKER STATUS.** The matcher now reuses `review_html.object_dom_id` and
+`review_html.dom_slug`, then matches the writer's document prefix, any section-scoped path, and
+an exact line-token boundary. Schedule 1 line 1 is no longer a false refusal. Candidates owned by
+manifest entries with `kind: instructions` are excluded from the review-cell gate: instructions
+are source evidence, not reviewable cells, and have no review.html surface. This removes 20
+instruction-owned candidates for that semantic reason (not to lower the refusal count).
+
+**M20-S154 REAL-CORPUS EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m tax_graph.cli doctor --year 2025 2>&1 | Select-String -Pattern
+'=== core refusal gate ===|tax year: 2025|candidates:|core candidates:|core unsurfaced:|non-core
+unsurfaced:|schedule_1_2025 line 1;|form_1040_2025 line 31;|result:'`
+-> **exit 1; 290 candidates (280 core, 10 non-core), 27 core unsurfaced, 2 non-core unsurfaced**.
+The red is the real result and refusal candidates were not narrowed to move it. The real
+SURFACED candidate is `schedule_1_2025` line `1`; its actual
+`graph/2025/_drafts/schedule_1_2025/review.html` contains exactly one
+`data-object="obj-nodes-schedule-1-2025-section-1-part-i-additional-income-line-1"` marker.
+The real UNSURFACED candidate is `form_1040_2025` line `31`; its actual
+`graph/2025/_drafts/form_1040_2025/review.html` contains zero writer-derived line-31 markers.
+The former guessed `obj-nodes-schedule-1-2025-root-line-1` marker occurs zero times.
+
+**M20-S154 TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_m20_s152.py tests\test_m20_s154.py -q`
+-> **6 passed in 5.15s**. RAN:
+`.venv\Scripts\python.exe -m pytest tests\test_extract_m4.py -q`
+-> **27 passed in 5.62s**. RAN `.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII
+check OK**. RAN `.venv\Scripts\python.exe tools\check_diagnosis_evidence.py` -> **diagnosis
+evidence check OK**. RAN `git diff --check` -> **clean**. NOT RUN:
+`.venv\Scripts\python.exe -m pytest tests\e2e -q` -> **e2e exceeds the Worker's launcher cap;
+Architect-side per the floor**. No model call, network egress, or draft regeneration was used.
+
 ## Open for Architect
 
 - **NOTHING OPEN.** S148's evidence block was pruned on acceptance 2026-08-20; `git show f45a842`

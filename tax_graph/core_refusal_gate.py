@@ -15,6 +15,7 @@ from typing import Any, Iterable, Mapping
 from tax_graph.acquire.corpus import load_core_document_ids
 from tax_graph.acquire.manifest import load_manifest
 from tax_graph.config import get_config_value, load_config, project_root
+from tax_graph.extract.review_html import dom_slug, object_dom_id
 from tax_graph.io.loader import load_yaml
 
 
@@ -194,6 +195,7 @@ def evaluate_core_refusals(
     candidates.extend(_not_derivable_candidates(draft_root, manifest, core_ids))
     candidates.extend(_worksheet_candidates(draft_root, manifest, core_ids))
     candidates.extend(_frontier_candidates(root_path / "graph" / year_text / "frontier.yaml", manifest, core_ids))
+    candidates = [item for item in candidates if _is_reviewable_candidate(item, manifest)]
     candidates = [
         replace(item, surfaced=_is_surfaced(item, root_path, year_text))
         for item in candidates
@@ -250,10 +252,10 @@ def _candidate(
     )
 
 
-def _slug(value: str) -> str:
-    """Match the stable ASCII slug used by the generated review HTML."""
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-    return slug or "item"
+def _is_reviewable_candidate(candidate: RefusalCandidate, manifest: Any) -> bool:
+    """Exclude source-only instruction documents from the cell surfacing gate."""
+    entry = manifest.by_document_id().get(candidate.owner_document_id)
+    return entry is None or entry.kind != "instructions"
 
 
 def _review_surface_path(root: Path, year: str, document_id: str) -> Path:
@@ -261,9 +263,16 @@ def _review_surface_path(root: Path, year: str, document_id: str) -> Path:
     return root / "graph" / year / "_drafts" / document_id / "review.html"
 
 
-def _surface_marker(candidate: RefusalCandidate) -> str:
-    """Return the DOM marker for a visible form-line cell."""
-    return f"obj-nodes-{_slug(candidate.document_id)}-root-line-{_slug(candidate.line)}"
+def _surface_marker_prefix(candidate: RefusalCandidate) -> str:
+    """Return the document prefix used by the review writer for a form-line cell."""
+    return object_dom_id("nodes", candidate.document_id)
+
+
+def _surface_marker_pattern(candidate: RefusalCandidate) -> str:
+    """Return the writer-derived pattern for a section-scoped form-line marker."""
+    prefix = re.escape(_surface_marker_prefix(candidate))
+    line = re.escape(dom_slug(candidate.line))
+    return rf'(?:id|data-object)="{prefix}(?:-[a-z0-9]+)*-line-{line}(?:-|\")'
 
 
 def _review_surface_contains(surface: Path, candidate: RefusalCandidate) -> bool:
@@ -274,8 +283,7 @@ def _review_surface_contains(surface: Path, candidate: RefusalCandidate) -> bool
     if candidate.kind == "worksheet_refusal":
         marker = re.escape(candidate.document_id or candidate.owner_document_id)
         return bool(re.search(rf'data-worksheet-document-id="{marker}"', text))
-    marker = re.escape(_surface_marker(candidate))
-    return bool(re.search(rf'(?:id|data-object)="{marker}"', text))
+    return bool(re.search(_surface_marker_pattern(candidate), text))
 
 
 def _is_surfaced(candidate: RefusalCandidate, root: Path, year: str) -> bool:

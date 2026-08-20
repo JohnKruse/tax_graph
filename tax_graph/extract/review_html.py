@@ -502,7 +502,12 @@ def _row_range_label(line_anchor: str, rows: list[TableSlot]) -> str:
 
 
 def _object_dom_id(obj: DraftObject) -> str:
-    return f"obj-{_slug(obj.kind)}-{_slug(obj.object_id)}"
+    return object_dom_id(obj.kind, obj.object_id)
+
+
+def object_dom_id(kind: str, object_id: str) -> str:
+    """Return the DOM id used for a rendered draft object."""
+    return f"obj-{dom_slug(kind)}-{dom_slug(object_id)}"
 
 
 def _normalize(value: str) -> str:
@@ -510,6 +515,11 @@ def _normalize(value: str) -> str:
 
 
 def _slug(value: str) -> str:
+    return dom_slug(value)
+
+
+def dom_slug(value: str) -> str:
+    """Return the stable ASCII slug used in review DOM ids."""
     slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
     return slug or "item"
 
