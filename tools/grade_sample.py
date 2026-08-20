@@ -34,11 +34,23 @@ from workbench import generated_review as gr  # noqa: E402
 
 GRADES = ["F", "D", "C", "B", "A", "NO_EVIDENCE"]
 
+# Two axes, deliberately. The first version asked only "does the operation
+# follow from the evidence", and a swapped-instruction control could satisfy it
+# by answering "not derivable" - correct, given wrong evidence, and useless to
+# us. Whether the evidence BELONGS to this line is a separate question and the
+# one that finds misattribution.
+FITS = ["GOVERNS", "WRONG_LINE", "NONE_SUPPLIED", "UNCLEAR"]
+
 SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["grade", "reason"],
+    "required": ["evidence_fit", "governs_line", "grade", "reason"],
     "properties": {
+        "evidence_fit": {"type": "string", "enum": FITS},
+        "governs_line": {
+            "type": "string",
+            "description": "when WRONG_LINE, the line the supplied text actually governs; else empty",
+        },
         "grade": {"type": "string", "enum": GRADES},
         "reason": {"type": "string", "minLength": 1},
     },
@@ -46,20 +58,29 @@ SCHEMA = {
 
 PROMPT = """You are auditing one cell of a US tax form graph.
 
-Below are three things: the PRINTED FACE of the form line, the INSTRUCTION TEXT
-that was supplied to the extractor, and the OPERATION the extractor produced.
+You get the PRINTED FACE of a form line, the INSTRUCTION TEXT that was supplied
+to the extractor, and the OPERATION the extractor produced.
 
-Judge only whether the supplied evidence supports the operation.
+Answer TWO independent questions.
 
-- If no instruction text was supplied and the face alone cannot settle what the
-  line does, answer NO_EVIDENCE. That is a verdict about the evidence, not the
-  answer. Do not guess from your own tax knowledge.
-- If the face alone is genuinely sufficient (for example a pure "add lines X
-  through Y" instruction printed on the face), you may grade normally.
-- A grade means: does the operation follow from the evidence shown? A means
-  clearly supported; F means contradicted by it.
+1. evidence_fit - does the supplied instruction text actually govern THIS line?
+   GOVERNS        the text is the instruction for this very line
+   WRONG_LINE     the text is a real instruction, but for a DIFFERENT line;
+                  put that line in governs_line
+   NONE_SUPPLIED  no instruction text was supplied
+   UNCLEAR        you cannot tell
+   Judge this by what the text says about itself - its own heading and its own
+   line references. Do not use your own tax knowledge to excuse a mismatch.
 
-Give one short reason, under 25 words, naming what decided it.
+2. grade - given whatever evidence was actually supplied, is the operation a
+   defensible answer? A is clearly supported, F is contradicted. If nothing
+   usable was supplied and the face cannot settle it, NO_EVIDENCE.
+
+These are independent. WRONG_LINE with grade A is a normal and important
+result: it means the extractor coped correctly with evidence we mis-supplied.
+That is a defect in OUR pipeline and we need to see it.
+
+Reason: under 25 words, naming what decided the fit.
 
 PRINTED FACE:
 {face}
@@ -125,9 +146,55 @@ def _operation(record: dict) -> str:
     return "(none produced)"
 
 
+def _stratum(record: dict) -> str:
+    """Bucket a cell by the shape of the evidence it got, not by its answer."""
+    if not (record.get("instruction_span_ids") or []):
+        return "starved"
+    if str(record.get("status") or "") == "review_gap":
+        return "gapped"
+    return "complete"
+
+
+def _stratified(rows: list, total: int, rng: random.Random) -> list:
+    """Draw evenly across strata so a uniform sample cannot hide in easy cells."""
+    buckets: dict[str, list] = {}
+    for row in rows:
+        buckets.setdefault(_stratum(row[1]), []).append(row)
+    per = max(1, total // max(len(buckets), 1))
+    out: list = []
+    for name in sorted(buckets):
+        pool = buckets[name]
+        out.extend(rng.sample(pool, min(per, len(pool))))
+        print(f"  stratum {name}: {min(per, len(pool))} of {len(pool)}")
+    return out
+
+
+def _swapped_controls(rows: list, count: int, rng: random.Random) -> list:
+    """Known-wrong rows: a real cell paired with ANOTHER line's instructions.
+
+    This is the calibration.  We know the answer for these by construction, so
+    if the grader passes them the grades on the real rows mean nothing.  They
+    are shuffled in blind - nothing marks them in the prompt.
+    """
+    havers = [row for row in rows if (row[1].get("instruction_span_ids") or [])]
+    if len(havers) < 2:
+        return []
+    picks = rng.sample(havers, min(count, len(havers)))
+    out = []
+    for document_id, record, spans in picks:
+        donor = rng.choice([r for r in havers if r[1] is not record])
+        donor_text = _instruction_text(donor[1], donor[2])
+        if donor_text:
+            out.append((document_id, record, spans, donor_text))
+    return out
+
+
 def _render_html(graded: list[dict], year: str) -> str:
     order = {grade: index for index, grade in enumerate(GRADES)}
-    graded.sort(key=lambda row: (order.get(row["grade"], 9), row["document_id"], str(row["line"])))
+    fit_order = {"WRONG_LINE": 0, "UNCLEAR": 1, "NONE_SUPPLIED": 2, "GOVERNS": 3}
+    graded.sort(key=lambda row: (fit_order.get(row.get("fit", ""), 9),
+                                 order.get(row["grade"], 9),
+                                 row["document_id"], str(row["line"])))
     counts: dict[str, int] = {}
     for row in graded:
         counts[row["grade"]] = counts.get(row["grade"], 0) + 1
@@ -140,6 +207,7 @@ def _render_html(graded: list[dict], year: str) -> str:
         "th,td{border:1px solid #d0d0d0;padding:8px;vertical-align:top;text-align:left}",
         "th{background:#f4f4f4;position:sticky;top:0}",
         "td.g{font-weight:700;text-align:center;white-space:nowrap}",
+        ".WRONG_LINE{background:#ffc9c9}.UNCLEAR{background:#ffe8cc}.NONE_SUPPLIED{background:#e0e0e0}.GOVERNS{background:#d6f0d6}",
         ".F{background:#ffd7d7}.D{background:#ffe8cc}.C{background:#fff6cc}",
         ".B{background:#e8f5d0}.A{background:#d6f0d6}.NO_EVIDENCE{background:#e0e0e0}",
         "details{max-width:60ch}pre{white-space:pre-wrap;font:12px/1.4 ui-monospace,monospace}",
@@ -147,7 +215,7 @@ def _render_html(graded: list[dict], year: str) -> str:
         f"<h1>Derived-cell sample, {html.escape(year)}</h1>",
         f"<p>{len(graded)} cells, worst first. {summary}</p>",
         "<p><i>NO_EVIDENCE is a verdict about what we supplied, not about the answer.</i></p>",
-        "<table><tr><th>Grade</th><th>Document</th><th>Line</th><th>Face</th>"
+        "<table><tr><th>Evidence fit</th><th>Grade</th><th>Document</th><th>Line</th><th>Face</th>"
         "<th>Instructions supplied</th><th>Operation</th><th>Why</th><th>IRS</th></tr>",
     ]
     for row in graded:
@@ -158,8 +226,10 @@ def _render_html(graded: list[dict], year: str) -> str:
         if row["instructions_url"]:
             links.append(f'<a href="{html.escape(row["instructions_url"])}">instr</a>')
         body.append(
-            f'<tr><td class="g {html.escape(row["grade"])}">{html.escape(row["grade"])}</td>'
-            f'<td>{html.escape(row["document_id"])}</td>'
+            f'<tr><td class="g {html.escape(row.get("fit",""))}">{html.escape(row.get("fit",""))}'
+            f'{(" -> " + html.escape(row["governs"])) if row.get("governs") else ""}</td>'
+            f'<td class="g {html.escape(row["grade"])}">{html.escape(row["grade"])}</td>'
+            f'<td>{html.escape(row["document_id"])}{" <b>[CONTROL]</b>" if row.get("control") else ""}</td>'
             f'<td>{html.escape(str(row["line"]))}</td>'
             f'<td>{html.escape(_clip(row["face"], 160))}</td>'
             f'<td><details><summary>{"none" if not row["instructions"] else "show"}</summary>'
@@ -178,6 +248,10 @@ def main() -> int:
     parser.add_argument("--doc", action="append", default=[])
     parser.add_argument("--n", type=int, default=15, help="how many cells to grade")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--stratify", action="store_true",
+                        help="sample evenly across starved / gapped / complete cells")
+    parser.add_argument("--controls", type=int, default=0,
+                        help="add N known-wrong rows whose instructions belong to another line")
     parser.add_argument("--out", type=Path, default=ROOT / "output" / "graded_sample.html")
     args = parser.parse_args()
 
@@ -186,7 +260,13 @@ def main() -> int:
         print("no rows found", file=sys.stderr)
         return 1
     rng = random.Random(args.seed or None)
-    sample = rng.sample(rows, min(args.n, len(rows)))
+    if args.stratify:
+        sample = _stratified(rows, args.n, rng)
+    else:
+        sample = rng.sample(rows, min(args.n, len(rows)))
+    controls = _swapped_controls(rows, args.controls, rng) if args.controls else []
+    sample = [(doc, rec, spans, None) for doc, rec, spans in sample] + controls
+    rng.shuffle(sample)  # the grader must not be able to tell a control from a real row
 
     config = load_config(root=ROOT)
     client = build_llm_client(config)
@@ -194,8 +274,8 @@ def main() -> int:
     manifest = load_manifest(root=ROOT)
 
     graded: list[dict] = []
-    for index, (document_id, record, spans) in enumerate(sample, start=1):
-        instructions = _instruction_text(record, spans)
+    for index, (document_id, record, spans, control) in enumerate(sample, start=1):
+        instructions = control if control is not None else _instruction_text(record, spans)
         operation = _operation(record)
         face = str(record.get("label") or "")
         prompt = PROMPT.format(
@@ -221,16 +301,29 @@ def main() -> int:
                         break
             grade = str(payload.get("grade") or "F")
             reason = str(payload.get("reason") or "")
+            fit = str(payload.get("evidence_fit") or "UNCLEAR")
+            governs = str(payload.get("governs_line") or "")
         except Exception as exc:  # noqa: BLE001 - a grader failure is data too
             grade, reason = "F", f"grader error: {type(exc).__name__}: {exc}"[:200]
+            fit, governs = "UNCLEAR", ""
         form_url, instructions_url = _links(manifest, document_id)
         graded.append({
             "document_id": document_id, "line": record.get("line_anchor"),
             "face": face, "instructions": instructions, "operation": operation,
-            "grade": grade, "reason": reason,
+            "grade": grade, "reason": reason, "fit": fit, "governs": governs,
             "form_url": form_url, "instructions_url": instructions_url,
+            "control": control is not None,
         })
-        print(f"  [{index}/{len(sample)}] {document_id} line {record.get('line_anchor')}: {grade}")
+        print(f"  [{index}/{len(sample)}] {document_id} line {record.get('line_anchor')}: {grade} / {fit}")
+
+    control_rows = [row for row in graded if row.get("control")]
+    if control_rows:
+        caught = [r for r in control_rows if r["fit"] == "WRONG_LINE"]
+        print("")
+        print(f"CONTROLS: {len(caught)}/{len(control_rows)} swapped rows identified as WRONG_LINE")
+        for row in control_rows:
+            flag = "caught" if row in caught else "MISSED"
+            print(f"   {flag:<7} {row['document_id']} line {row['line']} -> fit={row['fit']} grade={row['grade']}")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(_render_html(graded, args.year), encoding="utf-8")
