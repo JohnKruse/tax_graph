@@ -48,10 +48,26 @@ def test_real_corpus_gate_demonstrates_both_surfacing_directions() -> None:
 
 
 def test_instruction_documents_are_not_reviewable_cell_candidates() -> None:
-    """Instruction booklets supply evidence but do not have reviewable cell surfaces."""
+    """Instruction booklets have no printed lines, so no FORM-LINE candidate can surface.
+
+    This assertion was broader when written on 2026-08-20: it required that an
+    instructions document contribute no candidates at all.  That pinned an
+    over-broad filter which dropped 16 unmodeled frontier refusals and 4
+    worksheet refusals owned by instructions_form_1040_2025, none of them
+    form-line candidates.  A refused worksheet still has to reach a human
+    whichever document's instructions spawned it, so the exclusion now keys on
+    the candidate's kind rather than the owner's.
+    """
     report = evaluate_core_refusals(root=ROOT, year="2025")
+    owned = [
+        item
+        for item in report.candidates
+        if item.owner_document_id == "instructions_form_1040_2025"
+    ]
 
     assert not any(
-        item.owner_document_id == "instructions_form_1040_2025"
-        for item in report.candidates
+        item.kind in {"derive_cell_status", "formula_review_gap", "not_derivable_outcome"}
+        for item in owned
     )
+    assert owned, "instruction-owned worksheet and frontier refusals must survive the filter"
+    assert {item.kind for item in owned} <= {"worksheet_refusal", "frontier_refusal"}

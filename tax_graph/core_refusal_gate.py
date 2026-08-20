@@ -252,8 +252,26 @@ def _candidate(
     )
 
 
+# Only these ask "is there a cell for this printed line?".  An instructions
+# document has no printed lines and therefore no cells, so a form-line candidate
+# owned by one can never surface.  The other kinds are about a worksheet or a
+# frontier branch and are just as real whichever document's instructions
+# produced them.
+FORM_LINE_CANDIDATE_KINDS = frozenset(
+    {"derive_cell_status", "formula_review_gap", "not_derivable_outcome"}
+)
+
+
 def _is_reviewable_candidate(candidate: RefusalCandidate, manifest: Any) -> bool:
-    """Exclude source-only instruction documents from the cell surfacing gate."""
+    """Drop only form-line candidates owned by a source-only instructions document.
+
+    An earlier version keyed on the OWNER document's kind alone, which silently
+    dropped 16 unmodeled frontier refusals and 4 worksheet refusals - none of
+    them form-line candidates.  A refused worksheet still has to reach a human
+    regardless of which document's instructions spawned it.
+    """
+    if candidate.kind not in FORM_LINE_CANDIDATE_KINDS:
+        return True
     entry = manifest.by_document_id().get(candidate.owner_document_id)
     return entry is None or entry.kind != "instructions"
 
