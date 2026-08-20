@@ -540,6 +540,39 @@ number this round exists to move.
 
 ## Open for Architect
 
+**WORKER STATUS (2026-08-20; M20-S158 implementation is ready for review).** The scratch pilot is
+`pilot/attribution_m20_s158.py` with prompt `prompts/instruction_attribution_m20_s158.md` and
+guards in `pilot/test_attribution_m20_s158.py`. It builds the line inventory from the deterministic
+form frame, labels already fixed and UTF-8 byte-verified HTML spans, uses a closed span/line schema,
+allows an empty `governs`, validates full span coverage, and reports the none rate, zero-span cell
+movement, and the Schedule 1-A 19-cell score with its 18-cell ceiling excluded. It contains no
+body-prose line miner and cannot write a report inside the repository. Telemetry uses the shared
+`response_telemetry` helper.
+
+**THREE OPENED EVIDENCE CASES.** I read the fixed source spans end to end before changing the
+stage: Schedule 1-A `0509` General Instructions is broad prose with no line scope; Schedule 1-A
+`0510` Part I MAGI has semantic scope over the Part I calculation but no heading line tokens; and
+Form 1116 `0035` Foreign Branch Category Income is topic prose with no printed-line scope. The
+existing Form 1116 line 3 failure remains the concrete packet defect described above: the model was
+given zero instruction spans and eleven wrong-owner spans, then quoted the form face. These cases
+are why the stage uses fixed spans plus a closed form inventory instead of mining body mentions.
+
+**TEST EVIDENCE.** RAN:
+`.venv\Scripts\python.exe -m pytest pilot\test_attribution_m20_s158.py -q` -> **6 passed in
+0.25s**. RAN the final focused attribution and upstream HTML ownership/section parser set
+(`pilot\test_attribution_m20_s158.py`, `pilot\test_html_document_frame_m20_s132.py`,
+`pilot\test_html_section_frame_m20_s128.py`, and the three model-instruction-segmenter files)
+-> **49 passed in 27.05s**. RAN compileall and `git diff --check` -> **clean**. RAN
+`.venv\Scripts\python.exe tools\check_ascii.py` -> **ASCII check OK** and
+`.venv\Scripts\python.exe tools\check_diagnosis_evidence.py plans\AGENT_HANDOFF.md` ->
+**diagnosis evidence check OK**.
+
+**NOT RUN: LIVE FLOOR MEASUREMENT.** The two live attribution calls for `schedule_1a_2025` and
+`form_1116_2025`, their call count/cost, none-rate headline, zero-instruction movement, and the
+19-cell Schedule 1-A reach score were not run. External LLM egress requires explicit user
+authorization in this environment; no scratch report, draft, graph, or promoted artifact was
+written. E2E remains Architect-side.
+
 **WORKER STATUS (2026-08-20; M20-S157 implementation is ready for review).** The worker added
 source-offset-proven adjacent source joins in `tax_graph/extract/outline.py`. Original
 `CandidateSpan.text` and citation ranges remain canonical; joined spans carry a single combined
